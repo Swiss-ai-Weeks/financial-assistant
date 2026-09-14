@@ -156,6 +156,22 @@ For historical replay, set `as_of_at` to the simulated decision time. Never
 attach later news or future prices to a criterion: the scorer will ignore the
 late evidence, but upstream feature generation must also observe the cut-off.
 
+## Interactive dashboard
+
+[`dashboard/index.html`](dashboard/index.html) demonstrates how an anomaly,
+causal qualification, continuation probability, and a long/short/no-trade
+research signal fit together. It includes three fictional scenarios, an as-of
+time slider, evidence-backed mechanism paths, criterion-level attribution, and
+source-lineage traceability.
+
+Open the file directly, or serve the repository locally:
+
+```bash
+python -m http.server 8000
+```
+
+Then visit `http://localhost:8000/dashboard/`.
+
 ## Development
 
 ```bash
