@@ -2,6 +2,21 @@
 
 Evidence-backed causal attribution for financial-news anomalies.
 
+## Event graph and source traceability
+
+The EventKG-inspired layer turns retrieved documents into atomic claims,
+canonical events, and typed temporal relations before causal scoring. It adds:
+
+- conservative event identity resolution;
+- lineage-aware claim fusion without erasing contradictions;
+- immutable historical snapshots at a strict as-of time;
+- evidence-backed economic paths from an event to a company or instrument;
+- claim, relation, document, and policy IDs carried into the score result.
+
+The implementation is storage-independent and does not require RDF or a graph
+database. See [the EventKG integration guide](docs/eventkg-integration.md) for
+the architecture, invariants, ingestion contract, and Avalanche extension.
+
 ## First contribution: causal candidate scoring
 
 The package contains a deterministic scorer that ranks an event cluster as a
