@@ -252,3 +252,69 @@ class Inference(BaseModel):
     derived_from_ids: tuple[str, ...]
 
     model_run_id: str = Field(min_length=1)
+
+
+class InvestigationState(BaseModel):
+    """
+    Typed analytical state for one investigation.
+
+    This is the semantic input to the ClaimGraph
+    builder. It is deliberately independent from
+    ReactFlow and the graph rendering format.
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+        frozen=True,
+    )
+
+    investigation_id: str = Field(
+        min_length=1
+    )
+
+    anomaly: AnomalyEvent
+
+    documents: tuple[
+        SourceDocument,
+        ...
+    ] = ()
+
+    model_runs: tuple[
+        ModelRun,
+        ...
+    ] = ()
+
+    claims: tuple[
+        ExtractedClaim,
+        ...
+    ] = ()
+
+    hypotheses: tuple[
+        Hypothesis,
+        ...
+    ] = ()
+
+    relationship_assessments: tuple[
+        RelationshipAssessment,
+        ...
+    ] = ()
+
+    evidence_requirements: tuple[
+        EvidenceRequirement,
+        ...
+    ] = ()
+
+    observations: tuple[
+        Observation,
+        ...
+    ] = ()
+
+    calculations: tuple[
+        Calculation,
+        ...
+    ] = ()
+
+    inferences: tuple[
+        Inference,
+        ...
+    ] = ()

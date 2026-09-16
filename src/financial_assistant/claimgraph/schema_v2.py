@@ -28,6 +28,7 @@ class NodeKind(StrEnum):
 
 class EdgeKind(StrEnum):
     TRIGGERED = "triggered"
+    CANDIDATE_EXPLANATION_FOR = "candidate_explanation_for"
 
     PUBLISHED_BY = "published_by"
     EXTRACTED_FROM = "extracted_from"
