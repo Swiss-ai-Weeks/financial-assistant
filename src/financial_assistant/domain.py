@@ -21,6 +21,14 @@ class RelationKind(StrEnum):
     UNRELATED = "unrelated"
 
 
+class ArgumentNodeKind(StrEnum):
+    CLAIM = "claim"
+    HYPOTHESIS = "hypothesis"
+    OBSERVATION = "observation"
+    CALCULATION = "calculation"
+    INFERENCE = "inference"
+
+
 class ModelOperation(StrEnum):
     CLAIM_EXTRACTION = "claim_extraction"
     HYPOTHESIS_GENERATION = "hypothesis_generation"
@@ -145,7 +153,16 @@ class Hypothesis(BaseModel):
 
 class RelationshipAssessment(BaseModel):
     """
-    Assessment of how one claim relates to one hypothesis.
+    Epistemic relationship between two analytical
+    objects.
+
+    Examples:
+      claim -> hypothesis
+      inference -> hypothesis
+      observation -> hypothesis
+
+    The relationship is contextual: the same claim
+    may support one hypothesis and contradict another.
     """
 
     model_config = ConfigDict(
@@ -155,8 +172,11 @@ class RelationshipAssessment(BaseModel):
 
     assessment_id: str = Field(min_length=1)
 
-    claim_id: str = Field(min_length=1)
-    hypothesis_id: str = Field(min_length=1)
+    source_kind: ArgumentNodeKind
+    source_id: str = Field(min_length=1)
+
+    target_kind: ArgumentNodeKind
+    target_id: str = Field(min_length=1)
 
     relation: RelationKind
 

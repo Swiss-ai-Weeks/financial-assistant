@@ -3,6 +3,7 @@ from __future__ import annotations
 from hashlib import sha1
 
 from financial_assistant.domain import (
+    ArgumentNodeKind,
     InvestigationState,
 )
 
@@ -410,7 +411,8 @@ def build_investigation_graph(
         )
 
     # -------------------------------------------------
-    # Claim ↔ hypothesis relationship judgements
+    # -------------------------------------------------
+    # Epistemic relationship judgements
     # -------------------------------------------------
 
     relation_to_edge = {
@@ -420,32 +422,50 @@ def build_investigation_graph(
         "context_for": EdgeKind.CONTEXT_FOR,
     }
 
-    for assessment in (
-        state.relationship_assessments
-    ):
-        if assessment.claim_id not in claims:
+    argument_indexes = {
+        ArgumentNodeKind.CLAIM: claims,
+        ArgumentNodeKind.HYPOTHESIS: hypotheses,
+        ArgumentNodeKind.OBSERVATION: observations,
+        ArgumentNodeKind.CALCULATION: calculations,
+        ArgumentNodeKind.INFERENCE: inferences,
+    }
+
+    argument_prefixes = {
+        ArgumentNodeKind.CLAIM: "claim",
+        ArgumentNodeKind.HYPOTHESIS: "hypothesis",
+        ArgumentNodeKind.OBSERVATION: "observation",
+        ArgumentNodeKind.CALCULATION: "calculation",
+        ArgumentNodeKind.INFERENCE: "inference",
+    }
+
+    for assessment in state.relationship_assessments:
+        source_index = argument_indexes[
+            assessment.source_kind
+        ]
+
+        target_index = argument_indexes[
+            assessment.target_kind
+        ]
+
+        if assessment.source_id not in source_index:
             raise ValueError(
                 f"Relationship assessment "
                 f"{assessment.assessment_id} "
-                "references unknown claim_id "
-                f"{assessment.claim_id}"
+                f"references unknown "
+                f"{assessment.source_kind.value} "
+                f"{assessment.source_id}"
             )
 
-        if (
-            assessment.hypothesis_id
-            not in hypotheses
-        ):
+        if assessment.target_id not in target_index:
             raise ValueError(
                 f"Relationship assessment "
                 f"{assessment.assessment_id} "
-                "references unknown hypothesis_id "
-                f"{assessment.hypothesis_id}"
+                f"references unknown "
+                f"{assessment.target_kind.value} "
+                f"{assessment.target_id}"
             )
 
-        if (
-            assessment.model_run_id
-            not in model_runs
-        ):
+        if assessment.model_run_id not in model_runs:
             raise ValueError(
                 f"Relationship assessment "
                 f"{assessment.assessment_id} "
@@ -453,8 +473,6 @@ def build_investigation_graph(
                 f"{assessment.model_run_id}"
             )
 
-        # "unrelated" is analytically useful but
-        # does not need a visible graph edge.
         if assessment.relation.value == "unrelated":
             continue
 
@@ -462,26 +480,30 @@ def build_investigation_graph(
             assessment.relation.value
         ]
 
-        claim_node_id = _node_id(
-            "claim",
-            assessment.claim_id,
+        source_node_id = _node_id(
+            argument_prefixes[
+                assessment.source_kind
+            ],
+            assessment.source_id,
         )
 
-        hypothesis_node_id = _node_id(
-            "hypothesis",
-            assessment.hypothesis_id,
+        target_node_id = _node_id(
+            argument_prefixes[
+                assessment.target_kind
+            ],
+            assessment.target_id,
         )
 
         edges.append(
             GraphEdge(
                 edge_id=_edge_id(
-                    claim_node_id,
+                    source_node_id,
                     edge_kind,
-                    hypothesis_node_id,
+                    target_node_id,
                     assessment.assessment_id,
                 ),
-                source=claim_node_id,
-                target=hypothesis_node_id,
+                source=source_node_id,
+                target=target_node_id,
                 kind=edge_kind,
                 data={
                     "assessment_id":
@@ -504,13 +526,14 @@ def build_investigation_graph(
                             .missing_information
                         ),
 
-                    # Execution provenance for the
-                    # relationship judgement itself.
                     "model_run_id":
                         assessment.model_run_id,
                 },
             )
         )
+
+
+
 
     # -------------------------------------------------
     # Missing / required evidence

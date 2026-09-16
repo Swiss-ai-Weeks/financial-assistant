@@ -17,6 +17,7 @@ from financial_assistant.domain import (
     ExtractedClaim,
     Hypothesis,
     Inference,
+    ArgumentNodeKind,
     InvestigationState,
     ModelOperation,
     ModelRun,
@@ -142,8 +143,11 @@ def make_state() -> InvestigationState:
 
     relationship = RelationshipAssessment(
         assessment_id="RA1",
-        claim_id="C1",
-        hypothesis_id="H1",
+        source_kind=ArgumentNodeKind.CLAIM,
+        source_id="C1",
+        target_kind=ArgumentNodeKind.HYPOTHESIS,
+        target_id="H1",
+
         relation=RelationKind.SUPPORTS,
         strength=0.65,
         rationale=(
@@ -210,6 +214,31 @@ def make_state() -> InvestigationState:
         model_run_id="MR-INFER",
     )
 
+    inference_relationship = RelationshipAssessment(
+        assessment_id="RA2",
+
+        source_kind=ArgumentNodeKind.INFERENCE,
+        source_id="I1",
+
+        target_kind=ArgumentNodeKind.HYPOTHESIS,
+        target_id="H1",
+
+        relation=RelationKind.SUPPORTS,
+        strength=0.55,
+
+        rationale=(
+            "The calculated exposure provides "
+            "fundamental support for potential "
+            "economic materiality."
+        ),
+
+        model_run_id="MR-REL",
+    )
+
+
+
+
+
     return InvestigationState(
         investigation_id="INV-1",
 
@@ -243,6 +272,7 @@ def make_state() -> InvestigationState:
 
         relationship_assessments=(
             relationship,
+            inference_relationship,
         ),
 
         evidence_requirements=(
@@ -314,6 +344,12 @@ def test_builder_preserves_epistemic_and_execution_provenance():
         "claim:C1",
         "produced_by",
         "modelrun:MR-EXTRACT",
+    ) in relations
+
+    assert (
+        "inference:I1",
+        "supports",
+        "hypothesis:H1",
     ) in relations
 
     # The hypothesis remains explicitly a
