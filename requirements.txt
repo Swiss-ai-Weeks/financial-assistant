@@ -1,0 +1,18 @@
+# Data
+yfinance
+pandas
+numpy
+
+# Stats / modeling
+statsmodels
+scipy
+
+# Notebooks
+jupyterlab
+ipykernel
+
+# Plotting
+matplotlib
+
+# Parquet IO
+pyarrow
