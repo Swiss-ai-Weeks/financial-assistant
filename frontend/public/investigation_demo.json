@@ -1,0 +1,258 @@
+{
+  "schema_version": "0.2",
+  "investigation_id": "INV-DEMO-001",
+  "anomaly_id": "A-DEMO-001",
+  "ticker": "EXMPL",
+
+  "nodes": [
+    {
+      "node_id": "anomaly:A-DEMO-001",
+      "kind": "anomaly",
+      "label": "Abnormal downside price and volume event",
+      "data": {
+        "severity": 0.87,
+        "demo": true
+      }
+    },
+
+    {
+      "node_id": "source:news",
+      "kind": "source",
+      "label": "Illustrative financial news source",
+      "data": {
+        "publisher": "Demo News"
+      }
+    },
+
+    {
+      "node_id": "document:news-1",
+      "kind": "document",
+      "label": "Article about new export restrictions",
+      "data": {
+        "url": "https://example.com/news-1"
+      }
+    },
+
+    {
+      "node_id": "modelrun:nvidia-extract",
+      "kind": "model_run",
+      "label": "NVIDIA model — claim extraction",
+      "data": {
+        "provider": "nvidia",
+        "operation": "claim_extraction"
+      }
+    },
+
+    {
+      "node_id": "modelrun:apertus-extract",
+      "kind": "model_run",
+      "label": "Apertus — claim extraction",
+      "data": {
+        "provider": "apertus",
+        "operation": "claim_extraction"
+      }
+    },
+
+    {
+      "node_id": "claim:nvidia-1",
+      "kind": "claim",
+      "label": "New export rules could restrict shipments of affected products.",
+      "data": {
+        "model": "nvidia",
+        "source_quote": "Illustrative source span."
+      }
+    },
+
+    {
+      "node_id": "claim:apertus-1",
+      "kind": "claim",
+      "label": "New export rules create material revenue risk.",
+      "data": {
+        "model": "apertus",
+        "source_quote": "Illustrative source span.",
+        "review_note": "Adds a materiality judgement not explicit in the source span."
+      }
+    },
+
+    {
+      "node_id": "hypothesis:regulatory",
+      "kind": "hypothesis",
+      "label": "The anomaly reflects material company-specific regulatory risk.",
+      "data": {}
+    },
+
+    {
+      "node_id": "hypothesis:sector",
+      "kind": "hypothesis",
+      "label": "The anomaly is mainly broad sector noise.",
+      "data": {}
+    },
+
+    {
+      "node_id": "document:filing",
+      "kind": "document",
+      "label": "Illustrative company filing",
+      "data": {
+        "url": "https://example.com/filing"
+      }
+    },
+
+    {
+      "node_id": "observation:affected-revenue",
+      "kind": "observation",
+      "label": "Affected revenue: 12 units",
+      "data": {
+        "value": 12,
+        "unit": "demo units"
+      }
+    },
+
+    {
+      "node_id": "observation:total-revenue",
+      "kind": "observation",
+      "label": "Total revenue: 100 units",
+      "data": {
+        "value": 100,
+        "unit": "demo units"
+      }
+    },
+
+    {
+      "node_id": "calculation:exposure",
+      "kind": "calculation",
+      "label": "Direct exposure ratio: 12%",
+      "data": {
+        "expression": "12 / 100",
+        "value": 12,
+        "unit": "%"
+      }
+    },
+
+    {
+      "node_id": "inference:materiality",
+      "kind": "inference",
+      "label": "Direct exposure is non-trivial, but does not alone establish the full earnings effect.",
+      "data": {}
+    }
+  ],
+
+  "edges": [
+    {
+      "edge_id": "e1",
+      "source": "document:news-1",
+      "target": "source:news",
+      "kind": "published_by",
+      "data": {}
+    },
+
+    {
+      "edge_id": "e2",
+      "source": "claim:nvidia-1",
+      "target": "document:news-1",
+      "kind": "extracted_from",
+      "data": {}
+    },
+
+    {
+      "edge_id": "e3",
+      "source": "claim:nvidia-1",
+      "target": "modelrun:nvidia-extract",
+      "kind": "produced_by",
+      "data": {}
+    },
+
+    {
+      "edge_id": "e4",
+      "source": "claim:apertus-1",
+      "target": "document:news-1",
+      "kind": "extracted_from",
+      "data": {}
+    },
+
+    {
+      "edge_id": "e5",
+      "source": "claim:apertus-1",
+      "target": "modelrun:apertus-extract",
+      "kind": "produced_by",
+      "data": {}
+    },
+
+    {
+      "edge_id": "e6",
+      "source": "claim:nvidia-1",
+      "target": "hypothesis:regulatory",
+      "kind": "supports",
+      "data": {
+        "strength": 0.65
+      }
+    },
+
+    {
+      "edge_id": "e7",
+      "source": "claim:apertus-1",
+      "target": "hypothesis:regulatory",
+      "kind": "supports",
+      "data": {
+        "strength": 0.85
+      }
+    },
+
+    {
+      "edge_id": "e8",
+      "source": "hypothesis:regulatory",
+      "target": "hypothesis:sector",
+      "kind": "competes_with",
+      "data": {}
+    },
+
+    {
+      "edge_id": "e9",
+      "source": "observation:affected-revenue",
+      "target": "document:filing",
+      "kind": "extracted_from",
+      "data": {}
+    },
+
+    {
+      "edge_id": "e10",
+      "source": "observation:total-revenue",
+      "target": "document:filing",
+      "kind": "extracted_from",
+      "data": {}
+    },
+
+    {
+      "edge_id": "e11",
+      "source": "calculation:exposure",
+      "target": "observation:affected-revenue",
+      "kind": "calculated_from",
+      "data": {}
+    },
+
+    {
+      "edge_id": "e12",
+      "source": "calculation:exposure",
+      "target": "observation:total-revenue",
+      "kind": "calculated_from",
+      "data": {}
+    },
+
+    {
+      "edge_id": "e13",
+      "source": "inference:materiality",
+      "target": "calculation:exposure",
+      "kind": "derived_from",
+      "data": {}
+    },
+
+    {
+      "edge_id": "e14",
+      "source": "inference:materiality",
+      "target": "hypothesis:regulatory",
+      "kind": "supports",
+      "data": {
+        "strength": 0.55
+      }
+    }
+  ]
+}

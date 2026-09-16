@@ -328,3 +328,84 @@ a {
 .react-flow__edge-textbg {
   fill: #111a2b;
 }
+
+/*
+ * ClaimGraph v0.2 node semantics.
+ *
+ * The graph's meaning comes from the backend
+ * node type. React only decides how that type
+ * should look.
+ */
+
+.cg-node {
+  width: 250px;
+  padding: 12px 14px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.25);
+
+  border-radius: 10px;
+
+  background: #1d2230;
+  color: #f4f6fb;
+
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.cg-node--anomaly {
+  width: 300px;
+  border-width: 2px;
+  font-weight: 700;
+}
+
+.cg-node--hypothesis {
+  background: #29233b;
+}
+
+.cg-node--claim {
+  background: #16253d;
+}
+
+.cg-node--evidence_requirement {
+  border-style: dashed;
+  background: #302b20;
+}
+
+.cg-node--observation {
+  background: #142a2d;
+}
+
+.cg-node--calculation {
+  background: #17303b;
+}
+
+.cg-node--inference {
+  background: #2d2638;
+}
+
+.cg-node--document {
+  background: #25283a;
+}
+
+.cg-node--source {
+  background: #202637;
+}
+
+.cg-node--model_run {
+  border-style: dashed;
+  background: #1d2739;
+}
+
+.cg-node--missing_evidence {
+  border-style: dashed;
+}
+
+.inspector-json {
+  max-width: 100%;
+
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  font-size: 11px;
+}
