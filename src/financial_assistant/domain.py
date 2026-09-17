@@ -32,6 +32,7 @@ class ArgumentNodeKind(StrEnum):
 class ModelOperation(StrEnum):
     CLAIM_EXTRACTION = "claim_extraction"
     HYPOTHESIS_GENERATION = "hypothesis_generation"
+    HYPOTHESIS_AUDIT = "hypothesis_audit"
     RELATION_ASSESSMENT = "relation_assessment"
     FUNDAMENTAL_TEST_SELECTION = "fundamental_test_selection"
     INFERENCE = "inference"
@@ -151,6 +152,10 @@ class ExtractedClaim(BaseModel):
 class Hypothesis(BaseModel):
     """
     Candidate explanation for the anomaly.
+
+    A hypothesis is not evidence. Any unobserved facts
+    required for the explanation are recorded explicitly
+    as assumptions.
     """
 
     model_config = ConfigDict(
@@ -160,6 +165,31 @@ class Hypothesis(BaseModel):
 
     hypothesis_id: str = Field(min_length=1)
     text: str = Field(min_length=1)
+
+    assumptions: tuple[str, ...] = ()
+
+    model_run_id: str = Field(min_length=1)
+
+
+class HypothesisAudit(BaseModel):
+    """
+    Audit of the unsupported premises behind a
+    candidate hypothesis.
+
+    This is separate from hypothesis generation so
+    execution provenance remains explicit.
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+        frozen=True,
+    )
+
+    audit_id: str = Field(min_length=1)
+    hypothesis_id: str = Field(min_length=1)
+
+    assumptions: tuple[str, ...] = ()
+    missing_information: tuple[str, ...] = ()
 
     model_run_id: str = Field(min_length=1)
 
@@ -351,3 +381,6 @@ class InvestigationState(BaseModel):
         Inference,
         ...
     ] = ()
+
+
+

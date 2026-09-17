@@ -12,7 +12,21 @@ from .provider import (
 
 
 __all__ = [
+    "generate_hypotheses",
     "StructuredLLM",
     "OpenAICompatibleProvider",
     "extract_claims",
 ]
+
+
+from .hypothesis_generation import (
+    generate_hypotheses,
+)
+
+from .hypothesis_audit import (
+    audit_hypotheses,
+)
+
+from .relation_assessment import (
+    assess_relationships,
+)
