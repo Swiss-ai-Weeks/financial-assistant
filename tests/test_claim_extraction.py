@@ -161,9 +161,38 @@ def test_invalid_claim_type_is_rejected():
 def test_invented_source_quote_is_rejected():
     with pytest.raises(
         ValueError,
-        match="does not occur verbatim",
+        match="exact source span",
     ):
         extract_claims(
             DOCUMENT,
             FakeQuoteProvider(),
         )
+
+
+def test_straight_quote_can_resolve_to_exact_source_span():
+    from financial_assistant.llm.claim_extraction import (
+        _resolve_source_quote,
+    )
+
+    source = (
+        "“Computing demand is growing exponentially — "
+        "the agentic AI inflection point has arrived."
+    )
+
+    proposed = (
+        '"Computing demand is growing exponentially — '
+        "the agentic AI inflection point has arrived."
+    )
+
+    resolved = _resolve_source_quote(
+        proposed,
+        source,
+    )
+
+    assert (
+        resolved
+        == "Computing demand is growing exponentially — "
+        "the agentic AI inflection point has arrived."
+    )
+
+    assert resolved in source

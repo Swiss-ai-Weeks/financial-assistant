@@ -62,19 +62,39 @@ Allowed claim_type values ONLY:
 
 Rules:
 
-1. Each claim must express one independently
+1. Extract at most 8 claims.
+
+2. Each claim must express one independently
    assessable proposition.
 
-2. Do not invent materiality, causality, importance,
+3. Prefer concrete observations, reported figures,
+   forecasts, and attributed management statements.
+
+4. Do not try to exhaustively reproduce every
+   sentence in the document.
+
+5. Do not invent materiality, causality, importance,
    sentiment, probability, or financial impact.
 
-3. source_quote must be copied verbatim from the
+6. source_quote must be copied verbatim from the
    supplied document.
 
-4. Do not return any claim_type other than the four
-   explicitly allowed values.
+7. source_quote should be the shortest exact contiguous
+   substring that directly supports the claim.
 
-5. Do not output trading signals.
+8. Do not combine text from separate lines, bullets,
+   list items, or sentences into one source_quote.
+
+9. Do not rewrite punctuation, whitespace, apostrophes,
+   dashes, or list markers inside source_quote.
+
+10. When a claim appears inside a bullet, quote only
+    the relevant text inside that bullet when possible.
+
+11. Do not return any claim_type other than the four
+    explicitly allowed values.
+
+12. Do not output trading signals.
 
 Return JSON only in this structure:
 
@@ -88,6 +108,49 @@ Return JSON only in this structure:
   ]
 }
 """.strip()
+
+
+
+def _resolve_source_quote(
+    proposed_quote: str,
+    source_text: str,
+) -> str:
+    """
+    Resolve an LLM-proposed quote to a literal source span.
+
+    No fuzzy or semantic matching is allowed.
+
+    We first require an exact match. If that fails, we
+    allow only removal of surrounding quotation marks.
+    The repaired candidate must then occur verbatim in
+    the source text.
+    """
+
+    quote = proposed_quote.strip()
+
+    # Best case: the model copied the span exactly.
+    if quote in source_text:
+        return quote
+
+    quote_chars = '"“”‘’\''
+
+    candidates = [
+        quote.lstrip(quote_chars).strip(),
+        quote.rstrip(quote_chars).strip(),
+        quote.strip(quote_chars).strip(),
+    ]
+
+    for candidate in candidates:
+        if candidate and candidate in source_text:
+            return candidate
+
+    raise ValueError(
+        "Model returned source_quote that cannot be "
+        "resolved to an exact source span:\n"
+        f"{proposed_quote}"
+    )
+
+
 
 
 def extract_claims(
@@ -172,11 +235,13 @@ def extract_claims(
     ] = set()
 
     for candidate in parsed.claims:
-        quote = (
-            candidate.source_quote
-            .strip()
-        )
 
+        quote = _resolve_source_quote(
+                candidate.source_quote,
+                source_text,
+                )
+
+		
         if quote not in source_text:
             raise ValueError(
                 "Model returned source_quote "
