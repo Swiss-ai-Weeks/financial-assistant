@@ -1,4 +1,5 @@
 from __future__ import annotations
+from time import perf_counter
 
 from datetime import datetime, timezone
 from pathlib import Path
@@ -36,6 +37,22 @@ URL = (
     "fourth-quarter-and-fiscal-2026"
 )
 
+timings = {}
+
+
+def timed(name, func):
+    started = perf_counter()
+    result = func()
+
+    timings[name] = (
+        perf_counter()
+        - started
+    )
+
+    return result
+
+
+
 
 def main() -> None:
     # -------------------------------------------------
@@ -58,15 +75,16 @@ def main() -> None:
         published_at=None,
     )
 
-    document = (
-        TrafilaturaDocumentFetcher()
-        .fetch(
-            hit,
-            retrieved_at=datetime.now(
-                timezone.utc
-            ),
-        )
-    )
+    document = timed(
+            "fetch",
+            lambda: (
+                TrafilaturaDocumentFetcher()
+                .fetch(hit,
+                       retrieved_at=datetime.now(
+                           timezone.utc),
+                       )
+                ),
+            )
 
     print(
         "SOURCE:",
@@ -101,12 +119,30 @@ def main() -> None:
             provider,
             max_document_chars=6000,
         )
-    )
+        )
+
+    claim_run, extracted_claims = timed(
+        "claim_extraction",
+        lambda: extract_claims(
+            document,
+            provider,
+            max_document_chars=6000,
+            ),
+        )
 
     print(
         "EXTRACTED CLAIMS:",
         len(extracted_claims),
     )
+
+
+    for claim in extracted_claims:
+        print(
+            "CLAIM:",
+            claim.claim_type.value,
+            "|",
+            claim.text,
+        )
 
 
     # Keep the visual experiment compact and diverse:
@@ -209,13 +245,14 @@ def main() -> None:
     # 5. Competing hypotheses
     # -------------------------------------------------
 
-    hypothesis_run, hypotheses = (
-        generate_hypotheses(
-            anomaly,
-            claims,
-            provider,
-        )
-    )
+    hypothesis_run, hypotheses = timed(
+            "hypothesis_generation",
+            lambda: generate_hypotheses(
+                anomaly,
+                claims,
+                provider,
+                ),
+            )
 
     # The separate audit stage is authoritative for
     # assumptions. Do not expose assumptions generated
@@ -240,15 +277,15 @@ def main() -> None:
     # -------------------------------------------------
     # 6. Audit hidden premises / evidence gaps
     # -------------------------------------------------
-
-    audit_run, audits = (
-        audit_hypotheses(
-            anomaly,
-            claims,
-            hypotheses,
-            provider,
-        )
-    )
+    audit_run, audits = timed(
+            "hypothesis_audit",
+            lambda: audit_hypotheses(
+                anomaly,
+                claims,
+                hypotheses,
+                provider,
+                ),
+            )
 
     print(
         "HYPOTHESIS AUDITS:",
@@ -262,13 +299,15 @@ def main() -> None:
     # One model call per hypothesis.
     # -------------------------------------------------
 
-    relation_runs, assessments = (
-        assess_relationships(
-            claims,
-            hypotheses,
-            provider,
-        )
-    )
+    relation_runs, assessments = timed(
+            "relationship_assessment",
+            lambda: assess_relationships(
+                claims,
+                hypotheses,
+                provider,
+                max_workers=4,
+                ),
+            )
 
     print(
         "RELATIONSHIP RUNS:",
@@ -324,10 +363,12 @@ def main() -> None:
     # 9. Build stable frontend graph contract
     # -------------------------------------------------
 
-    graph = build_investigation_graph(
-        state
-    )
-
+    graph = timed(
+            "graph_build",
+            lambda: build_investigation_graph(
+                state
+                ),
+             )
     print()
     print(
         "GRAPH NODES:",
@@ -377,6 +418,20 @@ def main() -> None:
             "WROTE:",
             output,
         )
+
+    print()
+    print("TIMINGS")
+
+    for name, seconds in timings.items():
+        print(
+                f"{name:28} "
+                f"{seconds:7.2f}s"
+                )
+
+        print(
+                f"{'measured total':28} "
+                f"{sum(timings.values()):7.2f}s"
+                )
 
 
 if __name__ == "__main__":

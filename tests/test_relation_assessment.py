@@ -207,3 +207,171 @@ def test_missing_pair_is_rejected():
             HYPOTHESES,
             MissingPairProvider(),
         )
+
+
+def test_parallel_mode_preserves_order():
+    from threading import (
+        Barrier,
+        Lock,
+        get_ident,
+    )
+
+    class ConcurrentProvider(
+        GoodProvider
+    ):
+        def __init__(self):
+            self.barrier = Barrier(
+                2,
+                timeout=5,
+            )
+
+            self.lock = Lock()
+            self.thread_ids = set()
+
+        def complete_json(
+            self,
+            *,
+            system,
+            user,
+            reasoning=False,
+        ):
+            with self.lock:
+                self.thread_ids.add(
+                    get_ident()
+                )
+
+            # Both hypothesis requests must reach this
+            # point before either is allowed to proceed.
+            # Sequential execution would fail here.
+            self.barrier.wait()
+
+            return super().complete_json(
+                system=system,
+                user=user,
+                reasoning=reasoning,
+            )
+
+    provider = ConcurrentProvider()
+
+    runs, assessments = (
+        assess_relationships(
+            CLAIMS,
+            HYPOTHESES,
+            provider,
+            max_workers=2,
+        )
+    )
+
+    assert len(provider.thread_ids) == 2
+
+    assert len(runs) == 2
+    assert len(assessments) == 4
+
+    # Concurrency must not change semantic output
+    # ordering.
+    assert [
+        assessment.target_id
+        for assessment in assessments
+    ] == [
+        "H-1",
+        "H-1",
+        "H-2",
+        "H-2",
+    ]
+
+
+def test_rejects_invalid_worker_count():
+    with pytest.raises(
+        ValueError,
+        match="max_workers",
+    ):
+        assess_relationships(
+            CLAIMS,
+            HYPOTHESES,
+            GoodProvider(),
+            max_workers=0,
+        )
+
+
+def test_parallel_mode_preserves_order():
+    from threading import (
+        Barrier,
+        Lock,
+        get_ident,
+    )
+
+    class ConcurrentProvider(
+        GoodProvider
+    ):
+        def __init__(self):
+            self.barrier = Barrier(
+                2,
+                timeout=5,
+            )
+
+            self.lock = Lock()
+            self.thread_ids = set()
+
+        def complete_json(
+            self,
+            *,
+            system,
+            user,
+            reasoning=False,
+        ):
+            with self.lock:
+                self.thread_ids.add(
+                    get_ident()
+                )
+
+            # Both hypothesis requests must reach this
+            # point before either is allowed to proceed.
+            # Sequential execution would fail here.
+            self.barrier.wait()
+
+            return super().complete_json(
+                system=system,
+                user=user,
+                reasoning=reasoning,
+            )
+
+    provider = ConcurrentProvider()
+
+    runs, assessments = (
+        assess_relationships(
+            CLAIMS,
+            HYPOTHESES,
+            provider,
+            max_workers=2,
+        )
+    )
+
+    assert len(provider.thread_ids) == 2
+
+    assert len(runs) == 2
+    assert len(assessments) == 4
+
+    # Concurrency must not change semantic output
+    # ordering.
+    assert [
+        assessment.target_id
+        for assessment in assessments
+    ] == [
+        "H-1",
+        "H-1",
+        "H-2",
+        "H-2",
+    ]
+
+
+def test_rejects_invalid_worker_count():
+    with pytest.raises(
+        ValueError,
+        match="max_workers",
+    ):
+        assess_relationships(
+            CLAIMS,
+            HYPOTHESES,
+            GoodProvider(),
+            max_workers=0,
+        )

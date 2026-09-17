@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from concurrent.futures import (
+    ThreadPoolExecutor,
+)
 from datetime import datetime, timezone
 from hashlib import sha1
 
@@ -137,10 +140,198 @@ Return JSON only:
 """.strip()
 
 
+def _assess_one_hypothesis(
+    *,
+    claims: tuple[ExtractedClaim, ...],
+    hypothesis: Hypothesis,
+    provider: StructuredLLM,
+    claim_context: str,
+) -> tuple[
+    ModelRun,
+    tuple[RelationshipAssessment, ...],
+]:
+    """
+    Perform one independent relationship-assessment call.
+
+    Keeping this unit aligned to one hypothesis preserves
+    execution provenance: one inference request produces one
+    ModelRun.
+    """
+
+    hypothesis_context = (
+        f"HYPOTHESIS ID: {hypothesis.hypothesis_id}\n"
+        f"TEXT: {hypothesis.text}"
+    )
+
+    raw = provider.complete_json(
+        system=SYSTEM_PROMPT,
+        user=(
+            "VALIDATED CLAIMS:\n"
+            f"{claim_context}\n\n"
+            "CANDIDATE HYPOTHESIS:\n"
+            f"{hypothesis_context}\n\n"
+            f"Return exactly {len(claims)} assessments: "
+            "one for every supplied claim against this "
+            "single hypothesis."
+        ),
+        reasoning=False,
+    )
+
+    parsed = _AssessmentResponse.model_validate(
+        raw
+    )
+
+    expected_pairs = {
+        (
+            claim.claim_id,
+            hypothesis.hypothesis_id,
+        )
+        for claim in claims
+    }
+
+    returned_pairs = [
+        (
+            item.claim_id,
+            item.hypothesis_id,
+        )
+        for item in parsed.assessments
+    ]
+
+    if len(returned_pairs) != len(
+        set(returned_pairs)
+    ):
+        raise ValueError(
+            "Relationship assessment returned "
+            "duplicate claim-hypothesis pairs for "
+            f"{hypothesis.hypothesis_id}."
+        )
+
+    if set(returned_pairs) != expected_pairs:
+        missing_pairs = sorted(
+            expected_pairs - set(returned_pairs)
+        )
+
+        unexpected_pairs = sorted(
+            set(returned_pairs) - expected_pairs
+        )
+
+        raise ValueError(
+            "Relationship assessment pairs do not "
+            "match the supplied claims and hypothesis.\n"
+            f"Hypothesis: {hypothesis.hypothesis_id}\n"
+            f"Expected: {len(expected_pairs)} pairs\n"
+            f"Returned: {len(returned_pairs)} pairs\n"
+            f"Missing: {missing_pairs}\n"
+            f"Unexpected: {unexpected_pairs}"
+        )
+
+    created_at = datetime.now(
+        timezone.utc
+    )
+
+    run_digest = sha1(
+        (
+            f"{provider.provider_name}|"
+            f"{provider.model_name}|"
+            f"{hypothesis.hypothesis_id}|"
+            f"{PROMPT_VERSION}|"
+            f"{created_at.isoformat()}"
+        ).encode("utf-8")
+    ).hexdigest()[:12]
+
+    run = ModelRun(
+        run_id=f"MR-REL-{run_digest}",
+        provider=provider.provider_name,
+        model=provider.model_name,
+        operation=(
+            ModelOperation
+            .RELATION_ASSESSMENT
+        ),
+        prompt_version=PROMPT_VERSION,
+        created_at=created_at,
+    )
+
+    assessments: list[
+        RelationshipAssessment
+    ] = []
+
+    for candidate in parsed.assessments:
+        digest = sha1(
+            (
+                f"{candidate.claim_id}|"
+                f"{candidate.hypothesis_id}|"
+                f"{candidate.relation.value}"
+            ).encode("utf-8")
+        ).hexdigest()[:12]
+
+        assessments.append(
+            RelationshipAssessment(
+                assessment_id=(
+                    f"RA-{digest}"
+                ),
+
+                source_kind=(
+                    ArgumentNodeKind.CLAIM
+                ),
+                source_id=(
+                    candidate.claim_id
+                ),
+
+                target_kind=(
+                    ArgumentNodeKind
+                    .HYPOTHESIS
+                ),
+                target_id=(
+                    candidate.hypothesis_id
+                ),
+
+                relation=(
+                    candidate.relation
+                ),
+
+                strength=(
+                    candidate.strength
+                ),
+
+                rationale=(
+                    candidate
+                    .rationale
+                    .strip()
+                ),
+
+                assumptions=tuple(
+                    item.strip()
+                    for item
+                    in candidate.assumptions
+                    if item.strip()
+                ),
+
+                missing_information=tuple(
+                    item.strip()
+                    for item
+                    in (
+                        candidate
+                        .missing_information
+                    )
+                    if item.strip()
+                ),
+
+                model_run_id=run.run_id,
+            )
+        )
+
+    return (
+        run,
+        tuple(assessments),
+    )
+
+
 def assess_relationships(
     claims: tuple[ExtractedClaim, ...],
     hypotheses: tuple[Hypothesis, ...],
     provider: StructuredLLM,
+    *,
+    max_workers: int = 1,
 ) -> tuple[
     tuple[ModelRun, ...],
     tuple[RelationshipAssessment, ...],
@@ -148,10 +339,14 @@ def assess_relationships(
     """
     Assess claims against hypotheses in small batches.
 
-    One model call is made per hypothesis. This reduces
-    omission risk and preserves truthful execution
-    provenance: each inference call receives its own
+    One model call is made per hypothesis. Calls may run
+    concurrently, but every call still receives its own
     ModelRun.
+
+    ThreadPoolExecutor.map preserves input order, so the
+    returned runs and assessments remain deterministic with
+    respect to hypothesis ordering even if requests finish in
+    a different order.
     """
 
     if not claims:
@@ -164,6 +359,11 @@ def assess_relationships(
             "At least one hypothesis is required."
         )
 
+    if max_workers < 1:
+        raise ValueError(
+            "max_workers must be at least 1."
+        )
+
     claim_context = "\n\n".join(
         (
             f"CLAIM ID: {claim.claim_id}\n"
@@ -174,132 +374,57 @@ def assess_relationships(
         for claim in claims
     )
 
-    runs: list[ModelRun] = []
-    assessments: list[RelationshipAssessment] = []
-
-    for hypothesis in hypotheses:
-        hypothesis_context = (
-            f"HYPOTHESIS ID: {hypothesis.hypothesis_id}\n"
-            f"TEXT: {hypothesis.text}"
+    def assess(
+        hypothesis: Hypothesis,
+    ):
+        return _assess_one_hypothesis(
+            claims=claims,
+            hypothesis=hypothesis,
+            provider=provider,
+            claim_context=claim_context,
         )
 
-        raw = provider.complete_json(
-            system=SYSTEM_PROMPT,
-            user=(
-                "VALIDATED CLAIMS:\n"
-                f"{claim_context}\n\n"
-                "CANDIDATE HYPOTHESIS:\n"
-                f"{hypothesis_context}\n\n"
-                f"Return exactly {len(claims)} assessments: "
-                "one for every supplied claim against this "
-                "single hypothesis."
-            ),
-            reasoning=False,
-        )
-
-        parsed = _AssessmentResponse.model_validate(
-            raw
-        )
-
-        expected_pairs = {
-            (
-                claim.claim_id,
-                hypothesis.hypothesis_id,
-            )
-            for claim in claims
-        }
-
-        returned_pairs = [
-            (
-                item.claim_id,
-                item.hypothesis_id,
-            )
-            for item in parsed.assessments
+    if (
+        max_workers == 1
+        or len(hypotheses) == 1
+    ):
+        results = [
+            assess(hypothesis)
+            for hypothesis
+            in hypotheses
         ]
 
-        if len(returned_pairs) != len(
-            set(returned_pairs)
-        ):
-            raise ValueError(
-                "Relationship assessment returned "
-                "duplicate claim-hypothesis pairs for "
-                f"{hypothesis.hypothesis_id}."
-            )
-
-        if set(returned_pairs) != expected_pairs:
-            missing_pairs = sorted(
-                expected_pairs - set(returned_pairs)
-            )
-
-            unexpected_pairs = sorted(
-                set(returned_pairs) - expected_pairs
-            )
-
-            raise ValueError(
-                "Relationship assessment pairs do not "
-                "match the supplied claims and hypothesis.\n"
-                f"Hypothesis: {hypothesis.hypothesis_id}\n"
-                f"Expected: {len(expected_pairs)} pairs\n"
-                f"Returned: {len(returned_pairs)} pairs\n"
-                f"Missing: {missing_pairs}\n"
-                f"Unexpected: {unexpected_pairs}"
-            )
-
-        created_at = datetime.now(timezone.utc)
-
-        run_digest = sha1(
-            (
-                f"{provider.provider_name}|"
-                f"{provider.model_name}|"
-                f"{hypothesis.hypothesis_id}|"
-                f"{PROMPT_VERSION}|"
-                f"{created_at.isoformat()}"
-            ).encode("utf-8")
-        ).hexdigest()[:12]
-
-        run = ModelRun(
-            run_id=f"MR-REL-{run_digest}",
-            provider=provider.provider_name,
-            model=provider.model_name,
-            operation=ModelOperation.RELATION_ASSESSMENT,
-            prompt_version=PROMPT_VERSION,
-            created_at=created_at,
+    else:
+        worker_count = min(
+            max_workers,
+            len(hypotheses),
         )
 
-        runs.append(run)
-
-        for candidate in parsed.assessments:
-            digest = sha1(
-                (
-                    f"{candidate.claim_id}|"
-                    f"{candidate.hypothesis_id}|"
-                    f"{candidate.relation.value}"
-                ).encode("utf-8")
-            ).hexdigest()[:12]
-
-            assessments.append(
-                RelationshipAssessment(
-                    assessment_id=f"RA-{digest}",
-                    source_kind=ArgumentNodeKind.CLAIM,
-                    source_id=candidate.claim_id,
-                    target_kind=ArgumentNodeKind.HYPOTHESIS,
-                    target_id=candidate.hypothesis_id,
-                    relation=candidate.relation,
-                    strength=candidate.strength,
-                    rationale=candidate.rationale.strip(),
-                    assumptions=tuple(
-                        item.strip()
-                        for item in candidate.assumptions
-                        if item.strip()
-                    ),
-                    missing_information=tuple(
-                        item.strip()
-                        for item in candidate.missing_information
-                        if item.strip()
-                    ),
-                    model_run_id=run.run_id,
+        with ThreadPoolExecutor(
+            max_workers=worker_count,
+            thread_name_prefix=(
+                "claimgraph-relation"
+            ),
+        ) as executor:
+            # executor.map intentionally preserves the
+            # ordering of hypotheses.
+            results = list(
+                executor.map(
+                    assess,
+                    hypotheses,
                 )
             )
 
-    return tuple(runs), tuple(assessments)
+    runs: list[ModelRun] = []
+    assessments: list[
+        RelationshipAssessment
+    ] = []
 
+    for run, batch in results:
+        runs.append(run)
+        assessments.extend(batch)
+
+    return (
+        tuple(runs),
+        tuple(assessments),
+    )
