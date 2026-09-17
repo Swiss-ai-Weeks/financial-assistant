@@ -3,7 +3,8 @@ function formatKey(key) {
     .replaceAll("_", " ")
     .replace(
       /^\w/,
-      (letter) => letter.toUpperCase()
+      (letter) =>
+        letter.toUpperCase()
     );
 }
 
@@ -43,35 +44,84 @@ export default function NodeInspector({
         </div>
 
         <h2>
-          Select a graph node
+          Select a node or relationship
         </h2>
 
         <p className="muted">
           Inspect what was observed,
-          reported, calculated or inferred,
-          and where it came from.
+          reported, assumed or inferred;
+          why evidence relates to a
+          hypothesis; and which model run
+          produced it.
         </p>
       </aside>
     );
   }
 
+
+  const isEdge =
+    node.inspectorType === "edge";
+
+  const title =
+    node.label
+    ?? (
+      isEdge
+        ? node.kind
+        : "Graph item"
+    );
+
+  const identifier =
+    isEdge
+      ? node.edge_id
+      : node.node_id;
+
+  const details = isEdge
+    ? Object.fromEntries(
+        Object.entries(node).filter(
+          ([key]) =>
+            ![
+              "inspectorType",
+              "displayKind",
+              "label",
+              "edge_id",
+            ].includes(key)
+        )
+      )
+    : (
+        node.data
+        ?? {}
+      );
+
+
   return (
     <aside className="inspector">
       <div className="node-type">
-        {node.displayKind ?? node.kind}
+        {node.displayKind
+          ?? (
+            isEdge
+              ? "Relationship"
+              : node.kind
+          )}
       </div>
 
       <h2>
-        {node.label}
+        {title}
       </h2>
 
       <div className="inspector-row">
-        <span>Node ID</span>
-        <strong>{node.node_id}</strong>
+        <span>
+          {isEdge
+            ? "Edge ID"
+            : "Node ID"}
+        </span>
+
+        <strong>
+          {identifier}
+        </strong>
       </div>
 
       {Object.entries(
-        node.data ?? {}
+        details
       ).map(([key, value]) => (
         <div
           className="inspector-row"

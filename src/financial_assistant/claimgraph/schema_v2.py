@@ -15,6 +15,7 @@ class NodeKind(StrEnum):
     CLAIM = "claim"
     HYPOTHESIS = "hypothesis"
 
+    ASSUMPTION = "assumption"
     EVIDENCE_REQUIREMENT = "evidence_requirement"
 
     OBSERVATION = "observation"

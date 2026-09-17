@@ -15,7 +15,7 @@ import {
 
 export default function ClaimGraph({
   graph,
-  onSelectNode,
+  onSelectItem,
 }) {
   const nodes =
     toReactFlowNodes(graph.nodes);
@@ -28,14 +28,25 @@ export default function ClaimGraph({
       <ReactFlow
         nodes={nodes}
         edges={edges}
+
         fitView
         fitViewOptions={{
-          padding: 0.15,
+          padding: 0.12,
         }}
-        minZoom={0.2}
+
+        minZoom={0.15}
         maxZoom={1.8}
+
         onNodeClick={(_, node) => {
-          onSelectNode?.(node.data);
+          onSelectItem?.(
+            node.data
+          );
+        }}
+
+        onEdgeClick={(_, edge) => {
+          onSelectItem?.(
+            edge.data
+          );
         }}
       >
         <Background />

@@ -357,6 +357,11 @@ class InvestigationState(BaseModel):
         ...
     ] = ()
 
+    hypothesis_audits: tuple[
+        HypothesisAudit,
+        ...
+    ] = ()
+
     relationship_assessments: tuple[
         RelationshipAssessment,
         ...

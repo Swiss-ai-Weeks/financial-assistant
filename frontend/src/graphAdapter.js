@@ -3,21 +3,19 @@ const ROWS = {
 
   hypothesis: 220,
 
-  claim: 420,
+  claim: 440,
 
-  evidence_requirement: 590,
-  inference: 590,
+  assumption: 660,
 
-  calculation: 760,
+  evidence_requirement: 900,
+  missing_evidence: 900,
 
-  observation: 930,
+  inference: 1120,
+  calculation: 1320,
+  observation: 1520,
 
-  document: 1100,
-
-  source: 1270,
-  model_run: 1270,
-
-  missing_evidence: 760,
+  document: 1740,
+  source: 1940,
 };
 
 
@@ -25,36 +23,73 @@ const KIND_LABELS = {
   anomaly: "Anomaly",
   source: "Source",
   document: "Document",
+
   claim: "Claim",
   hypothesis: "Hypothesis",
-  evidence_requirement: "Evidence requirement",
+
+  assumption: "Assumption",
+
+  evidence_requirement:
+    "Evidence requirement",
+
+  missing_evidence:
+    "Missing evidence",
+
   observation: "Observation",
   calculation: "Calculation",
   inference: "Inference",
+
   model_run: "Model run",
-  missing_evidence: "Missing evidence",
 };
 
 
-export function toReactFlowNodes(graphNodes) {
+const MAIN_COLUMNS = 4;
+const MAIN_X_GAP = 310;
+const WRAP_Y_GAP = 140;
+
+
+export function toReactFlowNodes(
+  graphNodes
+) {
   const counters = {};
 
   return graphNodes.map((node) => {
     counters[node.kind] =
       counters[node.kind] ?? 0;
 
-    const index = counters[node.kind]++;
+    const index =
+      counters[node.kind]++;
 
-    let x = 60 + index * 310;
+    let x;
+    let y;
 
-    // Keep the anomaly roughly centred.
     if (node.kind === "anomaly") {
-      x = 520;
-    }
+      x = 500;
+      y = ROWS.anomaly;
+    } else if (
+      node.kind === "model_run"
+    ) {
+      // Execution provenance gets its
+      // own lane on the right.
+      x =
+        1400
+        + (index % 2) * 310;
 
-    // Execution provenance sits off to the side.
-    if (node.kind === "model_run") {
-      x = 900 + index * 310;
+      y =
+        220
+        + Math.floor(index / 2)
+          * 150;
+    } else {
+      x =
+        60
+        + (index % MAIN_COLUMNS)
+          * MAIN_X_GAP;
+
+      y =
+        (ROWS[node.kind] ?? 700)
+        + Math.floor(
+          index / MAIN_COLUMNS
+        ) * WRAP_Y_GAP;
     }
 
     return {
@@ -62,11 +97,13 @@ export function toReactFlowNodes(graphNodes) {
 
       position: {
         x,
-        y: ROWS[node.kind] ?? 600,
+        y,
       },
 
       data: {
         ...node,
+
+        inspectorType: "node",
 
         displayKind:
           KIND_LABELS[node.kind]
@@ -82,7 +119,9 @@ export function toReactFlowNodes(graphNodes) {
 }
 
 
-export function toReactFlowEdges(graphEdges) {
+export function toReactFlowEdges(
+  graphEdges
+) {
   return graphEdges.map((edge) => {
     const isChallengeRelation = [
       "contradicts",
@@ -90,20 +129,42 @@ export function toReactFlowEdges(graphEdges) {
       "competes_with",
     ].includes(edge.kind);
 
+    const label =
+      edge.kind.replaceAll(
+        "_",
+        " "
+      );
+
     return {
       id: edge.edge_id,
 
       source: edge.source,
       target: edge.target,
 
-      label:
-        edge.kind.replaceAll("_", " "),
+      label,
 
-      animated: isChallengeRelation,
+      animated:
+        isChallengeRelation,
+
+      className:
+        `cg-edge cg-edge--${edge.kind}`,
 
       data: {
-        ...edge.data,
+        inspectorType: "edge",
+
+        edge_id: edge.edge_id,
+
+        source: edge.source,
+        target: edge.target,
+
         kind: edge.kind,
+
+        displayKind:
+          "Relationship",
+
+        label,
+
+        ...edge.data,
       },
     };
   });

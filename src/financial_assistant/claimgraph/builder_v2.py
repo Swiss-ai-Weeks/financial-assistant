@@ -412,6 +412,144 @@ def build_investigation_graph(
 
     # -------------------------------------------------
     # -------------------------------------------------
+    # Hypothesis audits
+    # -------------------------------------------------
+
+    for audit in state.hypothesis_audits:
+        if audit.hypothesis_id not in hypotheses:
+            raise ValueError(
+                f"Hypothesis audit {audit.audit_id} "
+                "references unknown hypothesis_id "
+                f"{audit.hypothesis_id}"
+            )
+
+        if audit.model_run_id not in model_runs:
+            raise ValueError(
+                f"Hypothesis audit {audit.audit_id} "
+                "references unknown model_run_id "
+                f"{audit.model_run_id}"
+            )
+
+        hypothesis_node_id = _node_id(
+            "hypothesis",
+            audit.hypothesis_id,
+        )
+
+        run_node_id = _node_id(
+            "modelrun",
+            audit.model_run_id,
+        )
+
+        # ---------------------------------------------
+        # Explicit assumptions
+        # ---------------------------------------------
+
+        for index, assumption in enumerate(
+            audit.assumptions,
+            start=1,
+        ):
+            assumption_node_id = _node_id(
+                "assumption",
+                f"{audit.audit_id}:{index}",
+            )
+
+            nodes.append(
+                GraphNode(
+                    node_id=assumption_node_id,
+                    kind=NodeKind.ASSUMPTION,
+                    label=assumption,
+                    data={
+                        "audit_id": audit.audit_id,
+                        "hypothesis_id":
+                            audit.hypothesis_id,
+                        "model_run_id":
+                            audit.model_run_id,
+                    },
+                )
+            )
+
+            edges.append(
+                GraphEdge(
+                    edge_id=_edge_id(
+                        hypothesis_node_id,
+                        EdgeKind.REQUIRES,
+                        assumption_node_id,
+                    ),
+                    source=hypothesis_node_id,
+                    target=assumption_node_id,
+                    kind=EdgeKind.REQUIRES,
+                )
+            )
+
+            edges.append(
+                GraphEdge(
+                    edge_id=_edge_id(
+                        assumption_node_id,
+                        EdgeKind.PRODUCED_BY,
+                        run_node_id,
+                    ),
+                    source=assumption_node_id,
+                    target=run_node_id,
+                    kind=EdgeKind.PRODUCED_BY,
+                )
+            )
+
+        # ---------------------------------------------
+        # Raw evidence gaps identified by the audit
+        # ---------------------------------------------
+
+        for index, missing in enumerate(
+            audit.missing_information,
+            start=1,
+        ):
+            missing_node_id = _node_id(
+                "missing_evidence",
+                f"{audit.audit_id}:{index}",
+            )
+
+            nodes.append(
+                GraphNode(
+                    node_id=missing_node_id,
+                    kind=NodeKind.MISSING_EVIDENCE,
+                    label=missing,
+                    data={
+                        "audit_id": audit.audit_id,
+                        "hypothesis_id":
+                            audit.hypothesis_id,
+                        "model_run_id":
+                            audit.model_run_id,
+                    },
+                )
+            )
+
+            edges.append(
+                GraphEdge(
+                    edge_id=_edge_id(
+                        hypothesis_node_id,
+                        EdgeKind.REQUIRES,
+                        missing_node_id,
+                    ),
+                    source=hypothesis_node_id,
+                    target=missing_node_id,
+                    kind=EdgeKind.REQUIRES,
+                )
+            )
+
+            edges.append(
+                GraphEdge(
+                    edge_id=_edge_id(
+                        missing_node_id,
+                        EdgeKind.PRODUCED_BY,
+                        run_node_id,
+                    ),
+                    source=missing_node_id,
+                    target=run_node_id,
+                    kind=EdgeKind.PRODUCED_BY,
+                )
+            )
+
+
+    # -------------------------------------------------
     # Epistemic relationship judgements
     # -------------------------------------------------
 

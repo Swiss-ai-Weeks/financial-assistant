@@ -26,7 +26,7 @@ export default function App() {
 
 
   useEffect(() => {
-    fetch("/investigation_demo.json")
+    fetch("/investigation_live_nvidia.json")
       .then((response) => {
         if (!response.ok) {
           throw new Error(
@@ -156,7 +156,7 @@ export default function App() {
 
           <ClaimGraph
             graph={graph}
-            onSelectNode={
+            onSelectItem={
               setSelectedNode
             }
           />
