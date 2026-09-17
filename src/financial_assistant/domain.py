@@ -63,6 +63,19 @@ class AnomalyEvent(BaseModel):
         le=1.0,
     )
 
+    # Other securities directly involved in the
+    # anomaly. For a pair anomaly, ticker remains
+    # the primary routing/display entity while the
+    # second leg is preserved here.
+    related_entities: tuple[str, ...] = ()
+
+    # Quantitative detector details that should
+    # remain inspectable but are not universal
+    # properties of every anomaly type.
+    metadata: dict[str, float | int | str] = Field(
+        default_factory=dict
+    )
+
 
 class SourceDocument(BaseModel):
     """
