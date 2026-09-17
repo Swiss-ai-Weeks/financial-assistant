@@ -96,6 +96,14 @@ class SourceDocument(BaseModel):
     url: HttpUrl
 
     published_at: datetime | None = None
+
+    # True when the source exposed only a calendar
+    # date and no publication time. In that case
+    # published_at is normalized to midnight only as
+    # a date carrier; midnight must NOT be interpreted
+    # as the actual publication time.
+    published_date_only: bool = False
+
     retrieved_at: datetime
 
     text: str = Field(min_length=1)

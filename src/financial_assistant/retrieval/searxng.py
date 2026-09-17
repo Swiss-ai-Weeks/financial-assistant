@@ -112,14 +112,15 @@ class SearxngSearchProvider:
             if not url or not title:
                 continue
 
-            published_at = (
-                _parse_published_date(
-                    result.get(
-                        "publishedDate"
-                    )
-                    or result.get(
-                        "pubdate"
-                    )
+            (
+                published_at,
+                published_date_only,
+            ) = _parse_published_date(
+                result.get(
+                    "publishedDate"
+                )
+                or result.get(
+                    "pubdate"
                 )
             )
 
@@ -161,6 +162,10 @@ class SearxngSearchProvider:
                     published_at=(
                         published_at
                     ),
+
+                    published_date_only=(
+                        published_date_only
+                    ),
                 )
             )
 
@@ -169,23 +174,44 @@ class SearxngSearchProvider:
 
 def _parse_published_date(
     value: str | None,
-) -> datetime | None:
+) -> tuple[
+    datetime | None,
+    bool,
+]:
     """
-    Normalize SearXNG publication timestamps when
-    available.
+    Return:
 
-    Many search results do not expose one, in which
-    case we preserve the uncertainty as None rather
-    than inventing a timestamp.
+        (normalized timestamp, date_only)
+
+    A value such as:
+
+        2026-02-27
+
+    carries a known publication DATE but does not tell
+    us that publication occurred at midnight.
+
+    Midnight is therefore only a normalized carrier
+    for that date. `date_only=True` preserves the
+    uncertainty.
     """
 
     if not value:
-        return None
+        return (
+            None,
+            False,
+        )
 
-    normalized = (
-        value
-        .strip()
-        .replace("Z", "+00:00")
+    raw = value.strip()
+
+    normalized = raw.replace(
+        "Z",
+        "+00:00",
+    )
+
+    date_only = (
+        len(raw) == 10
+        and raw[4] == "-"
+        and raw[7] == "-"
     )
 
     try:
@@ -198,7 +224,13 @@ def _parse_published_date(
                 tzinfo=timezone.utc
             )
 
-        return parsed
+        return (
+            parsed,
+            date_only,
+        )
 
     except ValueError:
-        return None
+        return (
+            None,
+            False,
+        )

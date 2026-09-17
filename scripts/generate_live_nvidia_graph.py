@@ -113,14 +113,6 @@ def main() -> None:
     # 3. Claim extraction
     # -------------------------------------------------
 
-    claim_run, extracted_claims = (
-        extract_claims(
-            document,
-            provider,
-            max_document_chars=6000,
-        )
-        )
-
     claim_run, extracted_claims = timed(
         "claim_extraction",
         lambda: extract_claims(

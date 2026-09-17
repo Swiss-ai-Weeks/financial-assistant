@@ -151,12 +151,30 @@ class TrafilaturaDocumentFetcher:
             or "Unknown source"
         )
 
-        published_at = (
-            _parse_extracted_date(
-                payload.get("date")
-            )
-            or hit.published_at
+        (
+            extracted_published_at,
+            extracted_date_only,
+        ) = _parse_extracted_date(
+            payload.get("date")
         )
+
+        if extracted_published_at is not None:
+            published_at = (
+                extracted_published_at
+            )
+
+            published_date_only = (
+                extracted_date_only
+            )
+
+        else:
+            published_at = (
+                hit.published_at
+            )
+
+            published_date_only = (
+                hit.published_date_only
+            )
 
         # lineage identifies the underlying URL across
         # versions; document_id additionally identifies
@@ -180,6 +198,11 @@ class TrafilaturaDocumentFetcher:
             url=final_url,
 
             published_at=published_at,
+
+            published_date_only=(
+                published_date_only
+            ),
+
             retrieved_at=retrieved_at,
 
             text=text,
@@ -192,25 +215,51 @@ class TrafilaturaDocumentFetcher:
 
 def _parse_extracted_date(
     value: str | None,
-) -> datetime | None:
-    if not value:
-        return None
+) -> tuple[
+    datetime | None,
+    bool,
+]:
+    """
+    Preserve whether extracted publication metadata
+    supplied a full timestamp or only a calendar date.
+    """
 
-    normalized = (
-        value.strip()
-        .replace("Z", "+00:00")
+    if not value:
+        return (
+            None,
+            False,
+        )
+
+    raw = value.strip()
+
+    normalized = raw.replace(
+        "Z",
+        "+00:00",
+    )
+
+    date_only = (
+        len(raw) == 10
+        and raw[4] == "-"
+        and raw[7] == "-"
     )
 
     try:
         parsed = datetime.fromisoformat(
             normalized
         )
+
     except ValueError:
-        return None
+        return (
+            None,
+            False,
+        )
 
     if parsed.tzinfo is None:
         parsed = parsed.replace(
             tzinfo=timezone.utc
         )
 
-    return parsed
+    return (
+        parsed,
+        date_only,
+    )

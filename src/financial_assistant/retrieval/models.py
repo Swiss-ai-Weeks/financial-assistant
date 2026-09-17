@@ -17,6 +17,7 @@ from financial_assistant.domain import (
 
 class RetrievalStatus(StrEnum):
     FETCHED = "fetched"
+    FETCHED_DATE_ONLY = "fetched_date_only"
     FETCHED_UNDATED = "fetched_undated"
     REUSED = "reused"
     FILTERED_FUTURE = "filtered_future"
@@ -51,6 +52,10 @@ class SearchHit(BaseModel):
 
     publisher: str | None = None
     published_at: datetime | None = None
+
+    # Preserve whether publication metadata contained
+    # a full timestamp or only YYYY-MM-DD.
+    published_date_only: bool = False
 
 
 class RetrievalRecord(BaseModel):

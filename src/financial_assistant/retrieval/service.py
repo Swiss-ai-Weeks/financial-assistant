@@ -46,6 +46,35 @@ def _record_id(
     return f"RET-{digest}"
 
 
+
+def _is_known_future(
+    *,
+    published_at: datetime | None,
+    published_date_only: bool,
+    as_of: datetime,
+) -> bool:
+    """
+    True only when publication is definitely later
+    than the historical cutoff.
+
+    Date-only metadata on the SAME calendar date is
+    unresolved rather than assumed to be midnight.
+    """
+
+    if published_at is None:
+        return False
+
+    if published_date_only:
+        return (
+            published_at.date()
+            > as_of.date()
+        )
+
+    return (
+        published_at > as_of
+    )
+
+
 def execute_research_plan(
     plan: ResearchPlan,
     *,
@@ -94,7 +123,8 @@ def execute_research_plan(
 
     for task in plan.tasks:
         query = build_search_query(
-            task
+            task,
+            as_of=plan.as_of,
         )
 
         hits = search_provider.search(
@@ -127,9 +157,12 @@ def execute_research_plan(
             # if we KNOW this source was published
             # after the investigation cutoff, it must
             # not become evidence.
-            if (
-                hit.published_at is not None
-                and hit.published_at > plan.as_of
+            if _is_known_future(
+                published_at=hit.published_at,
+                published_date_only=(
+                    hit.published_date_only
+                ),
+                as_of=plan.as_of,
             ):
                 records.append(
                     RetrievalRecord(
@@ -225,9 +258,14 @@ def execute_research_plan(
             # a publication date. Re-check after the
             # actual page has been downloaded and its
             # metadata extracted.
-            if (
-                document.published_at is not None
-                and document.published_at > plan.as_of
+            if _is_known_future(
+                published_at=(
+                    document.published_at
+                ),
+                published_date_only=(
+                    document.published_date_only
+                ),
+                as_of=plan.as_of,
             ):
                 records.append(
                     RetrievalRecord(
@@ -271,11 +309,20 @@ def execute_research_plan(
                     query=hit.query,
                     retrieved_at=retrieved_at,
                     status=(
-                        RetrievalStatus.FETCHED
-                        if document.published_at
-                        is not None
-                        else RetrievalStatus
+                        RetrievalStatus
                         .FETCHED_UNDATED
+                        if document.published_at
+                        is None
+                        else (
+                            RetrievalStatus
+                            .FETCHED_DATE_ONLY
+                            if (
+                                document
+                                .published_date_only
+                            )
+                            else RetrievalStatus
+                            .FETCHED
+                        )
                     ),
                     document_id=(
                         document.document_id
