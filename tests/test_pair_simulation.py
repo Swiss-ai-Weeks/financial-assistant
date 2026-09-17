@@ -128,51 +128,78 @@ def make_signal(
 
 def make_future_prices() -> pd.DataFrame:
     """
-    Signal is on Jan 6.
+    Signal is observed at the Jan 6 close.
 
-    Entry must therefore be Jan 7, not Jan 6.
+    Hypothetical entry:
+        Jan 7 open
 
-    A starts at 110 on entry and falls toward B=100,
-    benefiting a positive-z short-spread position.
+    Marks:
+        Jan 7 close = horizon 1
+        Jan 8 close = horizon 2
+
+    Positive-z signal means short spread.
+
+    On Jan 7:
+        AAA entry open = 110
+        AAA close      = 105
+
+    so short AAA earns money during the first session.
     """
 
     observations = [
+        # date,       A open, A close, B open, B close
         (
             "2026-01-06",
             130.0,
+            130.0,
+            100.0,
             100.0,
         ),
         (
             "2026-01-07",
             110.0,
+            105.0,
+            100.0,
             100.0,
         ),
         (
             "2026-01-08",
+            105.0,
+            100.0,
             100.0,
             100.0,
         ),
         (
             "2026-01-09",
+            100.0,
             99.0,
+            100.0,
             100.0,
         ),
     ]
 
     rows = []
 
-    for day, a, b in observations:
+    for (
+        day,
+        a_open,
+        a_close,
+        b_open,
+        b_close,
+    ) in observations:
         rows.extend(
             [
                 {
                     "date": day,
                     "ticker": "AAA",
-                    "close": a,
+                    "open": a_open,
+                    "close": a_close,
                 },
                 {
                     "date": day,
                     "ticker": "BBB",
-                    "close": b,
+                    "open": b_open,
+                    "close": b_close,
                 },
             ]
         )
@@ -202,6 +229,11 @@ def test_positive_z_shorts_spread():
     )
 
     assert (
+        simulation.entry_metric
+        == "open"
+    )
+
+    assert (
         simulation.strategy_direction
         == "short_spread"
     )
@@ -214,13 +246,18 @@ def test_positive_z_shorts_spread():
         pytest.approx(0.5)
     )
 
-    # AAA falls 110 -> 100.
+    # AAA:
     #
-    # Short AAA has +9.0909% on its half of
-    # gross capital. BBB is unchanged.
+    # entry open = 110
+    # day-1 close = 105
     #
-    # Portfolio return:
-    #   0.5 * 9.0909% = 4.54545%
+    # AAA return = -4.54545%
+    #
+    # We are short AAA with 50% of gross capital:
+    #
+    # portfolio contribution =
+    #   -0.5 * -4.54545%
+    #   = +2.272727%
     one_day = (
         simulation.forward_returns[0]
     )
@@ -230,15 +267,24 @@ def test_positive_z_shorts_spread():
         == 1
     )
 
+    assert (
+        one_day.date
+        == date(
+            2026,
+            1,
+            7,
+        )
+    )
+
     assert one_day.return_pct == (
         pytest.approx(
-            4.5454545
+            2.27272727
         )
     )
 
     assert one_day.pnl == (
         pytest.approx(
-            454.54545
+            227.272727
         )
     )
 
@@ -249,12 +295,15 @@ def test_negative_z_longs_spread():
         .copy()
     )
 
-    # Make A rise after entry, benefiting a
-    # long-spread position.
+    # Long-spread case.
+    #
+    # AAA is entered at 110 on Jan 7 open and closes
+    # at 121, so the first-session result should be
+    # positive for the long AAA leg.
     prices.loc[
         (
             prices["date"]
-            == "2026-01-08"
+            == "2026-01-07"
         )
         & (
             prices["ticker"]
@@ -317,13 +366,19 @@ def test_detects_mean_reversion():
         )
     )
 
-    # Frozen equilibrium is A == B because:
+    # Frozen equilibrium is A == B:
     #
     # const = 0
     # beta = 1
     # spread_mean = 0
     #
-    # This occurs on Jan 8.
+    # Jan 7 close:
+    #     A=105, B=100
+    #     not yet reverted
+    #
+    # Jan 8 close:
+    #     A=100, B=100
+    #     equilibrium reached
     assert (
         simulation.mean_reversion_date
         == date(

@@ -15,7 +15,7 @@ from financial_assistant.anomaly_detection.historical import (
 )
 
 
-SIMULATOR_VERSION = "pair-forward-v1"
+SIMULATOR_VERSION = "pair-forward-v2"
 
 
 class ForwardReturnPoint(BaseModel):
@@ -226,17 +226,18 @@ def simulate_pair_forward(
     Simulation:
         uses prices > signal.as_of
 
-    Entry occurs on the first common price observation
-    AFTER the signal date.
+    Entry occurs at the first common OPEN after the
+    signal date.
 
-    With daily close-only data this therefore means the
-    next common closing observation, avoiding an
-    impossible same-close fill after observing that
-    close.
+    The position is then marked using the fitted
+    relationship metric, normally CLOSE, beginning with
+    that same trading session.
 
-    When an OHLCV market-data adapter is added later,
-    the same simulation layer can be extended to enter
-    at the next common open.
+    Therefore:
+
+        D close   -> signal observed
+        D+1 open  -> hypothetical entry
+        D+1 close -> first-session outcome
     """
 
     if gross_capital <= 0:
@@ -261,7 +262,23 @@ def simulate_pair_forward(
     fit = signal.fit
     anomaly = signal.anomaly
 
-    pair = _wide_prices(
+    # Entry prices and mark prices are deliberately
+    # separate.
+    #
+    # The anomaly is observed from closing data on D.
+    # The hypothetical strategy can therefore first be
+    # entered at the next common OPEN.
+    entry_pair = _wide_prices(
+        prices,
+        metric="open",
+        ticker_a=fit.ticker_a,
+        ticker_b=fit.ticker_b,
+    )
+
+    # The frozen relationship itself was fitted using
+    # fit.metric, normally CLOSE. Continue to mark and
+    # evaluate the spread using that same metric.
+    mark_pair = _wide_prices(
         prices,
         metric=fit.metric,
         ticker_a=fit.ticker_a,
@@ -276,26 +293,40 @@ def simulate_pair_forward(
     # Hindsight boundary.
     #
     # Unlike the detector, the simulator intentionally
-    # sees ONLY observations after the historical
-    # signal date.
+    # sees observations after the historical signal
+    # date.
     # -------------------------------------------------
 
-    future = pair.loc[
-        pair.index > as_of_ts
+    common_dates = (
+        entry_pair.index
+        .intersection(
+            mark_pair.index
+        )
+    )
+
+    future_dates = common_dates[
+        common_dates > as_of_ts
     ]
 
-    if future.empty:
+    if len(future_dates) == 0:
         raise ValueError(
             "No future common price observations "
             "exist after the signal date."
         )
 
     entry_date_ts = (
-        future.index[0]
+        future_dates[0]
     )
 
-    entry_prices = future.loc[
+    # Actual hypothetical fill: next common OPEN.
+    entry_prices = entry_pair.loc[
         entry_date_ts
+    ]
+
+    # Mark the position from that same day's close
+    # onward.
+    future = mark_pair.loc[
+        mark_pair.index >= entry_date_ts
     ]
 
     # -------------------------------------------------
@@ -416,9 +447,9 @@ def simulate_pair_forward(
         - cost_decimal
     )
 
-    # Entry itself should represent zero market P&L.
-    # If transaction costs are non-zero, the path begins
-    # with that explicit cost.
+    # Because entry occurs at the session OPEN,
+    # portfolio_return.iloc[0] is that same session's
+    # CLOSE and therefore represents horizon 1.
     forward_points: list[
         ForwardReturnPoint
     ] = []
@@ -426,7 +457,9 @@ def simulate_pair_forward(
     for horizon in sorted(
         set(horizons)
     ):
-        target_index = horizon
+        target_index = (
+            horizon - 1
+        )
 
         if target_index >= len(
             portfolio_return
@@ -523,22 +556,19 @@ def simulate_pair_forward(
         - fit.spread_mean
     ) / fit.spread_std
 
-    # Do not count the entry observation itself as a
-    # completed mean-reversion event.
-    after_entry_z = (
-        future_z.iloc[1:]
-    )
-
+    # Entry occurs at the open, so a spread crossing
+    # measured at that same session's close is a valid
+    # post-entry mean-reversion event.
     if anomaly.z_score > 0:
         crossings = (
-            after_entry_z[
-                after_entry_z <= 0
+            future_z[
+                future_z <= 0
             ]
         )
     else:
         crossings = (
-            after_entry_z[
-                after_entry_z >= 0
+            future_z[
+                future_z >= 0
             ]
         )
 
@@ -580,7 +610,7 @@ def simulate_pair_forward(
             entry_date_ts.date()
         ),
 
-        entry_metric=fit.metric,
+        entry_metric="open",
 
         gross_capital=(
             gross_capital
