@@ -17,6 +17,7 @@ from financial_assistant.domain import (
 
 class RetrievalStatus(StrEnum):
     FETCHED = "fetched"
+    FETCHED_UNDATED = "fetched_undated"
     REUSED = "reused"
     FILTERED_FUTURE = "filtered_future"
     FAILED = "failed"

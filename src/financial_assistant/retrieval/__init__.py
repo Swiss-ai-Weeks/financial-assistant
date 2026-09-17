@@ -1,3 +1,5 @@
+from .fetchers import TrafilaturaDocumentFetcher
+from .searxng import SearxngSearchProvider
 from .interfaces import (
     DocumentFetcher,
     SearchProvider,
@@ -20,6 +22,8 @@ from .service import (
 
 
 __all__ = [
+    "TrafilaturaDocumentFetcher",
+    "SearxngSearchProvider",
     "DocumentFetcher",
     "SearchProvider",
     "RetrievalBundle",

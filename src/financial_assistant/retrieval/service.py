@@ -221,6 +221,39 @@ def execute_research_plan(
 
                 continue
 
+            # Search metadata may not have exposed
+            # a publication date. Re-check after the
+            # actual page has been downloaded and its
+            # metadata extracted.
+            if (
+                document.published_at is not None
+                and document.published_at > plan.as_of
+            ):
+                records.append(
+                    RetrievalRecord(
+                        record_id=record_id,
+                        task_id=task.task_id,
+                        hit_id=hit.hit_id,
+                        provider=hit.provider,
+                        query=hit.query,
+                        retrieved_at=retrieved_at,
+                        status=(
+                            RetrievalStatus
+                            .FILTERED_FUTURE
+                        ),
+                        document_id=(
+                            document.document_id
+                        ),
+                        note=(
+                            "Publication time extracted "
+                            "from document is after "
+                            "investigation as_of cutoff."
+                        ),
+                    )
+                )
+
+                continue
+
             document_by_url[
                 url_key
             ] = document
@@ -239,6 +272,10 @@ def execute_research_plan(
                     retrieved_at=retrieved_at,
                     status=(
                         RetrievalStatus.FETCHED
+                        if document.published_at
+                        is not None
+                        else RetrievalStatus
+                        .FETCHED_UNDATED
                     ),
                     document_id=(
                         document.document_id

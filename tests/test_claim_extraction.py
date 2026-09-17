@@ -1,0 +1,169 @@
+from datetime import (
+    datetime,
+    timezone,
+)
+
+import pytest
+
+from pydantic import ValidationError
+
+from financial_assistant.domain import (
+    SourceDocument,
+)
+
+from financial_assistant.llm import (
+    extract_claims,
+)
+
+
+NOW = datetime(
+    2026,
+    9,
+    17,
+    tzinfo=timezone.utc,
+)
+
+
+DOCUMENT = SourceDocument(
+    document_id="DOC-TEST",
+    title="Test source",
+    publisher="Example",
+    url="https://example.com/article",
+    published_at=NOW,
+    retrieved_at=NOW,
+    text=(
+        "NVIDIA reported revenue of $68.1 billion "
+        "for the fourth quarter, up 73% from a year ago."
+    ),
+)
+
+
+class GoodProvider:
+    provider_name = "fake"
+    model_name = "fake-model"
+
+    def complete_json(
+        self,
+        *,
+        system,
+        user,
+        reasoning=False,
+    ):
+        return {
+            "claims": [
+                {
+                    "text": (
+                        "NVIDIA reported revenue "
+                        "of $68.1 billion for the "
+                        "fourth quarter."
+                    ),
+
+                    "claim_type":
+                        "reported_fact",
+
+                    "source_quote": (
+                        "NVIDIA reported revenue "
+                        "of $68.1 billion for the "
+                        "fourth quarter"
+                    ),
+                }
+            ]
+        }
+
+
+class InvalidTypeProvider:
+    provider_name = "fake"
+    model_name = "fake-model"
+
+    def complete_json(
+        self,
+        *,
+        system,
+        user,
+        reasoning=False,
+    ):
+        return {
+            "claims": [
+                {
+                    "text": (
+                        "NVIDIA reported revenue "
+                        "of $68.1 billion."
+                    ),
+
+                    "claim_type":
+                        "financial_performance",
+
+                    "source_quote": (
+                        "NVIDIA reported revenue "
+                        "of $68.1 billion"
+                    ),
+                }
+            ]
+        }
+
+
+class FakeQuoteProvider:
+    provider_name = "fake"
+    model_name = "fake-model"
+
+    def complete_json(
+        self,
+        *,
+        system,
+        user,
+        reasoning=False,
+    ):
+        return {
+            "claims": [
+                {
+                    "text":
+                        "Revenue was materially strong.",
+
+                    "claim_type":
+                        "interpretation",
+
+                    "source_quote":
+                        "Revenue was materially strong.",
+                }
+            ]
+        }
+
+
+def test_valid_claim_is_accepted():
+    run, claims = extract_claims(
+        DOCUMENT,
+        GoodProvider(),
+    )
+
+    assert len(claims) == 1
+
+    assert (
+        claims[0].source_quote
+        in DOCUMENT.text
+    )
+
+    assert (
+        claims[0].model_run_id
+        == run.run_id
+    )
+
+
+def test_invalid_claim_type_is_rejected():
+    with pytest.raises(
+        ValidationError,
+    ):
+        extract_claims(
+            DOCUMENT,
+            InvalidTypeProvider(),
+        )
+
+
+def test_invented_source_quote_is_rejected():
+    with pytest.raises(
+        ValueError,
+        match="does not occur verbatim",
+    ):
+        extract_claims(
+            DOCUMENT,
+            FakeQuoteProvider(),
+        )
