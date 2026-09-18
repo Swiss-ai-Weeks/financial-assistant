@@ -1,0 +1,38 @@
+# Energy
+XOM
+CVX
+COP
+EOG
+
+# Banks / financials
+JPM
+BAC
+C
+WFC
+GS
+MS
+
+# Payments
+V
+MA
+AXP
+
+# Consumer
+KO
+PEP
+WMT
+TGT
+
+# Home improvement / industrial
+HD
+LOW
+CAT
+DE
+
+# Transport
+UPS
+FDX
+
+# Airlines
+DAL
+UAL

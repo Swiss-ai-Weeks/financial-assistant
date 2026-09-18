@@ -1,0 +1,428 @@
+{
+  "schema_version": "0.2",
+  "investigation_id": "INV-DEMO-001",
+  "anomaly_id": "A-DEMO-001",
+  "ticker": "EXMPL",
+  "nodes": [
+    {
+      "node_id": "anomaly:A-DEMO-001",
+      "kind": "anomaly",
+      "label": "Abnormal downside price and volume event",
+      "data": {
+        "anomaly_id": "A-DEMO-001",
+        "ticker": "EXMPL",
+        "detected_at": "2026-09-16T12:00:00Z",
+        "anomaly_type": "price_volume",
+        "summary": "Abnormal downside price and volume event",
+        "severity": 0.87
+      }
+    },
+    {
+      "node_id": "source:60a01e1b5b",
+      "kind": "source",
+      "label": "Demo News",
+      "data": {
+        "publisher": "Demo News"
+      }
+    },
+    {
+      "node_id": "document:DOC-NEWS-1",
+      "kind": "document",
+      "label": "Illustrative article about new export restrictions",
+      "data": {
+        "document_id": "DOC-NEWS-1",
+        "title": "Illustrative article about new export restrictions",
+        "publisher": "Demo News",
+        "url": "https://example.com/news-1",
+        "published_at": "2026-09-16T12:00:00Z",
+        "retrieved_at": "2026-09-16T12:00:00Z",
+        "lineage_id": "LINEAGE-NEWS-1"
+      }
+    },
+    {
+      "node_id": "source:42d4529bc1",
+      "kind": "source",
+      "label": "SEC EDGAR",
+      "data": {
+        "publisher": "SEC EDGAR"
+      }
+    },
+    {
+      "node_id": "document:DOC-FILING-1",
+      "kind": "document",
+      "label": "Illustrative company filing",
+      "data": {
+        "document_id": "DOC-FILING-1",
+        "title": "Illustrative company filing",
+        "publisher": "SEC EDGAR",
+        "url": "https://example.com/filing",
+        "published_at": "2026-09-16T12:00:00Z",
+        "retrieved_at": "2026-09-16T12:00:00Z",
+        "lineage_id": "LINEAGE-FILING-1"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-NVIDIA-EXTRACT",
+      "kind": "model_run",
+      "label": "nvidia / demo-nvidia-model: claim_extraction",
+      "data": {
+        "run_id": "MR-NVIDIA-EXTRACT",
+        "provider": "nvidia",
+        "model": "demo-nvidia-model",
+        "operation": "claim_extraction",
+        "prompt_version": "claim-extraction-v1",
+        "created_at": "2026-09-16T12:00:00Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-APERTUS-EXTRACT",
+      "kind": "model_run",
+      "label": "apertus / demo-apertus-model: claim_extraction",
+      "data": {
+        "run_id": "MR-APERTUS-EXTRACT",
+        "provider": "apertus",
+        "model": "demo-apertus-model",
+        "operation": "claim_extraction",
+        "prompt_version": "claim-extraction-v1",
+        "created_at": "2026-09-16T12:00:00Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-HYPOTHESIS",
+      "kind": "model_run",
+      "label": "nvidia / demo-nvidia-model: hypothesis_generation",
+      "data": {
+        "run_id": "MR-HYPOTHESIS",
+        "provider": "nvidia",
+        "model": "demo-nvidia-model",
+        "operation": "hypothesis_generation",
+        "prompt_version": "hypothesis-v1",
+        "created_at": "2026-09-16T12:00:00Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-RELATION",
+      "kind": "model_run",
+      "label": "nvidia / demo-nvidia-model: relation_assessment",
+      "data": {
+        "run_id": "MR-RELATION",
+        "provider": "nvidia",
+        "model": "demo-nvidia-model",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-v1",
+        "created_at": "2026-09-16T12:00:00Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-FUNDAMENTAL",
+      "kind": "model_run",
+      "label": "nvidia / demo-nvidia-model: fundamental_test_selection",
+      "data": {
+        "run_id": "MR-FUNDAMENTAL",
+        "provider": "nvidia",
+        "model": "demo-nvidia-model",
+        "operation": "fundamental_test_selection",
+        "prompt_version": "fundamental-test-v1",
+        "created_at": "2026-09-16T12:00:00Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-INFERENCE",
+      "kind": "model_run",
+      "label": "apertus / demo-apertus-model: inference",
+      "data": {
+        "run_id": "MR-INFERENCE",
+        "provider": "apertus",
+        "model": "demo-apertus-model",
+        "operation": "inference",
+        "prompt_version": "inference-v1",
+        "created_at": "2026-09-16T12:00:00Z"
+      }
+    },
+    {
+      "node_id": "claim:C-NVIDIA-1",
+      "kind": "claim",
+      "label": "New export rules could restrict shipments of affected products.",
+      "data": {
+        "claim_id": "C-NVIDIA-1",
+        "text": "New export rules could restrict shipments of affected products.",
+        "claim_type": "reported_fact",
+        "document_id": "DOC-NEWS-1",
+        "source_quote": "New export rules could restrict shipments of affected products.",
+        "model_run_id": "MR-NVIDIA-EXTRACT"
+      }
+    },
+    {
+      "node_id": "claim:C-APERTUS-1",
+      "kind": "claim",
+      "label": "New export rules create material revenue risk.",
+      "data": {
+        "claim_id": "C-APERTUS-1",
+        "text": "New export rules create material revenue risk.",
+        "claim_type": "interpretation",
+        "document_id": "DOC-NEWS-1",
+        "source_quote": "New export rules could restrict shipments of affected products.",
+        "model_run_id": "MR-APERTUS-EXTRACT"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-REGULATORY",
+      "kind": "hypothesis",
+      "label": "The anomaly reflects material company-specific regulatory risk.",
+      "data": {
+        "hypothesis_id": "H-REGULATORY",
+        "text": "The anomaly reflects material company-specific regulatory risk.",
+        "model_run_id": "MR-HYPOTHESIS"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-SECTOR",
+      "kind": "hypothesis",
+      "label": "The anomaly is mainly broad sector noise.",
+      "data": {
+        "hypothesis_id": "H-SECTOR",
+        "text": "The anomaly is mainly broad sector noise.",
+        "model_run_id": "MR-HYPOTHESIS"
+      }
+    },
+    {
+      "node_id": "evidence_requirement:ER-MATERIALITY",
+      "kind": "evidence_requirement",
+      "label": "How large is the directly affected revenue exposure?",
+      "data": {
+        "requirement_id": "ER-MATERIALITY",
+        "hypothesis_id": "H-REGULATORY",
+        "question": "How large is the directly affected revenue exposure?",
+        "rationale": "The news claim alone does not establish economic materiality.",
+        "model_run_id": "MR-FUNDAMENTAL"
+      }
+    },
+    {
+      "node_id": "observation:O-AFFECTED",
+      "kind": "observation",
+      "label": "Affected revenue: 12.0 demo units",
+      "data": {
+        "observation_id": "O-AFFECTED",
+        "name": "Affected revenue",
+        "value": 12.0,
+        "unit": "demo units",
+        "source_document_id": "DOC-FILING-1"
+      }
+    },
+    {
+      "node_id": "observation:O-TOTAL",
+      "kind": "observation",
+      "label": "Total revenue: 100.0 demo units",
+      "data": {
+        "observation_id": "O-TOTAL",
+        "name": "Total revenue",
+        "value": 100.0,
+        "unit": "demo units",
+        "source_document_id": "DOC-FILING-1"
+      }
+    },
+    {
+      "node_id": "calculation:CALC-EXPOSURE",
+      "kind": "calculation",
+      "label": "Direct exposure ratio: 12.0 %",
+      "data": {
+        "calculation_id": "CALC-EXPOSURE",
+        "label": "Direct exposure ratio",
+        "expression": "12 / 100 * 100",
+        "input_observation_ids": [
+          "O-AFFECTED",
+          "O-TOTAL"
+        ],
+        "value": 12.0,
+        "unit": "%"
+      }
+    },
+    {
+      "node_id": "inference:I-MATERIALITY",
+      "kind": "inference",
+      "label": "Direct exposure is non-trivial, but does not alone establish the full earnings effect.",
+      "data": {
+        "inference_id": "I-MATERIALITY",
+        "text": "Direct exposure is non-trivial, but does not alone establish the full earnings effect.",
+        "derived_from_ids": [
+          "CALC-EXPOSURE"
+        ],
+        "model_run_id": "MR-INFERENCE"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "edge:c44c776c6516",
+      "source": "document:DOC-NEWS-1",
+      "target": "source:60a01e1b5b",
+      "kind": "published_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:61ed96999509",
+      "source": "document:DOC-FILING-1",
+      "target": "source:42d4529bc1",
+      "kind": "published_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:8884ad729cc8",
+      "source": "claim:C-NVIDIA-1",
+      "target": "document:DOC-NEWS-1",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:736f62a53871",
+      "source": "claim:C-NVIDIA-1",
+      "target": "modelrun:MR-NVIDIA-EXTRACT",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:8a5077ef54e6",
+      "source": "claim:C-APERTUS-1",
+      "target": "document:DOC-NEWS-1",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:3c377180b639",
+      "source": "claim:C-APERTUS-1",
+      "target": "modelrun:MR-APERTUS-EXTRACT",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:b6705cd1e693",
+      "source": "hypothesis:H-REGULATORY",
+      "target": "anomaly:A-DEMO-001",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:c7d7dfcf2029",
+      "source": "hypothesis:H-REGULATORY",
+      "target": "modelrun:MR-HYPOTHESIS",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:78dd1375d0dc",
+      "source": "hypothesis:H-SECTOR",
+      "target": "anomaly:A-DEMO-001",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:3c22a2157d91",
+      "source": "hypothesis:H-SECTOR",
+      "target": "modelrun:MR-HYPOTHESIS",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:9a0c44a666da",
+      "source": "claim:C-NVIDIA-1",
+      "target": "hypothesis:H-REGULATORY",
+      "kind": "supports",
+      "data": {
+        "assessment_id": "RA-NVIDIA",
+        "strength": 0.65,
+        "rationale": "The claim establishes a plausible company-specific regulatory mechanism, but not materiality.",
+        "assumptions": [],
+        "missing_information": [
+          "economic materiality"
+        ],
+        "model_run_id": "MR-RELATION"
+      }
+    },
+    {
+      "edge_id": "edge:292109b20f43",
+      "source": "claim:C-APERTUS-1",
+      "target": "hypothesis:H-REGULATORY",
+      "kind": "supports",
+      "data": {
+        "assessment_id": "RA-APERTUS",
+        "strength": 0.85,
+        "rationale": "The extracted interpretation explicitly asserts material risk.",
+        "assumptions": [
+          "The article supports the added materiality judgement."
+        ],
+        "missing_information": [],
+        "model_run_id": "MR-RELATION"
+      }
+    },
+    {
+      "edge_id": "edge:77bb478f3d3e",
+      "source": "inference:I-MATERIALITY",
+      "target": "hypothesis:H-REGULATORY",
+      "kind": "supports",
+      "data": {
+        "assessment_id": "RA-MATERIALITY",
+        "strength": 0.55,
+        "rationale": "The filing-derived calculation provides some support for economic materiality, while leaving the full earnings effect unresolved.",
+        "assumptions": [],
+        "missing_information": [],
+        "model_run_id": "MR-RELATION"
+      }
+    },
+    {
+      "edge_id": "edge:6c5fca010a16",
+      "source": "hypothesis:H-REGULATORY",
+      "target": "evidence_requirement:ER-MATERIALITY",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:98f037e19699",
+      "source": "evidence_requirement:ER-MATERIALITY",
+      "target": "modelrun:MR-FUNDAMENTAL",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:eac552eae362",
+      "source": "observation:O-AFFECTED",
+      "target": "document:DOC-FILING-1",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:f379bbe2fae0",
+      "source": "observation:O-TOTAL",
+      "target": "document:DOC-FILING-1",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:85aacbea7cae",
+      "source": "calculation:CALC-EXPOSURE",
+      "target": "observation:O-AFFECTED",
+      "kind": "calculated_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:f506bd590acb",
+      "source": "calculation:CALC-EXPOSURE",
+      "target": "observation:O-TOTAL",
+      "kind": "calculated_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:e5c0188b0787",
+      "source": "inference:I-MATERIALITY",
+      "target": "calculation:CALC-EXPOSURE",
+      "kind": "derived_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:7d0023ad5683",
+      "source": "inference:I-MATERIALITY",
+      "target": "modelrun:MR-INFERENCE",
+      "kind": "produced_by",
+      "data": {}
+    }
+  ]
+}

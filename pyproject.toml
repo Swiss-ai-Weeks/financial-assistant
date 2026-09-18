@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "financial-assistant"
+version = "0.1.0"
+description = "Evidence-backed causal candidate scoring for financial news anomalies"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.7,<3",
+  "trafilatura>=2.2,<3",
+  "numpy>=2,<3",
+  "pandas>=2.2,<3",
+  "statsmodels>=0.14,<1",
+  "yfinance>=1.7,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<9",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/financial_assistant"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+pythonpath = ["src"]
+testpaths = ["tests"]
