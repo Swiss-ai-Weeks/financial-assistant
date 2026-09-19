@@ -182,3 +182,203 @@
     border-right-color: var(--border);
   }
 }
+
+.detector-panel {
+  padding: 18px;
+
+  background: #0b1113;
+
+  border:
+    1px solid #263431;
+
+  border-radius: 10px;
+
+  overflow-y: auto;
+}
+
+
+.detector-kicker {
+  color: #76b900;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
+}
+
+
+.detector-description {
+  color: #84938f;
+
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+
+.detector-control {
+  display: block;
+
+  margin: 22px 0;
+}
+
+
+.detector-control > div {
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  margin-bottom: 8px;
+}
+
+
+.detector-control input {
+  width: 100%;
+
+  accent-color: #76b900;
+}
+
+
+.scan-button {
+  width: 100%;
+
+  padding: 12px;
+
+  border:
+    1px solid #76b900;
+
+  border-radius: 6px;
+
+  background:
+    rgba(118, 185, 0, 0.12);
+
+  color: #bcec68;
+
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+
+.detector-stats {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 6px;
+
+  margin: 16px 0;
+}
+
+
+.detector-stats > div {
+  padding: 8px;
+
+  background: #080c0e;
+
+  border:
+    1px solid #263431;
+
+  border-radius: 5px;
+}
+
+
+.detector-stats span,
+.detector-stats strong {
+  display: block;
+}
+
+
+.detector-stats span {
+  color: #84938f;
+
+  font-size: 10px;
+}
+
+
+.candidate-list {
+  display: grid;
+
+  gap: 6px;
+}
+
+
+.candidate-card {
+  width: 100%;
+
+  padding: 10px;
+
+  text-align: left;
+
+  color: inherit;
+
+  background: #090e10;
+
+  border:
+    1px solid #263431;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+}
+
+
+.candidate-card:hover {
+  border-color: #01a982;
+}
+
+
+.candidate-title {
+  display: flex;
+
+  justify-content:
+    space-between;
+}
+
+
+.candidate-title span {
+  color: #84938f;
+
+  font-size: 10px;
+}
+
+
+.candidate-values {
+  display: flex;
+
+  gap: 12px;
+
+  margin-top: 7px;
+
+  color: #84938f;
+
+  font-size: 11px;
+}
+
+
+.selected-candidate {
+  padding: 8px 12px;
+
+  background:
+    rgba(118, 185, 0, 0.08);
+
+  border-bottom:
+    1px solid #263431;
+
+  color: #9fad9f;
+
+  font-size: 12px;
+}
+
+
+.workspace {
+  display: grid;
+
+  grid-template-columns:
+    280px
+    minmax(0, 1fr)
+    330px;
+
+  gap: 12px;
+}

@@ -3,6 +3,9 @@ import {
   useState,
 } from "react";
 
+
+import DetectorPanel from "./DetectorPanel";
+
 import ClaimGraph from "./ClaimGraph";
 import NodeInspector from "./NodeInspector";
 
@@ -24,6 +27,10 @@ export default function App() {
     setError,
   ] = useState(null);
 
+const [
+  selectedCandidate,
+  setSelectedCandidate,
+] = useState(null);
 
   useEffect(() => {
     fetch("/investigation_live_nvidia.json")
@@ -154,7 +161,26 @@ export default function App() {
             </div>
           </div>
 
-          <ClaimGraph
+	  <DetectorPanel
+	  	onSelectCandidate={
+			setSelectedCandidate
+		}
+	  />
+
+          {selectedCandidate && (
+		  <div className="selected-candidate">
+		  Investigating{" "}
+		  <strong>
+		  {selectedCandidate.pair}
+		  </strong>
+		  {" · "}
+		  z{" "}
+
+		  {selectedCandidate.z_score.toFixed(2)}
+		  </div>
+	  )}
+
+	  <ClaimGraph
             graph={graph}
             onSelectItem={
               setSelectedNode
