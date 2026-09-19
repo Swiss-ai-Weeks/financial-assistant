@@ -1,16 +1,33 @@
-# React + Vite
+# ClaimGraph Desk — frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite. Talks to the FastAPI service through `/api` (proxied to
+`http://127.0.0.1:8080` in development).
 
-Currently, two official plugins are available:
+```bash
+npm install
+npm run dev      # http://localhost:5173
+npm run lint
+npm run build    # output in dist/, served by the API in production
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Layout
 
-## React Compiler
+```
+src/
+  api/client.js          every HTTP call the UI makes
+  hooks/                 useResource (keyed fetching), useInvestigation (polling), useTheme
+  lib/                   number/date formatting, strategy presentation metadata
+  styles/                tokens.css holds every colour; light and dark are two token sets
+  components/
+    layout/              top bar, icon rail, tabs, ticker tape
+    chart/               candles + strategy overlays + anomaly markers, pair spread
+    portfolio/           symbol search, performance strip, positions
+    anomalies/           blotter, strategy monitor marketplace, pair scan result
+    news/                ticker wire, book wire
+    investigation/       explain panel, stages, verdicts, claims, ClaimGraph view
+    model/               why this model, on this hardware
+  App.jsx                desk state and composition
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Behind a reverse proxy (NVIDIA Launchpad), set `VITE_HMR_HOST` to the public
+hostname so hot reload connects back over `wss`.

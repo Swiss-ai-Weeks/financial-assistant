@@ -1,172 +1,464 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useMemo, useState } from "react";
 
-import ClaimGraph from "./ClaimGraph";
-import NodeInspector from "./NodeInspector";
+import { api } from "./api/client";
+import AnomalyTable from "./components/anomalies/AnomalyTable";
+import StrategyMarketplace from "./components/anomalies/StrategyMarketplace";
+import PriceChart from "./components/chart/PriceChart";
+import SpreadChart from "./components/chart/SpreadChart";
+import GraphView from "./components/investigation/GraphView";
+import InvestigationPanel from "./components/investigation/InvestigationPanel";
+import InvestigationsTable from "./components/investigation/InvestigationsTable";
+import SideRail from "./components/layout/SideRail";
+import Tabs from "./components/layout/Tabs";
+import TickerTape from "./components/layout/TickerTape";
+import TopBar from "./components/layout/TopBar";
+import ModelPanel from "./components/model/ModelPanel";
+import NewsFeed from "./components/news/NewsFeed";
+import NewsTable from "./components/news/NewsTable";
+import PerformanceStrip from "./components/portfolio/PerformanceStrip";
+import PositionsTable from "./components/portfolio/PositionsTable";
+import { useInvestigation } from "./hooks/useInvestigation";
+import { useResource } from "./hooks/useResource";
+import { useTheme } from "./hooks/useTheme";
 
-import "./App.css";
-import "./index.css";
-
+const RANGES = [
+  { key: 30, label: "1M" },
+  { key: 90, label: "3M" },
+  { key: 180, label: "6M" },
+  { key: 365, label: "1Y" },
+];
 
 export default function App() {
-  const [graph, setGraph] =
-    useState(null);
+  const [theme, toggleTheme] = useTheme();
 
-  const [
-    selectedNode,
-    setSelectedNode,
-  ] = useState(null);
+  const [view, setView] = useState("desk");
+  const [chosenTicker, setTicker] = useState(null);
+  const [days, setDays] = useState(180);
+  const [centerTab, setCenterTab] = useState("chart");
+  const [sideTab, setSideTab] = useState("monitors");
+  const [bottomTab, setBottomTab] = useState("anomalies");
 
-  const [
-    error,
-    setError,
-  ] = useState(null);
+  const [strategy, setStrategy] = useState(null);
+  const [anomaly, setAnomaly] = useState(null);
+  const [newsDay, setNewsDay] = useState(null);
+  const [pair, setPair] = useState(null);
+  const [pairScan, setPairScan] = useState(null);
 
+  const [investigationId, setInvestigationId] = useState(null);
+  const [starting, setStarting] = useState(false);
+  const [actionError, setActionError] = useState(null);
 
-  useEffect(() => {
-    fetch("/investigation_live_nvidia.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `Could not load graph: `
-            + `HTTP ${response.status}`
-          );
-        }
+  // ---------------------------------------------------
+  // Data
+  // ---------------------------------------------------
 
-        return response.json();
-      })
-      .then(setGraph)
-      .catch((err) => {
-        console.error(err);
-        setError(err.message);
-      });
+  const system = useResource(api.system, "system");
+  const portfolio = useResource(api.portfolio, "portfolio");
+  const investigations = useResource(api.investigations, "investigations");
+
+  // The desk opens on the holding that hurt the book most.
+  const ticker = useMemo(() => {
+    if (chosenTicker || !portfolio.data) return chosenTicker;
+
+    const worst = [...portfolio.data.positions].sort(
+      (a, b) => a.contribution_pct - b.contribution_pct
+    )[0];
+
+    return worst?.ticker ?? portfolio.data.benchmark;
+  }, [chosenTicker, portfolio.data]);
+
+  // Anything computed from the holdings reloads when they change.
+  const book = portfolio.data?.positions.map((p) => p.ticker).join() ?? null;
+  const hasBook = book != null;
+  const hasTicker = ticker != null;
+
+  const tape = useResource(api.tape, `tape:${book}`, { enabled: hasBook });
+  const bookAnomalies = useResource(() => api.anomalies(), `anomalies:${book}`, {
+    enabled: hasBook,
+  });
+  const bookNews = useResource(api.portfolioNews, `news:${book}`, {
+    enabled: hasBook && bottomTab === "news",
+  });
+
+  const quote = useResource(() => api.quote(ticker), `quote:${ticker}`, {
+    enabled: hasTicker,
+  });
+  const candles = useResource(
+    () => api.candles(ticker, days),
+    `candles:${ticker}:${days}`,
+    { enabled: hasTicker }
+  );
+  const tickerAnomalies = useResource(
+    () => api.anomalies(ticker),
+    `anomalies:${ticker}:${book}`,
+    { enabled: hasTicker && hasBook }
+  );
+  const strategies = useResource(
+    () => api.strategies(ticker),
+    `strategies:${ticker}:${book}`,
+    { enabled: hasTicker && hasBook }
+  );
+  const tickerScan = useResource(
+    () => api.pairScan(ticker),
+    `pairs:${ticker}:${book}`,
+    { enabled: hasTicker && hasBook }
+  );
+  const tickerNews = useResource(() => api.tickerNews(ticker), `news:${ticker}`, {
+    enabled: hasTicker,
+  });
+  const anomalyNews = useResource(
+    () => api.anomalyNews(anomaly.anomaly_id, anomaly.ticker),
+    `anomaly-news:${anomaly?.anomaly_id}`,
+    { enabled: anomaly != null }
+  );
+
+  // Without an explicit choice the spread tab shows the
+  // most interesting pair of the scan: a broken one first.
+  const shownScan = pairScan ?? tickerScan.data;
+  const shownPair = pair ?? firstPair(shownScan);
+
+  const spread = useResource(
+    () => api.pairSpread(shownPair[0], shownPair[1]),
+    `spread:${shownPair?.join("/")}`,
+    { enabled: shownPair != null && centerTab === "spread" }
+  );
+
+  const investigation = useInvestigation(investigationId, investigations.reload);
+
+  // ---------------------------------------------------
+  // Actions
+  // ---------------------------------------------------
+
+  const selectTicker = useCallback((symbol) => {
+    setTicker(symbol);
+    setAnomaly(null);
+    setNewsDay(null);
+    setPair(null);
+    setPairScan(null);
+    setInvestigationId(null);
+    setCenterTab("chart");
+    setView("desk");
   }, []);
 
+  const selectAnomaly = useCallback((selected) => {
+    setAnomaly(selected);
+    setInvestigationId(null);
+    setActionError(null);
+    setSideTab("explain");
+    setView("desk");
 
-  if (error) {
-    return (
-      <div className="app-shell">
-        <h1>ClaimGraph</h1>
+    setTicker(selected.ticker);
+    setNewsDay(null);
 
-        <p>
-          Failed to load investigation:
-          {" "}
-          {error}
-        </p>
-      </div>
-    );
-  }
+    if (selected.strategy === "pairs") {
+      setPair([selected.ticker, selected.related_tickers[0]]);
+      setCenterTab("spread");
+    } else {
+      setPair(null);
+      setCenterTab("chart");
+    }
+  }, []);
 
+  const selectDay = useCallback((day) => {
+    setNewsDay(day);
+    setSideTab("news");
+  }, []);
 
-  if (!graph) {
-    return (
-      <div className="app-shell">
-        <h1>ClaimGraph</h1>
+  const addTicker = async (symbol) => {
+    setActionError(null);
 
-        <p>
-          Loading investigation…
-        </p>
-      </div>
-    );
-  }
+    try {
+      const result = await api.addPosition(symbol, 100);
 
+      selectTicker(symbol.toUpperCase());
+      // Adding a holding triggers the pair scan: show what
+      // it found, and the spread if there is one.
+      setPairScan(result.pair_scan);
+      setSideTab("monitors");
+      setStrategy("pairs");
 
-  const anomaly = graph.nodes.find(
-    (node) =>
-      node.kind === "anomaly"
+      if (result.pair_scan.fits.length > 0) setCenterTab("spread");
+      portfolio.reload();
+    } catch (error) {
+      setActionError(error.message);
+    }
+  };
+
+  const removeTicker = async (symbol) => {
+    setActionError(null);
+
+    try {
+      await api.removePosition(symbol);
+      portfolio.reload();
+    } catch (error) {
+      setActionError(error.message);
+    }
+  };
+
+  const startInvestigation = async () => {
+    setStarting(true);
+    setActionError(null);
+
+    try {
+      const run = await api.startInvestigation(anomaly.anomaly_id, anomaly.ticker);
+
+      setInvestigationId(run.investigation_id);
+    } catch (error) {
+      setActionError(error.message);
+    } finally {
+      setStarting(false);
+    }
+  };
+
+  const openInvestigation = (run) => {
+    setAnomaly(run.anomaly);
+    setInvestigationId(run.investigation_id);
+    setSideTab("explain");
+    setView(run.graph ? "graph" : "desk");
+  };
+
+  // ---------------------------------------------------
+  // Derived
+  // ---------------------------------------------------
+
+  const chartAnomalies = useMemo(
+    () =>
+      (tickerAnomalies.data ?? []).filter(
+        (item) => strategy == null || item.strategy === strategy
+      ),
+    [tickerAnomalies.data, strategy]
   );
 
+  const blotter = useMemo(
+    () =>
+      (bookAnomalies.data ?? []).filter(
+        (item) => strategy == null || item.strategy === strategy
+      ),
+    [bookAnomalies.data, strategy]
+  );
+
+  const llm = system.data?.llm;
 
   return (
-    <div className="app-shell">
-      <header className="topbar">
-        <div>
-          <div className="eyebrow">
-            CLAIMGRAPH
-          </div>
+    <div className="app">
+      <TopBar
+        ticker={ticker}
+        quote={quote.data}
+        portfolio={portfolio.data}
+        llm={llm}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        onSelectTicker={selectTicker}
+        onAddTicker={addTicker}
+        onRemoveTicker={removeTicker}
+        onOpenModel={() => setView("model")}
+      />
 
-          <h1>
-            Market anomaly investigation
-          </h1>
-        </div>
+      <SideRail view={view} onChange={setView} />
 
-        <div className="score-card">
-          <span>Ticker</span>
+      {view === "model" && (
+        <main className="app__main app__main--full">
+          <ModelPanel system={system.data} investigations={investigations.data} />
+        </main>
+      )}
 
-          <strong>
-            {graph.ticker}
-          </strong>
+      {view === "graph" && (
+        <main className="app__main app__main--full">
+          <GraphView investigation={investigation} theme={theme} />
+        </main>
+      )}
 
-          <small>
-            schema {graph.schema_version}
-          </small>
-        </div>
-      </header>
+      {view === "desk" && (
+        <>
+          <main className="app__main">
+            <PerformanceStrip portfolio={portfolio.data} />
 
+            {(actionError || portfolio.error || candles.error) && (
+              <div className="error-banner">
+                {actionError ?? portfolio.error ?? candles.error}
+              </div>
+            )}
 
-      <section className="claim-summary">
-        <div className="claim-summary__label">
-          Attention event
-        </div>
+            <div className="toolbar">
+              <Tabs
+                tabs={[
+                  { key: "chart", label: "Chart" },
+                  { key: "spread", label: "Pair spread" },
+                ]}
+                active={centerTab}
+                onChange={setCenterTab}
+              />
 
-        <div className="claim-summary__text">
-          {anomaly?.label
-            ?? "Unknown anomaly"}
-        </div>
+              {centerTab === "chart" && (
+                <span className="toolbar__hint">
+                  Click any session to read the news that was public that day
+                </span>
+              )}
 
-        <div
-          className=
-            "claim-summary__qualification"
-        >
-          The anomaly triggers an
-          investigation. It does not
-          itself establish causality.
-        </div>
-      </section>
-
-
-      <main className="workspace">
-        <section className="graph-panel">
-          <div className="panel-header">
-            <div>
-              <h2>
-                Investigation graph
-              </h2>
-
-              <p>
-                Inspect claims,
-                hypotheses, source
-                provenance, calculations
-                and model provenance.
-              </p>
+              <div className="toolbar__ranges mono">
+                {RANGES.map((range) => (
+                  <button
+                    key={range.key}
+                    className={days === range.key ? "is-active" : ""}
+                    onClick={() => setDays(range.key)}
+                  >
+                    {range.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div className="legend">
-              <span>
-                {graph.nodes.length} nodes
-              </span>
+            <section className="stage">
+              {centerTab === "chart" && (
+                <PriceChart
+                  series={candles.data}
+                  anomalies={chartAnomalies}
+                  activeStrategy={strategy}
+                  selectedDay={newsDay}
+                  selectedAnomalyId={anomaly?.anomaly_id}
+                  theme={theme}
+                  onSelectDay={selectDay}
+                />
+              )}
 
-              <span>
-                {graph.edges.length} edges
-              </span>
+              {centerTab === "spread" &&
+                (spread.data ? (
+                  <SpreadChart spread={spread.data} theme={theme} />
+                ) : (
+                  <div className="empty">
+                    {spread.error ??
+                      (shownPair
+                        ? "Loading the spread…"
+                        : `${ticker} has no cointegrated partner in the book or the peer universe.`)}
+                  </div>
+                ))}
+            </section>
+
+            <section className="blotter">
+              <div className="toolbar">
+                <Tabs
+                  tabs={[
+                    { key: "anomalies", label: "Anomalies", count: blotter.length },
+                    { key: "positions", label: "Positions" },
+                    { key: "news", label: "News" },
+                    {
+                      key: "investigations",
+                      label: "Investigations",
+                      count: investigations.data?.length || null,
+                    },
+                  ]}
+                  active={bottomTab}
+                  onChange={setBottomTab}
+                />
+
+                {strategy && (
+                  <button
+                    className="btn btn--ghost btn--small"
+                    onClick={() => setStrategy(null)}
+                  >
+                    {strategy.toUpperCase()} only ✕
+                  </button>
+                )}
+              </div>
+
+              <div className="blotter__body">
+                {bottomTab === "anomalies" && (
+                  <AnomalyTable
+                    anomalies={blotter}
+                    selectedId={anomaly?.anomaly_id}
+                    onSelect={selectAnomaly}
+                  />
+                )}
+
+                {bottomTab === "positions" && (
+                  <PositionsTable
+                    portfolio={portfolio.data}
+                    ticker={ticker}
+                    onSelect={selectTicker}
+                    onRemove={removeTicker}
+                  />
+                )}
+
+                {bottomTab === "news" && (
+                  <NewsTable
+                    news={bookNews.data}
+                    loading={bookNews.loading}
+                    onSelectTicker={selectTicker}
+                  />
+                )}
+
+                {bottomTab === "investigations" && (
+                  <InvestigationsTable
+                    investigations={investigations.data}
+                    onOpen={openInvestigation}
+                  />
+                )}
+              </div>
+            </section>
+          </main>
+
+          <aside className="app__side">
+            <div className="toolbar">
+              <Tabs
+                tabs={[
+                  { key: "monitors", label: "Monitors" },
+                  { key: "news", label: "News", count: tickerNews.data?.length },
+                  { key: "explain", label: "Explain" },
+                ]}
+                active={sideTab}
+                onChange={setSideTab}
+              />
             </div>
-          </div>
 
-          <ClaimGraph
-            graph={graph}
-            onSelectItem={
-              setSelectedNode
-            }
-          />
-        </section>
+            <div className="app__side-body">
+              {sideTab === "monitors" && (
+                <StrategyMarketplace
+                  strategies={strategies.data ?? []}
+                  active={strategy}
+                  pairScan={shownScan}
+                  onSelect={setStrategy}
+                  onSelectPair={(a, b) => {
+                    setPair([a, b]);
+                    setCenterTab("spread");
+                  }}
+                />
+              )}
 
+              {sideTab === "news" && (
+                <NewsFeed
+                  ticker={ticker}
+                  news={tickerNews.data}
+                  loading={tickerNews.loading}
+                  error={tickerNews.error}
+                  day={newsDay}
+                  onClearDay={() => setNewsDay(null)}
+                />
+              )}
 
-        <NodeInspector
-          node={selectedNode}
-        />
-      </main>
+              {sideTab === "explain" && (
+                <InvestigationPanel
+                  anomaly={anomaly}
+                  anomalyNews={anomalyNews}
+                  investigation={investigation}
+                  llm={llm}
+                  starting={starting}
+                  error={actionError}
+                  onStart={startInvestigation}
+                  onOpenGraph={() => setView("graph")}
+                />
+              )}
+            </div>
+          </aside>
+        </>
+      )}
+
+      <TickerTape quotes={tape.data ?? []} llm={llm} onSelect={selectTicker} />
     </div>
   );
+}
+
+function firstPair(scan) {
+  const fit = scan?.fits.find((item) => item.flagged) ?? scan?.fits[0];
+
+  return fit ? [fit.ticker_a, fit.ticker_b] : null;
 }

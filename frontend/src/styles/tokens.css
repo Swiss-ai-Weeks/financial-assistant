@@ -1,0 +1,72 @@
+/*
+ * Design tokens. Components never use raw colours, so
+ * the dark theme is only a second set of values.
+ */
+
+:root {
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --bg: #faf8f3;
+  --surface: #f4f2ec;
+  --surface-raised: #ffffff;
+  --border: #e5e1d8;
+  --border-strong: #cfcabe;
+
+  --text: #171717;
+  --text-muted: #8b877e;
+  --text-faint: #b5b1a7;
+
+  --ink: #111111;
+  --on-ink: #faf8f3;
+
+  --accent: #b5851f;
+  --accent-soft: #f3ead6;
+
+  --up: #12902a;
+  --down: #d3262d;
+  --up-soft: #e3f3e6;
+  --down-soft: #fbe6e6;
+
+  --vwap: #2f6fed;
+  --twap: #8a4fd6;
+  --trend: #d97a12;
+  --pairs: #0f9b8e;
+
+  --shadow: 0 8px 24px rgba(30, 25, 10, 0.08);
+
+  --rail-width: 80px;
+  --side-width: 590px;
+  --topbar-height: 88px;
+  --tape-height: 44px;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0e0e0d;
+  --surface: #161615;
+  --surface-raised: #1d1d1b;
+  --border: #292826;
+  --border-strong: #3a3936;
+
+  --text: #f1efe9;
+  --text-muted: #8e8b83;
+  --text-faint: #5c5a55;
+
+  --ink: #f1efe9;
+  --on-ink: #111111;
+
+  --accent: #d9a941;
+  --accent-soft: #2c2514;
+
+  --up: #2fbf4d;
+  --down: #f0484e;
+  --up-soft: #12301a;
+  --down-soft: #3a1618;
+
+  --vwap: #6c9bff;
+  --twap: #b48af0;
+  --trend: #f0a04a;
+  --pairs: #35c9ba;
+
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}

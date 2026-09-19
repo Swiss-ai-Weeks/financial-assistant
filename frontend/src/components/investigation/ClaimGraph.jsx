@@ -15,6 +15,7 @@ import {
 
 export default function ClaimGraph({
   graph,
+  colorMode = "light",
   onSelectItem,
 }) {
   const nodes =
@@ -28,6 +29,8 @@ export default function ClaimGraph({
       <ReactFlow
         nodes={nodes}
         edges={edges}
+
+        colorMode={colorMode}
 
         fitView
         fitViewOptions={{
