@@ -28,6 +28,17 @@ make dev       # API on :8080, UI on http://localhost:5173
 That is the whole desk: live prices, the four strategy monitors, pair scans and
 the news wire need **no API key and no GPU**.
 
+News comes from [GDELT](https://www.gdeltproject.org/), downloaded once into a
+local archive and replayed from disk, so a recorded demo is reproducible:
+
+```bash
+make news                        # the book, current review window (resumable)
+make news ARGS="--universe"      # also pair partners from the peer universe
+```
+
+To replay a past month, set `AS_OF=2026-02-27` in `.env`, run `make news`, and
+restart. Later prices and later news then do not exist for the desk.
+
 The **Explain** button needs a language model. On the GPU box:
 
 ```bash

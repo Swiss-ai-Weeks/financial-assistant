@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import re
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 from financial_assistant.api.models import Anomaly, NewsItem
+from financial_assistant.api.relevance import company_aliases, relevance
 from financial_assistant.api.repositories import (
     InstrumentRepository,
     NewsRepository,
@@ -16,61 +16,6 @@ from financial_assistant.api.services.anomaly_service import session_close
 
 LOOKBACK_DAYS = 7
 HINDSIGHT_DAYS = 3
-
-LEGAL_WORDS = {
-    "the", "inc", "inc.", "corp", "corp.", "corporation", "company",
-    "co", "co.", "companies", "group", "holdings", "plc", "ltd", "&",
-}
-
-# Leading words too common to identify a company alone.
-GENERIC_WORDS = {
-    "american", "bank", "first", "general", "home", "international",
-    "national", "united",
-}
-
-
-def company_aliases(ticker: str, company: str) -> tuple[str, ...]:
-    """
-    Strings whose presence shows a story is about the
-    company: "Bank of America Corporation" is written
-    "Bank of America", "NVIDIA Corporation" is "NVIDIA".
-    """
-
-    words = [
-        word.strip(",")
-        for word in company.split()
-        if word.strip(",").lower() not in LEGAL_WORDS
-    ]
-
-    aliases = {ticker}
-
-    if words and company != ticker:
-        aliases.add(" ".join(words))
-        aliases.add(" ".join(words[:2]))
-
-        if len(words[0]) >= 5 and words[0].lower() not in GENERIC_WORDS:
-            aliases.add(words[0])
-
-    return tuple(sorted(aliases, key=len, reverse=True))
-
-
-def relevance(item: NewsItem, aliases: tuple[str, ...]) -> int:
-    """
-    2 when the headline names the company, 1 when only
-    the summary does, 0 when the feed merely tagged it.
-    """
-
-    def mentions(text: str) -> bool:
-        return any(
-            re.search(rf"(?<!\w){re.escape(alias)}(?!\w)", text)
-            for alias in aliases
-        )
-
-    if mentions(item.title):
-        return 2
-
-    return 1 if mentions(item.summary) else 0
-
 
 class NewsService:
     """
@@ -84,19 +29,44 @@ class NewsService:
         news: NewsRepository,
         portfolios: PortfolioRepository,
         instruments: InstrumentRepository,
+        *,
+        review_days: int,
+        as_of: date | None = None,
     ):
         self._news = news
         self._portfolios = portfolios
         self._instruments = instruments
+        self._review_days = review_days
+        self._as_of = as_of
 
     @property
     def source_names(self) -> tuple[str, ...]:
         return self._news.source_names
 
-    def feed(self, ticker: str, *, limit: int = 60) -> list[NewsItem]:
-        symbol = ticker.strip().upper()
+    def window(self) -> tuple[datetime, datetime]:
+        """
+        The period the desk reads news for: the review
+        window, the lookback before its first session, and
+        a few days of hindsight after its last.
 
-        return list(self._news.get(symbol, self._company(symbol)))[:limit]
+        On a replay date this is what hides news from the
+        "future", exactly as the market data repository
+        hides later prices.
+        """
+
+        last_close = (
+            session_close(self._as_of)
+            if self._as_of
+            else datetime.now(timezone.utc)
+        )
+
+        return (
+            last_close - timedelta(days=self._review_days + LOOKBACK_DAYS),
+            last_close + timedelta(days=HINDSIGHT_DAYS),
+        )
+
+    def feed(self, ticker: str, *, limit: int = 60) -> list[NewsItem]:
+        return self._wire(ticker.strip().upper())[:limit]
 
     def portfolio_feed(self, *, limit: int = 80) -> list[NewsItem]:
         tickers = self._portfolios.load().tickers
@@ -138,7 +108,7 @@ class NewsService:
             company = self._company(ticker)
             aliases = company_aliases(ticker, company)
 
-            for item in self._news.get(ticker, company):
+            for item in self._wire(ticker):
                 if not opened <= item.published_at <= closed:
                     continue
 
@@ -182,6 +152,17 @@ class NewsService:
         )
 
         return session_close(anchor) - timedelta(days=LOOKBACK_DAYS)
+
+    def _wire(self, ticker: str) -> list[NewsItem]:
+        start, end = self.window()
+
+        return [
+            item
+            for item in self._news.get(
+                ticker, self._company(ticker), start=start, end=end
+            )
+            if start <= item.published_at <= end
+        ]
 
     def _company(self, ticker: str) -> str:
         for position in self._portfolios.load().positions:

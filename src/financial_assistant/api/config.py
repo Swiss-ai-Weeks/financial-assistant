@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from datetime import date
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -41,6 +42,11 @@ class Settings:
     history_days: int
     review_days: int
 
+    # Replay date. When set, the desk behaves as if this
+    # were the latest session: later prices and later news
+    # do not exist. Unset means live.
+    as_of: date | None
+
     market_cache_minutes: int
     news_cache_minutes: int
 
@@ -74,6 +80,16 @@ class Settings:
         return self.data_dir / "cache" / "news"
 
     @property
+    def document_cache_dir(self) -> Path:
+        return self.data_dir / "cache" / "documents"
+
+    @property
+    def gdelt_dir(self) -> Path:
+        # Titles and URLs only, so unlike data/cache this
+        # archive can be committed with the demo.
+        return self.data_dir / "archive" / "gdelt"
+
+    @property
     def state_dir(self) -> Path:
         return self.data_dir / "state"
 
@@ -98,6 +114,7 @@ class Settings:
             benchmark=env("BENCHMARK", "SPY"),
             history_days=int(env("HISTORY_DAYS", "800")),
             review_days=int(env("REVIEW_DAYS", "30")),
+            as_of=date.fromisoformat(env("AS_OF")) if env("AS_OF") else None,
             market_cache_minutes=int(env("MARKET_CACHE_MINUTES", "360")),
             news_cache_minutes=int(env("NEWS_CACHE_MINUTES", "30")),
             pairs_formation_observations=int(env("PAIRS_FORMATION", "252")),

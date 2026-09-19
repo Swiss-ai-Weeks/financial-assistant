@@ -27,6 +27,14 @@
   letter-spacing: -0.01em;
 }
 
+.strip__replay {
+  margin-left: 10px;
+  padding: 2px 6px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+
 .strip__figure .mono {
   font-size: 17px;
   font-weight: 700;

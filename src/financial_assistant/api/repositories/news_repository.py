@@ -15,9 +15,27 @@ from financial_assistant.retrieval import SearchProvider
 
 
 class NewsSource(Protocol):
-    name: str
+    """
+    `start` and `end` describe the period the desk is
+    looking at. Sources that can only return "the latest"
+    ignore them.
 
-    def fetch(self, ticker: str, company: str) -> tuple[NewsItem, ...]:
+    A `local` source reads files that are already on disk.
+    It is consulted on every request and its items are not
+    copied into the accumulating cache.
+    """
+
+    name: str
+    local: bool
+
+    def fetch(
+        self,
+        ticker: str,
+        company: str,
+        *,
+        start: datetime | None = None,
+        end: datetime | None = None,
+    ) -> tuple[NewsItem, ...]:
         ...
 
 
@@ -35,11 +53,12 @@ class YahooNewsSource:
     """
 
     name = "yahoo-finance"
+    local = False
 
     def __init__(self, count: int = 200):
         self._count = count
 
-    def fetch(self, ticker: str, company: str) -> tuple[NewsItem, ...]:
+    def fetch(self, ticker, company, *, start=None, end=None):
         raw = yf.Ticker(ticker).get_news(count=self._count, tab="news")
         items = []
 
@@ -91,8 +110,9 @@ class SearchProviderNewsSource:
         self._provider = provider
         self._limit = limit
         self.name = provider.name
+        self.local = False
 
-    def fetch(self, ticker: str, company: str) -> tuple[NewsItem, ...]:
+    def fetch(self, ticker, company, *, start=None, end=None):
         subject = company if company and company != ticker else ticker
 
         hits = self._provider.search(
@@ -122,10 +142,12 @@ class NewsRepository:
     Ticker news merged across sources and accumulated
     on disk.
 
-    Sources only expose a rolling window, so every
-    refresh is merged into what was already seen. The
-    archive therefore grows for as long as the desk
-    runs.
+    Remote sources only expose a rolling window, so every
+    refresh is merged into what was already seen and the
+    cache grows for as long as the desk runs.
+
+    Local sources (a downloaded archive) are merged in at
+    read time.
     """
 
     def __init__(
@@ -144,8 +166,16 @@ class NewsRepository:
     def source_names(self) -> tuple[str, ...]:
         return tuple(source.name for source in self._sources)
 
-    def get(self, ticker: str, company: str = "") -> tuple[NewsItem, ...]:
+    def get(
+        self,
+        ticker: str,
+        company: str = "",
+        *,
+        start: datetime | None = None,
+        end: datetime | None = None,
+    ) -> tuple[NewsItem, ...]:
         symbol = ticker.strip().upper()
+        remote = [source for source in self._sources if not source.local]
 
         with self._lock:
             path = self._cache_dir / f"{symbol}.json"
@@ -157,9 +187,11 @@ class NewsRepository:
             )
 
             if not fresh:
-                for source in self._sources:
+                for source in remote:
                     try:
-                        fetched = source.fetch(symbol, company)
+                        fetched = source.fetch(
+                            symbol, company, start=start, end=end
+                        )
                     except Exception:
                         # One dead source must not blank
                         # the feed.
@@ -169,6 +201,11 @@ class NewsRepository:
                         known.setdefault(item.news_id, item)
 
                 self._write(path, known)
+
+        for source in self._sources:
+            if source.local:
+                for item in source.fetch(symbol, company, start=start, end=end):
+                    known.setdefault(item.news_id, item)
 
         return tuple(
             sorted(

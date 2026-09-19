@@ -71,10 +71,52 @@ the **evidence cutoff** of an anomaly:
 Fetched pages must also match their headline, because publishers answer
 automated requests with consent walls that extract into clean, irrelevant text.
 
+## News: download once, replay from disk
+
+```
+make news ──► GdeltClient ──► data/archive/gdelt/<TICKER>.jsonl     (network, throttled, resumable)
+desk      ──► GdeltNewsSource ──► reads the archive                 (no network, ever)
+Explain   ──► CachedDocumentFetcher ──► data/cache/documents/*.json (fetched once, then replayed)
+```
+
+GDELT allows one request every five seconds and caps each at 250 articles, so
+it cannot sit behind an interactive desk. `make news` downloads the desk's news
+window in calendar-aligned weekly slices, records finished slices in
+`manifest.json`, and can be interrupted and resumed. The desk "fetches" news as
+it would live, from files that no longer change.
+
+Things learned from real downloads, encoded in `repositories/gdelt.py`:
+
+- GDELT matches text, not tickers: the query is the written company name plus
+  finance terms.
+- Templated content farms were 88% of results for a large bank. They are
+  excluded in the query (they would otherwise fill the 250 cap) and again on
+  read.
+- Queries have an undocumented length cap, so exclusions are added worst-first
+  up to a budget.
+- The rate limit arrives as HTTP 429 *or* as HTTP 200 with a plain-text notice.
+- `seendate` is when GDELT crawled the page, not when it was published. It can
+  only be later, so it may exclude evidence but can never admit hindsight.
+
+### Replay date
+
+`AS_OF=YYYY-MM-DD` pins the desk to a past session. `MarketDataRepository` hides
+later sessions and `NewsService.window()` hides later news; every detector is
+already point-in-time relative to the latest session it is given, so nothing
+else changes.
+
+GDELT and Yahoo Finance are always merged, because they fail in opposite
+directions: GDELT reaches back to 2017 but, when measured, its index had nothing
+newer than about a week; Yahoo has precise timestamps for the last few weeks and
+nothing older. Replay dates more than a few weeks back are therefore GDELT-only
+in practice.
+
 ## State on disk
 
 ```
 data/seed/portfolio.json          the demo book, committed
+data/archive/gdelt/*.jsonl        GDELT titles + URLs + timestamps, committable
+data/cache/documents/*.json       fetched article text, replayed (ignored: third-party content)
 data/state/portfolio.json         the edited book            (ignored)
 data/state/investigations/*.json  one replayable file per run (ignored)
 data/cache/market/daily/*.csv     OHLCV per ticker            (ignored)

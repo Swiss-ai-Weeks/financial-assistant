@@ -13,7 +13,7 @@ if [[ ! -x .venv/bin/uvicorn || ! -d frontend/node_modules ]]; then
   exit 1
 fi
 
-trap 'kill 0' EXIT
+trap 'kill 0' EXIT INT TERM
 
 .venv/bin/uvicorn financial_assistant.api.main:app --reload --port "$API_PORT" &
 

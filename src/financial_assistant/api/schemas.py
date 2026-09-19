@@ -159,6 +159,7 @@ class ServiceStatus(BaseModel):
 
 
 class SystemStatus(BaseModel):
+    as_of: date | None
     llm: ServiceStatus
     model: str
     provider: str

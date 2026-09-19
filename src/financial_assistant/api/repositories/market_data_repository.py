@@ -30,11 +30,13 @@ class MarketDataRepository:
         *,
         history_days: int,
         cache_minutes: int,
+        as_of: date | None = None,
         downloader=download_daily_prices,
     ):
         self._cache_dir = cache_dir
         self._history_days = history_days
         self._cache_seconds = cache_minutes * 60
+        self._as_of = as_of
         self._download = downloader
 
         self._lock = threading.Lock()
@@ -68,7 +70,7 @@ class MarketDataRepository:
 
                 frames.append(frame)
 
-        return pd.concat(frames, ignore_index=True)
+        return self._visible(pd.concat(frames, ignore_index=True))
 
     def get_available(self, tickers: tuple[str, ...]) -> pd.DataFrame:
         """
@@ -98,9 +100,22 @@ class MarketDataRepository:
         if not frames:
             return pd.DataFrame(columns=COLUMNS)
 
-        return pd.concat(frames, ignore_index=True)
+        return self._visible(pd.concat(frames, ignore_index=True))
 
     # -------------------------------------------------
+
+    def _visible(self, frame: pd.DataFrame) -> pd.DataFrame:
+        """
+        Replay boundary. Every detector downstream is
+        point-in-time relative to the latest session it is
+        given, so hiding later sessions here is enough to
+        replay the whole desk on a past date.
+        """
+
+        if self._as_of is None:
+            return frame
+
+        return frame.loc[frame["date"] <= pd.Timestamp(self._as_of)]
 
     def _path(self, ticker: str) -> Path:
         return self._cache_dir / f"{ticker.replace('/', '_')}.csv"

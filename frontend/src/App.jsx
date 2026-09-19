@@ -271,7 +271,7 @@ export default function App() {
       {view === "desk" && (
         <>
           <main className="app__main">
-            <PerformanceStrip portfolio={portfolio.data} />
+            <PerformanceStrip portfolio={portfolio.data} asOf={system.data?.as_of} />
 
             {(actionError || portfolio.error || candles.error) && (
               <div className="error-banner">

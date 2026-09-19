@@ -3,6 +3,8 @@
 #   make setup   install backend + frontend dependencies
 #   make dev     run the API (:8080) and the UI (:5173)
 #
+#   make news    download GDELT news into the local archive
+#
 # On the GPU box, additionally:
 #
 #   make llm     serve Nemotron on the two H100s (:8000)
@@ -15,7 +17,7 @@ API_PORT ?= 8080
 
 .DEFAULT_GOAL := help
 
-.PHONY: help setup dev api web build serve llm search test lint reset
+.PHONY: help setup dev api web build serve news llm search test lint reset
 
 help:
 	@awk '/^# /{sub(/^# ?/,"");print} /^$$/{exit}' Makefile
@@ -45,6 +47,10 @@ build:
 
 serve: build
 	$(BIN)/uvicorn financial_assistant.api.main:app --host 0.0.0.0 --port $(API_PORT)
+
+# Resumable. Pass options with ARGS, e.g. ARGS="--universe".
+news:
+	$(BIN)/python scripts/download_gdelt.py $(ARGS)
 
 llm:
 	./scripts/serve_llm.sh

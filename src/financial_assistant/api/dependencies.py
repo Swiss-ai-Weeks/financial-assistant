@@ -12,6 +12,9 @@ from functools import lru_cache
 
 from financial_assistant.api.config import get_settings
 from financial_assistant.api.repositories import (
+    CachedDocumentFetcher,
+    GdeltArchive,
+    GdeltNewsSource,
     InstrumentRepository,
     InvestigationRepository,
     MarketDataRepository,
@@ -48,6 +51,7 @@ def get_market_repository() -> MarketDataRepository:
         settings.market_cache_dir,
         history_days=settings.history_days,
         cache_minutes=settings.market_cache_minutes,
+        as_of=settings.as_of,
     )
 
 
@@ -74,9 +78,21 @@ def get_search_provider() -> SearxngSearchProvider | None:
 
 
 @lru_cache(maxsize=1)
+def get_gdelt_archive() -> GdeltArchive:
+    return GdeltArchive(get_settings().gdelt_dir)
+
+
+@lru_cache(maxsize=1)
 def get_news_repository() -> NewsRepository:
     settings = get_settings()
-    sources = [YahooNewsSource()]
+
+    # The two complement each other. GDELT, served from the
+    # archive filled by `make news`, reaches back years but
+    # its index trails the present by days. Yahoo only knows
+    # the last few weeks, which are exactly the ones GDELT
+    # is missing. NewsService hides whatever falls outside
+    # the desk's window, so both are safe on a replay date.
+    sources = [GdeltNewsSource(get_gdelt_archive()), YahooNewsSource()]
 
     if (search := get_search_provider()) is not None:
         sources.append(SearchProviderNewsSource(search))
@@ -146,10 +162,14 @@ def get_portfolio_service() -> PortfolioService:
 
 @lru_cache(maxsize=1)
 def get_news_service() -> NewsService:
+    settings = get_settings()
+
     return NewsService(
         get_news_repository(),
         get_portfolio_repository(),
         get_instrument_repository(),
+        review_days=settings.review_days,
+        as_of=settings.as_of,
     )
 
 
@@ -179,7 +199,10 @@ def get_investigation_service() -> InvestigationService:
         llm_api_key=settings.llm_api_key,
         model=settings.llm_model,
         provider=settings.llm_provider_name,
-        document_fetcher=TrafilaturaDocumentFetcher(),
+        document_fetcher=CachedDocumentFetcher(
+            TrafilaturaDocumentFetcher(),
+            settings.document_cache_dir,
+        ),
         search_provider=get_search_provider(),
         max_documents=settings.max_documents,
         max_claims=settings.max_claims,

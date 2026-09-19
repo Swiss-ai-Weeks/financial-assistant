@@ -99,8 +99,9 @@ def fake_download(tickers, *, start, end):
 
 class FakeNewsSource:
     name = "fake-wire"
+    local = False
 
-    def fetch(self, ticker, company):
+    def fetch(self, ticker, company, *, start=None, end=None):
         close = datetime.combine(
             LAST_SESSION.date(), datetime.min.time(), tzinfo=timezone.utc
         ) + timedelta(hours=21)
@@ -230,6 +231,8 @@ def client(tmp_path):
         NewsRepository(tmp_path / "news", (FakeNewsSource(),), cache_minutes=60),
         portfolios,
         instruments,
+        review_days=30,
+        as_of=LAST_SESSION.date(),
     )
 
     anomalies = AnomalyService(
@@ -384,15 +387,14 @@ def test_anomaly_news_is_split_at_the_evidence_cutoff(client):
 
 
 def test_stories_naming_the_company_outrank_passing_mentions():
-    from financial_assistant.api.services.news_service import (
-        company_aliases,
-        relevance,
-    )
+    from financial_assistant.api.relevance import company_aliases, relevance
 
     aliases = company_aliases("BAC", "Bank of America Corporation")
 
     assert "Bank of America" in aliases
     assert "Bank" not in aliases
+    assert "Bank of" not in aliases
+    assert "Goldman Sachs" in company_aliases("GS", "The Goldman Sachs Group, Inc.")
     assert "NVIDIA" in company_aliases("NVDA", "NVIDIA Corporation")
 
     def story(title, summary=""):
@@ -410,6 +412,7 @@ def test_stories_naming_the_company_outrank_passing_mentions():
     assert relevance(story("Banks fall", "Shares of BAC led the drop."), aliases) == 1
     assert relevance(story("NetApp sees strong demand, BofA says"), aliases) == 0
     assert relevance(story("BACK to school sales"), aliases) == 0
+    assert relevance(story("Insider sells Bank of Montreal stock"), aliases) == 0
 
 
 def test_investigation_explains_an_anomaly_from_admissible_news(client):

@@ -4,7 +4,7 @@ import { percent, shortDate, tone } from "../../lib/format";
  * The reason the manager is here: the book against its
  * benchmark over the period under review.
  */
-export default function PerformanceStrip({ portfolio }) {
+export default function PerformanceStrip({ portfolio, asOf }) {
   if (!portfolio) return null;
 
   const lagging = portfolio.active_return_pct < 0;
@@ -20,6 +20,7 @@ export default function PerformanceStrip({ portfolio }) {
         <span className="eyebrow">
           {portfolio.name} · {shortDate(portfolio.window.start)} –{" "}
           {shortDate(portfolio.window.end)}
+          {asOf && <span className="strip__replay">Replay · as of {asOf}</span>}
         </span>
         <strong>
           {lagging ? "Underperforming" : "Outperforming"} {portfolio.benchmark} by{" "}

@@ -1,3 +1,5 @@
+from .document_cache import CachedDocumentFetcher
+from .gdelt import GdeltArchive, GdeltClient, GdeltNewsSource
 from .instrument_repository import InstrumentRepository
 from .investigation_repository import InvestigationRepository
 from .market_data_repository import MarketDataRepository
@@ -10,6 +12,10 @@ from .news_repository import (
 from .portfolio_repository import PortfolioRepository
 
 __all__ = [
+    "CachedDocumentFetcher",
+    "GdeltArchive",
+    "GdeltClient",
+    "GdeltNewsSource",
     "InstrumentRepository",
     "InvestigationRepository",
     "MarketDataRepository",

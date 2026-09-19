@@ -26,6 +26,7 @@ def get_system_status(
     news: NewsService = Depends(get_news_service),
 ):
     return SystemStatus(
+        as_of=settings.as_of,
         llm=investigations.llm_status(),
         model=settings.llm_model,
         provider=settings.llm_provider_name,
