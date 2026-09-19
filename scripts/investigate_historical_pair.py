@@ -53,6 +53,29 @@ from financial_assistant.retrieval import (
     execute_research_plan,
 )
 
+
+from financial_assistant.retrieval import (
+    CorpusDocumentFetcher,
+    CorpusSearchProvider,
+    SearxngSearchProvider,
+    TrafilaturaDocumentFetcher,
+)
+
+from financial_assistant.retrieval.composite import (
+    CompositeSearchProvider,
+    DispatchingDocumentFetcher,
+)
+
+from financial_assistant.retrieval.bookreader import (
+    CorpusDocumentFetcher,
+    CorpusSearchProvider,
+)
+
+from financial_assistant.retrieval.composite import (
+    CompositeSearchProvider,
+    DispatchingDocumentFetcher,
+)
+
 from financial_assistant.simulation import (
     simulate_pair_forward,
 )
@@ -501,13 +524,47 @@ def main() -> None:
         timezone.utc
     )
 
-    search_provider = (
-        SearxngSearchProvider()
-    )
 
-    document_fetcher = (
-        TrafilaturaDocumentFetcher()
-    )
+    search_provider = CompositeSearchProvider(
+    providers=(
+        # Controlled evidence universe first.
+        CorpusSearchProvider(
+            lookback_days=45,
+        ),
+
+        # Then augment with open-web discovery.
+        SearxngSearchProvider(),
+    ))
+
+    document_fetcher = DispatchingDocumentFetcher(
+            fetchers={
+                "bookreader": (
+                    CorpusDocumentFetcher()
+                    ),
+                "searxng": (
+                    TrafilaturaDocumentFetcher()
+                    ),
+                }
+            )
+
+	
+	print()
+
+	print(
+    	"RETRIEVAL SOURCES:",
+    	"BookReader corpus + SearXNG web",
+	)
+
+	print(
+    	"BOOKREADER CORPUS:",
+    	"Financial Times + Wall Street Journal",
+	)
+
+	print(
+    	"BOOKREADER LOOKBACK:",
+    	"45 calendar days",
+	)
+	
 
     bundle = timed(
         "retrieval",
