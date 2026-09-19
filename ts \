@@ -1,0 +1,543 @@
+[1mdiff --git a/frontend/src/App.jsx b/frontend/src/App.jsx[m
+[1mindex 34d31a2..a9aaf00 100644[m
+[1m--- a/frontend/src/App.jsx[m
+[1m+++ b/frontend/src/App.jsx[m
+[36m@@ -26,7 +26,7 @@[m [mexport default function App() {[m
+ [m
+ [m
+   useEffect(() => {[m
+[31m-    fetch("/investigation_demo.json")[m
+[32m+[m[32m    fetch("/investigation_live_nvidia.json")[m
+       .then((response) => {[m
+         if (!response.ok) {[m
+           throw new Error([m
+[36m@@ -156,7 +156,7 @@[m [mexport default function App() {[m
+ [m
+           <ClaimGraph[m
+             graph={graph}[m
+[31m-            onSelectNode={[m
+[32m+[m[32m            onSelectItem={[m
+               setSelectedNode[m
+             }[m
+           />[m
+[1mdiff --git a/frontend/src/ClaimGraph.jsx b/frontend/src/ClaimGraph.jsx[m
+[1mindex d93422b..3041f0f 100644[m
+[1m--- a/frontend/src/ClaimGraph.jsx[m
+[1m+++ b/frontend/src/ClaimGraph.jsx[m
+[36m@@ -15,7 +15,7 @@[m [mimport {[m
+ [m
+ export default function ClaimGraph({[m
+   graph,[m
+[31m-  onSelectNode,[m
+[32m+[m[32m  onSelectItem,[m
+ }) {[m
+   const nodes =[m
+     toReactFlowNodes(graph.nodes);[m
+[36m@@ -28,14 +28,25 @@[m [mexport default function ClaimGraph({[m
+       <ReactFlow[m
+         nodes={nodes}[m
+         edges={edges}[m
+[32m+[m
+         fitView[m
+         fitViewOptions={{[m
+[31m-          padding: 0.15,[m
+[32m+[m[32m          padding: 0.12,[m
+         }}[m
+[31m-        minZoom={0.2}[m
+[32m+[m
+[32m+[m[32m        minZoom={0.15}[m
+         maxZoom={1.8}[m
+[32m+[m
+         onNodeClick={(_, node) => {[m
+[31m-          onSelectNode?.(node.data);[m
+[32m+[m[32m          onSelectItem?.([m
+[32m+[m[32m            node.data[m
+[32m+[m[32m          );[m
+[32m+[m[32m        }}[m
+[32m+[m
+[32m+[m[32m        onEdgeClick={(_, edge) => {[m
+[32m+[m[32m          onSelectItem?.([m
+[32m+[m[32m            edge.data[m
+[32m+[m[32m          );[m
+         }}[m
+       >[m
+         <Background />[m
+[1mdiff --git a/frontend/src/NodeInspector.jsx b/frontend/src/NodeInspector.jsx[m
+[1mindex 805744c..725dee2 100644[m
+[1m--- a/frontend/src/NodeInspector.jsx[m
+[1m+++ b/frontend/src/NodeInspector.jsx[m
+[36m@@ -3,7 +3,8 @@[m [mfunction formatKey(key) {[m
+     .replaceAll("_", " ")[m
+     .replace([m
+       /^\w/,[m
+[31m-      (letter) => letter.toUpperCase()[m
+[32m+[m[32m      (letter) =>[m
+[32m+[m[32m        letter.toUpperCase()[m
+     );[m
+ }[m
+ [m
+[36m@@ -43,35 +44,84 @@[m [mexport default function NodeInspector({[m
+         </div>[m
+ [m
+         <h2>[m
+[31m-          Select a graph node[m
+[32m+[m[32m          Select a node or relationship[m
+         </h2>[m
+ [m
+         <p className="muted">[m
+           Inspect what was observed,[m
+[31m-          reported, calculated or inferred,[m
+[31m-          and where it came from.[m
+[32m+[m[32m          reported, assumed or inferred;[m
+[32m+[m[32m          why evidence relates to a[m
+[32m+[m[32m          hypothesis; and which model run[m
+[32m+[m[32m          produced it.[m
+         </p>[m
+       </aside>[m
+     );[m
+   }[m
+ [m
+[32m+[m
+[32m+[m[32m  const isEdge =[m
+[32m+[m[32m    node.inspectorType === "edge";[m
+[32m+[m
+[32m+[m[32m  const title =[m
+[32m+[m[32m    node.label[m
+[32m+[m[32m    ?? ([m
+[32m+[m[32m      isEdge[m
+[32m+[m[32m        ? node.kind[m
+[32m+[m[32m        : "Graph item"[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m  const identifier =[m
+[32m+[m[32m    isEdge[m
+[32m+[m[32m      ? node.edge_id[m
+[32m+[m[32m      : node.node_id;[m
+[32m+[m
+[32m+[m[32m  const details = isEdge[m
+[32m+[m[32m    ? Object.fromEntries([m
+[32m+[m[32m        Object.entries(node).filter([m
+[32m+[m[32m          ([key]) =>[m
+[32m+[m[32m            ![[m
+[32m+[m[32m              "inspectorType",[m
+[32m+[m[32m              "displayKind",[m
+[32m+[m[32m              "label",[m
+[32m+[m[32m              "edge_id",[m
+[32m+[m[32m            ].includes(key)[m
+[32m+[m[32m        )[m
+[32m+[m[32m      )[m
+[32m+[m[32m    : ([m
+[32m+[m[32m        node.data[m
+[32m+[m[32m        ?? {}[m
+[32m+[m[32m      );[m
+[32m+[m
+[32m+[m
+   return ([m
+     <aside className="inspector">[m
+       <div className="node-type">[m
+[31m-        {node.displayKind ?? node.kind}[m
+[32m+[m[32m        {node.displayKind[m
+[32m+[m[32m          ?? ([m
+[32m+[m[32m            isEdge[m
+[32m+[m[32m              ? "Relationship"[m
+[32m+[m[32m              : node.kind[m
+[32m+[m[32m          )}[m
+       </div>[m
+ [m
+       <h2>[m
+[31m-        {node.label}[m
+[32m+[m[32m        {title}[m
+       </h2>[m
+ [m
+       <div className="inspector-row">[m
+[31m-        <span>Node ID</span>[m
+[31m-        <strong>{node.node_id}</strong>[m
+[32m+[m[32m        <span>[m
+[32m+[m[32m          {isEdge[m
+[32m+[m[32m            ? "Edge ID"[m
+[32m+[m[32m            : "Node ID"}[m
+[32m+[m[32m        </span>[m
+[32m+[m
+[32m+[m[32m        <strong>[m
+[32m+[m[32m          {identifier}[m
+[32m+[m[32m        </strong>[m
+       </div>[m
+ [m
+       {Object.entries([m
+[31m-        node.data ?? {}[m
+[32m+[m[32m        details[m
+       ).map(([key, value]) => ([m
+         <div[m
+           className="inspector-row"[m
+[1mdiff --git a/frontend/src/graphAdapter.js b/frontend/src/graphAdapter.js[m
+[1mindex d1aaa12..f666950 100644[m
+[1m--- a/frontend/src/graphAdapter.js[m
+[1m+++ b/frontend/src/graphAdapter.js[m
+[36m@@ -3,21 +3,19 @@[m [mconst ROWS = {[m
+ [m
+   hypothesis: 220,[m
+ [m
+[31m-  claim: 420,[m
+[32m+[m[32m  claim: 440,[m
+ [m
+[31m-  evidence_requirement: 590,[m
+[31m-  inference: 590,[m
+[32m+[m[32m  assumption: 660,[m
+ [m
+[31m-  calculation: 760,[m
+[32m+[m[32m  evidence_requirement: 900,[m
+[32m+[m[32m  missing_evidence: 900,[m
+ [m
+[31m-  observation: 930,[m
+[32m+[m[32m  inference: 1120,[m
+[32m+[m[32m  calculation: 1320,[m
+[32m+[m[32m  observation: 1520,[m
+ [m
+[31m-  document: 1100,[m
+[31m-[m
+[31m-  source: 1270,[m
+[31m-  model_run: 1270,[m
+[31m-[m
+[31m-  missing_evidence: 760,[m
+[32m+[m[32m  document: 1740,[m
+[32m+[m[32m  source: 1940,[m
+ };[m
+ [m
+ [m
+[36m@@ -25,36 +23,73 @@[m [mconst KIND_LABELS = {[m
+   anomaly: "Anomaly",[m
+   source: "Source",[m
+   document: "Document",[m
+[32m+[m
+   claim: "Claim",[m
+   hypothesis: "Hypothesis",[m
+[31m-  evidence_requirement: "Evidence requirement",[m
+[32m+[m
+[32m+[m[32m  assumption: "Assumption",[m
+[32m+[m
+[32m+[m[32m  evidence_requirement:[m
+[32m+[m[32m    "Evidence requirement",[m
+[32m+[m
+[32m+[m[32m  missing_evidence:[m
+[32m+[m[32m    "Missing evidence",[m
+[32m+[m
+   observation: "Observation",[m
+   calculation: "Calculation",[m
+   inference: "Inference",[m
+[32m+[m
+   model_run: "Model run",[m
+[31m-  missing_evidence: "Missing evidence",[m
+ };[m
+ [m
+ [m
+[31m-export function toReactFlowNodes(graphNodes) {[m
+[32m+[m[32mconst MAIN_COLUMNS = 4;[m
+[32m+[m[32mconst MAIN_X_GAP = 310;[m
+[32m+[m[32mconst WRAP_Y_GAP = 140;[m
+[32m+[m
+[32m+[m
+[32m+[m[32mexport function toReactFlowNodes([m
+[32m+[m[32m  graphNodes[m
+[32m+[m[32m) {[m
+   const counters = {};[m
+ [m
+   return graphNodes.map((node) => {[m
+     counters[node.kind] =[m
+       counters[node.kind] ?? 0;[m
+ [m
+[31m-    const index = counters[node.kind]++;[m
+[32m+[m[32m    const index =[m
+[32m+[m[32m      counters[node.kind]++;[m
+ [m
+[31m-    let x = 60 + index * 310;[m
+[32m+[m[32m    let x;[m
+[32m+[m[32m    let y;[m
+ [m
+[31m-    // Keep the anomaly roughly centred.[m
+     if (node.kind === "anomaly") {[m
+[31m-      x = 520;[m
+[31m-    }[m
+[31m-[m
+[31m-    // Execution provenance sits off to the side.[m
+[31m-    if (node.kind === "model_run") {[m
+[31m-      x = 900 + index * 310;[m
+[32m+[m[32m      x = 500;[m
+[32m+[m[32m      y = ROWS.anomaly;[m
+[32m+[m[32m    } else if ([m
+[32m+[m[32m      node.kind === "model_run"[m
+[32m+[m[32m    ) {[m
+[32m+[m[32m      // Execution provenance gets its[m
+[32m+[m[32m      // own lane on the right.[m
+[32m+[m[32m      x =[m
+[32m+[m[32m        1400[m
+[32m+[m[32m        + (index % 2) * 310;[m
+[32m+[m
+[32m+[m[32m      y =[m
+[32m+[m[32m        220[m
+[32m+[m[32m        + Math.floor(index / 2)[m
+[32m+[m[32m          * 150;[m
+[32m+[m[32m    } else {[m
+[32m+[m[32m      x =[m
+[32m+[m[32m        60[m
+[32m+[m[32m        + (index % MAIN_COLUMNS)[m
+[32m+[m[32m          * MAIN_X_GAP;[m
+[32m+[m
+[32m+[m[32m      y =[m
+[32m+[m[32m        (ROWS[node.kind] ?? 700)[m
+[32m+[m[32m        + Math.floor([m
+[32m+[m[32m          index / MAIN_COLUMNS[m
+[32m+[m[32m        ) * WRAP_Y_GAP;[m
+     }[m
+ [m
+     return {[m
+[36m@@ -62,12 +97,14 @@[m [mexport function toReactFlowNodes(graphNodes) {[m
+ [m
+       position: {[m
+         x,[m
+[31m-        y: ROWS[node.kind] ?? 600,[m
+[32m+[m[32m        y,[m
+       },[m
+ [m
+       data: {[m
+         ...node,[m
+ [m
+[32m+[m[32m        inspectorType: "node",[m
+[32m+[m
+         displayKind:[m
+           KIND_LABELS[node.kind][m
+           ?? node.kind,[m
+[36m@@ -82,7 +119,9 @@[m [mexport function toReactFlowNodes(graphNodes) {[m
+ }[m
+ [m
+ [m
+[31m-export function toReactFlowEdges(graphEdges) {[m
+[32m+[m[32mexport function toReactFlowEdges([m
+[32m+[m[32m  graphEdges[m
+[32m+[m[32m) {[m
+   return graphEdges.map((edge) => {[m
+     const isChallengeRelation = [[m
+       "contradicts",[m
+[36m@@ -90,20 +129,42 @@[m [mexport function toReactFlowEdges(graphEdges) {[m
+       "competes_with",[m
+     ].includes(edge.kind);[m
+ [m
+[32m+[m[32m    const label =[m
+[32m+[m[32m      edge.kind.replaceAll([m
+[32m+[m[32m        "_",[m
+[32m+[m[32m        " "[m
+[32m+[m[32m      );[m
+[32m+[m
+     return {[m
+       id: edge.edge_id,[m
+ [m
+       source: edge.source,[m
+       target: edge.target,[m
+ [m
+[31m-      label:[m
+[31m-        edge.kind.replaceAll("_", " "),[m
+[32m+[m[32m      label,[m
+[32m+[m
+[32m+[m[32m      animated:[m
+[32m+[m[32m        isChallengeRelation,[m
+ [m
+[31m-      animated: isChallengeRelation,[m
+[32m+[m[32m      className:[m
+[32m+[m[32m        `cg-edge cg-edge--${edge.kind}`,[m
+ [m
+       data: {[m
+[31m-        ...edge.data,[m
+[32m+[m[32m        inspectorType: "edge",[m
+[32m+[m
+[32m+[m[32m        edge_id: edge.edge_id,[m
+[32m+[m
+[32m+[m[32m        source: edge.source,[m
+[32m+[m[32m        target: edge.target,[m
+[32m+[m
+         kind: edge.kind,[m
+[32m+[m
+[32m+[m[32m        displayKind:[m
+[32m+[m[32m          "Relationship",[m
+[32m+[m
+[32m+[m[32m        label,[m
+[32m+[m
+[32m+[m[32m        ...edge.data,[m
+       },[m
+     };[m
+   });[m
+[1mdiff --git a/src/financial_assistant/claimgraph/builder_v2.py b/src/financial_assistant/claimgraph/builder_v2.py[m
+[1mindex b7230a6..e7e18cf 100644[m
+[1m--- a/src/financial_assistant/claimgraph/builder_v2.py[m
+[1m+++ b/src/financial_assistant/claimgraph/builder_v2.py[m
+[36m@@ -411,6 +411,144 @@[m [mdef build_investigation_graph([m
+         )[m
+ [m
+     # -------------------------------------------------[m
+[32m+[m[32m    # -------------------------------------------------[m
+[32m+[m[32m    # Hypothesis audits[m
+[32m+[m[32m    # -------------------------------------------------[m
+[32m+[m
+[32m+[m[32m    for audit in state.hypothesis_audits:[m
+[32m+[m[32m        if audit.hypothesis_id not in hypotheses:[m
+[32m+[m[32m            raise ValueError([m
+[32m+[m[32m                f"Hypothesis audit {audit.audit_id} "[m
+[32m+[m[32m                "references unknown hypothesis_id "[m
+[32m+[m[32m                f"{audit.hypothesis_id}"[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m        if audit.model_run_id not in model_runs:[m
+[32m+[m[32m            raise ValueError([m
+[32m+[m[32m                f"Hypothesis audit {audit.audit_id} "[m
+[32m+[m[32m                "references unknown model_run_id "[m
+[32m+[m[32m                f"{audit.model_run_id}"[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m        hypothesis_node_id = _node_id([m
+[32m+[m[32m            "hypothesis",[m
+[32m+[m[32m            audit.hypothesis_id,[m
+[32m+[m[32m        )[m
+[32m+[m
+[32m+[m[32m        run_node_id = _node_id([m
+[32m+[m[32m            "modelrun",[m
+[32m+[m[32m            audit.model_run_id,[m
+[32m+[m[32m        )[m
+[32m+[m
+[32m+[m[32m        # ---------------------------------------------[m
+[32m+[m[32m        # Explicit assumptions[m
+[32m+[m[32m        # ---------------------------------------------[m
+[32m+[m
+[32m+[m[32m        for index, assumption in enumerate([m
+[32m+[m[32m            audit.assumptions,[m
+[32m+[m[32m            start=1,[m
+[32m+[m[32m        ):[m
+[32m+[m[32m            assumption_node_id = _node_id([m
+[32m+[m[32m                "assumption",[m
+[32m+[m[32m                f"{audit.audit_id}:{index}",[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m            nodes.append([m
+[32m+[m[32m                GraphNode([m
+[32m+[m[32m                    node_id=assumption_node_id,[m
+[32m+[m[32m                    kind=NodeKind.ASSUMPTION,[m
+[32m+[m[32m                    label=assumption,[m
+[32m+[m[32m                    data={[m
+[32m+[m[32m                        "audit_id": audit.audit_id,[m
+[32m+[m[32m                        "hypothesis_id":[m
+[32m+[m[32m                            audit.hypothesis_id,[m
+[32m+[m[32m                        "model_run_id":[m
+[32m+[m[32m                            audit.model_run_id,[m
+[32m+[m[32m                    },[m
+[32m+[m[32m                )[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m            edges.append([m
+[32m+[m[32m                GraphEdge([m
+[32m+[m[32m                    edge_id=_edge_id([m
+[32m+[m[32m                        hypothesis_node_id,[m
+[32m+[m[32m                        EdgeKind.REQUIRES,[m
+[32m+[m[32m                        assumption_node_id,[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                    source=hypothesis_node_id,[m
+[32m+[m[32m                    target=assumption_node_id,[m
+[32m+[m[32m                    kind=EdgeKind.REQUIRES,[m
+[32m+[m[32m                )[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m            edges.append([m
+[32m+[m[32m                GraphEdge([m
+[32m+[m[32m                    edge_id=_edge_id([m
+[32m+[m[32m                        assumption_node_id,[m
+[32m+[m[32m                        EdgeKind.PRODUCED_BY,[m
+[32m+[m[32m                        run_node_id,[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                    source=assumption_node_id,[m
+[32m+[m[32m                    target=run_node_id,[m
+[32m+[m[32m                    kind=EdgeKind.PRODUCED_BY,[m
+[32m+[m[32m                )[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m        # ---------------------------------------------[m
+[32m+[m[32m        # Raw evidence gaps identified by the audit[m
+[32m+[m[32m        # ---------------------------------------------[m
+[32m+[m
+[32m+[m[32m        for index, missing in enumerate([m
+[32m+[m[32m            audit.missing_information,[m
+[32m+[m[32m            start=1,[m
+[32m+[m[32m        ):[m
+[32m+[m[32m            missing_node_id = _node_id([m
+[32m+[m[32m                "missing_evidence",[m
+[32m+[m[32m                f"{audit.audit_id}:{index}",[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m            nodes.append([m
+[32m+[m[32m                GraphNode([m
+[32m+[m[32m                    node_id=missing_node_id,[m
+[32m+[m[32m                    kind=NodeKind.MISSING_EVIDENCE,[m
+[32m+[m[32m                    label=missing,[m
+[32m+[m[32m                    data={[m
+[32m+[m[32m                        "audit_id": audit.audit_id,[m
+[32m+[m[32m                        "hypothesis_id":[m
+[32m+[m[32m                            audit.hypothesis_id,[m
+[32m+[m[32m                        "model_run_id":[m
+[32m+[m[32m                            audit.model_run_id,[m
+[32m+[m[32m                    },[m
+[32m+[m[32m                )[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m            edges.append([m
+[32m+[m[32m                GraphEdge([m
+[32m+[m[32m                    edge_id=_edge_id([m
+[32m+[m[32m                        hypothesis_node_id,[m
+[32m+[m[32m                        EdgeKind.REQUIRES,[m
+[32m+[m[32m                        missing_node_id,[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                    source=hypothesis_node_id,[m
+[32m+[m[32m                    target=missing_node_id,[m
+[32m+[m[32m                    kind=EdgeKind.REQUIRES,[m
+[32m+[m[32m                )[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m            edges.append([m
+[32m+[m[32m                GraphEdge([m
+[32m+[m[32m                    edge_id=_edge_id([m
+[32m+[m[32m                        missing_node_id,[m
+[32m+[m[32m                        EdgeKind.PRODUCED_BY,[m
+[32m+[m[32m                        run_node_id,[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                    source=missing_node_id,[m
+[32m+[m[32m                    target=run_node_id,[m
+[32m+[m[32m                    kind=EdgeKind.PRODUCED_BY,[m
+[32m+[m[32m                )[m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m
+     # -------------------------------------------------[m
+     # Epistemic relationship judgements[m
+     # -------------------------------------------------[m
+[1mdiff --git a/src/financial_assistant/claimgraph/schema_v2.py b/src/financial_assistant/claimgraph/schema_v2.py[m
+[1mindex 178fb7a..be4ae1c 100644[m
+[1m--- a/src/financial_assistant/claimgraph/schema_v2.py[m
+[1m+++ b/src/financial_assistant/claimgraph/schema_v2.py[m
+[36m@@ -15,6 +15,7 @@[m [mclass NodeKind(StrEnum):[m
+     CLAIM = "claim"[m
+     HYPOTHESIS = "hypothesis"[m
+ [m
+[32m+[m[32m    ASSUMPTION = "assumption"[m
+     EVIDENCE_REQUIREMENT = "evidence_requirement"[m
+ [m
+     OBSERVATION = "observation"[m
+[1mdiff --git a/src/financial_assistant/domain.py b/src/financial_assistant/domain.py[m
+[1mindex 967f429..1c88980 100644[m
+[1m--- a/src/financial_assistant/domain.py[m
+[1m+++ b/src/financial_assistant/domain.py[m
+[36m@@ -357,6 +357,11 @@[m [mclass InvestigationState(BaseModel):[m
+         ...[m
+     ] = ()[m
+ [m
+[32m+[m[32m    hypothesis_audits: tuple[[m
+[32m+[m[32m        HypothesisAudit,[m
+[32m+[m[32m        ...[m
+[32m+[m[32m    ] = ()[m
+[32m+[m
+     relationship_assessments: tuple[[m
+         RelationshipAssessment,[m
+         ...[m

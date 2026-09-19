@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from datetime import (
-    datetime,
-    time,
-    timezone,
-)
+from datetime import datetime
 
 from financial_assistant.domain import (
     AnomalyEvent,
@@ -15,21 +11,41 @@ from .models import PairAnomaly
 
 def pair_anomaly_to_event(
     anomaly: PairAnomaly,
+    *,
+    observed_at: datetime,
 ) -> AnomalyEvent:
     """
     Convert a quantitative pair deviation into the
     neutral attention-event contract used by ClaimGraph.
+
+    `observed_at` must represent the point at which the
+    anomaly could actually have been known.
+
+    For a detector based on daily closing prices, that
+    means the relevant market close rather than midnight
+    at the beginning of the monitoring date.
 
     This adapter does NOT assert which company caused
     the divergence and does NOT interpret it as an
     investment signal.
     """
 
-    detected_at = datetime.combine(
-        anomaly.monitoring_end,
-        time.min,
-        tzinfo=timezone.utc,
-    )
+    if (
+        observed_at.tzinfo is None
+        or observed_at.utcoffset() is None
+    ):
+        raise ValueError(
+            "observed_at must be timezone-aware."
+        )
+
+    if (
+        observed_at.date()
+        != anomaly.monitoring_end
+    ):
+        raise ValueError(
+            "observed_at calendar date must match "
+            "anomaly.monitoring_end."
+        )
 
     pair_label = (
         f"{anomaly.ticker_a}/"
@@ -46,15 +62,13 @@ def pair_anomaly_to_event(
     return AnomalyEvent(
         anomaly_id=anomaly.anomaly_id,
 
-        # ticker_a is only the primary routing entity.
-        # ticker_b remains explicitly represented below.
         ticker=anomaly.ticker_a,
 
         related_entities=(
             anomaly.ticker_b,
         ),
 
-        detected_at=detected_at,
+        detected_at=observed_at,
 
         anomaly_type=(
             "cointegration_spread_deviation"
@@ -111,5 +125,8 @@ def pair_anomaly_to_event(
                 anomaly
                 .monitoring_end
                 .isoformat(),
+
+            "observed_at":
+                observed_at.isoformat(),
         },
     )

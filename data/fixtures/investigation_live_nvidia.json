@@ -1,0 +1,1037 @@
+{
+  "schema_version": "0.2",
+  "investigation_id": "INV-NVDA-LIVE-INTEGRATION",
+  "anomaly_id": "A-NVDA-LIVE-INTEGRATION",
+  "ticker": "NVDA",
+  "nodes": [
+    {
+      "node_id": "anomaly:A-NVDA-LIVE-INTEGRATION",
+      "kind": "anomaly",
+      "label": "Synthetic integration anomaly: NVDA moved unusually relative to its recent baseline following a financial-results announcement.",
+      "data": {
+        "anomaly_id": "A-NVDA-LIVE-INTEGRATION",
+        "ticker": "NVDA",
+        "detected_at": "2026-02-26T00:00:00Z",
+        "anomaly_type": "single_security_attention_event",
+        "summary": "Synthetic integration anomaly: NVDA moved unusually relative to its recent baseline following a financial-results announcement.",
+        "severity": 0.8,
+        "related_entities": [],
+        "metadata": {
+          "synthetic_test": "true"
+        }
+      }
+    },
+    {
+      "node_id": "source:442ee107cf",
+      "kind": "source",
+      "label": "nvidia.com",
+      "data": {
+        "publisher": "nvidia.com"
+      }
+    },
+    {
+      "node_id": "document:DOC-2cad770edf91-b7cb056176ca",
+      "kind": "document",
+      "label": "NVIDIA Announces Financial Results for Fourth Quarter and Fiscal 2026",
+      "data": {
+        "document_id": "DOC-2cad770edf91-b7cb056176ca",
+        "title": "NVIDIA Announces Financial Results for Fourth Quarter and Fiscal 2026",
+        "publisher": "nvidia.com",
+        "url": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-fourth-quarter-and-fiscal-2026",
+        "published_at": "2026-02-25T00:00:00Z",
+        "retrieved_at": "2026-09-17T15:28:20.460294Z",
+        "lineage_id": "URL-2cad770edf91"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-CLAIMS-fd99c6fe7e2a",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: claim_extraction",
+      "data": {
+        "run_id": "MR-CLAIMS-fd99c6fe7e2a",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "claim_extraction",
+        "prompt_version": "claim-extraction-v1",
+        "created_at": "2026-09-17T15:28:34.661641Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-HYP-4500b781ccc5",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: hypothesis_generation",
+      "data": {
+        "run_id": "MR-HYP-4500b781ccc5",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "hypothesis_generation",
+        "prompt_version": "hypothesis-generation-v1",
+        "created_at": "2026-09-17T15:28:36.485774Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: hypothesis_audit",
+      "data": {
+        "run_id": "MR-HYP-AUDIT-881a31ec677e",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "hypothesis_audit",
+        "prompt_version": "hypothesis-audit-v1",
+        "created_at": "2026-09-17T15:28:41.407217Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-9d91eb279755",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-9d91eb279755",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-17T15:28:47.875652Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-82becd91e7ff",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-82becd91e7ff",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-17T15:28:48.834403Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-6371a29ca457",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-6371a29ca457",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-17T15:28:48.916164Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-ab9efeae3856",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-ab9efeae3856",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-17T15:28:49.998017Z"
+      }
+    },
+    {
+      "node_id": "claim:C-7e18c3f5e7c8",
+      "kind": "claim",
+      "label": "NVIDIA reported record revenue for the fourth quarter ended January 25, 2026, of $68.1 billion, up 20% from the previous quarter and up 73% from a year ago.",
+      "data": {
+        "claim_id": "C-7e18c3f5e7c8",
+        "text": "NVIDIA reported record revenue for the fourth quarter ended January 25, 2026, of $68.1 billion, up 20% from the previous quarter and up 73% from a year ago.",
+        "claim_type": "reported_fact",
+        "document_id": "DOC-2cad770edf91-b7cb056176ca",
+        "source_quote": "NVIDIA (NASDAQ: NVDA) today reported record revenue for the fourth quarter ended January 25, 2026, of $68.1 billion, up 20% from the previous quarter and up 73% from a year ago.",
+        "model_run_id": "MR-CLAIMS-fd99c6fe7e2a"
+      }
+    },
+    {
+      "node_id": "claim:C-d4229f983edd",
+      "kind": "claim",
+      "label": "For fiscal 2026, NVIDIA's revenue was $215.9 billion, up 65% from a year ago.",
+      "data": {
+        "claim_id": "C-d4229f983edd",
+        "text": "For fiscal 2026, NVIDIA's revenue was $215.9 billion, up 65% from a year ago.",
+        "claim_type": "reported_fact",
+        "document_id": "DOC-2cad770edf91-b7cb056176ca",
+        "source_quote": "For fiscal 2026, revenue was $215.9 billion, up 65% from a year ago.",
+        "model_run_id": "MR-CLAIMS-fd99c6fe7e2a"
+      }
+    },
+    {
+      "node_id": "claim:C-ff955701102f",
+      "kind": "claim",
+      "label": "NVIDIA's outlook for the first quarter of fiscal 2027 includes expected revenue of $78.0 billion, plus or minus 2%.",
+      "data": {
+        "claim_id": "C-ff955701102f",
+        "text": "NVIDIA's outlook for the first quarter of fiscal 2027 includes expected revenue of $78.0 billion, plus or minus 2%.",
+        "claim_type": "forecast",
+        "document_id": "DOC-2cad770edf91-b7cb056176ca",
+        "source_quote": "Revenue is expected to be $78.0 billion, plus or minus 2%.",
+        "model_run_id": "MR-CLAIMS-fd99c6fe7e2a"
+      }
+    },
+    {
+      "node_id": "claim:C-0096a4567b04",
+      "kind": "claim",
+      "label": "Jensen Huang, founder and CEO of NVIDIA, stated that computing demand is growing exponentially and the agentic AI inflection point has arrived.",
+      "data": {
+        "claim_id": "C-0096a4567b04",
+        "text": "Jensen Huang, founder and CEO of NVIDIA, stated that computing demand is growing exponentially and the agentic AI inflection point has arrived.",
+        "claim_type": "attributed_claim",
+        "document_id": "DOC-2cad770edf91-b7cb056176ca",
+        "source_quote": "Computing demand is growing exponentially — the agentic AI inflection point has arrived.",
+        "model_run_id": "MR-CLAIMS-fd99c6fe7e2a"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-1e5067b31233",
+      "kind": "hypothesis",
+      "label": "The anomaly may reflect a market overreaction to the magnitude of NVIDIA's revenue growth, particularly in the context of high expectations surrounding AI-driven demand.",
+      "data": {
+        "hypothesis_id": "H-1e5067b31233",
+        "text": "The anomaly may reflect a market overreaction to the magnitude of NVIDIA's revenue growth, particularly in the context of high expectations surrounding AI-driven demand.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-4500b781ccc5"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-f6273298a1d5",
+      "kind": "hypothesis",
+      "label": "The anomaly could reflect a revaluation of NVIDIA's future growth prospects based on the CEO's statement about the agentic AI inflection point, signaling a fundamental shift in the company's trajectory.",
+      "data": {
+        "hypothesis_id": "H-f6273298a1d5",
+        "text": "The anomaly could reflect a revaluation of NVIDIA's future growth prospects based on the CEO's statement about the agentic AI inflection point, signaling a fundamental shift in the company's trajectory.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-4500b781ccc5"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-a15df0637f41",
+      "kind": "hypothesis",
+      "label": "The anomaly may be explained by a delayed or amplified response to cumulative positive information revealed across multiple financial metrics, including both quarterly and annual results.",
+      "data": {
+        "hypothesis_id": "H-a15df0637f41",
+        "text": "The anomaly may be explained by a delayed or amplified response to cumulative positive information revealed across multiple financial metrics, including both quarterly and annual results.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-4500b781ccc5"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-2756ad959b42",
+      "kind": "hypothesis",
+      "label": "The anomaly may reflect a market mispricing driven by the interplay between NVIDIA's strong reported performance and its forward-looking guidance, which may have altered risk perceptions among investors.",
+      "data": {
+        "hypothesis_id": "H-2756ad959b42",
+        "text": "The anomaly may reflect a market mispricing driven by the interplay between NVIDIA's strong reported performance and its forward-looking guidance, which may have altered risk perceptions among investors.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-4500b781ccc5"
+      }
+    },
+    {
+      "node_id": "assumption:HA-ce17b1434ddd:1",
+      "kind": "assumption",
+      "label": "Market expectations for NVIDIA's revenue growth were exceptionally high prior to the announcement.",
+      "data": {
+        "audit_id": "HA-ce17b1434ddd",
+        "hypothesis_id": "H-1e5067b31233",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "assumption:HA-ce17b1434ddd:2",
+      "kind": "assumption",
+      "label": "The reported revenue growth exceeded those high market expectations.",
+      "data": {
+        "audit_id": "HA-ce17b1434ddd",
+        "hypothesis_id": "H-1e5067b31233",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-ce17b1434ddd:1",
+      "kind": "missing_evidence",
+      "label": "What were the consensus revenue estimates for NVIDIA's fourth quarter prior to the announcement?",
+      "data": {
+        "audit_id": "HA-ce17b1434ddd",
+        "hypothesis_id": "H-1e5067b31233",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-ce17b1434ddd:2",
+      "kind": "missing_evidence",
+      "label": "How did the actual revenue compare to analyst expectations at the time of the announcement?",
+      "data": {
+        "audit_id": "HA-ce17b1434ddd",
+        "hypothesis_id": "H-1e5067b31233",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "assumption:HA-bd4706d4565e:1",
+      "kind": "assumption",
+      "label": "The CEO's statement about the 'agentic AI inflection point' was interpreted by the market as a significant and credible signal of future growth.",
+      "data": {
+        "audit_id": "HA-bd4706d4565e",
+        "hypothesis_id": "H-f6273298a1d5",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "assumption:HA-bd4706d4565e:2",
+      "kind": "assumption",
+      "label": "The market had not fully priced in the potential of agentic AI prior to the statement.",
+      "data": {
+        "audit_id": "HA-bd4706d4565e",
+        "hypothesis_id": "H-f6273298a1d5",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-bd4706d4565e:1",
+      "kind": "missing_evidence",
+      "label": "How did market participants interpret the CEO's statement at the time it was made?",
+      "data": {
+        "audit_id": "HA-bd4706d4565e",
+        "hypothesis_id": "H-f6273298a1d5",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-bd4706d4565e:2",
+      "kind": "missing_evidence",
+      "label": "Was there a notable shift in analyst commentary or investor sentiment following the statement?",
+      "data": {
+        "audit_id": "HA-bd4706d4565e",
+        "hypothesis_id": "H-f6273298a1d5",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "assumption:HA-df9b5ad0088e:1",
+      "kind": "assumption",
+      "label": "Multiple financial metrics (e.g., quarterly and annual revenue) were cumulatively perceived as more positive than individual components would suggest.",
+      "data": {
+        "audit_id": "HA-df9b5ad0088e",
+        "hypothesis_id": "H-a15df0637f41",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "assumption:HA-df9b5ad0088e:2",
+      "kind": "assumption",
+      "label": "The market had not fully internalized the positive implications of prior financial results before the latest announcement.",
+      "data": {
+        "audit_id": "HA-df9b5ad0088e",
+        "hypothesis_id": "H-a15df0637f41",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-df9b5ad0088e:1",
+      "kind": "missing_evidence",
+      "label": "How did the market react to prior financial results leading up to the latest announcement?",
+      "data": {
+        "audit_id": "HA-df9b5ad0088e",
+        "hypothesis_id": "H-a15df0637f41",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-df9b5ad0088e:2",
+      "kind": "missing_evidence",
+      "label": "Were there any notable changes in analyst estimates or institutional positioning in the period leading up to the anomaly?",
+      "data": {
+        "audit_id": "HA-df9b5ad0088e",
+        "hypothesis_id": "H-a15df0637f41",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "assumption:HA-ee0bddf86023:1",
+      "kind": "assumption",
+      "label": "The forward-looking guidance provided by NVIDIA altered investor perceptions of the company's risk profile or growth sustainability.",
+      "data": {
+        "audit_id": "HA-ee0bddf86023",
+        "hypothesis_id": "H-2756ad959b42",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "assumption:HA-ee0bddf86023:2",
+      "kind": "assumption",
+      "label": "The guidance was perceived as more significant or surprising than the actual reported results.",
+      "data": {
+        "audit_id": "HA-ee0bddf86023",
+        "hypothesis_id": "H-2756ad959b42",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-ee0bddf86023:1",
+      "kind": "missing_evidence",
+      "label": "How did the forward guidance compare to market expectations at the time?",
+      "data": {
+        "audit_id": "HA-ee0bddf86023",
+        "hypothesis_id": "H-2756ad959b42",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-ee0bddf86023:2",
+      "kind": "missing_evidence",
+      "label": "Was there a measurable shift in volatility, trading volume, or analyst ratings following the guidance?",
+      "data": {
+        "audit_id": "HA-ee0bddf86023",
+        "hypothesis_id": "H-2756ad959b42",
+        "model_run_id": "MR-HYP-AUDIT-881a31ec677e"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "edge:d69dd9a280b6",
+      "source": "document:DOC-2cad770edf91-b7cb056176ca",
+      "target": "source:442ee107cf",
+      "kind": "published_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:554781514c18",
+      "source": "claim:C-7e18c3f5e7c8",
+      "target": "document:DOC-2cad770edf91-b7cb056176ca",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:9c8f45f02d1e",
+      "source": "claim:C-7e18c3f5e7c8",
+      "target": "modelrun:MR-CLAIMS-fd99c6fe7e2a",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:91004fd4273e",
+      "source": "claim:C-d4229f983edd",
+      "target": "document:DOC-2cad770edf91-b7cb056176ca",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:6ff0f4b964d2",
+      "source": "claim:C-d4229f983edd",
+      "target": "modelrun:MR-CLAIMS-fd99c6fe7e2a",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:9da743d16065",
+      "source": "claim:C-ff955701102f",
+      "target": "document:DOC-2cad770edf91-b7cb056176ca",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:461d66aabdc0",
+      "source": "claim:C-ff955701102f",
+      "target": "modelrun:MR-CLAIMS-fd99c6fe7e2a",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:9dd44bb6b68b",
+      "source": "claim:C-0096a4567b04",
+      "target": "document:DOC-2cad770edf91-b7cb056176ca",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:c9e54ac60afc",
+      "source": "claim:C-0096a4567b04",
+      "target": "modelrun:MR-CLAIMS-fd99c6fe7e2a",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:d7cce782ec8e",
+      "source": "hypothesis:H-1e5067b31233",
+      "target": "anomaly:A-NVDA-LIVE-INTEGRATION",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:12a84849cd8b",
+      "source": "hypothesis:H-1e5067b31233",
+      "target": "modelrun:MR-HYP-4500b781ccc5",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:79e2bb6620c5",
+      "source": "hypothesis:H-f6273298a1d5",
+      "target": "anomaly:A-NVDA-LIVE-INTEGRATION",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:ecfbc57bc039",
+      "source": "hypothesis:H-f6273298a1d5",
+      "target": "modelrun:MR-HYP-4500b781ccc5",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:29e087106602",
+      "source": "hypothesis:H-a15df0637f41",
+      "target": "anomaly:A-NVDA-LIVE-INTEGRATION",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:c7c233232c17",
+      "source": "hypothesis:H-a15df0637f41",
+      "target": "modelrun:MR-HYP-4500b781ccc5",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:6ee0b5a72979",
+      "source": "hypothesis:H-2756ad959b42",
+      "target": "anomaly:A-NVDA-LIVE-INTEGRATION",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:c797f0dbf472",
+      "source": "hypothesis:H-2756ad959b42",
+      "target": "modelrun:MR-HYP-4500b781ccc5",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:1900c22310e8",
+      "source": "hypothesis:H-1e5067b31233",
+      "target": "assumption:HA-ce17b1434ddd:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:1b23fa93ef78",
+      "source": "assumption:HA-ce17b1434ddd:1",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:a7af486294af",
+      "source": "hypothesis:H-1e5067b31233",
+      "target": "assumption:HA-ce17b1434ddd:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:32f2be59ad67",
+      "source": "assumption:HA-ce17b1434ddd:2",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:48a5f95295e2",
+      "source": "hypothesis:H-1e5067b31233",
+      "target": "missing_evidence:HA-ce17b1434ddd:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:dfae3029c832",
+      "source": "missing_evidence:HA-ce17b1434ddd:1",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:f7e1fcc8ef91",
+      "source": "hypothesis:H-1e5067b31233",
+      "target": "missing_evidence:HA-ce17b1434ddd:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:68031e364ead",
+      "source": "missing_evidence:HA-ce17b1434ddd:2",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:10fe984667d4",
+      "source": "hypothesis:H-f6273298a1d5",
+      "target": "assumption:HA-bd4706d4565e:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:3019522114c2",
+      "source": "assumption:HA-bd4706d4565e:1",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:c6965a3c3f9d",
+      "source": "hypothesis:H-f6273298a1d5",
+      "target": "assumption:HA-bd4706d4565e:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:7ccec10e815f",
+      "source": "assumption:HA-bd4706d4565e:2",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:aff0be739cbf",
+      "source": "hypothesis:H-f6273298a1d5",
+      "target": "missing_evidence:HA-bd4706d4565e:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:c5cf0665bbc2",
+      "source": "missing_evidence:HA-bd4706d4565e:1",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:65e337913d7e",
+      "source": "hypothesis:H-f6273298a1d5",
+      "target": "missing_evidence:HA-bd4706d4565e:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:74ec2741ef07",
+      "source": "missing_evidence:HA-bd4706d4565e:2",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:0c0198047433",
+      "source": "hypothesis:H-a15df0637f41",
+      "target": "assumption:HA-df9b5ad0088e:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:0c10a9c55503",
+      "source": "assumption:HA-df9b5ad0088e:1",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:b6e3eb351800",
+      "source": "hypothesis:H-a15df0637f41",
+      "target": "assumption:HA-df9b5ad0088e:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:c7ce6556dcaf",
+      "source": "assumption:HA-df9b5ad0088e:2",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:4098d364e85a",
+      "source": "hypothesis:H-a15df0637f41",
+      "target": "missing_evidence:HA-df9b5ad0088e:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:b5501b6904c1",
+      "source": "missing_evidence:HA-df9b5ad0088e:1",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:1ecb9a002d84",
+      "source": "hypothesis:H-a15df0637f41",
+      "target": "missing_evidence:HA-df9b5ad0088e:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:5296fb9ca657",
+      "source": "missing_evidence:HA-df9b5ad0088e:2",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:68c5955baa78",
+      "source": "hypothesis:H-2756ad959b42",
+      "target": "assumption:HA-ee0bddf86023:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:8a8ccd97a69c",
+      "source": "assumption:HA-ee0bddf86023:1",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:f56191404254",
+      "source": "hypothesis:H-2756ad959b42",
+      "target": "assumption:HA-ee0bddf86023:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:8e3d8152843a",
+      "source": "assumption:HA-ee0bddf86023:2",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:af8fe9f449ce",
+      "source": "hypothesis:H-2756ad959b42",
+      "target": "missing_evidence:HA-ee0bddf86023:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:0c8ad34a2436",
+      "source": "missing_evidence:HA-ee0bddf86023:1",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:5fd7071c6d6b",
+      "source": "hypothesis:H-2756ad959b42",
+      "target": "missing_evidence:HA-ee0bddf86023:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:992679a68d3c",
+      "source": "missing_evidence:HA-ee0bddf86023:2",
+      "target": "modelrun:MR-HYP-AUDIT-881a31ec677e",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:49fbefe96852",
+      "source": "claim:C-7e18c3f5e7c8",
+      "target": "hypothesis:H-1e5067b31233",
+      "kind": "supports",
+      "data": {
+        "assessment_id": "RA-3f76bcc6605b",
+        "strength": 0.7,
+        "rationale": "The claim provides evidence of NVIDIA's strong revenue growth (73% year-over-year), which aligns with the hypothesis that the market may have overreacted to the magnitude of NVIDIA's revenue growth, especially in the context of high expectations around AI-driven demand.",
+        "assumptions": [
+          "High revenue growth can contribute to market overreaction if expectations were already elevated."
+        ],
+        "missing_information": [
+          "Market expectations prior to the earnings release",
+          "Investor sentiment analysis around the time of the report"
+        ],
+        "model_run_id": "MR-REL-9d91eb279755"
+      }
+    },
+    {
+      "edge_id": "edge:9d9692218fd4",
+      "source": "claim:C-d4229f983edd",
+      "target": "hypothesis:H-1e5067b31233",
+      "kind": "supports",
+      "data": {
+        "assessment_id": "RA-dfbadd7253ee",
+        "strength": 0.6,
+        "rationale": "The claim shows full-year revenue growth of 65% for fiscal 2026, reinforcing the idea of sustained high growth that could contribute to market overreaction, as suggested by the hypothesis.",
+        "assumptions": [
+          "Sustained high growth over a fiscal year increases the likelihood of elevated market expectations."
+        ],
+        "missing_information": [
+          "Comparison of NVIDIA's growth to industry peers",
+          "Analyst consensus estimates for the fiscal year"
+        ],
+        "model_run_id": "MR-REL-9d91eb279755"
+      }
+    },
+    {
+      "edge_id": "edge:0162acefb38b",
+      "source": "claim:C-ff955701102f",
+      "target": "hypothesis:H-1e5067b31233",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-c1fe55d6a6ca",
+        "strength": 0.4,
+        "rationale": "The claim provides NVIDIA's forward-looking revenue guidance, which is relevant background for understanding market expectations. However, it does not directly support or contradict the hypothesis of a past market overreaction.",
+        "assumptions": [
+          "Guidance influences future expectations but does not directly inform past market reactions."
+        ],
+        "missing_information": [
+          "Market reaction to the guidance",
+          "Comparison of guidance to analyst expectations"
+        ],
+        "model_run_id": "MR-REL-9d91eb279755"
+      }
+    },
+    {
+      "edge_id": "edge:d0d215a07cb7",
+      "source": "claim:C-0096a4567b04",
+      "target": "hypothesis:H-1e5067b31233",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-cf543990ec36",
+        "strength": 0.5,
+        "rationale": "The claim includes a statement from NVIDIA's CEO about exponential computing demand and an AI inflection point, which provides context for why expectations around NVIDIA might have been high. However, it does not directly support or weaken the hypothesis of market overreaction.",
+        "assumptions": [
+          "CEO statements can influence market sentiment and expectations."
+        ],
+        "missing_information": [
+          "Market sentiment analysis following the CEO's statement",
+          "Timing of the statement relative to market movements"
+        ],
+        "model_run_id": "MR-REL-9d91eb279755"
+      }
+    },
+    {
+      "edge_id": "edge:ef41585f1762",
+      "source": "claim:C-7e18c3f5e7c8",
+      "target": "hypothesis:H-f6273298a1d5",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-eb46e405908a",
+        "strength": 0.4,
+        "rationale": "The claim provides financial performance data (record revenue) that could be consistent with a positive revaluation of NVIDIA's growth prospects. However, it does not directly link to the CEO's statement about the agentic AI inflection point or provide evidence that the market is revaluing the company based on that statement.",
+        "assumptions": [
+          "Strong financial performance alone does not necessarily indicate a revaluation based on strategic or technological inflection points."
+        ],
+        "missing_information": [
+          "Evidence of how the market interpreted NVIDIA's financial results in the context of the CEO's statement about agentic AI."
+        ],
+        "model_run_id": "MR-REL-82becd91e7ff"
+      }
+    },
+    {
+      "edge_id": "edge:433791350d6d",
+      "source": "claim:C-d4229f983edd",
+      "target": "hypothesis:H-f6273298a1d5",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-c52bffbe5787",
+        "strength": 0.4,
+        "rationale": "The claim provides full-year revenue growth, which supports the idea of strong performance but does not directly connect to the hypothesis that the market is revaluing NVIDIA based on the CEO's statement about an agentic AI inflection point.",
+        "assumptions": [
+          "Fiscal year revenue growth is a lagging indicator and may not reflect recent market sentiment or forward-looking expectations."
+        ],
+        "missing_information": [
+          "Market reaction data or analyst commentary linking the full-year results to the CEO's statement."
+        ],
+        "model_run_id": "MR-REL-82becd91e7ff"
+      }
+    },
+    {
+      "edge_id": "edge:cd9fc26733f8",
+      "source": "claim:C-ff955701102f",
+      "target": "hypothesis:H-f6273298a1d5",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-40ef71b3b60f",
+        "strength": 0.5,
+        "rationale": "The claim provides forward-looking revenue guidance, which could reflect confidence in future growth. However, it does not directly indicate that the market is revaluing NVIDIA based on the CEO's statement about an agentic AI inflection point.",
+        "assumptions": [
+          "Revenue guidance is based on known factors and may not fully reflect the market's interpretation of strategic statements."
+        ],
+        "missing_information": [
+          "Market reaction to the guidance in the context of the CEO's statement, or whether the guidance exceeded expectations due to the inflection point narrative."
+        ],
+        "model_run_id": "MR-REL-82becd91e7ff"
+      }
+    },
+    {
+      "edge_id": "edge:f992ea7a4f93",
+      "source": "claim:C-0096a4567b04",
+      "target": "hypothesis:H-f6273298a1d5",
+      "kind": "supports",
+      "data": {
+        "assessment_id": "RA-937498f23185",
+        "strength": 0.7,
+        "rationale": "The claim directly presents the CEO's statement about the agentic AI inflection point, which is the core element of the hypothesis. This statement could serve as a basis for a market revaluation of NVIDIA's future growth prospects.",
+        "assumptions": [
+          "The CEO's statement is a credible signal of a strategic inflection point that could influence market expectations."
+        ],
+        "missing_information": [
+          "Evidence of how the market interpreted or reacted to the CEO's statement."
+        ],
+        "model_run_id": "MR-REL-82becd91e7ff"
+      }
+    },
+    {
+      "edge_id": "edge:f10d3ec833aa",
+      "source": "claim:C-7e18c3f5e7c8",
+      "target": "hypothesis:H-a15df0637f41",
+      "kind": "supports",
+      "data": {
+        "assessment_id": "RA-1d6123978f47",
+        "strength": 0.7,
+        "rationale": "The claim that NVIDIA reported record revenue for the fourth quarter, with significant increases both quarter-over-quarter and year-over-year, provides evidence of strong financial performance. This aligns with the hypothesis that the anomaly may be due to a delayed or amplified response to cumulative positive information across financial metrics.",
+        "assumptions": [
+          "The revenue growth reflects positively on NVIDIA's overall performance and prospects."
+        ],
+        "missing_information": [
+          "Investor sentiment and market reaction to the quarterly results at the time of release."
+        ],
+        "model_run_id": "MR-REL-6371a29ca457"
+      }
+    },
+    {
+      "edge_id": "edge:f620e5535384",
+      "source": "claim:C-d4229f983edd",
+      "target": "hypothesis:H-a15df0637f41",
+      "kind": "supports",
+      "data": {
+        "assessment_id": "RA-e71020232c16",
+        "strength": 0.7,
+        "rationale": "The claim that NVIDIA's full fiscal year 2026 revenue was $215.9 billion, representing a 65% increase year-over-year, further supports the hypothesis by indicating sustained positive financial performance across multiple metrics (annual in this case), which could contribute to a cumulative positive information effect.",
+        "assumptions": [
+          "The annual revenue growth is perceived as a continuation of strong performance."
+        ],
+        "missing_information": [
+          "How the market interpreted and reacted to the full-year results in the context of prior quarterly reports."
+        ],
+        "model_run_id": "MR-REL-6371a29ca457"
+      }
+    },
+    {
+      "edge_id": "edge:c9ecb775a97c",
+      "source": "claim:C-ff955701102f",
+      "target": "hypothesis:H-a15df0637f41",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-fdfff9e3833d",
+        "strength": 0.4,
+        "rationale": "The claim about NVIDIA's outlook for the next quarter provides forward-looking information. While it does not directly support or contradict the hypothesis about past cumulative information effects, it offers context about the company's ongoing performance trajectory, which may be relevant to understanding market behavior.",
+        "assumptions": [
+          "The market may have incorporated the future outlook when evaluating past performance."
+        ],
+        "missing_information": [
+          "Timing of when the outlook was released relative to the anomaly period.",
+          "Investor expectations prior to the outlook announcement."
+        ],
+        "model_run_id": "MR-REL-6371a29ca457"
+      }
+    },
+    {
+      "edge_id": "edge:11021113fa20",
+      "source": "claim:C-0096a4567b04",
+      "target": "hypothesis:H-a15df0637f41",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-81ece465db10",
+        "strength": 0.5,
+        "rationale": "The claim that NVIDIA's CEO stated computing demand is growing exponentially and that an 'agentic AI inflection point' has arrived provides qualitative context about the company's strategic positioning and market opportunity. While it does not directly support or weaken the hypothesis about cumulative financial information, it may help explain why such information could have a delayed or amplified impact.",
+        "assumptions": [
+          "The CEO's statement reflects a genuine and widely recognized market shift."
+        ],
+        "missing_information": [
+          "How the market interpreted the CEO's statement at the time it was made.",
+          "Whether the statement was consistent with prior messaging or represented a new narrative."
+        ],
+        "model_run_id": "MR-REL-6371a29ca457"
+      }
+    },
+    {
+      "edge_id": "edge:eb8b33db5381",
+      "source": "claim:C-7e18c3f5e7c8",
+      "target": "hypothesis:H-2756ad959b42",
+      "kind": "supports",
+      "data": {
+        "assessment_id": "RA-1814cb2d7974",
+        "strength": 0.7,
+        "rationale": "The claim that NVIDIA reported record revenue for the fourth quarter, showing significant growth both quarter-over-quarter and year-over-year, supports the hypothesis that the market anomaly may be driven by strong reported performance. This evidence makes the hypothesis more plausible by indicating that NVIDIA's actual financial results were exceptionally strong, which could contribute to a market mispricing if investors overreacted or misinterpreted the implications of such performance.",
+        "assumptions": [
+          "Strong financial performance can influence investor sentiment and risk perceptions."
+        ],
+        "missing_information": [
+          "Investor reaction to NVIDIA's Q4 earnings report",
+          "Market expectations prior to the earnings release"
+        ],
+        "model_run_id": "MR-REL-ab9efeae3856"
+      }
+    },
+    {
+      "edge_id": "edge:f34c8748f36c",
+      "source": "claim:C-d4229f983edd",
+      "target": "hypothesis:H-2756ad959b42",
+      "kind": "supports",
+      "data": {
+        "assessment_id": "RA-4a91f18d323a",
+        "strength": 0.6,
+        "rationale": "The claim that NVIDIA's full fiscal year 2026 revenue was $215.9 billion, representing a 65% year-over-year increase, supports the hypothesis by reinforcing the narrative of strong performance. This long-term growth trend could contribute to a market mispricing if investors overvalued the company based on sustained high growth, altering their risk perceptions.",
+        "assumptions": [
+          "Sustained high growth over a fiscal year can influence investor expectations and risk assessments."
+        ],
+        "missing_information": [
+          "How the market priced NVIDIA prior to the fiscal year results",
+          "Analyst expectations for fiscal 2026 revenue"
+        ],
+        "model_run_id": "MR-REL-ab9efeae3856"
+      }
+    },
+    {
+      "edge_id": "edge:39a350ad978c",
+      "source": "claim:C-ff955701102f",
+      "target": "hypothesis:H-2756ad959b42",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-4517ee29dc7b",
+        "strength": 0.5,
+        "rationale": "The claim that NVIDIA provided forward-looking guidance of $78.0 billion in revenue for the first quarter of fiscal 2027, with a ±2% range, serves as relevant background to the hypothesis. While it does not directly support or contradict the hypothesis, it provides context about NVIDIA's expectations for future performance, which could influence investor risk perceptions. However, without knowing how this guidance compared to market expectations, its direct impact on the hypothesis is uncertain.",
+        "assumptions": [
+          "Forward guidance can influence investor expectations and risk perceptions."
+        ],
+        "missing_information": [
+          "Market expectations for NVIDIA's Q1 fiscal 2027 revenue prior to the guidance",
+          "Investor interpretation of the guidance relative to expectations"
+        ],
+        "model_run_id": "MR-REL-ab9efeae3856"
+      }
+    },
+    {
+      "edge_id": "edge:c8c2685939b4",
+      "source": "claim:C-0096a4567b04",
+      "target": "hypothesis:H-2756ad959b42",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-a85b21750023",
+        "strength": 0.5,
+        "rationale": "The claim that Jensen Huang stated computing demand is growing exponentially and that the agentic AI inflection point has arrived provides strategic context about NVIDIA's position in the market. While it does not directly support or contradict the hypothesis of market mispricing, it offers background on the company's narrative and growth trajectory, which could influence investor sentiment and risk perceptions. However, without evidence of how this statement was received by the market, its direct impact on the hypothesis is limited.",
+        "assumptions": [
+          "Executive statements can shape investor perceptions of a company's growth potential."
+        ],
+        "missing_information": [
+          "Market reaction to Jensen Huang's statement",
+          "Whether the statement was consistent with or surprising relative to prior expectations"
+        ],
+        "model_run_id": "MR-REL-ab9efeae3856"
+      }
+    }
+  ]
+}

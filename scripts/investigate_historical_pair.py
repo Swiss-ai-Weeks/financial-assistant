@@ -42,6 +42,12 @@ from financial_assistant.llm import (
     generate_hypotheses,
 )
 
+from financial_assistant.retrieval.query_expansion import (
+    expand_research_task,
+)
+
+
+
 from financial_assistant.research.planner import (
     plan_research,
 )
@@ -490,25 +496,79 @@ def main() -> None:
     plan = plan_research(
         event
     )
+	
+	# -------------------------------------------------
+# 4. NVIDIA NIM.
+#
+# Create the model provider before retrieval because
+# Nemotron now participates in query expansion as
+# well as the later evidence reasoning stages.
+# -------------------------------------------------
+
+
+    provider = OpenAICompatibleProvider(
+
+            provider_name="nvidia-nim",
+
+            model_name=(
+                "nvidia/"
+                "llama-3.3-nemotron-super-49b-v1.5"
+            ),
+
+            base_url=(
+                "http://127.0.0.1:8000/v1"
+            ),
+
+            max_tokens=2048,
+        )
+
+
+    def query_expander(
+            task,
+            *,
+            as_of,
+        ):
+            """
+            Adapter satisfying the QueryExpander Protocol.
+
+            The retrieval service only sees the generic
+            QueryExpander interface. It does not need to know
+            anything about NVIDIA or the model provider.
+            """
+
+            return expand_research_task(
+                provider,
+                task,
+                as_of=as_of,
+            )	
+            
+            
+
+    provider = OpenAICompatibleProvider(
+            provider_name="nvidia-nim",
+            model_name=(
+				"nvidia/"
+				"llama-3.3-nemotron-super-49b-v1.5"),
+			base_url=("http://127.0.0.1:8000/v1"),
+			max_tokens=2048,)
+
 
     print()
-    print(
-        "RESEARCH CUTOFF:",
-        plan.as_of.isoformat(),
-    )
+    print("RESEARCH CUTOFF:",
+          plan.as_of.isoformat(),
+	)
 
-    print(
-        "RESEARCH TASKS:",
-        len(plan.tasks),
-    )
+    print("RESEARCH TASKS:",
+          len(plan.tasks),
+	)
 
     for task in plan.tasks:
         print(
-            " ",
-            task.priority,
-            task.kind.value,
-            task.entities,
-        )
+                " ",
+                task.priority,
+                task.kind.value,
+                task.entities,
+            )
 
     # -------------------------------------------------
     # 4. Execute retrieval.
@@ -547,20 +607,17 @@ def main() -> None:
                 }
             )
 
-	
-	print()
+    print()
 
-	print(
+    print(
     	"RETRIEVAL SOURCES:",
     	"BookReader corpus + SearXNG web",
 	)
-
-	print(
+    print(
     	"BOOKREADER CORPUS:",
     	"Financial Times + Wall Street Journal",
 	)
-
-	print(
+    print(
     	"BOOKREADER LOOKBACK:",
     	"45 calendar days",
 	)
@@ -586,8 +643,42 @@ def main() -> None:
             per_task_limit=(
                 args.per_task_limit
             ),
+
+            query_expander=(
+                query_expander
+            ),
         ),
     )
+
+
+	
+# -------------------------------------------------
+# Inspect the LLM-generated retrieval plan.
+#
+# These are search hypotheses generated before
+# evidence retrieval. They are not evidence and
+# should not be interpreted as causal findings.
+# -------------------------------------------------
+
+    print()
+    print(
+		"QUERY EXPANSIONS:",
+		len(bundle.query_expansions),
+	)
+
+    for expansion in bundle.query_expansions:
+        print()
+        print(
+                " ",
+                expansion.task_id,)
+
+    for query in expansion.queries:
+        print(
+                "   ",
+                query.relation.value,
+                "|",
+                query.text,
+            )
 
     status_counts = Counter(
         record.status.value
@@ -596,13 +687,13 @@ def main() -> None:
 
     print()
     print(
-        "RETRIEVAL EXECUTED AT:",
-        retrieved_at.isoformat(),
+            "RETRIEVAL EXECUTED AT:",
+            retrieved_at.isoformat(),
     )
 
     print(
-        "SEARCH HITS:",
-        len(bundle.hits),
+            "SEARCH HITS:",
+            len(bundle.hits),
     )
 
     for status in RetrievalStatus:
@@ -672,27 +763,7 @@ def main() -> None:
             "loosening any evidential rule."
         )
 
-    # -------------------------------------------------
-    # 6. NVIDIA NIM.
-    # -------------------------------------------------
-
-    provider = OpenAICompatibleProvider(
-        provider_name="nvidia-nim",
-
-        model_name=(
-            "nvidia/"
-            "llama-3.3-nemotron-super-49b-v1.5"
-        ),
-
-        base_url=(
-            "http://127.0.0.1:8000/v1"
-        ),
-
-        max_tokens=2048,
-    )
-
-    # -------------------------------------------------
-    # 7. Source-grounded claim extraction.
+    # 6. Source-grounded claim extraction. re-use nvidia nim provider created earlier.
     # -------------------------------------------------
 
     extraction_results = timed(

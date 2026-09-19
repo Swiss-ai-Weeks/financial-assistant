@@ -1,0 +1,51 @@
+{
+  "simulation_id": "SIM-HPS-AXP-BAC-2026-02-27",
+  "signal_id": "HPS-AXP-BAC-2026-02-27",
+  "as_of": "2026-02-27",
+  "ticker_a": "AXP",
+  "ticker_b": "BAC",
+  "entry_date": "2026-03-02",
+  "entry_metric": "open",
+  "gross_capital": 10000.0,
+  "signal_z_score": -2.723779989183839,
+  "beta": 0.9959613281745511,
+  "strategy_direction": "long_spread",
+  "weight_a": 0.5010117109405979,
+  "weight_b": -0.4989882890594021,
+  "notional_a": 5010.117109405979,
+  "notional_b": -4989.882890594021,
+  "forward_returns": [
+    {
+      "horizon_observations": 1,
+      "date": "2026-03-02",
+      "return_pct": -0.354659420319087,
+      "pnl": -35.465942031908696
+    },
+    {
+      "horizon_observations": 5,
+      "date": "2026-03-06",
+      "return_pct": -0.5015968293855713,
+      "pnl": -50.159682938557125
+    },
+    {
+      "horizon_observations": 10,
+      "date": "2026-03-13",
+      "return_pct": 1.3016900442418853,
+      "pnl": 130.16900442418853
+    },
+    {
+      "horizon_observations": 20,
+      "date": "2026-03-27",
+      "return_pct": -0.22619788883062875,
+      "pnl": -22.619788883062874
+    }
+  ],
+  "latest_date": "2026-09-16",
+  "return_to_latest_pct": -8.448801946175474,
+  "pnl_to_latest": -844.8801946175473,
+  "max_drawdown_pct": -13.217535415894687,
+  "mean_reversion_date": null,
+  "mean_reversion_return_pct": null,
+  "transaction_cost_bps": 0.0,
+  "simulator_version": "pair-forward-v2"
+}
