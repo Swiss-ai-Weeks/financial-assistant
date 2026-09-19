@@ -1,151 +1,51 @@
-function formatKey(key) {
-  return key
-    .replaceAll("_", " ")
-    .replace(
-      /^\w/,
-      (letter) =>
-        letter.toUpperCase()
-    );
-}
-
+import { nodeData, provenanceFor, sourceCategory, labelFor } from './reviewModel.js';
+import { ReviewActions } from './ReviewWorkspace';
 
 function renderValue(value) {
-  if (
-    value === null ||
-    value === undefined
-  ) {
-    return "—";
-  }
-
-  if (typeof value === "object") {
-    return (
-      <pre className="inspector-json">
-        {JSON.stringify(
-          value,
-          null,
-          2
-        )}
-      </pre>
-    );
-  }
-
+  if (value === null || value === undefined) return 'Not recorded';
+  if (typeof value === 'object') return <pre className="inspector-json">{JSON.stringify(value,null,2)}</pre>;
   return String(value);
 }
+function Details({data}) {
+  return Object.entries(data).map(([key,value]) => <div className="inspector-row" key={key}>
+    <span>{labelFor(key)}</span><div>{['url','source_uri'].includes(key) && /^https?:\/\//i.test(String(value))
+      ? <a href={value} target="_blank" rel="noreferrer">Open source ↗</a> : renderValue(value)}</div>
+  </div>);
+}
 
-
-export default function NodeInspector({
-  node,
-}) {
-  if (!node) {
-    return (
-      <aside className="inspector">
-        <div className="node-type">
-          Inspector
-        </div>
-
-        <h2>
-          Select a node or relationship
-        </h2>
-
-        <p className="muted">
-          Inspect what was observed,
-          reported, assumed or inferred;
-          why evidence relates to a
-          hypothesis; and which model run
-          produced it.
-        </p>
-      </aside>
-    );
-  }
-
-
-  const isEdge =
-    node.inspectorType === "edge";
-
-  const title =
-    node.label
-    ?? (
-      isEdge
-        ? node.kind
-        : "Graph item"
-    );
-
-  const identifier =
-    isEdge
-      ? node.edge_id
-      : node.node_id;
-
-  const details = isEdge
-    ? Object.fromEntries(
-        Object.entries(node).filter(
-          ([key]) =>
-            ![
-              "inspectorType",
-              "displayKind",
-              "label",
-              "edge_id",
-            ].includes(key)
-        )
-      )
-    : (
-        node.data
-        ?? {}
-      );
-
-
-  return (
-    <aside className="inspector">
-      <div className="node-type">
-        {node.displayKind
-          ?? (
-            isEdge
-              ? "Relationship"
-              : node.kind
-          )}
-      </div>
-
-      <h2>
-        {title}
-      </h2>
-
-      <div className="inspector-row">
-        <span>
-          {isEdge
-            ? "Edge ID"
-            : "Node ID"}
-        </span>
-
-        <strong>
-          {identifier}
-        </strong>
-      </div>
-
-      {Object.entries(
-        details
-      ).map(([key, value]) => (
-        <div
-          className="inspector-row"
-          key={key}
-        >
-          <span>
-            {formatKey(key)}
-          </span>
-
-          {key === "url" ? (
-            <a
-              href={String(value)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Open source
-            </a>
-          ) : (
-            <strong>
-              {renderValue(value)}
-            </strong>
-          )}
-        </div>
-      ))}
-    </aside>
-  );
+export default function NodeInspector({node, graph, onSelect, onAction, reviewState}) {
+  if (!node) return <aside className="inspector"><div className="node-type">Inspector</div><h2>Select a node or relationship</h2>
+    <p className="muted">Inspect observations, calculations, assumptions, and inferences. Follow sources and model runs, then record a human review.</p>
+    <p className="muted">Evidence roles belong to relationships: one item can support one hypothesis and weaken another.</p></aside>;
+  const isEdge = node.inspectorType === 'edge';
+  const details = isEdge ? {...node.data, ...Object.fromEntries(Object.entries(node).filter(([key]) => !['data','inspectorType','displayKind','label','edge_id'].includes(key)))}
+    : node.data ?? Object.fromEntries(Object.entries(node).filter(([key]) => !['node_id','kind','label','inspectorType','displayKind','support','counter','humanState'].includes(key)));
+  const provenance = provenanceFor(graph,node);
+  const selectId = id => {const target = graph.nodes.find(n => n.node_id === id); if (target) onSelect(target);};
+  return <aside className="inspector">
+    <div className="node-type">{isEdge ? 'Relationship' : labelFor(node.kind)}</div><h2>{node.label ?? labelFor(node.kind)}</h2>
+    <Details data={{[isEdge ? 'edge_id' : 'node_id']:node.edge_id ?? node.node_id}} />
+    {!isEdge && ['source','document','calculation','inference'].includes(node.kind) && <Details data={{display_source_category:sourceCategory(node)}} />}
+    {isEdge && <div className="relationship-endpoints"><button onClick={() => selectId(node.source)}>Inspect source node</button><span>{labelFor(node.kind)}</span><button onClick={() => selectId(node.target)}>Inspect target node</button></div>}
+    {!isEdge && <section><h3>Epistemic relationships</h3>{provenance.relationships.length ? provenance.relationships.map(e => {
+      const outgoing = e.source === node.node_id;
+      const other = graph.nodes.find(n => n.node_id === (outgoing ? e.target : e.source));
+      return <div className="relationship-row" key={e.edge_id}><button className="relation-button" onClick={() => onSelect({...e,inspectorType:'edge'})}>{outgoing ? '→' : '←'} {labelFor(e.kind)}</button>
+        <button className="text-button" onClick={() => other && onSelect(other)}>{other?.label ?? 'Unresolved reference'}</button></div>;
+    }) : <p className="muted">No relationships recorded.</p>}</section>}
+    <section><h3>Source provenance</h3>
+      {provenance.sources.length ? provenance.sources.map(source => <div className="source-reference" key={source.node_id}><button className="text-button" onClick={() => onSelect(source)}>{source.label}</button><p className="muted">{sourceCategory(source)} · {source.node_id}</p>
+        {nodeData(source).url && <Details data={{url:nodeData(source).url}} />}</div>) : <p className="muted">No linked source document recorded for this item.</p>}
+      <p className="muted">Source categories are recorded metadata, not reliability ratings.</p>
+    </section>
+    <section><h3>Execution provenance</h3>{provenance.runs.length ? provenance.runs.map(run => <div className="execution-reference" key={run.node_id}>
+      <button className="text-button" onClick={() => onSelect(run)}>{run.node_id}</button><Details data={nodeData(run)} />
+    </div>) : <p className="muted">Execution provenance unavailable for this item.</p>}
+      <Details data={{agent_action:details.agent_action ?? details.action_id, tool:details.tool ?? details.tool_name,
+        retrieval_query:details.query ?? details.retrieval_query, validation_state:details.validation_state}} />
+      <p className="muted">A model run records execution metadata; it does not validate a proposition. Missing tool/query fields are not reconstructed.</p>
+    </section>
+    <section><h3>Recorded item fields</h3><Details data={details} /></section>
+    <ReviewActions onAction={onAction} item={node} state={reviewState} />
+  </aside>;
 }
