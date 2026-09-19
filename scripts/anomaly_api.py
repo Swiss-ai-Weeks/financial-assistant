@@ -21,6 +21,15 @@ from financial_assistant.anomaly_detection.models import (
 )
 
 
+from financial_assistant.investigation_llm import (
+    InvestigationGraphBuilder,
+)
+
+from financial_assistant.llm.registry import (
+    list_targets,
+)
+
+
 HOST = "127.0.0.1"
 PORT = 8001
 
@@ -73,6 +82,13 @@ ALL_FITS = tuple(
     )
     for record in FIT_RECORDS
 )
+
+
+
+GRAPH_BUILDER = InvestigationGraphBuilder()
+
+
+
 
 
 UNIVERSE_GROUP_BY_PAIR = {
@@ -347,6 +363,29 @@ class Handler(
 
 
     def do_GET(self) -> None:
+        if self.path == "/api/model-targets":
+
+            targets = [
+                {
+                    "id": target.id,
+                    "label": target.label,
+                    "provider": target.provider,
+                    "model_name": target.model_name,
+                }
+
+                for target in list_targets()
+            ]
+
+            self.send_json(
+                200,
+                {
+                    "targets": targets,
+                },
+            )
+
+            return
+
+
         if self.path == "/api/health":
             self.send_json(
                 200,
@@ -380,21 +419,11 @@ class Handler(
 
 
     def do_POST(self) -> None:
-        if (
-            self.path
-            != "/api/anomalies/scan"
-        ):
-            self.send_json(
-                404,
-                {
-                    "error":
-                        "not found"
-                },
-            )
-
-            return
-
         try:
+            # ---------------------------------------------
+            # Parse the JSON request body once.
+            # ---------------------------------------------
+
             length = int(
                 self.headers.get(
                     "Content-Length",
@@ -412,33 +441,119 @@ class Handler(
                 else {}
             )
 
-            result = scan(
-                corr_min=float(
-                    request.get(
-                        "corr_min",
-                        0.65,
-                    )
-                ),
 
-                alpha=float(
-                    request.get(
-                        "alpha",
-                        0.05,
-                    )
-                ),
+            # =============================================
+            # ANOMALY SCAN
+            # =============================================
 
-                entry=float(
-                    request.get(
-                        "entry",
-                        1.5,
-                    )
-                ),
-            )
+            if (
+                self.path
+                == "/api/anomalies/scan"
+            ):
+                result = scan(
+                    corr_min=float(
+                        request.get(
+                            "corr_min",
+                            0.65,
+                        )
+                    ),
+
+                    alpha=float(
+                        request.get(
+                            "alpha",
+                            0.05,
+                        )
+                    ),
+
+                    entry=float(
+                        request.get(
+                            "entry",
+                            1.5,
+                        )
+                    ),
+                )
+
+                self.send_json(
+                    200,
+                    result,
+                )
+
+                return
+
+
+            # =============================================
+            # BUILD CLAIMGRAPH INVESTIGATION
+            #
+            # This invokes the selected LLM target.
+            # It creates hypotheses and evidence
+            # requirements, but NOT evidence.
+            # =============================================
+
+            if (
+                self.path
+                == "/api/investigations/build"
+            ):
+                graph = GRAPH_BUILDER.build(
+                    target_id=
+                        request["target_id"],
+
+                    ticker_a=
+                        request["ticker_a"],
+
+                    ticker_b=
+                        request["ticker_b"],
+
+                    signal_date=
+                        request["signal_date"],
+
+                    z_score=float(
+                        request["z_score"]
+                    ),
+
+                    correlation=float(
+                        request["correlation"]
+                    ),
+
+                    cointegration_p=float(
+                        request[
+                            "cointegration_p"
+                        ]
+                    ),
+                )
+
+                self.send_json(
+                    200,
+                    graph,
+                )
+
+                return
+
+
+            # =============================================
+            # UNKNOWN ROUTE
+            # =============================================
 
             self.send_json(
-                200,
-                result,
+                404,
+                {
+                    "error":
+                        "not found"
+                },
             )
+
+
+        except KeyError as exc:
+            self.send_json(
+                400,
+                {
+                    "error":
+                        "missing required field",
+
+                    "field":
+                        str(exc),
+                },
+            )
+
 
         except Exception as exc:
             self.send_json(
