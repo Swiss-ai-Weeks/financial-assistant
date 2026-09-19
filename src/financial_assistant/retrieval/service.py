@@ -131,6 +131,7 @@ def execute_research_plan(
             query,
             task_id=task.task_id,
             limit=per_task_limit,
+            as_of=plan.as_of,
         )
 
         for hit in hits:

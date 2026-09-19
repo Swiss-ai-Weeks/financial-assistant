@@ -1,4 +1,8 @@
-from datetime import date
+from datetime import (
+    date,
+    datetime,
+    timezone,
+)
 
 from financial_assistant.anomaly_detection import (
     PairAnomaly,
@@ -8,6 +12,16 @@ from financial_assistant.anomaly_detection import (
 from financial_assistant.research import (
     ResearchTaskKind,
     plan_research,
+)
+
+
+OBSERVED_AT = datetime(
+    2026,
+    9,
+    16,
+    20,
+    0,
+    tzinfo=timezone.utc,
 )
 
 
@@ -68,7 +82,8 @@ def make_pair_anomaly() -> PairAnomaly:
 
 def test_pair_anomaly_generates_research_for_both_legs():
     anomaly = pair_anomaly_to_event(
-        make_pair_anomaly()
+        make_pair_anomaly(),
+        observed_at=OBSERVED_AT,
     )
 
     plan = plan_research(
@@ -82,6 +97,8 @@ def test_pair_anomaly_generates_research_for_both_legs():
     assert plan.as_of == (
         anomaly.detected_at
     )
+
+    assert plan.as_of == OBSERVED_AT
 
     entity_tasks = {
         (
@@ -132,7 +149,8 @@ def test_pair_anomaly_generates_research_for_both_legs():
 
 def test_research_plan_does_not_assert_causality():
     anomaly = pair_anomaly_to_event(
-        make_pair_anomaly()
+        make_pair_anomaly(),
+        observed_at=OBSERVED_AT,
     )
 
     plan = plan_research(
@@ -154,7 +172,8 @@ def test_research_plan_does_not_assert_causality():
 
 def test_research_planning_is_deterministic():
     anomaly = pair_anomaly_to_event(
-        make_pair_anomaly()
+        make_pair_anomaly(),
+        observed_at=OBSERVED_AT,
     )
 
     first = plan_research(

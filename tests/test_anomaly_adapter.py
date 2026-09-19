@@ -1,4 +1,11 @@
-from datetime import date
+
+from datetime import (
+    date,
+    datetime,
+    timezone,
+)
+
+import pytest
 
 from financial_assistant.anomaly_detection import (
     PairAnomaly,
@@ -69,9 +76,20 @@ def make_pair_anomaly() -> PairAnomaly:
     )
 
 
+OBSERVED_AT = datetime(
+    2026,
+    9,
+    16,
+    20,
+    0,
+    tzinfo=timezone.utc,
+)
+
+
 def test_pair_anomaly_converts_to_claimgraph_event():
     event = pair_anomaly_to_event(
-        make_pair_anomaly()
+        make_pair_anomaly(),
+        observed_at=OBSERVED_AT,
     )
 
     assert event.anomaly_id == (
@@ -98,7 +116,8 @@ def test_pair_anomaly_converts_to_claimgraph_event():
 
 def test_pair_anomaly_metadata_survives_graph_build():
     event = pair_anomaly_to_event(
-        make_pair_anomaly()
+        make_pair_anomaly(),
+        observed_at=OBSERVED_AT,
     )
 
     state = InvestigationState(
@@ -127,3 +146,37 @@ def test_pair_anomaly_metadata_survives_graph_build():
         ]
         == ["BBB"]
     )
+
+def test_observation_time_must_be_aware():
+    with pytest.raises(
+        ValueError,
+        match="timezone-aware",
+    ):
+        pair_anomaly_to_event(
+            make_pair_anomaly(),
+            observed_at=datetime(
+                2026,
+                9,
+                16,
+                20,
+                0,
+            ),
+        )
+
+
+def test_observation_date_must_match_anomaly():
+    with pytest.raises(
+        ValueError,
+        match="must match",
+    ):
+        pair_anomaly_to_event(
+            make_pair_anomaly(),
+            observed_at=datetime(
+                2026,
+                9,
+                17,
+                20,
+                0,
+                tzinfo=timezone.utc,
+            ),
+        )
