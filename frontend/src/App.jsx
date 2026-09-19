@@ -14,6 +14,71 @@ import "./App.css";
 import "./index.css";
 
 
+function mergeGraphPatch(
+  current,
+  patch,
+) {
+  if (!current) {
+    return current;
+  }
+
+
+  const nodes = new Map(
+    current.nodes.map(
+      (node) => [
+        node.node_id,
+        node,
+      ]
+    )
+  );
+
+
+  const edges = new Map(
+    current.edges.map(
+      (edge) => [
+        edge.edge_id,
+        edge,
+      ]
+    )
+  );
+
+
+  for (
+    const node
+    of patch.new_nodes ?? []
+  ) {
+    nodes.set(
+      node.node_id,
+      node,
+    );
+  }
+
+
+  for (
+    const edge
+    of patch.new_edges ?? []
+  ) {
+    edges.set(
+      edge.edge_id,
+      edge,
+    );
+  }
+
+
+  return {
+    ...current,
+
+    nodes: [
+      ...nodes.values(),
+    ],
+
+    edges: [
+      ...edges.values(),
+    ],
+  };
+}
+
+
 export default function App() {
   const [graph, setGraph] =
     useState(null);
@@ -37,6 +102,17 @@ export default function App() {
     investigationRunning,
     setInvestigationRunning,
   ] = useState(false);
+
+
+  const [
+    researchRunning,
+    setResearchRunning,
+  ] = useState(false);
+
+  const [
+    researchError,
+    setResearchError,
+  ] = useState(null);
 
   const [
     startupError,
@@ -246,6 +322,128 @@ export default function App() {
   }
 
 
+  async function researchNode(
+    node,
+  ) {
+    if (!selectedTarget) {
+      setResearchError(
+        "No model target selected."
+      );
+
+      return;
+    }
+
+
+    if (!graph?.pair) {
+      setResearchError(
+        "Research requires a live "
+        + "anomaly investigation."
+      );
+
+      return;
+    }
+
+
+    const asOf =
+      graph.as_of
+      ?? selectedCandidate?.signal_date
+      ?? selectedCandidate?.as_of;
+
+
+    if (!asOf) {
+      setResearchError(
+        "Investigation has no historical "
+        + "cutoff date."
+      );
+
+      return;
+    }
+
+
+    setResearchRunning(true);
+    setResearchError(null);
+
+
+    try {
+      const response =
+        await fetch(
+          "/api/research/node",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body: JSON.stringify({
+              target_id:
+                selectedTarget,
+
+              pair:
+                graph.pair,
+
+              as_of:
+                asOf,
+
+              node: {
+                node_id:
+                  node.node_id,
+
+                kind:
+                  node.kind,
+
+                label:
+                  node.label,
+              },
+            }),
+          },
+        );
+
+
+      const payload =
+        await response.json();
+
+
+      if (!response.ok) {
+        throw new Error(
+          payload.detail
+          ?? payload.error
+          ?? `HTTP ${response.status}`
+        );
+      }
+
+
+      /*
+       * Research extends the existing graph.
+       *
+       * It does NOT replace the original
+       * investigation.
+       */
+      setGraph(
+        (current) =>
+          mergeGraphPatch(
+            current,
+            payload,
+          )
+      );
+    }
+    catch (err) {
+      console.error(err);
+
+      setResearchError(
+        `Research failed: ${
+          err.message
+          ?? String(err)
+        }`
+      );
+    }
+    finally {
+      setResearchRunning(false);
+    }
+  }
+
+
   if (startupError) {
     return (
       <div className="app-shell">
@@ -443,6 +641,18 @@ export default function App() {
 
         <NodeInspector
           node={selectedNode}
+
+          onResearch={
+            researchNode
+          }
+
+          researchRunning={
+            researchRunning
+          }
+
+          researchError={
+            researchError
+          }
         />
 
       </main>

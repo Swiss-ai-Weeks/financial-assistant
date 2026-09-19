@@ -20,6 +20,10 @@ from financial_assistant.anomaly_detection.models import (
     PairFit,
 )
 
+from financial_assistant.research_node import (
+    ResearchNodeService,
+)
+
 
 from financial_assistant.investigation_llm import (
     InvestigationGraphBuilder,
@@ -83,7 +87,9 @@ ALL_FITS = tuple(
     for record in FIT_RECORDS
 )
 
-
+RESEARCH_NODE_SERVICE = (
+    ResearchNodeService()
+)
 
 GRAPH_BUILDER = InvestigationGraphBuilder()
 
@@ -527,6 +533,51 @@ class Handler(
                 )
 
                 return
+
+                
+                        # =============================================
+            # HUMAN-TRIGGERED NODE RESEARCH
+            # =============================================
+
+            if (
+                self.path
+                == "/api/research/node"
+            ):
+                patch = (
+                    RESEARCH_NODE_SERVICE
+                    .research(
+                        target_id=
+                            request[
+                                "target_id"
+                            ],
+
+                        pair=
+                            request[
+                                "pair"
+                            ],
+
+                        as_of=
+                            request[
+                                "as_of"
+                            ],
+
+                        node=
+                            request[
+                                "node"
+                            ],
+                    )
+                )
+
+                self.send_json(
+                    200,
+                    patch,
+                )
+
+                return
+
+
+
+
 
 
             # =============================================

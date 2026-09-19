@@ -6,6 +6,21 @@ ROOT="/home/nvidia/prototype/financial-assistant"
 
 cd "$ROOT"
 
+# ---------------------------------------------------------
+# Private BookReader corpus
+#
+# The token is read into the process environment but
+# never printed.
+# ---------------------------------------------------------
+
+export BOOKREADER_BASE_URL="${BOOKREADER_BASE_URL:-https://proxmox.tail1d9782.ts.net}"
+
+BOOKREADER_TOKEN_FILE="$HOME/.config/claimgraph/bookreader_token"
+
+if [[ -z "${BOOKREADER_API_TOKEN:-}" && -s "$BOOKREADER_TOKEN_FILE" ]]; then
+  export BOOKREADER_API_TOKEN="$(cat "$BOOKREADER_TOKEN_FILE")"
+fi
+
 mkdir -p "$ROOT/.run"
 mkdir -p "$ROOT/logs"
 
@@ -59,16 +74,36 @@ else
   echo $! \
     > "$ROOT/.run/anomaly_api.pid"
 
-  sleep 2
+  echo "[WAIT] Waiting for anomaly API..."
 
-  if curl -fsS \
-    http://127.0.0.1:8001/api/health \
-    >/dev/null
-  then
+  api_ready=false
+
+  for attempt in $(seq 1 60); do
+    if curl -fsS \
+      http://127.0.0.1:8001/api/health \
+      >/dev/null 2>&1
+    then
+      api_ready=true
+      break
+    fi
+
+    # Stop waiting if the process itself died.
+    if [[ -f "$ROOT/.run/anomaly_api.pid" ]]; then
+      api_pid="$(cat "$ROOT/.run/anomaly_api.pid")"
+
+      if ! kill -0 "$api_pid" 2>/dev/null; then
+        break
+      fi
+    fi
+
+    sleep 1
+  done
+
+  if [[ "$api_ready" == "true" ]]; then
     echo "[OK] Anomaly API started."
   else
     echo
-    echo "ERROR: anomaly API did not start."
+    echo "ERROR: anomaly API did not become healthy."
     echo "See:"
     echo "  tail -100 logs/anomaly_api.log"
     exit 1

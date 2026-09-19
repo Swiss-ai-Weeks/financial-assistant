@@ -11,8 +11,8 @@ function formatKey(key) {
 
 function renderValue(value) {
   if (
-    value === null ||
-    value === undefined
+    value === null
+    || value === undefined
   ) {
     return "—";
   }
@@ -33,8 +33,19 @@ function renderValue(value) {
 }
 
 
+const RESEARCHABLE_KINDS =
+  new Set([
+    "hypothesis",
+    "evidence_requirement",
+    "missing_evidence",
+  ]);
+
+
 export default function NodeInspector({
   node,
+  onResearch,
+  researchRunning = false,
+  researchError = null,
 }) {
   if (!node) {
     return (
@@ -49,10 +60,10 @@ export default function NodeInspector({
 
         <p className="muted">
           Inspect what was observed,
-          reported, assumed or inferred;
+          calculated, assumed or inferred;
           why evidence relates to a
-          hypothesis; and which model run
-          produced it.
+          hypothesis; and which model or
+          tool produced it.
         </p>
       </aside>
     );
@@ -62,6 +73,7 @@ export default function NodeInspector({
   const isEdge =
     node.inspectorType === "edge";
 
+
   const title =
     node.label
     ?? (
@@ -70,31 +82,72 @@ export default function NodeInspector({
         : "Graph item"
     );
 
+
   const identifier =
     isEdge
       ? node.edge_id
       : node.node_id;
 
-  const details = isEdge
-    ? Object.fromEntries(
-        Object.entries(node).filter(
-          ([key]) =>
-            ![
-              "inspectorType",
-              "displayKind",
-              "label",
-              "edge_id",
-            ].includes(key)
-        )
+
+  /*
+   * Cytoscape exposes our node properties directly
+   * through event.target.data().
+   *
+   * Older ClaimGraph fixtures sometimes also contain
+   * a nested `data` object, so merge both forms.
+   */
+  const nestedDetails =
+    (
+      !isEdge
+      && typeof node.data === "object"
+      && node.data !== null
+    )
+      ? node.data
+      : {};
+
+
+  const topLevelDetails =
+    Object.fromEntries(
+      Object.entries(node).filter(
+        ([key]) =>
+          ![
+            "id",
+            "node_id",
+            "edge_id",
+            "label",
+            "kind",
+            "data",
+            "inspectorType",
+            "displayKind",
+          ].includes(key)
       )
-    : (
-        node.data
-        ?? {}
-      );
+    );
+
+
+  const details =
+    isEdge
+      ? topLevelDetails
+      : {
+          ...nestedDetails,
+          ...topLevelDetails,
+        };
+
+
+  const canResearch =
+    (
+      !isEdge
+      && RESEARCHABLE_KINDS.has(
+        node.kind
+      )
+      && Boolean(node.node_id)
+      && Boolean(node.label)
+      && Boolean(onResearch)
+    );
 
 
   return (
     <aside className="inspector">
+
       <div className="node-type">
         {node.displayKind
           ?? (
@@ -104,9 +157,11 @@ export default function NodeInspector({
           )}
       </div>
 
+
       <h2>
         {title}
       </h2>
+
 
       <div className="inspector-row">
         <span>
@@ -119,6 +174,7 @@ export default function NodeInspector({
           {identifier}
         </strong>
       </div>
+
 
       {Object.entries(
         details
@@ -146,6 +202,44 @@ export default function NodeInspector({
           )}
         </div>
       ))}
+
+
+      {canResearch && (
+        <div className="research-control">
+
+          <button
+            type="button"
+            className="research-node-button"
+
+            disabled={
+              researchRunning
+            }
+
+            onClick={() => {
+              onResearch(node);
+            }}
+          >
+            {researchRunning
+              ? "RESEARCHING…"
+              : "RESEARCH THIS NODE"}
+          </button>
+
+          <p className="research-help">
+            Search for material that can
+            support, contradict or contextualize
+            this node.
+          </p>
+
+        </div>
+      )}
+
+
+      {researchError && (
+        <div className="research-error">
+          {researchError}
+        </div>
+      )}
+
     </aside>
   );
 }
