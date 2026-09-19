@@ -62,6 +62,7 @@ class SearxngSearchProvider:
         *,
         task_id: str,
         limit: int = 5,
+        as_of: datetime | None = None,
     ) -> tuple[SearchHit, ...]:
         if limit < 1:
             raise ValueError(

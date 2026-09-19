@@ -1,0 +1,1241 @@
+{
+  "schema_version": "0.2",
+  "investigation_id": "INV-GS-UAL-2026-03-20",
+  "anomaly_id": "PAIR-GS-UAL-2026-03-20",
+  "ticker": "GS",
+  "nodes": [
+    {
+      "node_id": "anomaly:PAIR-GS-UAL-2026-03-20",
+      "kind": "anomaly",
+      "label": "GS/UAL cointegration spread deviation: z=2.14 versus threshold 2.00",
+      "data": {
+        "anomaly_id": "PAIR-GS-UAL-2026-03-20",
+        "ticker": "GS",
+        "detected_at": "2026-03-20T20:00:00Z",
+        "anomaly_type": "cointegration_spread_deviation",
+        "summary": "GS/UAL cointegration spread deviation: z=2.14 versus threshold 2.00",
+        "severity": null,
+        "related_entities": [
+          "UAL"
+        ],
+        "metadata": {
+          "pair": "GS/UAL",
+          "ticker_a": "GS",
+          "ticker_b": "UAL",
+          "z_score": 2.1363041714010023,
+          "max_abs_z": 2.1363041714010023,
+          "threshold": 2.0,
+          "n_days_flagged": 1,
+          "relative_direction": "a_above_equilibrium",
+          "beta": 1.044981281619669,
+          "const": 1.8539747135942188,
+          "formation_start": "2025-03-19",
+          "formation_end": "2026-03-19",
+          "monitoring_start": "2026-03-20",
+          "monitoring_end": "2026-03-20",
+          "observed_at": "2026-03-20T20:00:00+00:00"
+        }
+      }
+    },
+    {
+      "node_id": "source:70219070ee",
+      "kind": "source",
+      "label": "ul.com",
+      "data": {
+        "publisher": "ul.com"
+      }
+    },
+    {
+      "node_id": "document:DOC-fd5178d2eebb-4f2dc862c9f3",
+      "kind": "document",
+      "label": "Global Market Access Regulatory Newsletter – Q1 2026",
+      "data": {
+        "document_id": "DOC-fd5178d2eebb-4f2dc862c9f3",
+        "title": "Global Market Access Regulatory Newsletter – Q1 2026",
+        "publisher": "ul.com",
+        "url": "https://www.ul.com/news/global-market-access-regulatory-newsletter-q1-2026",
+        "published_at": "2026-03-11T00:00:00Z",
+        "published_date_only": true,
+        "retrieved_at": "2026-09-19T10:38:15.365795Z",
+        "lineage_id": "URL-fd5178d2eebb"
+      }
+    },
+    {
+      "node_id": "source:b05ebe7697",
+      "kind": "source",
+      "label": "goldmansachs.com",
+      "data": {
+        "publisher": "goldmansachs.com"
+      }
+    },
+    {
+      "node_id": "document:DOC-1bd0d7dfb45f-33c71df4d36b",
+      "kind": "document",
+      "label": "10,000 Small Businesses Voices",
+      "data": {
+        "document_id": "DOC-1bd0d7dfb45f-33c71df4d36b",
+        "title": "10,000 Small Businesses Voices",
+        "publisher": "goldmansachs.com",
+        "url": "https://www.goldmansachs.com/community-transformation/10000-small-businesses-voices",
+        "published_at": "2025-10-27T00:00:00Z",
+        "published_date_only": true,
+        "retrieved_at": "2026-09-19T10:38:15.365795Z",
+        "lineage_id": "URL-1bd0d7dfb45f"
+      }
+    },
+    {
+      "node_id": "document:DOC-ba3b7e176d62-93621ca10902",
+      "kind": "document",
+      "label": "Investor Relations",
+      "data": {
+        "document_id": "DOC-ba3b7e176d62-93621ca10902",
+        "title": "Investor Relations",
+        "publisher": "goldmansachs.com",
+        "url": "https://www.goldmansachs.com/investor-relations",
+        "published_at": "2024-07-19T00:00:00Z",
+        "published_date_only": true,
+        "retrieved_at": "2026-09-19T10:38:15.365795Z",
+        "lineage_id": "URL-ba3b7e176d62"
+      }
+    },
+    {
+      "node_id": "source:e74fc09d91",
+      "kind": "source",
+      "label": "stockanalysis.com",
+      "data": {
+        "publisher": "stockanalysis.com"
+      }
+    },
+    {
+      "node_id": "document:DOC-d2c7e94a783d-1a3ae8fcdb23",
+      "kind": "document",
+      "label": "The Goldman Sachs Group (GS) Stock Price & Overview",
+      "data": {
+        "document_id": "DOC-d2c7e94a783d-1a3ae8fcdb23",
+        "title": "The Goldman Sachs Group (GS) Stock Price & Overview",
+        "publisher": "stockanalysis.com",
+        "url": "https://stockanalysis.com/stocks/gs/",
+        "published_at": "1999-05-03T00:00:00Z",
+        "published_date_only": true,
+        "retrieved_at": "2026-09-19T10:38:15.365795Z",
+        "lineage_id": "URL-d2c7e94a783d"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-CLAIMS-94a7441f0ea1",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: claim_extraction",
+      "data": {
+        "run_id": "MR-CLAIMS-94a7441f0ea1",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "claim_extraction",
+        "prompt_version": "claim-extraction-v1",
+        "created_at": "2026-09-19T10:39:11.149888Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-CLAIMS-71bad357c49b",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: claim_extraction",
+      "data": {
+        "run_id": "MR-CLAIMS-71bad357c49b",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "claim_extraction",
+        "prompt_version": "claim-extraction-v1",
+        "created_at": "2026-09-19T10:39:14.411991Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-HYP-784d7478aaf8",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: hypothesis_generation",
+      "data": {
+        "run_id": "MR-HYP-784d7478aaf8",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "hypothesis_generation",
+        "prompt_version": "hypothesis-generation-v1",
+        "created_at": "2026-09-19T10:39:23.780504Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: hypothesis_audit",
+      "data": {
+        "run_id": "MR-HYP-AUDIT-7596242713e8",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "hypothesis_audit",
+        "prompt_version": "hypothesis-audit-v1",
+        "created_at": "2026-09-19T10:39:36.268703Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-b44938d44d7b",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-b44938d44d7b",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-19T10:39:46.970429Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-df8c9a4fee23",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-df8c9a4fee23",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-19T10:39:46.240858Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-7edb36d4de55",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-7edb36d4de55",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-19T10:39:48.438258Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-6b115486ea29",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-6b115486ea29",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-19T10:39:45.630942Z"
+      }
+    },
+    {
+      "node_id": "claim:C-8ce2ddedf60f",
+      "kind": "claim",
+      "label": "Goldman Sachs 10,000 Small Businesses Voices helps small business owners in the United States advocate for policies that matter to them and that will help their businesses, employees, and communities.",
+      "data": {
+        "claim_id": "C-8ce2ddedf60f",
+        "text": "Goldman Sachs 10,000 Small Businesses Voices helps small business owners in the United States advocate for policies that matter to them and that will help their businesses, employees, and communities.",
+        "claim_type": "reported_fact",
+        "document_id": "DOC-1bd0d7dfb45f-33c71df4d36b",
+        "source_quote": "Goldman Sachs 10,000 Small Businesses Voices helps small business owners in the United States advocate for policies that matter to them and that will help their businesses, employees, and communities.",
+        "model_run_id": "MR-CLAIMS-94a7441f0ea1"
+      }
+    },
+    {
+      "node_id": "claim:C-db326b40e855",
+      "kind": "claim",
+      "label": "The Voices community is comprised of 10,000 Small Businesses program graduates from across the country.",
+      "data": {
+        "claim_id": "C-db326b40e855",
+        "text": "The Voices community is comprised of 10,000 Small Businesses program graduates from across the country.",
+        "claim_type": "reported_fact",
+        "document_id": "DOC-1bd0d7dfb45f-33c71df4d36b",
+        "source_quote": "The Voices community, comprised of 10,000 Small Businesses program graduates from across the country,",
+        "model_run_id": "MR-CLAIMS-94a7441f0ea1"
+      }
+    },
+    {
+      "node_id": "claim:C-257cfcac7759",
+      "kind": "claim",
+      "label": "Goldman Sachs' strategy is anchored in its world-class, interconnected Global Banking & Markets and Asset & Wealth Management franchises.",
+      "data": {
+        "claim_id": "C-257cfcac7759",
+        "text": "Goldman Sachs' strategy is anchored in its world-class, interconnected Global Banking & Markets and Asset & Wealth Management franchises.",
+        "claim_type": "reported_fact",
+        "document_id": "DOC-ba3b7e176d62-93621ca10902",
+        "source_quote": "Our strategy is anchored in our world-class, interconnected Global Banking & Markets and Asset & Wealth Management franchises, where we have proven our success through our leadership positions, scale, and exceptional talent.",
+        "model_run_id": "MR-CLAIMS-71bad357c49b"
+      }
+    },
+    {
+      "node_id": "claim:C-604a2ee86f00",
+      "kind": "claim",
+      "label": "Goldman Sachs aspires to be the world’s most exceptional financial institution, united by shared values of partnership, client service, integrity, and excellence.",
+      "data": {
+        "claim_id": "C-604a2ee86f00",
+        "text": "Goldman Sachs aspires to be the world’s most exceptional financial institution, united by shared values of partnership, client service, integrity, and excellence.",
+        "claim_type": "reported_fact",
+        "document_id": "DOC-ba3b7e176d62-93621ca10902",
+        "source_quote": "We aspire to be the world’s most exceptional financial institution, united by our shared values of partnership, client service, integrity, and excellence.",
+        "model_run_id": "MR-CLAIMS-71bad357c49b"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-9d4749ca18f8",
+      "kind": "hypothesis",
+      "label": "The deviation in the GS/UAL cointegration spread may reflect a reevaluation of Goldman Sachs' strategic positioning within its Global Banking & Markets franchise, potentially altering perceived risk or valuation relative to United Airlines.",
+      "data": {
+        "hypothesis_id": "H-9d4749ca18f8",
+        "text": "The deviation in the GS/UAL cointegration spread may reflect a reevaluation of Goldman Sachs' strategic positioning within its Global Banking & Markets franchise, potentially altering perceived risk or valuation relative to United Airlines.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-784d7478aaf8"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-b055664984d9",
+      "kind": "hypothesis",
+      "label": "The anomaly could reflect a shift in market expectations regarding the interconnectedness of financial and travel sectors, possibly due to unobserved macroeconomic or policy developments affecting both industries differently.",
+      "data": {
+        "hypothesis_id": "H-b055664984d9",
+        "text": "The anomaly could reflect a shift in market expectations regarding the interconnectedness of financial and travel sectors, possibly due to unobserved macroeconomic or policy developments affecting both industries differently.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-784d7478aaf8"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-ffe72227b142",
+      "kind": "hypothesis",
+      "label": "One possibility is that the spread deviation may be explained by a change in the perceived long-term growth trajectory of Goldman Sachs, influenced by initiatives like the 10,000 Small Businesses Voices program, which may affect investor sentiment toward its non-traditional revenue streams.",
+      "data": {
+        "hypothesis_id": "H-ffe72227b142",
+        "text": "One possibility is that the spread deviation may be explained by a change in the perceived long-term growth trajectory of Goldman Sachs, influenced by initiatives like the 10,000 Small Businesses Voices program, which may affect investor sentiment toward its non-traditional revenue streams.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-784d7478aaf8"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-ca3c0e200223",
+      "kind": "hypothesis",
+      "label": "The move may reflect a temporary misalignment in the relative valuation of GS and UAL due to unobserved liquidity or positioning dynamics in the market for one or both stocks.",
+      "data": {
+        "hypothesis_id": "H-ca3c0e200223",
+        "text": "The move may reflect a temporary misalignment in the relative valuation of GS and UAL due to unobserved liquidity or positioning dynamics in the market for one or both stocks.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-784d7478aaf8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-952f42ada812:1",
+      "kind": "assumption",
+      "label": "Goldman Sachs' strategic positioning within its Global Banking & Markets franchise has recently changed or been re-evaluated by market participants.",
+      "data": {
+        "audit_id": "HA-952f42ada812",
+        "hypothesis_id": "H-9d4749ca18f8",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-952f42ada812:2",
+      "kind": "assumption",
+      "label": "Such a reevaluation would materially affect the perceived risk or valuation of GS relative to UAL.",
+      "data": {
+        "audit_id": "HA-952f42ada812",
+        "hypothesis_id": "H-9d4749ca18f8",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-952f42ada812:3",
+      "kind": "assumption",
+      "label": "The cointegration spread deviation is sensitive to changes in strategic positioning within GS' business segments.",
+      "data": {
+        "audit_id": "HA-952f42ada812",
+        "hypothesis_id": "H-9d4749ca18f8",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-952f42ada812:1",
+      "kind": "missing_evidence",
+      "label": "Has there been any recent public disclosure or analyst commentary regarding changes in GS' Global Banking & Markets strategy?",
+      "data": {
+        "audit_id": "HA-952f42ada812",
+        "hypothesis_id": "H-9d4749ca18f8",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-952f42ada812:2",
+      "kind": "missing_evidence",
+      "label": "Is there evidence that market participants have revised their risk or valuation assumptions for GS specifically tied to its strategic positioning?",
+      "data": {
+        "audit_id": "HA-952f42ada812",
+        "hypothesis_id": "H-9d4749ca18f8",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-952f42ada812:3",
+      "kind": "missing_evidence",
+      "label": "How have GS' peers in the banking sector performed relative to the broader market during the same period?",
+      "data": {
+        "audit_id": "HA-952f42ada812",
+        "hypothesis_id": "H-9d4749ca18f8",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-69a8bc366b74:1",
+      "kind": "assumption",
+      "label": "There have been unobserved macroeconomic or policy developments that differentially impact the financial and travel sectors.",
+      "data": {
+        "audit_id": "HA-69a8bc366b74",
+        "hypothesis_id": "H-b055664984d9",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-69a8bc366b74:2",
+      "kind": "assumption",
+      "label": "Such developments would lead to a reassessment of the relationship between GS and UAL.",
+      "data": {
+        "audit_id": "HA-69a8bc366b74",
+        "hypothesis_id": "H-b055664984d9",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-69a8bc366b74:3",
+      "kind": "assumption",
+      "label": "The cointegration model has not already accounted for typical sector-specific macroeconomic sensitivities.",
+      "data": {
+        "audit_id": "HA-69a8bc366b74",
+        "hypothesis_id": "H-b055664984d9",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-69a8bc366b74:1",
+      "kind": "missing_evidence",
+      "label": "Are there any recent macroeconomic or policy announcements that could disproportionately affect either the financial or travel sectors?",
+      "data": {
+        "audit_id": "HA-69a8bc366b74",
+        "hypothesis_id": "H-b055664984d9",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-69a8bc366b74:2",
+      "kind": "missing_evidence",
+      "label": "Have there been any shifts in sector correlations or betas that would explain a change in the GS/UAL relationship?",
+      "data": {
+        "audit_id": "HA-69a8bc366b74",
+        "hypothesis_id": "H-b055664984d9",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-69a8bc366b74:3",
+      "kind": "missing_evidence",
+      "label": "Is there evidence of sector-specific risk factors that have changed recently and could explain the deviation?",
+      "data": {
+        "audit_id": "HA-69a8bc366b74",
+        "hypothesis_id": "H-b055664984d9",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-c8fdbfe0dfc8:1",
+      "kind": "assumption",
+      "label": "The 10,000 Small Businesses Voices program has had a measurable impact on investor sentiment toward GS' non-traditional revenue streams.",
+      "data": {
+        "audit_id": "HA-c8fdbfe0dfc8",
+        "hypothesis_id": "H-ffe72227b142",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-c8fdbfe0dfc8:2",
+      "kind": "assumption",
+      "label": "This sentiment shift is significant enough to influence the relative valuation of GS compared to UAL.",
+      "data": {
+        "audit_id": "HA-c8fdbfe0dfc8",
+        "hypothesis_id": "H-ffe72227b142",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-c8fdbfe0dfc8:3",
+      "kind": "assumption",
+      "label": "The cointegration spread is sensitive to changes in sentiment around GS' small business initiatives.",
+      "data": {
+        "audit_id": "HA-c8fdbfe0dfc8",
+        "hypothesis_id": "H-ffe72227b142",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-c8fdbfe0dfc8:1",
+      "kind": "missing_evidence",
+      "label": "Is there survey or sentiment data indicating a change in investor perception of GS' small business programs?",
+      "data": {
+        "audit_id": "HA-c8fdbfe0dfc8",
+        "hypothesis_id": "H-ffe72227b142",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-c8fdbfe0dfc8:2",
+      "kind": "missing_evidence",
+      "label": "Have analysts or investors publicly cited the 10,000 Small Businesses program as a factor in GS' valuation recently?",
+      "data": {
+        "audit_id": "HA-c8fdbfe0dfc8",
+        "hypothesis_id": "H-ffe72227b142",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-c8fdbfe0dfc8:3",
+      "kind": "missing_evidence",
+      "label": "How have non-traditional revenue segments of GS performed or been perceived relative to its core banking operations?",
+      "data": {
+        "audit_id": "HA-c8fdbfe0dfc8",
+        "hypothesis_id": "H-ffe72227b142",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-64595110db74:1",
+      "kind": "assumption",
+      "label": "There are unobserved liquidity or positioning dynamics affecting either GS or UAL that are not captured by standard market data.",
+      "data": {
+        "audit_id": "HA-64595110db74",
+        "hypothesis_id": "H-ca3c0e200223",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-64595110db74:2",
+      "kind": "assumption",
+      "label": "Such dynamics are temporary and not reflective of fundamental changes in either company.",
+      "data": {
+        "audit_id": "HA-64595110db74",
+        "hypothesis_id": "H-ca3c0e200223",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "assumption:HA-64595110db74:3",
+      "kind": "assumption",
+      "label": "The cointegration spread deviation is primarily driven by technical factors rather than fundamental revaluation.",
+      "data": {
+        "audit_id": "HA-64595110db74",
+        "hypothesis_id": "H-ca3c0e200223",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-64595110db74:1",
+      "kind": "missing_evidence",
+      "label": "Are there any signs of unusual trading volume, short interest, or derivative activity in either GS or UAL around the anomaly date?",
+      "data": {
+        "audit_id": "HA-64595110db74",
+        "hypothesis_id": "H-ca3c0e200223",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-64595110db74:2",
+      "kind": "missing_evidence",
+      "label": "Have there been any reports of portfolio rebalancing or index inclusion/exclusion that could affect relative positioning?",
+      "data": {
+        "audit_id": "HA-64595110db74",
+        "hypothesis_id": "H-ca3c0e200223",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-64595110db74:3",
+      "kind": "missing_evidence",
+      "label": "Is there evidence of mean reversion or normalization in the spread following the flagged period?",
+      "data": {
+        "audit_id": "HA-64595110db74",
+        "hypothesis_id": "H-ca3c0e200223",
+        "model_run_id": "MR-HYP-AUDIT-7596242713e8"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "edge:24ee01bd3f0f",
+      "source": "document:DOC-fd5178d2eebb-4f2dc862c9f3",
+      "target": "source:70219070ee",
+      "kind": "published_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:b48a33a7b2c5",
+      "source": "document:DOC-1bd0d7dfb45f-33c71df4d36b",
+      "target": "source:b05ebe7697",
+      "kind": "published_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:e0d69dd5136e",
+      "source": "document:DOC-ba3b7e176d62-93621ca10902",
+      "target": "source:b05ebe7697",
+      "kind": "published_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:140f87da2407",
+      "source": "document:DOC-d2c7e94a783d-1a3ae8fcdb23",
+      "target": "source:e74fc09d91",
+      "kind": "published_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:f4b3df8df899",
+      "source": "claim:C-8ce2ddedf60f",
+      "target": "document:DOC-1bd0d7dfb45f-33c71df4d36b",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:add2c9af5087",
+      "source": "claim:C-8ce2ddedf60f",
+      "target": "modelrun:MR-CLAIMS-94a7441f0ea1",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:d4c34b26e2c9",
+      "source": "claim:C-db326b40e855",
+      "target": "document:DOC-1bd0d7dfb45f-33c71df4d36b",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:240de6d96490",
+      "source": "claim:C-db326b40e855",
+      "target": "modelrun:MR-CLAIMS-94a7441f0ea1",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:f41c7c2136c0",
+      "source": "claim:C-257cfcac7759",
+      "target": "document:DOC-ba3b7e176d62-93621ca10902",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:ba7e0cb42ed8",
+      "source": "claim:C-257cfcac7759",
+      "target": "modelrun:MR-CLAIMS-71bad357c49b",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:5dc833ad3a7f",
+      "source": "claim:C-604a2ee86f00",
+      "target": "document:DOC-ba3b7e176d62-93621ca10902",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:7559cd5d07af",
+      "source": "claim:C-604a2ee86f00",
+      "target": "modelrun:MR-CLAIMS-71bad357c49b",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:b5ac6b32cbe4",
+      "source": "hypothesis:H-9d4749ca18f8",
+      "target": "anomaly:PAIR-GS-UAL-2026-03-20",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:4f8346914aef",
+      "source": "hypothesis:H-9d4749ca18f8",
+      "target": "modelrun:MR-HYP-784d7478aaf8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:c30ff495289b",
+      "source": "hypothesis:H-b055664984d9",
+      "target": "anomaly:PAIR-GS-UAL-2026-03-20",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:b8aebfbd7e07",
+      "source": "hypothesis:H-b055664984d9",
+      "target": "modelrun:MR-HYP-784d7478aaf8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:8dcd37f56eb0",
+      "source": "hypothesis:H-ffe72227b142",
+      "target": "anomaly:PAIR-GS-UAL-2026-03-20",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:d0c5cb351946",
+      "source": "hypothesis:H-ffe72227b142",
+      "target": "modelrun:MR-HYP-784d7478aaf8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:910fa5574214",
+      "source": "hypothesis:H-ca3c0e200223",
+      "target": "anomaly:PAIR-GS-UAL-2026-03-20",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:6c9d461a115a",
+      "source": "hypothesis:H-ca3c0e200223",
+      "target": "modelrun:MR-HYP-784d7478aaf8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:622918b8f473",
+      "source": "hypothesis:H-9d4749ca18f8",
+      "target": "assumption:HA-952f42ada812:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:958baa797422",
+      "source": "assumption:HA-952f42ada812:1",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:d2e75e21c549",
+      "source": "hypothesis:H-9d4749ca18f8",
+      "target": "assumption:HA-952f42ada812:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:925905f81625",
+      "source": "assumption:HA-952f42ada812:2",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:31f88ab7191e",
+      "source": "hypothesis:H-9d4749ca18f8",
+      "target": "assumption:HA-952f42ada812:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:4e6df1f236bc",
+      "source": "assumption:HA-952f42ada812:3",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:a6e84aae368f",
+      "source": "hypothesis:H-9d4749ca18f8",
+      "target": "missing_evidence:HA-952f42ada812:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:3a6ff82e5229",
+      "source": "missing_evidence:HA-952f42ada812:1",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:21899e27d73a",
+      "source": "hypothesis:H-9d4749ca18f8",
+      "target": "missing_evidence:HA-952f42ada812:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:2632fd056ea4",
+      "source": "missing_evidence:HA-952f42ada812:2",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:71d4fb844ae6",
+      "source": "hypothesis:H-9d4749ca18f8",
+      "target": "missing_evidence:HA-952f42ada812:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:83b1afe4c623",
+      "source": "missing_evidence:HA-952f42ada812:3",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:1fc6a904cd70",
+      "source": "hypothesis:H-b055664984d9",
+      "target": "assumption:HA-69a8bc366b74:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:a679ac711d61",
+      "source": "assumption:HA-69a8bc366b74:1",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:5b9da3ab4f04",
+      "source": "hypothesis:H-b055664984d9",
+      "target": "assumption:HA-69a8bc366b74:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:22ceaafc5037",
+      "source": "assumption:HA-69a8bc366b74:2",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:e5e3e2428d20",
+      "source": "hypothesis:H-b055664984d9",
+      "target": "assumption:HA-69a8bc366b74:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:6cdba58db400",
+      "source": "assumption:HA-69a8bc366b74:3",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:cd6744294060",
+      "source": "hypothesis:H-b055664984d9",
+      "target": "missing_evidence:HA-69a8bc366b74:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:36e92de605eb",
+      "source": "missing_evidence:HA-69a8bc366b74:1",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:286bc1fd0718",
+      "source": "hypothesis:H-b055664984d9",
+      "target": "missing_evidence:HA-69a8bc366b74:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:b6e06d4a9100",
+      "source": "missing_evidence:HA-69a8bc366b74:2",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:2795d12753fb",
+      "source": "hypothesis:H-b055664984d9",
+      "target": "missing_evidence:HA-69a8bc366b74:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:bc4fda622286",
+      "source": "missing_evidence:HA-69a8bc366b74:3",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:959e619ca2c2",
+      "source": "hypothesis:H-ffe72227b142",
+      "target": "assumption:HA-c8fdbfe0dfc8:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:3eb296e93fa3",
+      "source": "assumption:HA-c8fdbfe0dfc8:1",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:3351badc1ddc",
+      "source": "hypothesis:H-ffe72227b142",
+      "target": "assumption:HA-c8fdbfe0dfc8:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:68321211c77b",
+      "source": "assumption:HA-c8fdbfe0dfc8:2",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:bcb6e7807496",
+      "source": "hypothesis:H-ffe72227b142",
+      "target": "assumption:HA-c8fdbfe0dfc8:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:bd91b35dd665",
+      "source": "assumption:HA-c8fdbfe0dfc8:3",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:dd7fcb3c7133",
+      "source": "hypothesis:H-ffe72227b142",
+      "target": "missing_evidence:HA-c8fdbfe0dfc8:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:99b89a29c284",
+      "source": "missing_evidence:HA-c8fdbfe0dfc8:1",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:df7376c35f01",
+      "source": "hypothesis:H-ffe72227b142",
+      "target": "missing_evidence:HA-c8fdbfe0dfc8:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:eeaaa4a3d3bf",
+      "source": "missing_evidence:HA-c8fdbfe0dfc8:2",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:af9b9dc47c7f",
+      "source": "hypothesis:H-ffe72227b142",
+      "target": "missing_evidence:HA-c8fdbfe0dfc8:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:3be04f577c86",
+      "source": "missing_evidence:HA-c8fdbfe0dfc8:3",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:67da19a88202",
+      "source": "hypothesis:H-ca3c0e200223",
+      "target": "assumption:HA-64595110db74:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:fd3756206e81",
+      "source": "assumption:HA-64595110db74:1",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:acd2e2f75158",
+      "source": "hypothesis:H-ca3c0e200223",
+      "target": "assumption:HA-64595110db74:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:4d2cebacb752",
+      "source": "assumption:HA-64595110db74:2",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:167e9fe7380b",
+      "source": "hypothesis:H-ca3c0e200223",
+      "target": "assumption:HA-64595110db74:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:167ddc5a3179",
+      "source": "assumption:HA-64595110db74:3",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:ab8a6dbe9d48",
+      "source": "hypothesis:H-ca3c0e200223",
+      "target": "missing_evidence:HA-64595110db74:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:65a58cc1e339",
+      "source": "missing_evidence:HA-64595110db74:1",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:46d078868873",
+      "source": "hypothesis:H-ca3c0e200223",
+      "target": "missing_evidence:HA-64595110db74:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:82f9da2b04f2",
+      "source": "missing_evidence:HA-64595110db74:2",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:9493e156bbbb",
+      "source": "hypothesis:H-ca3c0e200223",
+      "target": "missing_evidence:HA-64595110db74:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:8d6b99f805de",
+      "source": "missing_evidence:HA-64595110db74:3",
+      "target": "modelrun:MR-HYP-AUDIT-7596242713e8",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:ca8faca5e45d",
+      "source": "claim:C-257cfcac7759",
+      "target": "hypothesis:H-9d4749ca18f8",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-7e59b74e7ced",
+        "strength": 0.5,
+        "rationale": "The claim provides background on Goldman Sachs' strategic focus on its Global Banking & Markets franchise, which is mentioned in the hypothesis. However, it does not directly support or weaken the specific claim about the cointegration spread or reevaluation of strategic positioning.",
+        "assumptions": [
+          "The hypothesis assumes that changes in strategic positioning within Global Banking & Markets could affect market perceptions of GS's risk or valuation."
+        ],
+        "missing_information": [
+          "Evidence linking Goldman Sachs' strategic positioning within Global Banking & Markets to market reactions or spread behavior in cointegration with UAL."
+        ],
+        "model_run_id": "MR-REL-b44938d44d7b"
+      }
+    },
+    {
+      "edge_id": "edge:59ffdedf9c66",
+      "source": "claim:C-604a2ee86f00",
+      "target": "hypothesis:H-9d4749ca18f8",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-c83cd673fd04",
+        "strength": 0.4,
+        "rationale": "The claim outlines Goldman Sachs' aspirational values and institutional goals, which may inform a general understanding of the firm's culture and priorities. However, it does not directly support or weaken the hypothesis about the cointegration spread or strategic reevaluation.",
+        "assumptions": [
+          "The hypothesis assumes that strategic positioning and perceived risk are influenced by institutional values and goals."
+        ],
+        "missing_information": [
+          "Evidence showing how institutional values translate into market behavior or risk assessments in relation to cointegration spreads."
+        ],
+        "model_run_id": "MR-REL-b44938d44d7b"
+      }
+    },
+    {
+      "edge_id": "edge:b832ad4fd425",
+      "source": "claim:C-8ce2ddedf60f",
+      "target": "hypothesis:H-b055664984d9",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-763b4e0c2d26",
+        "strength": 0.4,
+        "rationale": "The claim describes Goldman Sachs' initiative to support small business advocacy, which is tangentially related to policy developments. However, it does not directly address the interconnectedness of financial and travel sectors or macroeconomic factors that could shift market expectations.",
+        "assumptions": [
+          "The initiative's policy focus could indirectly relate to broader economic or sector-specific policies."
+        ],
+        "missing_information": [
+          "Evidence linking small business advocacy efforts to shifts in market expectations between financial and travel sectors."
+        ],
+        "model_run_id": "MR-REL-df8c9a4fee23"
+      }
+    },
+    {
+      "edge_id": "edge:d8fee318c108",
+      "source": "claim:C-db326b40e855",
+      "target": "hypothesis:H-b055664984d9",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-a6c1ed2d0e77",
+        "strength": 0.3,
+        "rationale": "The claim provides background on the composition of the Voices community but does not directly inform the hypothesis about market expectations or sector interconnectedness.",
+        "assumptions": [
+          "The community's geographic diversity might imply exposure to varied economic conditions."
+        ],
+        "missing_information": [
+          "Data on how this community influences or reflects broader market expectations."
+        ],
+        "model_run_id": "MR-REL-df8c9a4fee23"
+      }
+    },
+    {
+      "edge_id": "edge:54a0bd597120",
+      "source": "claim:C-257cfcac7759",
+      "target": "hypothesis:H-b055664984d9",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-abfae0a79a87",
+        "strength": 0.5,
+        "rationale": "The claim describes Goldman Sachs' strategic focus on interconnected financial franchises, which could be relevant to understanding how market expectations might shift across sectors. However, it does not directly support or contradict the hypothesis about the financial and travel sectors.",
+        "assumptions": [
+          "Interconnectedness within Goldman Sachs could reflect broader market interconnectedness."
+        ],
+        "missing_information": [
+          "Evidence that this internal strategy influences external market expectations between sectors."
+        ],
+        "model_run_id": "MR-REL-df8c9a4fee23"
+      }
+    },
+    {
+      "edge_id": "edge:9b5205129ed8",
+      "source": "claim:C-8ce2ddedf60f",
+      "target": "hypothesis:H-ffe72227b142",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-bb62c2283f39",
+        "strength": 0.5,
+        "rationale": "The claim describes the purpose and function of the 10,000 Small Businesses Voices program, which is referenced in the hypothesis as a potential influence on investor sentiment. However, it does not provide direct evidence about investor sentiment, market reactions, or changes in perceived long-term growth.",
+        "assumptions": [
+          "The program's activities could influence investor perception if they are publicly visible and interpreted as strategic initiatives."
+        ],
+        "missing_information": [
+          "Evidence of investor sentiment changes related to the program",
+          "Market reaction data tied to the program's announcements or activities"
+        ],
+        "model_run_id": "MR-REL-7edb36d4de55"
+      }
+    },
+    {
+      "edge_id": "edge:cd370b0c1c8d",
+      "source": "claim:C-db326b40e855",
+      "target": "hypothesis:H-ffe72227b142",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-e8e432a12df6",
+        "strength": 0.4,
+        "rationale": "The claim provides background on the composition of the Voices community, indicating its scale and reach. However, it does not directly link to investor sentiment or perceived growth trajectory of Goldman Sachs.",
+        "assumptions": [
+          "A larger or more engaged community could amplify the program's impact on public or investor perception."
+        ],
+        "missing_information": [
+          "Data on how the program's scale affects investor sentiment",
+          "Evidence that investors are aware of or react to the program's structure"
+        ],
+        "model_run_id": "MR-REL-7edb36d4de55"
+      }
+    },
+    {
+      "edge_id": "edge:210a9f45b6be",
+      "source": "claim:C-257cfcac7759",
+      "target": "hypothesis:H-ffe72227b142",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-16631e1f2db8",
+        "strength": 0.5,
+        "rationale": "The claim outlines Goldman Sachs' core strategic focus, which may provide context for how initiatives like the 10,000 Small Businesses program fit into its broader strategy. However, it does not directly support or weaken the hypothesis about investor sentiment or growth trajectory.",
+        "assumptions": [
+          "Strategic alignment of the program with core business could influence how investors interpret its significance."
+        ],
+        "missing_information": [
+          "Investor analysis or commentary linking the program to Goldman Sachs' strategic narrative",
+          "Evidence that the program is viewed as a material part of the firm's strategy"
+        ],
+        "model_run_id": "MR-REL-7edb36d4de55"
+      }
+    },
+    {
+      "edge_id": "edge:13a954a7b0e7",
+      "source": "claim:C-604a2ee86f00",
+      "target": "hypothesis:H-ffe72227b142",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-f24b6c9e6e60",
+        "strength": 0.4,
+        "rationale": "The claim describes Goldman Sachs' aspirational values and identity, which may provide general context for its public initiatives. However, it does not directly relate to investor sentiment or the perceived growth trajectory tied to specific programs like 10,000 Small Businesses Voices.",
+        "assumptions": [
+          "A strong institutional identity could influence how external stakeholders interpret the firm's initiatives."
+        ],
+        "missing_information": [
+          "Evidence that investors consider these values when evaluating the firm's growth prospects",
+          "Surveys or sentiment analysis linking values to market perception"
+        ],
+        "model_run_id": "MR-REL-7edb36d4de55"
+      }
+    },
+    {
+      "edge_id": "edge:d7660158c602",
+      "source": "claim:C-257cfcac7759",
+      "target": "hypothesis:H-ca3c0e200223",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-df0598831c8e",
+        "strength": 0.5,
+        "rationale": "The claim describes Goldman Sachs' strategic focus on its financial franchises. While this provides background on the company, it does not directly support or weaken the hypothesis about temporary valuation misalignment. It may serve as general context about the firm's operations.",
+        "assumptions": [],
+        "missing_information": [
+          "How Goldman Sachs' strategic focus influences or is influenced by market positioning or liquidity dynamics"
+        ],
+        "model_run_id": "MR-REL-6b115486ea29"
+      }
+    },
+    {
+      "edge_id": "edge:45457b923a51",
+      "source": "claim:C-604a2ee86f00",
+      "target": "hypothesis:H-ca3c0e200223",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-bc2f007adb0d",
+        "strength": 0.5,
+        "rationale": "The claim outlines Goldman Sachs' aspirational values and identity as a financial institution. This is background information and does not directly affect the plausibility of the hypothesis about stock valuation misalignment. It may provide context about the firm's broader goals but does not bear on market dynamics.",
+        "assumptions": [],
+        "missing_information": [
+          "How Goldman Sachs' values or aspirations influence investor behavior or market positioning"
+        ],
+        "model_run_id": "MR-REL-6b115486ea29"
+      }
+    }
+  ]
+}

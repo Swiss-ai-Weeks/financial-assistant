@@ -87,6 +87,7 @@ class FakeSearchProvider:
         *,
         task_id: str,
         limit: int = 5,
+        as_of=None,
     ):
         # Same historical document appears for both
         # tasks, allowing us to test URL reuse.

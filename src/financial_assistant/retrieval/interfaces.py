@@ -29,6 +29,7 @@ class SearchProvider(Protocol):
         *,
         task_id: str,
         limit: int = 5,
+        as_of: datetime | None = None,
     ) -> tuple[SearchHit, ...]:
         ...
 

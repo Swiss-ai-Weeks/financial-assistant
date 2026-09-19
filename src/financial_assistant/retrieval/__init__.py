@@ -21,6 +21,12 @@ from .service import (
 )
 
 
+from .bookreader import (
+    CorpusDocumentFetcher,
+    CorpusSearchProvider,
+)
+
+
 __all__ = [
     "TrafilaturaDocumentFetcher",
     "SearxngSearchProvider",
@@ -32,4 +38,6 @@ __all__ = [
     "SearchHit",
     "build_search_query",
     "execute_research_plan",
+    "CorpusDocumentFetcher",
+    "CorpusSearchProvider",
 ]

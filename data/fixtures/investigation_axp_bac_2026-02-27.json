@@ -1,0 +1,1322 @@
+{
+  "schema_version": "0.2",
+  "investigation_id": "INV-AXP-BAC-2026-02-27",
+  "anomaly_id": "PAIR-AXP-BAC-2026-02-27",
+  "ticker": "AXP",
+  "nodes": [
+    {
+      "node_id": "anomaly:PAIR-AXP-BAC-2026-02-27",
+      "kind": "anomaly",
+      "label": "AXP/BAC cointegration spread deviation: z=-2.72 versus threshold 2.00",
+      "data": {
+        "anomaly_id": "PAIR-AXP-BAC-2026-02-27",
+        "ticker": "AXP",
+        "detected_at": "2026-02-27T21:00:00Z",
+        "anomaly_type": "cointegration_spread_deviation",
+        "summary": "AXP/BAC cointegration spread deviation: z=-2.72 versus threshold 2.00",
+        "severity": null,
+        "related_entities": [
+          "BAC"
+        ],
+        "metadata": {
+          "pair": "AXP/BAC",
+          "ticker_a": "AXP",
+          "ticker_b": "BAC",
+          "z_score": -2.723779989183839,
+          "max_abs_z": 2.723779989183839,
+          "threshold": 2.0,
+          "n_days_flagged": 1,
+          "relative_direction": "a_below_equilibrium",
+          "beta": 0.9959613281745511,
+          "const": 1.9223047551781218,
+          "formation_start": "2025-02-26",
+          "formation_end": "2026-02-26",
+          "monitoring_start": "2026-02-27",
+          "monitoring_end": "2026-02-27",
+          "observed_at": "2026-02-27T21:00:00+00:00"
+        }
+      }
+    },
+    {
+      "node_id": "source:1cb66da37d",
+      "kind": "source",
+      "label": "247wallst.com",
+      "data": {
+        "publisher": "247wallst.com"
+      }
+    },
+    {
+      "node_id": "document:DOC-17eb80c89104-1f29c0ba6390",
+      "kind": "document",
+      "label": "Bank of America (NYSE: BAC) Stock Price Prediction and Forecast 2026-2030 (February 2026)",
+      "data": {
+        "document_id": "DOC-17eb80c89104-1f29c0ba6390",
+        "title": "Bank of America (NYSE: BAC) Stock Price Prediction and Forecast 2026-2030 (February 2026)",
+        "publisher": "247wallst.com",
+        "url": "https://247wallst.com/forecasts/2026/01/27/bank-of-america-bac-price-prediction-and-forecast/",
+        "published_at": "2026-01-27T00:00:00Z",
+        "published_date_only": true,
+        "retrieved_at": "2026-09-19T10:28:23.682864Z",
+        "lineage_id": "URL-17eb80c89104"
+      }
+    },
+    {
+      "node_id": "source:869bd47b55",
+      "kind": "source",
+      "label": "americanexpress.com",
+      "data": {
+        "publisher": "americanexpress.com"
+      }
+    },
+    {
+      "node_id": "document:DOC-7664e76a04c3-b0556972eb38",
+      "kind": "document",
+      "label": "American Express to Participate in UBS Financial Services Conference",
+      "data": {
+        "document_id": "DOC-7664e76a04c3-b0556972eb38",
+        "title": "American Express to Participate in UBS Financial Services Conference",
+        "publisher": "americanexpress.com",
+        "url": "https://ir.americanexpress.com/news/investor-relations-news/investor-relations-news-details/2026/American-Express-to-Participate-in-UBS-Financial-Services-Conference/default.aspx",
+        "published_at": "2026-01-09T00:00:00Z",
+        "published_date_only": true,
+        "retrieved_at": "2026-09-19T10:28:23.682864Z",
+        "lineage_id": "URL-7664e76a04c3"
+      }
+    },
+    {
+      "node_id": "source:6d1ea8e717",
+      "kind": "source",
+      "label": "ainvest.com",
+      "data": {
+        "publisher": "ainvest.com"
+      }
+    },
+    {
+      "node_id": "document:DOC-5fb02381972f-75fd37eacb46",
+      "kind": "document",
+      "label": "Bank of America's 2026 Crossroads: Regulatory Relief vs. Competitive Pressure",
+      "data": {
+        "document_id": "DOC-5fb02381972f-75fd37eacb46",
+        "title": "Bank of America's 2026 Crossroads: Regulatory Relief vs. Competitive Pressure",
+        "publisher": "ainvest.com",
+        "url": "https://www.ainvest.com/news/bank-america-2026-crossroads-regulatory-relief-competitive-pressure-2512/",
+        "published_at": "2025-12-27T00:00:00Z",
+        "published_date_only": true,
+        "retrieved_at": "2026-09-19T10:28:23.682864Z",
+        "lineage_id": "URL-5fb02381972f"
+      }
+    },
+    {
+      "node_id": "document:DOC-1f2b35d4b6c5-58fa74fb4e72",
+      "kind": "document",
+      "label": "Investor Relations News",
+      "data": {
+        "document_id": "DOC-1f2b35d4b6c5-58fa74fb4e72",
+        "title": "Investor Relations News",
+        "publisher": "americanexpress.com",
+        "url": "https://ir.americanexpress.com/news/investor-relations-news/default.aspx",
+        "published_at": "2024-11-01T00:00:00Z",
+        "published_date_only": true,
+        "retrieved_at": "2026-09-19T10:28:23.682864Z",
+        "lineage_id": "URL-1f2b35d4b6c5"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-CLAIMS-360abd612580",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: claim_extraction",
+      "data": {
+        "run_id": "MR-CLAIMS-360abd612580",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "claim_extraction",
+        "prompt_version": "claim-extraction-v1",
+        "created_at": "2026-09-19T10:29:19.861507Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-CLAIMS-ae856793b791",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: claim_extraction",
+      "data": {
+        "run_id": "MR-CLAIMS-ae856793b791",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "claim_extraction",
+        "prompt_version": "claim-extraction-v1",
+        "created_at": "2026-09-19T10:29:19.776237Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-CLAIMS-955666cd9d8a",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: claim_extraction",
+      "data": {
+        "run_id": "MR-CLAIMS-955666cd9d8a",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "claim_extraction",
+        "prompt_version": "claim-extraction-v1",
+        "created_at": "2026-09-19T10:29:11.283546Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-HYP-ae67b3bea674",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: hypothesis_generation",
+      "data": {
+        "run_id": "MR-HYP-ae67b3bea674",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "hypothesis_generation",
+        "prompt_version": "hypothesis-generation-v1",
+        "created_at": "2026-09-19T10:29:23.054832Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: hypothesis_audit",
+      "data": {
+        "run_id": "MR-HYP-AUDIT-9de25ffe06af",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "hypothesis_audit",
+        "prompt_version": "hypothesis-audit-v1",
+        "created_at": "2026-09-19T10:29:33.686335Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-d109046e29e0",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-d109046e29e0",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-19T10:29:48.887267Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-d2d37cc62890",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-d2d37cc62890",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-19T10:29:47.141591Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-227bd3260af8",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-227bd3260af8",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-19T10:29:50.131262Z"
+      }
+    },
+    {
+      "node_id": "modelrun:MR-REL-345102d6685f",
+      "kind": "model_run",
+      "label": "nvidia-nim / nvidia/llama-3.3-nemotron-super-49b-v1.5: relation_assessment",
+      "data": {
+        "run_id": "MR-REL-345102d6685f",
+        "provider": "nvidia-nim",
+        "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        "operation": "relation_assessment",
+        "prompt_version": "relation-assessment-v1",
+        "created_at": "2026-09-19T10:29:49.618442Z"
+      }
+    },
+    {
+      "node_id": "claim:C-8b4e23d5bfe5",
+      "kind": "claim",
+      "label": "American Express Company will participate in the UBS Financial Services Conference on Tuesday, February 10, 2026, beginning at 1:00 p.m. (ET).",
+      "data": {
+        "claim_id": "C-8b4e23d5bfe5",
+        "text": "American Express Company will participate in the UBS Financial Services Conference on Tuesday, February 10, 2026, beginning at 1:00 p.m. (ET).",
+        "claim_type": "reported_fact",
+        "document_id": "DOC-7664e76a04c3-b0556972eb38",
+        "source_quote": "American Express Company (NYSE: AXP) today announced management participation in the UBS Financial Services Conference on Tuesday, February 10, 2026, beginning at 1:00 p.m. (ET).",
+        "model_run_id": "MR-CLAIMS-360abd612580"
+      }
+    },
+    {
+      "node_id": "claim:C-2b7d2cb0fb75",
+      "kind": "claim",
+      "label": "A live audio webcast of the discussion about the company’s business strategy and financial performance will be accessible to the general public through the American Express Investor Relations website.",
+      "data": {
+        "claim_id": "C-2b7d2cb0fb75",
+        "text": "A live audio webcast of the discussion about the company’s business strategy and financial performance will be accessible to the general public through the American Express Investor Relations website.",
+        "claim_type": "reported_fact",
+        "document_id": "DOC-7664e76a04c3-b0556972eb38",
+        "source_quote": "A live audio webcast of the discussion about the company’s business strategy and financial performance will be accessible to the general public through the American Express Investor Relations website at http://ir.americanexpress.com.",
+        "model_run_id": "MR-CLAIMS-360abd612580"
+      }
+    },
+    {
+      "node_id": "claim:C-41348afff9cf",
+      "kind": "claim",
+      "label": "Bank of America's 2026 outlook involves navigating macroeconomic growth and impending regulatory change.",
+      "data": {
+        "claim_id": "C-41348afff9cf",
+        "text": "Bank of America's 2026 outlook involves navigating macroeconomic growth and impending regulatory change.",
+        "claim_type": "reported_fact",
+        "document_id": "DOC-5fb02381972f-75fd37eacb46",
+        "source_quote": "The central investment question for Bank of AmericaBAC-- in 2026 is how the bank will navigate the dual crosscurrents of macroeconomic growth and impending regulatory change.",
+        "model_run_id": "MR-CLAIMS-ae856793b791"
+      }
+    },
+    {
+      "node_id": "claim:C-858fc95d8710",
+      "kind": "claim",
+      "label": "BofA Global Research forecasts a 2.4% GDP growth for 2026 and expects two Fed rate cuts.",
+      "data": {
+        "claim_id": "C-858fc95d8710",
+        "text": "BofA Global Research forecasts a 2.4% GDP growth for 2026 and expects two Fed rate cuts.",
+        "claim_type": "forecast",
+        "document_id": "DOC-5fb02381972f-75fd37eacb46",
+        "source_quote": "The BofA Global Research team's bullish forecast provides a powerful tailwind, with a 2.4% GDP growth projection for 2026 and expectations for two Fed rate cuts in 2026.",
+        "model_run_id": "MR-CLAIMS-ae856793b791"
+      }
+    },
+    {
+      "node_id": "claim:C-8dd2b77bc0cc",
+      "kind": "claim",
+      "label": "The presentation contains certain forward-looking statements that are subject to risks and uncertainties.",
+      "data": {
+        "claim_id": "C-8dd2b77bc0cc",
+        "text": "The presentation contains certain forward-looking statements that are subject to risks and uncertainties.",
+        "claim_type": "interpretation",
+        "document_id": "DOC-1f2b35d4b6c5-58fa74fb4e72",
+        "source_quote": "This presentation contains certain forward-looking statements that are subject to risks and uncertainties and speak only as of the date on which they are made.",
+        "model_run_id": "MR-CLAIMS-955666cd9d8a"
+      }
+    },
+    {
+      "node_id": "claim:C-201724c1c9a9",
+      "kind": "claim",
+      "label": "Actual results may differ materially from the forward-looking statements due to important factors.",
+      "data": {
+        "claim_id": "C-201724c1c9a9",
+        "text": "Actual results may differ materially from the forward-looking statements due to important factors.",
+        "claim_type": "interpretation",
+        "document_id": "DOC-1f2b35d4b6c5-58fa74fb4e72",
+        "source_quote": "Important factors that could cause actual results to differ materially from these forward-looking statements are set forth in the presentation materials and the Company's reports on file with the Securities and Exchange Commission, copies of which can also be found on our website.",
+        "model_run_id": "MR-CLAIMS-955666cd9d8a"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-7896b0f30119",
+      "kind": "hypothesis",
+      "label": "The cointegration spread deviation may reflect a temporary mispricing between AXP and BAC due to differing market sensitivities to anticipated macroeconomic conditions.",
+      "data": {
+        "hypothesis_id": "H-7896b0f30119",
+        "text": "The cointegration spread deviation may reflect a temporary mispricing between AXP and BAC due to differing market sensitivities to anticipated macroeconomic conditions.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-ae67b3bea674"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-73bc5b9aa2f3",
+      "kind": "hypothesis",
+      "label": "The anomaly could reflect a shift in investor perception of the two companies' risk profiles in light of upcoming regulatory changes affecting the financial sector.",
+      "data": {
+        "hypothesis_id": "H-73bc5b9aa2f3",
+        "text": "The anomaly could reflect a shift in investor perception of the two companies' risk profiles in light of upcoming regulatory changes affecting the financial sector.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-ae67b3bea674"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-a065aef81c59",
+      "kind": "hypothesis",
+      "label": "One possibility is that the deviation may be explained by differences in how market participants are interpreting or reacting to forward-looking statements made by AXP during recent investor events.",
+      "data": {
+        "hypothesis_id": "H-a065aef81c59",
+        "text": "One possibility is that the deviation may be explained by differences in how market participants are interpreting or reacting to forward-looking statements made by AXP during recent investor events.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-ae67b3bea674"
+      }
+    },
+    {
+      "node_id": "hypothesis:H-e840c7317442",
+      "kind": "hypothesis",
+      "label": "The observed spread deviation may reflect a short-term imbalance in the relative valuation of AXP and BAC, potentially influenced by divergent expectations around future earnings or strategic positioning.",
+      "data": {
+        "hypothesis_id": "H-e840c7317442",
+        "text": "The observed spread deviation may reflect a short-term imbalance in the relative valuation of AXP and BAC, potentially influenced by divergent expectations around future earnings or strategic positioning.",
+        "assumptions": [],
+        "model_run_id": "MR-HYP-ae67b3bea674"
+      }
+    },
+    {
+      "node_id": "assumption:HA-d4c14a27f20a:1",
+      "kind": "assumption",
+      "label": "Market participants have differing sensitivities to macroeconomic conditions for AXP and BAC.",
+      "data": {
+        "audit_id": "HA-d4c14a27f20a",
+        "hypothesis_id": "H-7896b0f30119",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "assumption:HA-d4c14a27f20a:2",
+      "kind": "assumption",
+      "label": "Anticipated macroeconomic conditions have recently changed or been revised in a way that affects AXP and BAC differently.",
+      "data": {
+        "audit_id": "HA-d4c14a27f20a",
+        "hypothesis_id": "H-7896b0f30119",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-d4c14a27f20a:1",
+      "kind": "missing_evidence",
+      "label": "What specific macroeconomic conditions are expected to impact AXP and BAC differently?",
+      "data": {
+        "audit_id": "HA-d4c14a27f20a",
+        "hypothesis_id": "H-7896b0f30119",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-d4c14a27f20a:2",
+      "kind": "missing_evidence",
+      "label": "Is there evidence of divergent market reactions to macroeconomic indicators for AXP and BAC around the anomaly date?",
+      "data": {
+        "audit_id": "HA-d4c14a27f20a",
+        "hypothesis_id": "H-7896b0f30119",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-d4c14a27f20a:3",
+      "kind": "missing_evidence",
+      "label": "Have there been any recent changes in economic forecasts or data releases that could explain differing sensitivities?",
+      "data": {
+        "audit_id": "HA-d4c14a27f20a",
+        "hypothesis_id": "H-7896b0f30119",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "assumption:HA-07b6da978ed6:1",
+      "kind": "assumption",
+      "label": "Upcoming regulatory changes are expected to impact AXP and BAC differently in terms of risk.",
+      "data": {
+        "audit_id": "HA-07b6da978ed6",
+        "hypothesis_id": "H-73bc5b9aa2f3",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "assumption:HA-07b6da978ed6:2",
+      "kind": "assumption",
+      "label": "Investor perception of the companies' risk profiles has shifted in response to regulatory expectations.",
+      "data": {
+        "audit_id": "HA-07b6da978ed6",
+        "hypothesis_id": "H-73bc5b9aa2f3",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-07b6da978ed6:1",
+      "kind": "missing_evidence",
+      "label": "What specific regulatory changes are anticipated in the financial sector that could affect AXP and BAC differently?",
+      "data": {
+        "audit_id": "HA-07b6da978ed6",
+        "hypothesis_id": "H-73bc5b9aa2f3",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-07b6da978ed6:2",
+      "kind": "missing_evidence",
+      "label": "Is there evidence of recent regulatory announcements or discussions that could have influenced investor perception?",
+      "data": {
+        "audit_id": "HA-07b6da978ed6",
+        "hypothesis_id": "H-73bc5b9aa2f3",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-07b6da978ed6:3",
+      "kind": "missing_evidence",
+      "label": "Have there been any analyst reports or market commentary highlighting divergent risk profiles for AXP and BAC due to regulation?",
+      "data": {
+        "audit_id": "HA-07b6da978ed6",
+        "hypothesis_id": "H-73bc5b9aa2f3",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "assumption:HA-d88217612c6b:1",
+      "kind": "assumption",
+      "label": "Forward-looking statements made by AXP during recent investor events contained material new information.",
+      "data": {
+        "audit_id": "HA-d88217612c6b",
+        "hypothesis_id": "H-a065aef81c59",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "assumption:HA-d88217612c6b:2",
+      "kind": "assumption",
+      "label": "Market participants interpreted or reacted differently to AXP's forward-looking statements compared to BAC's communications.",
+      "data": {
+        "audit_id": "HA-d88217612c6b",
+        "hypothesis_id": "H-a065aef81c59",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-d88217612c6b:1",
+      "kind": "missing_evidence",
+      "label": "What specific forward-looking statements were made by AXP during the UBS Financial Services Conference?",
+      "data": {
+        "audit_id": "HA-d88217612c6b",
+        "hypothesis_id": "H-a065aef81c59",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-d88217612c6b:2",
+      "kind": "missing_evidence",
+      "label": "Is there evidence of differing market reactions to AXP's statements versus BAC's public communications around the same time?",
+      "data": {
+        "audit_id": "HA-d88217612c6b",
+        "hypothesis_id": "H-a065aef81c59",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-d88217612c6b:3",
+      "kind": "missing_evidence",
+      "label": "Were there any notable discrepancies between AXP's forward-looking statements and market expectations?",
+      "data": {
+        "audit_id": "HA-d88217612c6b",
+        "hypothesis_id": "H-a065aef81c59",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "assumption:HA-b6d287982b03:1",
+      "kind": "assumption",
+      "label": "There are divergent expectations around future earnings or strategic positioning between AXP and BAC.",
+      "data": {
+        "audit_id": "HA-b6d287982b03",
+        "hypothesis_id": "H-e840c7317442",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "assumption:HA-b6d287982b03:2",
+      "kind": "assumption",
+      "label": "These divergent expectations have recently materialized or been revised in a way that affects relative valuation.",
+      "data": {
+        "audit_id": "HA-b6d287982b03",
+        "hypothesis_id": "H-e840c7317442",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-b6d287982b03:1",
+      "kind": "missing_evidence",
+      "label": "What are the current earnings expectations for AXP and BAC, and have they changed recently?",
+      "data": {
+        "audit_id": "HA-b6d287982b03",
+        "hypothesis_id": "H-e840c7317442",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-b6d287982b03:2",
+      "kind": "missing_evidence",
+      "label": "Is there evidence of strategic announcements or positioning changes for either AXP or BAC that could explain the valuation imbalance?",
+      "data": {
+        "audit_id": "HA-b6d287982b03",
+        "hypothesis_id": "H-e840c7317442",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    },
+    {
+      "node_id": "missing_evidence:HA-b6d287982b03:3",
+      "kind": "missing_evidence",
+      "label": "Have analysts or investors expressed divergent views on the future performance or strategy of AXP versus BAC?",
+      "data": {
+        "audit_id": "HA-b6d287982b03",
+        "hypothesis_id": "H-e840c7317442",
+        "model_run_id": "MR-HYP-AUDIT-9de25ffe06af"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "edge:6ab76b0fc125",
+      "source": "document:DOC-17eb80c89104-1f29c0ba6390",
+      "target": "source:1cb66da37d",
+      "kind": "published_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:05ddf8d86673",
+      "source": "document:DOC-7664e76a04c3-b0556972eb38",
+      "target": "source:869bd47b55",
+      "kind": "published_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:0256934fd370",
+      "source": "document:DOC-5fb02381972f-75fd37eacb46",
+      "target": "source:6d1ea8e717",
+      "kind": "published_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:37dc1f9d435d",
+      "source": "document:DOC-1f2b35d4b6c5-58fa74fb4e72",
+      "target": "source:869bd47b55",
+      "kind": "published_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:3fd7e52b188c",
+      "source": "claim:C-8b4e23d5bfe5",
+      "target": "document:DOC-7664e76a04c3-b0556972eb38",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:276ae6228883",
+      "source": "claim:C-8b4e23d5bfe5",
+      "target": "modelrun:MR-CLAIMS-360abd612580",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:b5704e210240",
+      "source": "claim:C-2b7d2cb0fb75",
+      "target": "document:DOC-7664e76a04c3-b0556972eb38",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:32b13fad650b",
+      "source": "claim:C-2b7d2cb0fb75",
+      "target": "modelrun:MR-CLAIMS-360abd612580",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:bb66ba8dc602",
+      "source": "claim:C-41348afff9cf",
+      "target": "document:DOC-5fb02381972f-75fd37eacb46",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:08945afda621",
+      "source": "claim:C-41348afff9cf",
+      "target": "modelrun:MR-CLAIMS-ae856793b791",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:2737f7d16eb9",
+      "source": "claim:C-858fc95d8710",
+      "target": "document:DOC-5fb02381972f-75fd37eacb46",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:ec2abded5111",
+      "source": "claim:C-858fc95d8710",
+      "target": "modelrun:MR-CLAIMS-ae856793b791",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:cfbfa189a6f4",
+      "source": "claim:C-8dd2b77bc0cc",
+      "target": "document:DOC-1f2b35d4b6c5-58fa74fb4e72",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:272c211ec9be",
+      "source": "claim:C-8dd2b77bc0cc",
+      "target": "modelrun:MR-CLAIMS-955666cd9d8a",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:5284f47b7297",
+      "source": "claim:C-201724c1c9a9",
+      "target": "document:DOC-1f2b35d4b6c5-58fa74fb4e72",
+      "kind": "extracted_from",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:fe9a5f2f6478",
+      "source": "claim:C-201724c1c9a9",
+      "target": "modelrun:MR-CLAIMS-955666cd9d8a",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:aa31a7783202",
+      "source": "hypothesis:H-7896b0f30119",
+      "target": "anomaly:PAIR-AXP-BAC-2026-02-27",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:9861d2ed2690",
+      "source": "hypothesis:H-7896b0f30119",
+      "target": "modelrun:MR-HYP-ae67b3bea674",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:9c327e9731ae",
+      "source": "hypothesis:H-73bc5b9aa2f3",
+      "target": "anomaly:PAIR-AXP-BAC-2026-02-27",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:a88d0460dae9",
+      "source": "hypothesis:H-73bc5b9aa2f3",
+      "target": "modelrun:MR-HYP-ae67b3bea674",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:84c44d04288a",
+      "source": "hypothesis:H-a065aef81c59",
+      "target": "anomaly:PAIR-AXP-BAC-2026-02-27",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:0f257479da2b",
+      "source": "hypothesis:H-a065aef81c59",
+      "target": "modelrun:MR-HYP-ae67b3bea674",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:cf7b7026a7ca",
+      "source": "hypothesis:H-e840c7317442",
+      "target": "anomaly:PAIR-AXP-BAC-2026-02-27",
+      "kind": "candidate_explanation_for",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:aa0c3bc9fa6c",
+      "source": "hypothesis:H-e840c7317442",
+      "target": "modelrun:MR-HYP-ae67b3bea674",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:e24a3b2a896a",
+      "source": "hypothesis:H-7896b0f30119",
+      "target": "assumption:HA-d4c14a27f20a:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:6dfa05869b10",
+      "source": "assumption:HA-d4c14a27f20a:1",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:fea6ea82d77e",
+      "source": "hypothesis:H-7896b0f30119",
+      "target": "assumption:HA-d4c14a27f20a:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:b722ef360a98",
+      "source": "assumption:HA-d4c14a27f20a:2",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:564c001fe4ba",
+      "source": "hypothesis:H-7896b0f30119",
+      "target": "missing_evidence:HA-d4c14a27f20a:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:2739945753fc",
+      "source": "missing_evidence:HA-d4c14a27f20a:1",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:303eeb453b8c",
+      "source": "hypothesis:H-7896b0f30119",
+      "target": "missing_evidence:HA-d4c14a27f20a:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:9a9390184b5f",
+      "source": "missing_evidence:HA-d4c14a27f20a:2",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:e8ca30b69718",
+      "source": "hypothesis:H-7896b0f30119",
+      "target": "missing_evidence:HA-d4c14a27f20a:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:0fec47cf31d4",
+      "source": "missing_evidence:HA-d4c14a27f20a:3",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:97afa13d5439",
+      "source": "hypothesis:H-73bc5b9aa2f3",
+      "target": "assumption:HA-07b6da978ed6:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:0face9e71fc2",
+      "source": "assumption:HA-07b6da978ed6:1",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:fa34820416ab",
+      "source": "hypothesis:H-73bc5b9aa2f3",
+      "target": "assumption:HA-07b6da978ed6:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:46981de8ca3d",
+      "source": "assumption:HA-07b6da978ed6:2",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:68fb47cfd9af",
+      "source": "hypothesis:H-73bc5b9aa2f3",
+      "target": "missing_evidence:HA-07b6da978ed6:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:cdf478b2f645",
+      "source": "missing_evidence:HA-07b6da978ed6:1",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:9f9079feacfb",
+      "source": "hypothesis:H-73bc5b9aa2f3",
+      "target": "missing_evidence:HA-07b6da978ed6:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:5d1083535538",
+      "source": "missing_evidence:HA-07b6da978ed6:2",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:74c5d048c822",
+      "source": "hypothesis:H-73bc5b9aa2f3",
+      "target": "missing_evidence:HA-07b6da978ed6:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:a59d2b72b62c",
+      "source": "missing_evidence:HA-07b6da978ed6:3",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:0df95cdf8dbb",
+      "source": "hypothesis:H-a065aef81c59",
+      "target": "assumption:HA-d88217612c6b:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:7d162260a9ce",
+      "source": "assumption:HA-d88217612c6b:1",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:9ca7548fe75e",
+      "source": "hypothesis:H-a065aef81c59",
+      "target": "assumption:HA-d88217612c6b:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:ce9687d4ddbe",
+      "source": "assumption:HA-d88217612c6b:2",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:ef4c87d966bb",
+      "source": "hypothesis:H-a065aef81c59",
+      "target": "missing_evidence:HA-d88217612c6b:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:6c0f6936d8be",
+      "source": "missing_evidence:HA-d88217612c6b:1",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:5cdd57faf79f",
+      "source": "hypothesis:H-a065aef81c59",
+      "target": "missing_evidence:HA-d88217612c6b:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:55952e2a08a6",
+      "source": "missing_evidence:HA-d88217612c6b:2",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:2e0452ab6151",
+      "source": "hypothesis:H-a065aef81c59",
+      "target": "missing_evidence:HA-d88217612c6b:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:062a20ac8852",
+      "source": "missing_evidence:HA-d88217612c6b:3",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:34f97776788d",
+      "source": "hypothesis:H-e840c7317442",
+      "target": "assumption:HA-b6d287982b03:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:d5878111f9dd",
+      "source": "assumption:HA-b6d287982b03:1",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:e3b46f5a1e20",
+      "source": "hypothesis:H-e840c7317442",
+      "target": "assumption:HA-b6d287982b03:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:5908e355fe2f",
+      "source": "assumption:HA-b6d287982b03:2",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:e5b99a22c46c",
+      "source": "hypothesis:H-e840c7317442",
+      "target": "missing_evidence:HA-b6d287982b03:1",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:04bf116a0db5",
+      "source": "missing_evidence:HA-b6d287982b03:1",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:85e8a3d1d0eb",
+      "source": "hypothesis:H-e840c7317442",
+      "target": "missing_evidence:HA-b6d287982b03:2",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:a30ff4e80bbb",
+      "source": "missing_evidence:HA-b6d287982b03:2",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:585853bf9b88",
+      "source": "hypothesis:H-e840c7317442",
+      "target": "missing_evidence:HA-b6d287982b03:3",
+      "kind": "requires",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:25e0db0605e9",
+      "source": "missing_evidence:HA-b6d287982b03:3",
+      "target": "modelrun:MR-HYP-AUDIT-9de25ffe06af",
+      "kind": "produced_by",
+      "data": {}
+    },
+    {
+      "edge_id": "edge:b2993ad72285",
+      "source": "claim:C-8b4e23d5bfe5",
+      "target": "hypothesis:H-7896b0f30119",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-c0aba4629eb8",
+        "strength": 0.4,
+        "rationale": "The claim about American Express participating in a financial conference provides background on the company's communication activities but does not directly impact the hypothesis about cointegration spread deviation between AXP and BAC.",
+        "assumptions": [],
+        "missing_information": [
+          "Whether the conference discussion will reveal new information affecting market perception of AXP's sensitivity to macroeconomic conditions"
+        ],
+        "model_run_id": "MR-REL-d109046e29e0"
+      }
+    },
+    {
+      "edge_id": "edge:9413fe9f3a50",
+      "source": "claim:C-2b7d2cb0fb75",
+      "target": "hypothesis:H-7896b0f30119",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-d7064b99d6b6",
+        "strength": 0.4,
+        "rationale": "The availability of a webcast about American Express's business strategy and financial performance provides context about information accessibility but does not directly affect the hypothesis about cointegration spread deviation.",
+        "assumptions": [],
+        "missing_information": [
+          "Whether the webcast content will include material new information that could affect market pricing of AXP relative to BAC"
+        ],
+        "model_run_id": "MR-REL-d109046e29e0"
+      }
+    },
+    {
+      "edge_id": "edge:28e1bddcf105",
+      "source": "claim:C-41348afff9cf",
+      "target": "hypothesis:H-7896b0f30119",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-bfb89b02781e",
+        "strength": 0.6,
+        "rationale": "The claim about Bank of America navigating macroeconomic growth and regulatory change provides relevant context about BAC's challenges, which could relate to differing market sensitivities mentioned in the hypothesis.",
+        "assumptions": [
+          "That BAC's navigation of macroeconomic and regulatory factors would affect its market sensitivity differently than AXP"
+        ],
+        "missing_information": [
+          "Specific details on how these factors would differentially impact AXP vs BAC"
+        ],
+        "model_run_id": "MR-REL-d109046e29e0"
+      }
+    },
+    {
+      "edge_id": "edge:b1208112a88c",
+      "source": "claim:C-858fc95d8710",
+      "target": "hypothesis:H-7896b0f30119",
+      "kind": "supports",
+      "data": {
+        "assessment_id": "RA-d3c9350d7c9c",
+        "strength": 0.7,
+        "rationale": "The forecast of 2.4% GDP growth and two Fed rate cuts provides evidence of anticipated macroeconomic conditions that could differentially affect AXP and BAC, supporting the hypothesis about cointegration spread deviation reflecting differing market sensitivities.",
+        "assumptions": [
+          "That GDP growth and Fed rate cuts would have different impacts on AXP and BAC"
+        ],
+        "missing_information": [
+          "Empirical evidence showing how AXP and BAC historically react to similar macroeconomic conditions"
+        ],
+        "model_run_id": "MR-REL-d109046e29e0"
+      }
+    },
+    {
+      "edge_id": "edge:a618026f6cb4",
+      "source": "claim:C-8dd2b77bc0cc",
+      "target": "hypothesis:H-7896b0f30119",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-a417bd10bf38",
+        "strength": 0.3,
+        "rationale": "The statement about forward-looking statements being subject to risks and uncertainties provides general context about uncertainty in financial statements but does not directly relate to the cointegration hypothesis.",
+        "assumptions": [],
+        "missing_information": [
+          "Specific risks that could affect the cointegration relationship between AXP and BAC"
+        ],
+        "model_run_id": "MR-REL-d109046e29e0"
+      }
+    },
+    {
+      "edge_id": "edge:a9d25ef005dd",
+      "source": "claim:C-201724c1c9a9",
+      "target": "hypothesis:H-7896b0f30119",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-cf06e1b9f407",
+        "strength": 0.3,
+        "rationale": "The statement about actual results potentially differing from forward-looking statements provides general context about uncertainty but does not directly impact the hypothesis about cointegration spread deviation.",
+        "assumptions": [],
+        "missing_information": [
+          "Specific factors that could cause material differences in results for AXP or BAC that might affect their cointegration relationship"
+        ],
+        "model_run_id": "MR-REL-d109046e29e0"
+      }
+    },
+    {
+      "edge_id": "edge:07c9211fa40a",
+      "source": "claim:C-8b4e23d5bfe5",
+      "target": "hypothesis:H-73bc5b9aa2f3",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-2279525a84c1",
+        "strength": 0.4,
+        "rationale": "The claim about American Express participating in a financial services conference provides general context about the company's engagement in industry discussions but does not directly relate to investor perception of risk profiles or regulatory changes.",
+        "assumptions": [],
+        "missing_information": [
+          "Whether the conference discussion included content related to regulatory changes or risk perception"
+        ],
+        "model_run_id": "MR-REL-d2d37cc62890"
+      }
+    },
+    {
+      "edge_id": "edge:b2dd93fee478",
+      "source": "claim:C-2b7d2cb0fb75",
+      "target": "hypothesis:H-73bc5b9aa2f3",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-d76c1b82a353",
+        "strength": 0.4,
+        "rationale": "The availability of a public webcast about American Express's business strategy and financial performance provides background on information transparency but does not directly support or weaken the hypothesis about investor perception of risk profiles.",
+        "assumptions": [],
+        "missing_information": [
+          "Whether the webcast content addressed regulatory changes or risk-related topics"
+        ],
+        "model_run_id": "MR-REL-d2d37cc62890"
+      }
+    },
+    {
+      "edge_id": "edge:e4c0aeeda294",
+      "source": "claim:C-41348afff9cf",
+      "target": "hypothesis:H-73bc5b9aa2f3",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-43f3808a344a",
+        "strength": 0.6,
+        "rationale": "The claim about Bank of America navigating macroeconomic growth and regulatory change provides relevant background on the broader financial sector environment, which could influence investor perception of risk profiles.",
+        "assumptions": [],
+        "missing_information": [
+          "Specific details on how regulatory changes might affect investor perception of risk"
+        ],
+        "model_run_id": "MR-REL-d2d37cc62890"
+      }
+    },
+    {
+      "edge_id": "edge:1a696f6dc19b",
+      "source": "claim:C-858fc95d8710",
+      "target": "hypothesis:H-73bc5b9aa2f3",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-722c58e48168",
+        "strength": 0.5,
+        "rationale": "The GDP growth forecast and expected Fed rate cuts provide macroeconomic context that could influence investor sentiment, but they do not directly address shifts in risk perception or regulatory impacts on specific companies.",
+        "assumptions": [],
+        "missing_information": [
+          "How macroeconomic conditions and interest rates affect investor perception of financial sector risk profiles"
+        ],
+        "model_run_id": "MR-REL-d2d37cc62890"
+      }
+    },
+    {
+      "edge_id": "edge:573ea90e065a",
+      "source": "claim:C-8b4e23d5bfe5",
+      "target": "hypothesis:H-a065aef81c59",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-1def5ae90696",
+        "strength": 0.5,
+        "rationale": "The claim indicates that American Express will participate in an investor conference, which is a setting where forward-looking statements may be made. This provides background context for the hypothesis, which concerns how market participants interpret such statements, but does not directly support or weaken the hypothesis without additional information about the content or reception of those statements.",
+        "assumptions": [
+          "The UBS Financial Services Conference involves forward-looking statements by AXP management."
+        ],
+        "missing_information": [
+          "Details on the content of AXP's presentation or statements made during the conference."
+        ],
+        "model_run_id": "MR-REL-227bd3260af8"
+      }
+    },
+    {
+      "edge_id": "edge:6ab260faa6be",
+      "source": "claim:C-2b7d2cb0fb75",
+      "target": "hypothesis:H-a065aef81c59",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-1a44c486d8ab",
+        "strength": 0.5,
+        "rationale": "The claim states that a live audio webcast of the discussion about AXP's business strategy and financial performance will be publicly accessible. This supports the idea that forward-looking statements may be made and disseminated, which is relevant to the hypothesis, but does not by itself indicate how market participants are interpreting or reacting to them.",
+        "assumptions": [
+          "The webcast includes forward-looking statements by AXP management."
+        ],
+        "missing_information": [
+          "Details on the content of the webcast and how it was received by market participants."
+        ],
+        "model_run_id": "MR-REL-227bd3260af8"
+      }
+    },
+    {
+      "edge_id": "edge:ed6e2ac59eef",
+      "source": "claim:C-8dd2b77bc0cc",
+      "target": "hypothesis:H-a065aef81c59",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-b98fae6006e4",
+        "strength": 0.6,
+        "rationale": "The claim states that the presentation contains forward-looking statements subject to risks and uncertainties. This is directly relevant to the hypothesis, which concerns how market participants interpret such statements. However, it does not indicate how they are being interpreted or reacted to, only that such statements exist.",
+        "assumptions": [
+          "The forward-looking statements are made by AXP during investor events."
+        ],
+        "missing_information": [
+          "Details on how market participants are interpreting or reacting to these statements."
+        ],
+        "model_run_id": "MR-REL-227bd3260af8"
+      }
+    },
+    {
+      "edge_id": "edge:ca219df65fa2",
+      "source": "claim:C-201724c1c9a9",
+      "target": "hypothesis:H-a065aef81c59",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-b27768a7ad9d",
+        "strength": 0.6,
+        "rationale": "The claim notes that actual results may differ from forward-looking statements due to important factors. This supports the idea that such statements are subject to interpretation and uncertainty, which is relevant to the hypothesis. However, it does not directly indicate how market participants are interpreting or reacting to them.",
+        "assumptions": [
+          "The forward-looking statements are made by AXP during investor events."
+        ],
+        "missing_information": [
+          "Details on how market participants are interpreting or reacting to these statements and the factors influencing their interpretation."
+        ],
+        "model_run_id": "MR-REL-227bd3260af8"
+      }
+    },
+    {
+      "edge_id": "edge:4073a7ea7112",
+      "source": "claim:C-8b4e23d5bfe5",
+      "target": "hypothesis:H-e840c7317442",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-deccd407acd5",
+        "strength": 0.4,
+        "rationale": "The claim about American Express participating in a financial conference provides background on the company's communication activities but does not directly support or weaken the hypothesis about spread deviation between AXP and BAC. It may be relevant for understanding strategic positioning but lacks specific information on earnings expectations or valuation imbalances.",
+        "assumptions": [
+          "Participation in financial conferences may influence market perception of strategic positioning."
+        ],
+        "missing_information": [
+          "Details on what will be discussed at the conference regarding earnings or strategy."
+        ],
+        "model_run_id": "MR-REL-345102d6685f"
+      }
+    },
+    {
+      "edge_id": "edge:4e1b4f948d32",
+      "source": "claim:C-2b7d2cb0fb75",
+      "target": "hypothesis:H-e840c7317442",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-510c2f788043",
+        "strength": 0.4,
+        "rationale": "The availability of a public webcast of the discussion about American Express's business strategy and financial performance provides context for potential information flow but does not directly support or weaken the hypothesis about spread deviation. It may influence expectations but lacks specific content that would affect valuation.",
+        "assumptions": [
+          "The content of the webcast could influence market expectations about AXP's future performance."
+        ],
+        "missing_information": [
+          "The actual content and market reaction to the webcast discussion."
+        ],
+        "model_run_id": "MR-REL-345102d6685f"
+      }
+    },
+    {
+      "edge_id": "edge:a311971e76a9",
+      "source": "claim:C-41348afff9cf",
+      "target": "hypothesis:H-e840c7317442",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-e71ffbbecce7",
+        "strength": 0.5,
+        "rationale": "The claim about Bank of America navigating macroeconomic and regulatory challenges provides general context about BAC's operating environment but does not directly support or weaken the hypothesis about spread deviation between AXP and BAC. It may influence expectations around BAC's performance but lacks specific information on relative valuation or earnings divergence.",
+        "assumptions": [
+          "Macroeconomic and regulatory factors could impact BAC's earnings and valuation."
+        ],
+        "missing_information": [
+          "Specifics on how these factors differentially affect AXP and BAC."
+        ],
+        "model_run_id": "MR-REL-345102d6685f"
+      }
+    },
+    {
+      "edge_id": "edge:37182ca008e1",
+      "source": "claim:C-858fc95d8710",
+      "target": "hypothesis:H-e840c7317442",
+      "kind": "context_for",
+      "data": {
+        "assessment_id": "RA-b153f3b849f2",
+        "strength": 0.5,
+        "rationale": "The forecast of 2.4% GDP growth and two Fed rate cuts provides macroeconomic context that could influence both AXP and BAC, but it does not directly support or weaken the hypothesis about spread deviation. It may affect overall market conditions but lacks specificity on how it differentially impacts AXP and BAC's valuations or earnings expectations.",
+        "assumptions": [
+          "Macro conditions can influence financial sector performance and valuation."
+        ],
+        "missing_information": [
+          "How these macroeconomic factors differentially affect AXP and BAC."
+        ],
+        "model_run_id": "MR-REL-345102d6685f"
+      }
+    }
+  ]
+}

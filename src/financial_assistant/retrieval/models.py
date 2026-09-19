@@ -14,6 +14,10 @@ from financial_assistant.domain import (
     SourceDocument,
 )
 
+from .query_expansion import (
+    QueryExpansion,
+)
+
 
 class RetrievalStatus(StrEnum):
     FETCHED = "fetched"
@@ -21,6 +25,7 @@ class RetrievalStatus(StrEnum):
     FETCHED_UNDATED = "fetched_undated"
     REUSED = "reused"
     FILTERED_FUTURE = "filtered_future"
+    SKIPPED_BUDGET = "skipped_budget"
     FAILED = "failed"
 
 
@@ -110,6 +115,11 @@ class RetrievalBundle(BaseModel):
 
     documents: tuple[
         SourceDocument,
+        ...
+    ] = ()
+
+    query_expansions: tuple[
+        QueryExpansion,
         ...
     ] = ()
 

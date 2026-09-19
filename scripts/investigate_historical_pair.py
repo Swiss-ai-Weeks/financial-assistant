@@ -42,6 +42,12 @@ from financial_assistant.llm import (
     generate_hypotheses,
 )
 
+from financial_assistant.retrieval.query_expansion import (
+    expand_research_task,
+)
+
+
+
 from financial_assistant.research.planner import (
     plan_research,
 )
@@ -51,6 +57,29 @@ from financial_assistant.retrieval import (
     SearxngSearchProvider,
     TrafilaturaDocumentFetcher,
     execute_research_plan,
+)
+
+
+from financial_assistant.retrieval import (
+    CorpusDocumentFetcher,
+    CorpusSearchProvider,
+    SearxngSearchProvider,
+    TrafilaturaDocumentFetcher,
+)
+
+from financial_assistant.retrieval.composite import (
+    CompositeSearchProvider,
+    DispatchingDocumentFetcher,
+)
+
+from financial_assistant.retrieval.bookreader import (
+    CorpusDocumentFetcher,
+    CorpusSearchProvider,
+)
+
+from financial_assistant.retrieval.composite import (
+    CompositeSearchProvider,
+    DispatchingDocumentFetcher,
 )
 
 from financial_assistant.simulation import (
@@ -222,10 +251,63 @@ def select_historical_documents(
         )
     ]
 
-    # Higher-priority research tasks first, then
-    # evidence nearest to the historical cutoff.
+    
+
+	    # Canonical entity names already discovered during
+    # query expansion. This avoids hard-coded ticker
+    # mappings while giving document selection a simple
+    # entity-specific relevance signal.
+    entity_terms = {
+        query.text.strip().lower()
+        for expansion in bundle.query_expansions
+        for query in expansion.queries
+        if (
+            query.proximity.value == "direct"
+            and query.relation == "entity"
+        )
+    }
+
+    def entity_match_score(document):
+        """
+        Simple deterministic selection heuristic.
+
+        This is NOT an evidential confidence score.
+        It only prefers historically admissible
+        documents that actually mention the entities
+        under investigation.
+        """
+
+        haystack = (
+            f"{document.title}\n"
+            f"{document.text or ''}"
+        ).lower()
+
+        matched_entities = sum(
+            1
+            for term in entity_terms
+            if term in haystack
+        )
+
+        occurrences = sum(
+            haystack.count(term)
+            for term in entity_terms
+        )
+
+        return (
+            matched_entities,
+            occurrences,
+        )
+
     eligible.sort(
         key=lambda document: (
+            -entity_match_score(
+                document
+            )[0],
+
+            -entity_match_score(
+                document
+            )[1],
+
             document_priority.get(
                 document.document_id,
                 5,
@@ -238,6 +320,9 @@ def select_historical_documents(
             document.title,
         )
     )
+	
+	
+	
 
     return tuple(
         eligible[:limit]
@@ -467,25 +552,79 @@ def main() -> None:
     plan = plan_research(
         event
     )
+	
+	# -------------------------------------------------
+# 4. NVIDIA NIM.
+#
+# Create the model provider before retrieval because
+# Nemotron now participates in query expansion as
+# well as the later evidence reasoning stages.
+# -------------------------------------------------
+
+
+    provider = OpenAICompatibleProvider(
+
+            provider_name="nvidia-nim",
+
+            model_name=(
+                "nvidia/"
+                "llama-3.3-nemotron-super-49b-v1.5"
+            ),
+
+            base_url=(
+                "http://127.0.0.1:8000/v1"
+            ),
+
+            max_tokens=2048,
+        )
+
+
+    def query_expander(
+            task,
+            *,
+            as_of,
+        ):
+            """
+            Adapter satisfying the QueryExpander Protocol.
+
+            The retrieval service only sees the generic
+            QueryExpander interface. It does not need to know
+            anything about NVIDIA or the model provider.
+            """
+
+            return expand_research_task(
+                provider,
+                task,
+                as_of=as_of,
+            )	
+            
+            
+
+    provider = OpenAICompatibleProvider(
+            provider_name="nvidia-nim",
+            model_name=(
+				"nvidia/"
+				"llama-3.3-nemotron-super-49b-v1.5"),
+			base_url=("http://127.0.0.1:8000/v1"),
+			max_tokens=2048,)
+
 
     print()
-    print(
-        "RESEARCH CUTOFF:",
-        plan.as_of.isoformat(),
-    )
+    print("RESEARCH CUTOFF:",
+          plan.as_of.isoformat(),
+	)
 
-    print(
-        "RESEARCH TASKS:",
-        len(plan.tasks),
-    )
+    print("RESEARCH TASKS:",
+          len(plan.tasks),
+	)
 
     for task in plan.tasks:
         print(
-            " ",
-            task.priority,
-            task.kind.value,
-            task.entities,
-        )
+                " ",
+                task.priority,
+                task.kind.value,
+                task.entities,
+            )
 
     # -------------------------------------------------
     # 4. Execute retrieval.
@@ -501,13 +640,44 @@ def main() -> None:
         timezone.utc
     )
 
-    search_provider = (
-        SearxngSearchProvider()
-    )
 
-    document_fetcher = (
-        TrafilaturaDocumentFetcher()
-    )
+    search_provider = CompositeSearchProvider(
+    providers=(
+        # Controlled evidence universe first.
+        CorpusSearchProvider(
+            lookback_days=45,
+        ),
+
+        # Then augment with open-web discovery.
+        SearxngSearchProvider(),
+    ))
+
+    document_fetcher = DispatchingDocumentFetcher(
+            fetchers={
+                "bookreader": (
+                    CorpusDocumentFetcher()
+                    ),
+                "searxng": (
+                    TrafilaturaDocumentFetcher()
+                    ),
+                }
+            )
+
+    print()
+
+    print(
+    	"RETRIEVAL SOURCES:",
+    	"BookReader corpus + SearXNG web",
+	)
+    print(
+    	"BOOKREADER CORPUS:",
+    	"Financial Times + Wall Street Journal",
+	)
+    print(
+    	"BOOKREADER LOOKBACK:",
+    	"45 calendar days",
+	)
+	
 
     bundle = timed(
         "retrieval",
@@ -529,8 +699,44 @@ def main() -> None:
             per_task_limit=(
                 args.per_task_limit
             ),
+
+            query_expander=(
+                query_expander
+            ),
         ),
     )
+
+
+	
+# -------------------------------------------------
+# Inspect the LLM-generated retrieval plan.
+#
+# These are search hypotheses generated before
+# evidence retrieval. They are not evidence and
+# should not be interpreted as causal findings.
+# -------------------------------------------------
+
+    print()
+    print(
+		"QUERY EXPANSIONS:",
+		len(bundle.query_expansions),
+	)
+
+    for expansion in bundle.query_expansions:
+        print()
+        print(
+                " ",
+                expansion.task_id,)
+
+    for query in expansion.queries:
+        print(
+				"   ",
+				query.proximity.value,
+				"|",
+                query.relation,
+                "|",
+                query.text,
+            )
 
     status_counts = Counter(
         record.status.value
@@ -539,13 +745,13 @@ def main() -> None:
 
     print()
     print(
-        "RETRIEVAL EXECUTED AT:",
-        retrieved_at.isoformat(),
+            "RETRIEVAL EXECUTED AT:",
+            retrieved_at.isoformat(),
     )
 
     print(
-        "SEARCH HITS:",
-        len(bundle.hits),
+            "SEARCH HITS:",
+            len(bundle.hits),
     )
 
     for status in RetrievalStatus:
@@ -615,27 +821,7 @@ def main() -> None:
             "loosening any evidential rule."
         )
 
-    # -------------------------------------------------
-    # 6. NVIDIA NIM.
-    # -------------------------------------------------
-
-    provider = OpenAICompatibleProvider(
-        provider_name="nvidia-nim",
-
-        model_name=(
-            "nvidia/"
-            "llama-3.3-nemotron-super-49b-v1.5"
-        ),
-
-        base_url=(
-            "http://127.0.0.1:8000/v1"
-        ),
-
-        max_tokens=2048,
-    )
-
-    # -------------------------------------------------
-    # 7. Source-grounded claim extraction.
+    # 6. Source-grounded claim extraction. re-use nvidia nim provider created earlier.
     # -------------------------------------------------
 
     extraction_results = timed(
