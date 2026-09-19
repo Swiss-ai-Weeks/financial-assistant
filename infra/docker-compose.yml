@@ -1,0 +1,43 @@
+# Optional infrastructure. The desk itself runs with `make dev`.
+#
+#   docker compose -f infra/docker-compose.yml up -d searxng
+#   docker compose -f infra/docker-compose.yml --profile gpu up -d vllm
+
+services:
+  searxng:
+    image: searxng/searxng:latest
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    environment:
+      SEARXNG_BASE_URL: http://localhost:8888/
+    restart: unless-stopped
+
+  # Containerised alternative to scripts/serve_llm.sh.
+  vllm:
+    profiles: ["gpu"]
+    image: ${VLLM_IMAGE:-vllm/vllm-openai:latest}
+    ipc: host
+    ports:
+      - "8000:8000"
+    volumes:
+      - ${HF_HOME:-~/.cache/huggingface}:/root/.cache/huggingface
+    environment:
+      HF_TOKEN: ${HF_TOKEN:-}
+    command: >
+      --model ${LLM_MODEL:-nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16}
+      --trust-remote-code
+      --max-model-len ${LLM_MAX_MODEL_LEN:-65536}
+      --max-num-seqs 128
+      --gpu-memory-utilization 0.90
+      --enable-prefix-caching
+      --data-parallel-size 2
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 2
+              capabilities: [gpu]
+    restart: unless-stopped

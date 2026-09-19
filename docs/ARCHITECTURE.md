@@ -1,0 +1,84 @@
+# Architecture
+
+```
+frontend/ (React + Vite)
+    │  /api
+    ▼
+src/financial_assistant/api/          HTTP service (FastAPI)
+    controllers/     HTTP in, HTTP out. No business rules.
+    services/        Use cases and business rules. No HTTP, no disk, no network.
+    repositories/    Everything that touches disk or the network.
+    dependencies.py  Composition root: builds each object once, injects via Depends.
+    models.py        What the desk stores (portfolio, news item, anomaly, investigation).
+    schemas.py       Request / response bodies.
+    │
+    ▼
+src/financial_assistant/              Domain. Knows nothing about HTTP.
+    anomaly_detection/   pairs (cointegration) + VWAP, TWAP, trend detectors
+    market_data/         Yahoo Finance daily OHLCV
+    retrieval/           search providers, article fetching, point-in-time eligibility
+    research/            deterministic research planning
+    llm/                 provider + the four model stages
+    claimgraph/          typed investigation state -> auditable graph
+    causal_scoring/      deterministic candidate scorer
+    simulation/          hindsight-only pair trade replay
+```
+
+## Dependency rule
+
+`controllers → services → repositories`, and services → domain. Nothing points
+the other way. A controller never opens a file; a repository never decides
+anything.
+
+Tests replace only the repository boundary (market download, symbol search, news
+source, article fetcher, language model). Controllers, services and the
+ClaimGraph pipeline run for real: see `tests/test_api.py`.
+
+## Services
+
+| Service | Responsibility |
+|---|---|
+| `PortfolioService` | The book: value, return vs benchmark, contribution per holding. Adding a holding triggers a focused pair scan. |
+| `MarketService` | Quotes, candles, and the strategy reference lines (MA7/MA25, VWAP20, TWAP5). |
+| `AnomalyService` | Runs the four strategy monitors over the review window; resolves a blotter row back to the neutral `AnomalyEvent`. |
+| `NewsService` | Ticker and book wire; news around an anomaly, split at the evidence cutoff and ranked by relevance. |
+| `InvestigationService` | Background ClaimGraph pipeline over admissible news, with per-stage progress. |
+
+## Strategy monitors
+
+Each strategy rests on one assumption. A monitor fires when it stops holding.
+
+| Monitor | Assumes | Flags |
+|---|---|---|
+| VWAP | today's volume curve looks like history | volume > 3σ (log, 20d); close stretched > 2.5× typical from VWAP20 |
+| TWAP | price does not drift while the order works | 5-session TWAP shortfall vs arrival price > 2.5× typical |
+| Trend (MA cross) | a cross starts a persistent trend | MA7/MA25 crosses; whipsaw = reversed within 5 sessions |
+| Pairs | the spread reverts to its mean | Engle-Granger cointegrated pairs with spread beyond 2σ |
+
+All detectors are strictly point-in-time: baselines use only sessions *before*
+the one being scored, and pair relationships are fitted on the 252 sessions
+before the review window and never re-estimated inside it.
+
+## Temporal provenance
+
+A daily bar becomes observable at the session close (21:00 UTC). That instant is
+the **evidence cutoff** of an anomaly:
+
+- published ≤ cutoff → *admissible*, may be used as evidence;
+- published > cutoff → *hindsight*, shown dimmed, never sent to the model;
+- undated → never admissible.
+
+Fetched pages must also match their headline, because publishers answer
+automated requests with consent walls that extract into clean, irrelevant text.
+
+## State on disk
+
+```
+data/seed/portfolio.json          the demo book, committed
+data/state/portfolio.json         the edited book            (ignored)
+data/state/investigations/*.json  one replayable file per run (ignored)
+data/cache/market/daily/*.csv     OHLCV per ticker            (ignored)
+data/cache/news/*.json            accumulated wire per ticker (ignored)
+```
+
+`make reset` forgets the state and keeps the caches.

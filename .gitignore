@@ -8,3 +8,7 @@ __pycache__/
 build/
 dist/
 data/cache/
+node_modules/
+.env
+data/state/
+.idea/

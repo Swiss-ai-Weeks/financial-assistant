@@ -1,6 +1,73 @@
-# Financial Assistant
+# Financial Assistant — ClaimGraph Desk
 
-Evidence-backed causal attribution for financial-news anomalies.
+**When a strategy stops working, the reason is usually in the news. This desk
+finds it and shows its evidence.**
+
+A portfolio manager's book lagged its benchmark last month. The desk shows
+*where* each trading strategy's assumption broke, lines those moments up against
+the news that was public **at the time**, and asks a locally served NVIDIA
+Nemotron model to explain each one with claims that are quoted, sourced and
+auditable.
+
+```
+book vs benchmark ─► strategy monitors ─► anomaly ─► point-in-time news ─► Nemotron ─► ClaimGraph
+   "I'm -2.6%"        VWAP · TWAP ·        "BAC/JPM       only what was       claims,      who said what,
+                      trend · pairs        spread -3.4σ"   published before    hypotheses,  what supports,
+                                                           the move            relations    what is missing
+```
+
+## Quick start
+
+Requires Python 3.11+ and Node 20.19+.
+
+```bash
+make setup     # virtualenv, Python and npm dependencies, .env
+make dev       # API on :8080, UI on http://localhost:5173
+```
+
+That is the whole desk: live prices, the four strategy monitors, pair scans and
+the news wire need **no API key and no GPU**.
+
+The **Explain** button needs a language model. On the GPU box:
+
+```bash
+pip install vllm
+make llm       # Nemotron 3.5 Lightning 30B-A3B, one replica per H100, :8000
+make search    # optional: SearXNG for wider web retrieval, then set SEARXNG_URL
+```
+
+No GPUs at hand? Put an NVIDIA API key in `.env` (see `.env.example`) to use the
+same model hosted. Other targets: `make test`, `make serve` (UI and API as one
+process), `make reset` (restore the demo book).
+
+## The demo in two minutes
+
+1. **The problem.** The strip under the top bar reads *Underperforming SPY by
+   2.6%* and names the largest detractors. The desk opens on the worst one.
+2. **Where it broke.** The blotter lists every moment a strategy assumption
+   failed over the month. Pick a monitor in the *Strategy Monitor Marketplace*
+   (VWAP, TWAP, MA Cross, Pairs) to filter the chart and the blotter.
+3. **What the world knew.** Click any session on the chart: the News tab shows
+   what was published that day.
+4. **Add a name.** Search a company in the top bar and press *Add*. The desk
+   immediately tests it for cointegrated partners and opens the spread if it
+   finds one.
+5. **Why.** Click *Explain →* on an anomaly. News is split at the evidence
+   cutoff (admissible vs hindsight); Nemotron extracts quoted claims, proposes
+   competing explanations, and weighs one against the other, stage by stage.
+6. **Audit it.** *Open ClaimGraph* shows every claim, source, assumption and
+   model run behind the verdict.
+7. **The hardware story.** The chip icon explains the model choice and shows
+   measured latency per stage.
+
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md): controllers, services, repositories;
+  the strategy monitors; temporal provenance.
+- [Model choice](docs/MODEL.md): why Nemotron 3.5 Lightning 30B-A3B, and how it
+  is served on two H100s.
+- [EventKG integration](docs/eventkg-integration.md)
+- API reference: <http://localhost:8080/docs> while the API runs.
 
 ## Event graph and source traceability
 
@@ -171,9 +238,11 @@ For historical replay, set `as_of_at` to the simulated decision time. Never
 attach later news or future prices to a criterion: the scorer will ignore the
 late evidence, but upstream feature generation must also observe the cut-off.
 
-## Interactive dashboard
+## Static prototype dashboard
 
-[`dashboard/index.html`](dashboard/index.html) demonstrates how an anomaly,
+The earlier static prototype,
+[`prototypes/causal-signal-dashboard-static/index.html`](prototypes/causal-signal-dashboard-static/index.html),
+demonstrates how an anomaly,
 causal qualification, continuation probability, and a long/short/no-trade
 research signal fit together. It includes three fictional scenarios, an as-of
 time slider, evidence-backed mechanism paths, criterion-level attribution, and
@@ -185,7 +254,7 @@ Open the file directly, or serve the repository locally:
 python -m http.server 8000
 ```
 
-Then visit `http://localhost:8000/dashboard/`.
+Then visit `http://localhost:8000/prototypes/causal-signal-dashboard-static/`.
 
 ## Development
 

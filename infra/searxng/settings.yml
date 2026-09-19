@@ -1,0 +1,15 @@
+# Minimal SearXNG configuration for the retrieval layer.
+# The JSON format is disabled by default and required here.
+
+use_default_settings: true
+
+server:
+  secret_key: "claimgraph-local-only-change-me"
+  limiter: false
+  image_proxy: false
+
+search:
+  safe_search: 0
+  formats:
+    - html
+    - json
