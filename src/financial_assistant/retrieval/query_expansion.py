@@ -6,24 +6,58 @@ from pydantic import BaseModel, Field
 
 from typing import Protocol
 
-class QueryRelation(StrEnum):
-    """
-    Why this search concept is relevant to the
-    research task.
 
-    These labels describe search intent only.
-    They do NOT assert causality or evidential support.
+class QueryProximity(StrEnum):
+    """
+    Structural distance between a retrieval concept
+    and the entity or question being investigated.
+
+    This is deliberately small and stable.
+
+    DIRECT:
+        the concept directly identifies or describes
+        the investigated entity/event.
+
+    INDIRECT:
+        the concept describes surrounding context,
+        mechanisms, conditions or other potentially
+        relevant information.
     """
 
     DIRECT = "direct"
-    SECTOR = "sector"
-    MACRO = "macro"
-    POTENTIAL_DRIVER = "potential_driver"
+    INDIRECT = "indirect"
+
 
 
 class ExpandedQuery(BaseModel):
     """
-    One search hypothesis generated before retrieval.
+    One explicit retrieval hypothesis.
+
+    `proximity` is controlled because direct versus
+    indirect is structurally meaningful.
+
+    `relation` is deliberately open-ended because
+    ClaimGraph should not assume in advance every way
+    information might relate to a research question.
+
+    Example relation labels:
+
+        entity
+        sector
+        competitor
+        input_cost
+        consumer_demand
+        monetary_policy
+        regulatory_environment
+        geopolitical_disruption
+        labour_relations
+        management_change
+
+    These are examples, not an allowed-values list.
+
+    A relation describes search intent. It does not
+    establish that the relationship exists or caused
+    the observed anomaly.
     """
 
     text: str = Field(
@@ -31,7 +65,13 @@ class ExpandedQuery(BaseModel):
         max_length=120,
     )
 
-    relation: QueryRelation
+    proximity: QueryProximity
+
+    relation: str = Field(
+        min_length=2,
+        max_length=80,
+        pattern=r"^[a-z][a-z0-9_]*$",
+    )
 
     entities: tuple[str, ...] = ()
 
@@ -39,6 +79,7 @@ class ExpandedQuery(BaseModel):
         min_length=3,
         max_length=300,
     )
+
 
 
 class QueryExpansion(BaseModel):
@@ -72,60 +113,119 @@ QUERY_EXPANSION_PROMPT_VERSION = (
 
 
 SYSTEM_PROMPT = """
-You generate retrieval queries for a financial
-evidence investigation.
+You generate retrieval concepts for an evidence
+investigation.
 
-The supplied entities are normally publicly traded
-security ticker symbols.
+The supplied entities may be security tickers,
+market identifiers or other domain entities.
 
-Infer the corresponding company or security from
-the financial context when reasonably confident.
+Use the supplied context, research question and
+rationale to interpret the entities when reasonably
+confident.
 
-Do not require or assume a predefined ticker-to-name
-mapping.
+If an identifier is genuinely ambiguous, do not
+invent an identity. Preserve the identifier or use
+contextual terms that help disambiguate it.
 
-If a ticker is ambiguous, do not invent an identity.
-Keep the ticker or use a query that disambiguates it
-using the supplied context.
+Your output contains SEARCH HYPOTHESES.
 
-Your output consists of SEARCH HYPOTHESES, not
-claims about what caused the market movement.
+Search hypotheses are NOT:
+- evidence;
+- factual findings;
+- causal conclusions;
+- explanations already established.
 
-Generate queries that may help discover:
+Generate concepts that could help investigate the
+research question.
 
-1. direct company-specific information;
-2. sector or industry developments;
-3. macroeconomic or regulatory context;
-4. plausible external drivers worth investigating.
+For each query provide:
 
-Do not state that any proposed driver caused the
-anomaly.
+1. text
 
-Prefer short concepts useful for both newspaper
-full-text retrieval and web search.
+   A concise search concept.
 
-Examples of appropriate concepts:
+2. proximity
 
-"Goldman Sachs"
-"United Airlines"
-"airlines"
-"investment banking"
-"jet fuel"
-"travel demand"
-"interest rates"
+   Either:
 
-Avoid verbose search-engine syntax unless necessary.
+   "direct"
+       The query directly concerns the investigated
+       entity or event.
 
-Return at most 6 queries.
+   "indirect"
+       The query concerns surrounding context,
+       mechanisms, conditions or potentially relevant
+       external information.
 
-Return JSON with exactly this structure:
+3. relation
+
+   A short snake_case label describing how this
+   concept relates to the research task.
+
+   The relation vocabulary is OPEN-ENDED.
+
+   Possible examples include:
+
+   entity
+   sector
+   competitor
+   input_cost
+   consumer_demand
+   monetary_policy
+   regulatory_environment
+   geopolitical_disruption
+   management_change
+   litigation
+   technology
+   supply_chain
+   labour_relations
+   market_sentiment
+
+   These are examples only.
+
+   Do not force a concept into one of these labels.
+   Invent a different concise snake_case relation when
+   that better describes the search rationale.
+
+4. entities
+
+   Identifiers from the supplied research task that
+   are relevant to this query.
+
+5. reason
+
+   A concise explanation of why this search may help
+   investigate the task.
+
+Use neutral search concepts that do not presuppose
+that an event actually occurred.
+
+For example:
+
+prefer "economic conditions"
+over "economic downturn";
+
+prefer "jet fuel prices"
+over "jet fuel price spike";
+
+prefer "travel demand"
+over "travel demand collapse".
+
+A relation describes retrieval intent only.
+It does not establish that the relationship exists
+or caused the observed anomaly.
+
+Return between 2 and 6 queries.
+
+Return only JSON in this form:
 
 {
   "task_id": "...",
   "queries": [
     {
       "text": "...",
-      "relation": "direct|sector|macro|potential_driver",
+      "proximity": "direct",
+      "relation": "entity",
       "entities": ["..."],
       "reason": "..."
     }

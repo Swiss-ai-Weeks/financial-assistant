@@ -4,7 +4,7 @@ from pydantic import ValidationError
 from financial_assistant.retrieval.query_expansion import (
     ExpandedQuery,
     QueryExpansion,
-    QueryRelation,
+    QueryProximity,
 )
 
 
@@ -13,30 +13,31 @@ def test_query_expansion_preserves_search_intent():
         task_id="RQ-UAL",
         queries=(
             ExpandedQuery(
-                text="United Airlines",
-                relation=QueryRelation.DIRECT,
-                entities=("UAL",),
-                reason="Canonical company name",
+                    text="United Airlines",
+                    proximity=QueryProximity.DIRECT,
+                    relation="entity",
+                    entities=("UAL",),
+                    reason="Direct company-specific retrieval concept.",
             ),
+			ExpandedQuery(
+					text="airlines",
+					proximity=QueryProximity.INDIRECT,
+					relation="sector",
+					entities=("UAL",),
+					reason=(
+						"Sector developments may provide "
+						"relevant context for United Airlines."
+					),
+			),
             ExpandedQuery(
-                text="airlines",
-                relation=QueryRelation.SECTOR,
-                entities=("UAL",),
-                reason=(
-                    "Sector developments may affect "
-                    "United Airlines"
-                ),
-            ),
-            ExpandedQuery(
-                text="jet fuel",
-                relation=(
-                    QueryRelation.POTENTIAL_DRIVER
-                ),
-                entities=("UAL",),
-                reason=(
-                    "Fuel is a material operating "
-                    "input for airlines"
-                ),
+				text="jet fuel prices",
+				proximity=QueryProximity.INDIRECT,
+				relation="input_cost",
+				entities=("UAL",),
+				reason=(
+					"Fuel costs may provide relevant context "
+					"for airline economics."
+				),
             ),
         ),
     )
@@ -45,13 +46,13 @@ def test_query_expansion_preserves_search_intent():
     assert len(expansion.queries) == 3
 
     assert (
-        expansion.queries[0].relation
-        == QueryRelation.DIRECT
+        expansion.queries[0].proximity
+        == QueryProximity.DIRECT
     )
 
     assert (
-        expansion.queries[2].text
-        == "jet fuel"
+        expansion.queries[0].relation
+        == "entity"
     )
 
 
@@ -59,7 +60,8 @@ def test_query_expansion_limits_query_count():
     queries = tuple(
         ExpandedQuery(
             text=f"concept {i}",
-            relation=QueryRelation.MACRO,
+            proximity=QueryProximity.INDIRECT,
+			relation="context",
             reason="Possible external context",
         )
         for i in range(7)
@@ -93,40 +95,39 @@ class FakeLLM:
         user: str,
         reasoning: bool = False,
     ):
-        return {
-            "task_id": "RQ-GS",
-            "queries": [
-                {
-                    "text": "Goldman Sachs",
-                    "relation": "direct",
-                    "entities": ["GS"],
-                    "reason": (
-                        "Likely company represented "
-                        "by GS in this financial context"
-                    ),
-                },
-                {
-                    "text": "investment banking",
-                    "relation": "sector",
-                    "entities": ["GS"],
-                    "reason": (
-                        "Relevant industry context"
-                    ),
-                },
-                {
-                    "text": "interest rates",
-                    "relation": (
-                        "potential_driver"
-                    ),
-                    "entities": ["GS"],
-                    "reason": (
-                        "Potential external driver "
-                        "worth investigating"
-                    ),
-                },
-            ],
-        }
-
+	        return {
+			"task_id": "RQ-GS",
+			"queries": [
+				{
+					"text": "Goldman Sachs",
+					"proximity": "direct",
+					"relation": "entity",
+					"entities": ["GS"],
+					"reason": (
+						"Direct company-specific retrieval."
+					),
+				},
+				{
+					"text": "investment banking",
+					"proximity": "indirect",
+					"relation": "sector",
+					"entities": ["GS"],
+					"reason": (
+						"Relevant industry context."
+					),
+				},
+				{
+					"text": "interest rates",
+					"proximity": "indirect",
+					"relation": "monetary_policy",
+					"entities": ["GS"],
+					"reason": (
+						"Monetary conditions may provide "
+						"relevant external context."
+					),
+				},
+			],
+		}
 
 def test_llm_expands_ticker_from_context():
     task = ResearchTask(
@@ -168,4 +169,40 @@ def test_llm_expands_ticker_from_context():
     assert (
         expansion.queries[0].entities
         == ("GS",)
+    )
+
+
+def test_relation_vocabulary_is_open():
+    query = ExpandedQuery(
+        text="pilot contract negotiations",
+        proximity=QueryProximity.INDIRECT,
+        relation="labour_relations",
+        entities=("UAL",),
+        reason=(
+            "Labour negotiations may provide relevant "
+            "operating and cost context."
+        ),
+    )
+
+    assert (
+        query.relation
+        == "labour_relations"
+    )
+
+
+def test_unanticipated_relation_is_allowed():
+    query = ExpandedQuery(
+        text="aircraft delivery delays",
+        proximity=QueryProximity.INDIRECT,
+        relation="fleet_capacity_constraint",
+        entities=("UAL",),
+        reason=(
+            "Aircraft availability may affect "
+            "capacity planning."
+        ),
+    )
+
+    assert (
+        query.relation
+        == "fleet_capacity_constraint"
     )
