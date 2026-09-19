@@ -33,6 +33,7 @@ class InstrumentRepository:
     def __init__(self, universe_file: Path, *, searcher=None):
         self._universe = read_universe(universe_file)
         self._search = searcher or self._yahoo_search
+        self._described: dict[str, Instrument] = {}
 
     @property
     def universe(self) -> tuple[str, ...]:
@@ -61,11 +62,17 @@ class InstrumentRepository:
     def describe(self, ticker: str) -> Instrument:
         symbol = ticker.strip().upper()
 
-        for instrument in self.search(symbol, limit=5):
-            if instrument.ticker == symbol:
-                return instrument
+        if symbol not in self._described:
+            self._described[symbol] = next(
+                (
+                    instrument
+                    for instrument in self.search(symbol, limit=5)
+                    if instrument.ticker == symbol
+                ),
+                Instrument(ticker=symbol, name=symbol),
+            )
 
-        return Instrument(ticker=symbol, name=symbol)
+        return self._described[symbol]
 
     @staticmethod
     def _yahoo_search(query: str, limit: int) -> tuple[Instrument, ...]:

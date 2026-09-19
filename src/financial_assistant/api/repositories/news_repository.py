@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import threading
 import time
-from datetime import datetime, timezone
+from datetime import datetime
 from hashlib import sha1
 from pathlib import Path
 from typing import Protocol
@@ -202,10 +202,3 @@ class NewsRepository:
             )
         )
 
-
-def utc(value: datetime) -> datetime:
-    return (
-        value.replace(tzinfo=timezone.utc)
-        if value.tzinfo is None
-        else value.astimezone(timezone.utc)
-    )

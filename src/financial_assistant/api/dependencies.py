@@ -146,7 +146,11 @@ def get_portfolio_service() -> PortfolioService:
 
 @lru_cache(maxsize=1)
 def get_news_service() -> NewsService:
-    return NewsService(get_news_repository(), get_portfolio_repository())
+    return NewsService(
+        get_news_repository(),
+        get_portfolio_repository(),
+        get_instrument_repository(),
+    )
 
 
 def build_llm() -> OpenAICompatibleProvider:

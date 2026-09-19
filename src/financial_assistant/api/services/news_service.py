@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import re
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 
 from financial_assistant.api.models import Anomaly, NewsItem
 from financial_assistant.api.repositories import (
+    InstrumentRepository,
     NewsRepository,
     PortfolioRepository,
 )
@@ -15,6 +17,60 @@ from financial_assistant.api.services.anomaly_service import session_close
 LOOKBACK_DAYS = 7
 HINDSIGHT_DAYS = 3
 
+LEGAL_WORDS = {
+    "the", "inc", "inc.", "corp", "corp.", "corporation", "company",
+    "co", "co.", "companies", "group", "holdings", "plc", "ltd", "&",
+}
+
+# Leading words too common to identify a company alone.
+GENERIC_WORDS = {
+    "american", "bank", "first", "general", "home", "international",
+    "national", "united",
+}
+
+
+def company_aliases(ticker: str, company: str) -> tuple[str, ...]:
+    """
+    Strings whose presence shows a story is about the
+    company: "Bank of America Corporation" is written
+    "Bank of America", "NVIDIA Corporation" is "NVIDIA".
+    """
+
+    words = [
+        word.strip(",")
+        for word in company.split()
+        if word.strip(",").lower() not in LEGAL_WORDS
+    ]
+
+    aliases = {ticker}
+
+    if words and company != ticker:
+        aliases.add(" ".join(words))
+        aliases.add(" ".join(words[:2]))
+
+        if len(words[0]) >= 5 and words[0].lower() not in GENERIC_WORDS:
+            aliases.add(words[0])
+
+    return tuple(sorted(aliases, key=len, reverse=True))
+
+
+def relevance(item: NewsItem, aliases: tuple[str, ...]) -> int:
+    """
+    2 when the headline names the company, 1 when only
+    the summary does, 0 when the feed merely tagged it.
+    """
+
+    def mentions(text: str) -> bool:
+        return any(
+            re.search(rf"(?<!\w){re.escape(alias)}(?!\w)", text)
+            for alias in aliases
+        )
+
+    if mentions(item.title):
+        return 2
+
+    return 1 if mentions(item.summary) else 0
+
 
 class NewsService:
     """
@@ -23,9 +79,15 @@ class NewsService:
     happened.
     """
 
-    def __init__(self, news: NewsRepository, portfolios: PortfolioRepository):
+    def __init__(
+        self,
+        news: NewsRepository,
+        portfolios: PortfolioRepository,
+        instruments: InstrumentRepository,
+    ):
         self._news = news
         self._portfolios = portfolios
+        self._instruments = instruments
 
     @property
     def source_names(self) -> tuple[str, ...]:
@@ -70,15 +132,29 @@ class NewsService:
         closed = cutoff + timedelta(days=HINDSIGHT_DAYS)
 
         unique: dict[str, NewsItem] = {}
+        scores: dict[str, int] = {}
 
         for ticker in (anomaly.ticker, *anomaly.related_tickers):
-            for item in self._news.get(ticker, self._company(ticker)):
-                if opened <= item.published_at <= closed:
-                    unique.setdefault(item.news_id, item)
+            company = self._company(ticker)
+            aliases = company_aliases(ticker, company)
 
+            for item in self._news.get(ticker, company):
+                if not opened <= item.published_at <= closed:
+                    continue
+
+                unique.setdefault(item.news_id, item)
+
+                scores[item.news_id] = max(
+                    scores.get(item.news_id, 0),
+                    relevance(item, aliases),
+                )
+
+        # Feeds tag a story to every ticker it mentions in
+        # passing. Stories that name the company come first,
+        # then the freshest.
         ordered = sorted(
             unique.values(),
-            key=lambda item: item.published_at,
+            key=lambda item: (scores[item.news_id], item.published_at),
             reverse=True,
         )
 
@@ -109,7 +185,8 @@ class NewsService:
 
     def _company(self, ticker: str) -> str:
         for position in self._portfolios.load().positions:
-            if position.ticker == ticker:
+            if position.ticker == ticker and position.name:
                 return position.name
 
-        return ticker
+        # The other leg of a pair is usually not held.
+        return self._instruments.describe(ticker).name

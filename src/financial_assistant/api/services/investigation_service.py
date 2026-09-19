@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import time
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
@@ -77,6 +78,35 @@ RELATION_WEIGHTS = {
 
 DEFAULT_STRENGTH = 0.5
 HEALTH_CACHE_SECONDS = 10
+
+HEADLINE_WORD_CHARS = 5
+HEADLINE_WORDS_REQUIRED = 2
+
+
+def matches_headline(text: str, headline: str) -> bool:
+    """
+    Whether fetched page text is plausibly the article
+    behind a headline.
+
+    Publishers answer automated requests with consent
+    walls, paywalls and bot checks. Those pages extract
+    cleanly into well-formed text that has nothing to do
+    with the story, and must never become evidence.
+    """
+
+    words = {
+        word
+        for word in re.findall(r"[a-z0-9]+", headline.lower())
+        if len(word) >= HEADLINE_WORD_CHARS
+    }
+
+    if not words:
+        return True
+
+    body = text.lower()
+    found = sum(1 for word in words if word in body)
+
+    return found >= min(HEADLINE_WORDS_REQUIRED, len(words))
 
 
 class InvestigationService:
@@ -179,11 +209,11 @@ class InvestigationService:
                 ),
             )
 
-        except Exception as exc:
+        except Exception:
             status = ServiceStatus(
                 name=self._provider,
                 online=False,
-                detail=f"{self._llm_base_url} unreachable ({exc})",
+                detail=f"{self._llm_base_url} is not reachable",
             )
 
         self._health = (time.time(), status)
@@ -481,6 +511,9 @@ class InvestigationService:
 
         try:
             document = self._fetcher.fetch(hit, retrieved_at=retrieved_at)
+
+            if not matches_headline(document.text, item.title):
+                raise ValueError("Fetched page is not the article.")
 
             # The feed's timestamp is precise to the
             # minute; page metadata is often date-only.

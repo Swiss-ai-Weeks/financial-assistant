@@ -229,6 +229,7 @@ def client(tmp_path):
     news = NewsService(
         NewsRepository(tmp_path / "news", (FakeNewsSource(),), cache_minutes=60),
         portfolios,
+        instruments,
     )
 
     anomalies = AnomalyService(
@@ -382,6 +383,35 @@ def test_anomaly_news_is_split_at_the_evidence_cutoff(client):
     assert all(item["published_at"] <= body["cutoff"] for item in body["admissible"])
 
 
+def test_stories_naming_the_company_outrank_passing_mentions():
+    from financial_assistant.api.services.news_service import (
+        company_aliases,
+        relevance,
+    )
+
+    aliases = company_aliases("BAC", "Bank of America Corporation")
+
+    assert "Bank of America" in aliases
+    assert "Bank" not in aliases
+    assert "NVIDIA" in company_aliases("NVDA", "NVIDIA Corporation")
+
+    def story(title, summary=""):
+        return NewsItem(
+            news_id=title,
+            ticker="BAC",
+            title=title,
+            url="https://news.example.com/x",
+            published_at=datetime(2026, 9, 1, tzinfo=timezone.utc),
+            summary=summary,
+            provider="fake",
+        )
+
+    assert relevance(story("Bank of America slips on bond losses"), aliases) == 2
+    assert relevance(story("Banks fall", "Shares of BAC led the drop."), aliases) == 1
+    assert relevance(story("NetApp sees strong demand, BofA says"), aliases) == 0
+    assert relevance(story("BACK to school sales"), aliases) == 0
+
+
 def test_investigation_explains_an_anomaly_from_admissible_news(client):
     anomaly = client.get("/api/anomalies?strategy=pairs").json()[0]
 
@@ -418,6 +448,22 @@ def test_investigation_explains_an_anomaly_from_admissible_news(client):
     assert client.get("/api/investigations").json()[0]["investigation_id"] == (
         run["investigation_id"]
     )
+
+
+def test_consent_walls_are_not_mistaken_for_articles():
+    from financial_assistant.api.services.investigation_service import (
+        matches_headline,
+    )
+
+    headline = "Bank of America Slips as Bond Losses Threaten $90 Billion"
+
+    consent = (
+        "Si vous ne souhaitez pas que nos partenaires utilisent des "
+        "cookies, cliquez sur Refuser tout."
+    )
+
+    assert matches_headline("Bond losses at the bank widened. " + ARTICLE, headline)
+    assert not matches_headline(consent, headline)
 
 
 def test_investigation_of_unknown_anomaly_is_not_found(client):
