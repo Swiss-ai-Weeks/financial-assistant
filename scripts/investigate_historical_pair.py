@@ -251,10 +251,63 @@ def select_historical_documents(
         )
     ]
 
-    # Higher-priority research tasks first, then
-    # evidence nearest to the historical cutoff.
+    
+
+	    # Canonical entity names already discovered during
+    # query expansion. This avoids hard-coded ticker
+    # mappings while giving document selection a simple
+    # entity-specific relevance signal.
+    entity_terms = {
+        query.text.strip().lower()
+        for expansion in bundle.query_expansions
+        for query in expansion.queries
+        if (
+            query.proximity.value == "direct"
+            and query.relation == "entity"
+        )
+    }
+
+    def entity_match_score(document):
+        """
+        Simple deterministic selection heuristic.
+
+        This is NOT an evidential confidence score.
+        It only prefers historically admissible
+        documents that actually mention the entities
+        under investigation.
+        """
+
+        haystack = (
+            f"{document.title}\n"
+            f"{document.text or ''}"
+        ).lower()
+
+        matched_entities = sum(
+            1
+            for term in entity_terms
+            if term in haystack
+        )
+
+        occurrences = sum(
+            haystack.count(term)
+            for term in entity_terms
+        )
+
+        return (
+            matched_entities,
+            occurrences,
+        )
+
     eligible.sort(
         key=lambda document: (
+            -entity_match_score(
+                document
+            )[0],
+
+            -entity_match_score(
+                document
+            )[1],
+
             document_priority.get(
                 document.document_id,
                 5,
@@ -267,6 +320,9 @@ def select_historical_documents(
             document.title,
         )
     )
+	
+	
+	
 
     return tuple(
         eligible[:limit]
@@ -674,8 +730,10 @@ def main() -> None:
 
     for query in expansion.queries:
         print(
-                "   ",
-                query.relation.value,
+				"   ",
+				query.proximity.value,
+				"|",
+                query.relation,
                 "|",
                 query.text,
             )

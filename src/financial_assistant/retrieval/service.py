@@ -294,6 +294,17 @@ def execute_research_plan(
             ] = []
 
             for concept in concepts:
+                print(
+                        "SEARCH CONCEPT:",
+                        task.task_id,
+                        "|",
+                        concept.proximity.value,
+                        "|",
+                        concept.relation,
+                        "|",
+                        repr(concept.text),
+                    )
+
                 concept_hits = (
                     search_provider.search(
                         concept.text,

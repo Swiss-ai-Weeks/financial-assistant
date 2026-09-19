@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
+import re
 from typing import Protocol
 
 
@@ -80,6 +81,52 @@ class ExpandedQuery(BaseModel):
         max_length=300,
     )
 
+    @field_validator(
+            "relation",
+            mode="before",
+            )
+
+    @classmethod
+    def normalize_relation(
+            cls,
+            value: object,
+            ) -> object:
+            """
+            Normalize an open-ended semantic relation into
+            a stable machine-readable label.
+
+            The semantic vocabulary remains open.
+
+            Examples:
+
+                "financial performance"
+                -> "financial_performance"
+
+                "M&A / deal activity"
+                -> "m_a_deal_activity"
+
+            This is formatting normalization only. It does
+            not map relations into a predefined taxonomy.
+            """
+
+            if not isinstance(value, str):
+                return value
+
+            normalized = re.sub(
+                r"[^a-z0-9]+",
+                "_",
+                value.strip().lower(),
+            ).strip("_")
+
+            if not normalized:
+                raise ValueError(
+                    "relation must contain "
+                    "a meaningful label"
+                )
+
+            return normalized
+        
+
 
 
 class QueryExpansion(BaseModel):
@@ -113,107 +160,79 @@ QUERY_EXPANSION_PROMPT_VERSION = (
 
 
 SYSTEM_PROMPT = """
-You generate retrieval concepts for an evidence
-investigation.
+Generate concise semantic retrieval concepts, not
+verbose search-engine instructions.
 
-The supplied entities may be security tickers,
-market identifiers or other domain entities.
+When an entity is a ticker or market identifier,
+resolve it to the canonical company or security name
+when reasonably confident.
 
-Use the supplied context, research question and
-rationale to interpret the entities when reasonably
-confident.
+For every entity-specific task, include at least one
+DIRECT query whose text is the canonical entity name
+alone.
 
-If an identifier is genuinely ambiguous, do not
-invent an identity. Preserve the identifier or use
-contextual terms that help disambiguate it.
+Examples:
 
-Your output contains SEARCH HYPOTHESES.
+"GS" -> "Goldman Sachs"
+"UAL" -> "United Airlines"
 
-Search hypotheses are NOT:
-- evidence;
-- factual findings;
-- causal conclusions;
-- explanations already established.
+Do not invent a name if the identifier is genuinely
+ambiguous.
 
-Generate concepts that could help investigate the
-research question.
+The retrieval layer already knows the investigation
+date and applies date filtering separately.
 
-For each query provide:
+Therefore DO NOT put temporal instructions into the
+query text such as:
 
-1. text
+"past week"
+"last 450 days"
+"prior to 2026-03-20"
+"as of 2026-03-20"
 
-   A concise search concept.
+Likewise avoid generic search-engine filler when a
+more specific concept is possible:
 
-2. proximity
+avoid:
+"GS recent corporate announcements"
 
-   Either:
+prefer:
+"Goldman Sachs"
 
-   "direct"
-       The query directly concerns the investigated
-       entity or event.
+avoid:
+"UAL news sentiment analysis"
 
-   "indirect"
-       The query concerns surrounding context,
-       mechanisms, conditions or potentially relevant
-       external information.
+prefer:
+"United Airlines"
+or:
+"airline market sentiment"
 
-3. relation
+avoid:
+"GS SEC filings 450 days prior to 2026-03-20"
 
-   A short snake_case label describing how this
-   concept relates to the research task.
+prefer:
+"Goldman Sachs SEC filings"
 
-   The relation vocabulary is OPEN-ENDED.
+Keep each query focused on the information concept
+being sought.
 
-   Possible examples include:
+Good examples:
 
-   entity
-   sector
-   competitor
-   input_cost
-   consumer_demand
-   monetary_policy
-   regulatory_environment
-   geopolitical_disruption
-   management_change
-   litigation
-   technology
-   supply_chain
-   labour_relations
-   market_sentiment
+"Goldman Sachs"
+"Goldman Sachs earnings"
+"Goldman Sachs regulation"
+"United Airlines"
+"United Airlines earnings"
+"airline fuel costs"
+"travel demand"
+"aviation regulation"
 
-   These are examples only.
+The relation label remains open-ended and should
+describe WHY the concept is relevant.
 
-   Do not force a concept into one of these labels.
-   Invent a different concise snake_case relation when
-   that better describes the search rationale.
+Search hypotheses are not evidence and must not
+presuppose that the proposed relationship is true.
 
-4. entities
-
-   Identifiers from the supplied research task that
-   are relevant to this query.
-
-5. reason
-
-   A concise explanation of why this search may help
-   investigate the task.
-
-Use neutral search concepts that do not presuppose
-that an event actually occurred.
-
-For example:
-
-prefer "economic conditions"
-over "economic downturn";
-
-prefer "jet fuel prices"
-over "jet fuel price spike";
-
-prefer "travel demand"
-over "travel demand collapse".
-
-A relation describes retrieval intent only.
-It does not establish that the relationship exists
-or caused the observed anomaly.
 
 Return between 2 and 6 queries.
 

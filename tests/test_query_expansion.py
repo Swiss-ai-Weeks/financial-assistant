@@ -205,4 +205,39 @@ def test_unanticipated_relation_is_allowed():
     assert (
         query.relation
         == "fleet_capacity_constraint"
+        )
+
+
+def test_relation_label_is_normalized():
+    query = ExpandedQuery(
+        text="Goldman Sachs earnings",
+        proximity=QueryProximity.DIRECT,
+        relation="Financial Performance",
+        entities=("GS",),
+        reason=(
+            "Financial reporting may provide "
+            "relevant company-specific evidence."
+        ),
+    )
+
+    assert (
+        query.relation
+        == "financial_performance"
+    )
+
+
+def test_relation_label_normalizes_punctuation():
+    query = ExpandedQuery(
+        text="merger activity",
+        proximity=QueryProximity.INDIRECT,
+        relation="M&A / deal activity",
+        reason=(
+            "Deal activity may provide relevant "
+            "market context."
+        ),
+    )
+
+    assert (
+        query.relation
+        == "m_a_deal_activity"
     )
