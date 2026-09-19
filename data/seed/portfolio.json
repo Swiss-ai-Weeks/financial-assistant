@@ -1,0 +1,15 @@
+{
+  "name": "US Core Long-Only",
+  "manager": "Demo PM",
+  "positions": [
+    {"ticker": "BAC", "name": "Bank of America Corporation", "shares": 4200},
+    {"ticker": "AXP", "name": "American Express Company", "shares": 650},
+    {"ticker": "GS", "name": "The Goldman Sachs Group, Inc.", "shares": 260},
+    {"ticker": "HD", "name": "The Home Depot, Inc.", "shares": 520},
+    {"ticker": "LOW", "name": "Lowe's Companies, Inc.", "shares": 800},
+    {"ticker": "PEP", "name": "PepsiCo, Inc.", "shares": 1300},
+    {"ticker": "FDX", "name": "FedEx Corporation", "shares": 700},
+    {"ticker": "NVDA", "name": "NVIDIA Corporation", "shares": 1100},
+    {"ticker": "HPE", "name": "Hewlett Packard Enterprise Company", "shares": 7500}
+  ]
+}

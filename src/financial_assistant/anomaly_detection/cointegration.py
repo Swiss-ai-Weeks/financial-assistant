@@ -238,6 +238,7 @@ def screen_pairs(
     end: str | date | None = None,
     corr_min: float = 0.70,
     alpha: float = 0.01,
+    focus: frozenset[str] | None = None,
 ) -> tuple[PairFit, ...]:
     """
     Screen all eligible pairs using only the
@@ -245,6 +246,10 @@ def screen_pairs(
 
     The return-correlation filter reduces the number
     of pairwise Engle-Granger tests.
+
+    When `focus` is given, only pairs with at least
+    one leg in it are tested. A portfolio only needs
+    the relationships that involve its own holdings.
     """
 
     wide = _prepare_prices(
@@ -289,6 +294,11 @@ def screen_pairs(
                 ticker_b,
             ]
             >= corr_min
+        )
+        and (
+            focus is None
+            or ticker_a in focus
+            or ticker_b in focus
         )
     ]
 
@@ -391,6 +401,7 @@ def fit_pairs(
     metric: str = "close",
     corr_min: float = 0.70,
     alpha: float = 0.01,
+    focus: frozenset[str] | None = None,
 ) -> tuple[PairFit, ...]:
     """
     Explicit alias for formation-window fitting.
@@ -408,6 +419,7 @@ def fit_pairs(
         end=end,
         corr_min=corr_min,
         alpha=alpha,
+        focus=focus,
     )
 
 

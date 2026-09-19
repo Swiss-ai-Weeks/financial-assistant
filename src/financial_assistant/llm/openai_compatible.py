@@ -14,10 +14,25 @@ class OpenAICompatibleProvider:
     """
     Minimal OpenAI-compatible JSON client.
 
-    For Nemotron, reasoning=False prepends /no_think.
+    Reasoning is switched off per request unless the
+    caller asks for it. Nemotron generations disagree
+    on how that is expressed:
+
+      "system_prompt"
+          Llama-Nemotron: /no_think in the system turn.
+
+      "chat_template"
+          Nemotron 3 / 3.5: enable_thinking passed as a
+          chat-template kwarg.
+
     JSON syntax is requested from the server, but
     semantic validation remains ClaimGraph's job.
     """
+
+    THINKING_CONTROLS = (
+        "system_prompt",
+        "chat_template",
+    )
 
     def __init__(
         self,
@@ -28,7 +43,21 @@ class OpenAICompatibleProvider:
         timeout_seconds: float = 120.0,
         max_tokens: int = 2048,
         temperature: float = 0.0,
+        api_key: str | None = None,
+        thinking_control: str = "system_prompt",
     ):
+        if (
+            thinking_control
+            not in self.THINKING_CONTROLS
+        ):
+            raise ValueError(
+                "thinking_control must be one of "
+                f"{self.THINKING_CONTROLS}"
+            )
+
+        self.api_key = api_key
+        self.thinking_control = thinking_control
+
         self.provider_name = provider_name
         self.model_name = model_name
         self.base_url = base_url.rstrip("/")
@@ -45,7 +74,11 @@ class OpenAICompatibleProvider:
     ) -> dict[str, Any]:
         system_content = system
 
-        if not reasoning:
+        if (
+            not reasoning
+            and self.thinking_control
+            == "system_prompt"
+        ):
             system_content = (
                 "/no_think\n\n"
                 + system_content
@@ -76,6 +109,21 @@ class OpenAICompatibleProvider:
                 self.max_tokens,
         }
 
+        if self.thinking_control == "chat_template":
+            payload["chat_template_kwargs"] = {
+                "enable_thinking": reasoning,
+            }
+
+        headers = {
+            "Content-Type":
+                "application/json",
+        }
+
+        if self.api_key:
+            headers["Authorization"] = (
+                f"Bearer {self.api_key}"
+            )
+
         request = Request(
             (
                 f"{self.base_url}/"
@@ -84,10 +132,7 @@ class OpenAICompatibleProvider:
             data=json.dumps(
                 payload
             ).encode("utf-8"),
-            headers={
-                "Content-Type":
-                    "application/json",
-            },
+            headers=headers,
             method="POST",
         )
 

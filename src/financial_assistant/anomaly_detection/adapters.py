@@ -11,10 +11,13 @@ from financial_assistant.domain import (
 )
 
 from .models import PairAnomaly
+from .signals import SignalAnomaly
 
 
 def pair_anomaly_to_event(
     anomaly: PairAnomaly,
+    *,
+    observed_at: datetime | None = None,
 ) -> AnomalyEvent:
     """
     Convert a quantitative pair deviation into the
@@ -25,7 +28,10 @@ def pair_anomaly_to_event(
     investment signal.
     """
 
-    detected_at = datetime.combine(
+    # observed_at is the moment the deviation became
+    # observable, e.g. the market close. Without it the
+    # calendar date is carried at midnight UTC.
+    detected_at = observed_at or datetime.combine(
         anomaly.monitoring_end,
         time.min,
         tzinfo=timezone.utc,
@@ -111,5 +117,43 @@ def pair_anomaly_to_event(
                 anomaly
                 .monitoring_end
                 .isoformat(),
+        },
+    )
+
+
+def signal_anomaly_to_event(
+    anomaly: SignalAnomaly,
+    *,
+    observed_at: datetime | None = None,
+) -> AnomalyEvent:
+    """
+    Convert a single-instrument anomaly into the same
+    neutral attention-event contract.
+
+    Daily bars only become observable once the session
+    has closed, so callers replaying history should
+    pass the closing timestamp as observed_at.
+    """
+
+    detected_at = observed_at or datetime.combine(
+        anomaly.observed_on,
+        time.min,
+        tzinfo=timezone.utc,
+    )
+
+    return AnomalyEvent(
+        anomaly_id=anomaly.anomaly_id,
+        ticker=anomaly.ticker,
+        detected_at=detected_at,
+        anomaly_type=anomaly.kind.value,
+        summary=anomaly.summary,
+        metadata={
+            "strategy": anomaly.strategy.value,
+            "z_score": anomaly.z_score,
+            "threshold": anomaly.threshold,
+            "direction": anomaly.direction,
+            "observed_on": anomaly.observed_on.isoformat(),
+            "detector_version": anomaly.detector_version,
+            **anomaly.metrics,
         },
     )
