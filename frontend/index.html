@@ -11,6 +11,11 @@
       rel="stylesheet"
     />
     <title>Pythia</title>
+    <script>
+      // Before first paint, so a dark desk never flashes light.
+      document.documentElement.dataset.theme =
+        localStorage.getItem("pythia-theme") ?? "light";
+    </script>
   </head>
   <body>
     <div id="root"></div>
