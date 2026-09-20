@@ -43,3 +43,62 @@ export function investigationReducer(state, action) {
     default: return state;
   }
 }
+
+// Status requests are observational and have their own cancellation lifecycle.
+export function pollInvestigation(runId, onStatus, {fetcher = fetch, schedule = setTimeout, cancel = clearTimeout} = {}) {
+  let stopped = false;
+  let timer;
+  let controller;
+  const stop = () => { stopped = true; cancel(timer); controller?.abort(); };
+  async function poll() {
+    controller = new AbortController();
+    try {
+      const response = await fetcher(`/api/investigations/status/${encodeURIComponent(runId)}`, {signal:controller.signal, cache:'no-store'});
+      if (response.ok) {
+        const status = await response.json();
+        if (!stopped) {
+          onStatus(status);
+          if (status.state === 'complete' || status.state === 'failed') stop();
+        }
+      }
+    } catch { /* A missing/unavailable status never interrupts the POST. */ }
+    if (!stopped) timer = schedule(poll, 1000);
+  }
+  poll();
+  return stop;
+}
+
+export function startInvestigation(payload, onStatus, options = {}) {
+  const request = {...payload, run_id:crypto.randomUUID()};
+  onStatus({run_id:request.run_id, state:'running', stage:'preparing', completed:[], metrics:{},
+    started_at:new Date().toISOString()});
+  const stop = pollInvestigation(request.run_id, onStatus, options);
+  const result = requestInvestigation(request, options.fetcher).finally(stop);
+  return {result, stop};
+}
+
+export const executionStages = [
+  ['preparing', 'Preparing investigation'],
+  ['research_plan', 'Research plan created', 'research_tasks', 'tasks'],
+  ['retrieval', 'Retrieval complete', 'search_hits', 'hits'],
+  ['evidence_selection', 'Historical evidence selected', 'documents_selected', 'documents'],
+  ['claim_extraction', 'Grounded claims extracted', 'claims', 'claims'],
+  ['hypothesis_generation', 'Competing hypotheses generated', 'hypotheses', 'hypotheses'],
+  ['hypothesis_audit', 'Auditing assumptions and evidence gaps', 'audits', 'audits'],
+  ['relationship_assessment', 'Assessing relationships', 'relationships', 'relationships'],
+  ['graph_build', 'Building ClaimGraph', 'nodes', 'nodes'],
+];
+export function progressRows(status, historical) {
+  const stages = historical ? [...executionStages,
+    ['hindsight', 'Held-out hindsight outcome (not original-investigation evidence)'],
+    ['replay_save', 'Saving replay packet']] : executionStages;
+  const current = status.stage === 'graph_complete' ? 'graph_build' : status.stage?.replace(/_complete$/, '');
+  return stages.map(([id, label, metric, unit]) => {
+    const completed = status.state === 'complete' || status.completed?.includes(id);
+    const active = current === id;
+    const state = active && status.state === 'failed' ? 'failed' : completed ? 'completed' : active ? 'current' : 'pending';
+    return {id, label:active && !completed && status.message ? status.message : label, state,
+      symbol:{failed:'✕',completed:'✓',current:'●',pending:'○'}[state],
+      detail:status.metrics?.[metric] != null ? `${status.metrics[metric]} ${unit}` : ''};
+  });
+}

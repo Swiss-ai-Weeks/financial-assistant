@@ -7,6 +7,7 @@ from bookreader_viewer import document_page, source_links
 import re
 
 from investigation_api import investigate, public_models
+from investigation_progress import progress_registry
 
 from http.server import (
     BaseHTTPRequestHandler,
@@ -394,6 +395,11 @@ class Handler(
             self.send_json(200 if path.exists() else 404,
                            json.loads(path.read_text()) if path.exists() else {"error": "Replay not found"})
             return
+        if self.path.startswith("/api/investigations/status/"):
+            status = progress_registry.get(self.path.removeprefix("/api/investigations/status/"))
+            self.send_json(200 if status else 404, status if status else {"error": "Unknown run"})
+            return
+
         if self.path == "/api/investigations/models":
             self.send_json(200, public_models())
             return

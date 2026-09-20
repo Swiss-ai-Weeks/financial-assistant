@@ -6,6 +6,7 @@ from financial_assistant.simulation.pair_trade import simulate_pair_forward
 import json
 import os
 from uuid import uuid4
+from investigation_progress import progress_registry
 
 from financial_assistant.anomaly_detection.cointegration import monitor_pairs
 from financial_assistant.anomaly_detection.historical import HistoricalPairSignal
@@ -39,6 +40,20 @@ def public_models():
 def investigate(request, *, prices, fits, as_of, formation_observations):
     if not isinstance(request, dict):
         raise ValueError("Expected a JSON object")
+    run_id = progress_registry.start(request.get("run_id"))
+    def report(stage, message="", metrics=None):
+        progress_registry.report(run_id, stage, message, metrics)
+    try:
+        result = _investigate(request, prices=prices, fits=fits, as_of=as_of,
+                              formation_observations=formation_observations, report=report, run_id=run_id)
+    except Exception:
+        progress_registry.fail(run_id)
+        raise
+    report("complete")
+    return result
+
+
+def _investigate(request, *, prices, fits, as_of, formation_observations, report, run_id):
     selected = next((item for item in configured_models()
                      if item["provider"] == request.get("provider")
                      and item["model"] == request.get("model")), None)
@@ -70,15 +85,17 @@ def investigate(request, *, prices, fits, as_of, formation_observations):
             formation_observations=formation_observations,
             corr_min=fit.correlation, alpha=fit.pvalue, entry=entry,
         )
+    progress_registry.cutoff(run_id, observed_at)
     provider = OpenAICompatibleProvider(
         provider_name=selected["provider"], model_name=selected["model"],
         base_url=selected["base_url"], max_tokens=2048,
     )
-    graph, _bundle = investigate_signal(signal, observed_at=observed_at, provider=provider)
+    graph, _bundle = investigate_signal(signal, observed_at=observed_at, provider=provider, progress=report)
     # Each execution gets a separate institutional review, even for the same pair/date.
     graph = graph.model_copy(update={"investigation_id": f"{graph.investigation_id}-{uuid4()}"})
     result = graph.model_dump(mode="json")
     if historical:
+        report("hindsight")
         # Reasoning is COMPLETE before the simulator can access future prices.
         try:
             outcome = simulate_pair_forward(signal, prices).model_dump(mode="json")
@@ -87,6 +104,7 @@ def investigate(request, *, prices, fits, as_of, formation_observations):
         result["historical"] = {**metadata, "observed_at": observed_at.isoformat(),
                                 "signal": signal.model_dump(mode="json"), "case_type": "real_cached_market"}
         result["hindsight_outcome"] = outcome
+        report("replay_save")
         directory = Path(".run/replays")
         directory.mkdir(parents=True, exist_ok=True)
         replay_id = str(uuid4())

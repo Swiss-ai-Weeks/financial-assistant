@@ -46,7 +46,7 @@ def test_historical_engine_excludes_outcome_and_persists_replay(monkeypatch, tmp
     calls = []
     def engine(received, **kwargs):
         assert received is signal
-        assert set(kwargs) == {'observed_at', 'provider'}
+        assert set(kwargs) == {'observed_at', 'provider', 'progress'}
         assert kwargs['observed_at'] == datetime(2026, 1, 6, 23, 59, 59, 999999, timezone.utc)
         calls.append('engine')
         return graph, object()

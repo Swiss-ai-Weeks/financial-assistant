@@ -126,3 +126,127 @@ def test_completed_investigation_disconnect_never_sends_400(delivery_error):
     handler.send_json.assert_called_once_with(200, graph)
     handler.log_message.assert_called_once()
     assert "completed but the client disconnected" in handler.log_message.call_args.args[0]
+
+
+def test_progress_lifecycle_and_safe_failure(setup, monkeypatch):
+    from investigation_progress import ProgressRegistry
+    registry = ProgressRegistry()
+    monkeypatch.setattr(api, "progress_registry", registry)
+    request, kwargs, _, engine = setup
+    request["run_id"] = "live-test"
+    original = engine.return_value
+    def execute(*args, progress, **kwargs):
+        assert registry.get("live-test")["stage"] == "preparing"
+        progress("research_plan", "secret prompt", {"research_tasks": 3, "text": "document body"})
+        progress("retrieval", "secret token", {})
+        progress("retrieval_complete", "", {"search_hits": 17, "BOOKREADER_API_TOKEN": "credential"})
+        assert registry.get("live-test")["completed"] == ["preparing", "research_plan", "retrieval"]
+        return original
+    engine.side_effect = execute
+    api.investigate(request, **kwargs)
+    status = registry.get("live-test")
+    assert status["state"] == "complete"
+    assert status["metrics"] == {"research_tasks": 3, "search_hits": 17}
+    assert not any(value in str(status) for value in ("secret", "credential", "document body", "BOOKREADER"))
+    request["run_id"] = "failed-test"
+    def fail(*args, progress, **kwargs):
+        progress("research_plan", "", {"research_tasks": 2})
+        progress("retrieval", "", {})
+        raise RuntimeError("credential document body")
+    engine.side_effect = fail
+    with pytest.raises(RuntimeError, match="credential"):
+        api.investigate(request, **kwargs)
+    failed = registry.get("failed-test")
+    assert failed["state"] == "failed"
+    assert failed["stage"] == "retrieval"
+    assert failed["completed"] == ["preparing", "research_plan"]
+    assert "credential" not in str(failed)
+
+
+def test_registry_concurrent_reads_and_bound():
+    from concurrent.futures import ThreadPoolExecutor
+    from investigation_progress import ProgressRegistry
+    registry = ProgressRegistry(capacity=2)
+    run = registry.start()
+    def access(index):
+        registry.report(run, "retrieval", metrics={"search_hits": index, "claims": "unsafe"})
+        snapshot = registry.get(run)
+        snapshot["completed"].append("corruption")
+        snapshot["metrics"]["injected"] = "text"
+        assert snapshot["state"] == "running"
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        list(pool.map(access, range(100)))
+    assert "corruption" not in registry.get(run)["completed"]
+    assert set(registry.get(run)["metrics"]) == {"search_hits"}
+    registry.start("second")
+    with pytest.raises(ValueError, match="Too many"):
+        registry.start("third")
+    registry.report(run, "complete")
+    registry.start("third")
+    assert registry.get(run) is None
+    assert registry.get("unknown") is None
+
+
+def test_status_http_unknown_and_known():
+    import json
+    import runpy
+    from unittest.mock import patch
+    import pandas as pd
+    from investigation_progress import progress_registry
+    cache = {"fits": [], "as_of": "2026-03-20", "corr_floor": .5,
+             "alpha_ceiling": .1, "formation_observations": 252}
+    with patch("pandas.read_csv", return_value=pd.DataFrame({"date": [], "ticker": [], "mapping_status": []})), \
+         patch.object(Path, "read_text", return_value=json.dumps(cache)):
+        server = runpy.run_path(str(Path(__file__).resolve().parents[1] / "scripts/anomaly_api.py"))
+    handler = object.__new__(server["Handler"])
+    handler.send_json = Mock()
+    handler.path = "/api/investigations/status/unknown"
+    handler.do_GET()
+    assert handler.send_json.call_args.args[0] == 404
+    run = progress_registry.start()
+    handler.path = f"/api/investigations/status/{run}"
+    handler.do_GET()
+    assert handler.send_json.call_args.args == (200, progress_registry.get(run))
+    progress_registry.report(run, "complete")
+
+
+def test_real_pipeline_reports_order_at_execution_boundaries(monkeypatch):
+    import investigate_historical_pair as pipeline
+    from datetime import datetime, timezone
+    from test_pair_simulation import make_signal
+    observed = datetime(2026, 1, 6, 23, 59, 59, 999999, timezone.utc)
+    stages = []
+    bundle = SimpleNamespace(hits=[1, 2], records=[], query_expansions=[])
+    document = SimpleNamespace(document_id="doc", title="private body", publisher="publisher",
+                               published_at=observed, url="url")
+    claim = SimpleNamespace(text="private claim", document_id="doc", claim_type=SimpleNamespace(value="fact"))
+    hypothesis = Mock(hypothesis_id="hypothesis", text="private hypothesis")
+    hypothesis.model_copy.return_value = hypothesis
+    def operation(expected, result):
+        def execute(*args, **kwargs):
+            assert stages[-1][0] == expected
+            return result
+        return execute
+    for name in ("CorpusSearchProvider", "CorpusDocumentFetcher", "SearxngSearchProvider",
+                 "TrafilaturaDocumentFetcher", "CompositeSearchProvider", "DispatchingDocumentFetcher"):
+        monkeypatch.setattr(pipeline, name, Mock())
+    monkeypatch.setattr(pipeline, "execute_research_plan", operation("retrieval", bundle))
+    monkeypatch.setattr(pipeline, "select_historical_documents", lambda *a, **kw: (document,))
+    monkeypatch.setattr(pipeline, "extract_document_claims",
+                        operation("claim_extraction", ((document, object(), (claim,), None),)))
+    monkeypatch.setattr(pipeline, "generate_hypotheses",
+                        operation("hypothesis_generation", (object(), (hypothesis,))))
+    monkeypatch.setattr(pipeline, "audit_hypotheses", operation("hypothesis_audit", (object(), (object(),))))
+    monkeypatch.setattr(pipeline, "assess_relationships",
+                        operation("relationship_assessment", ((object(),), (object(),))))
+    monkeypatch.setattr(pipeline, "InvestigationState", lambda **kw: kw)
+    monkeypatch.setattr(pipeline, "build_investigation_graph",
+                        operation("graph_build", SimpleNamespace(nodes=[1, 2], edges=[1])))
+    pipeline.investigate_signal(make_signal(), observed_at=observed, provider=object(),
+                                progress=lambda *args: stages.append(args))
+    assert [stage for stage, _, _ in stages] == [
+        "preparing", "research_plan", "retrieval", "retrieval_complete", "evidence_selection",
+        "claim_extraction", "claim_extraction_complete", "hypothesis_generation",
+        "hypothesis_generation_complete", "hypothesis_audit", "hypothesis_audit_complete",
+        "relationship_assessment", "relationship_assessment_complete", "graph_build", "graph_complete"]
+    assert stages[-1][2] == {"nodes": 2, "edges": 1}

@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { candidatePayload, selectModel, requestInvestigation, investigationReducer, validateGraph } from './investigationClient.js';
+import { candidatePayload, selectModel, startInvestigation, investigationReducer, validateGraph } from './investigationClient.js';
+import InvestigationProgress from './InvestigationProgress';
 import TemporalReview from './TemporalReview';
 import { originalCutoff, temporalView } from './temporalModel.js';
 import DetectorPanel from './DetectorPanel';
@@ -30,6 +31,10 @@ function exportReview(graph, review) {
 
 export default function App() {
   const savedRequest = useRef(null);
+  const progressStop = useRef(null);
+  const [progress, setProgress] = useState(null);
+  const [executionContext, setExecutionContext] = useState(null);
+  useEffect(() => () => progressStop.current?.(), []);
   const [file, setFile] = useState(EXAMPLES[0][0]);
   const [{loaded, error, running}, dispatch] = useReducer(investigationReducer, {loaded:null, error:null, running:false});
   const [replays, setReplays] = useState([]);
@@ -54,11 +59,19 @@ export default function App() {
     dispatch({type:'start'});
     try {
       const payload = candidatePayload(selectedCandidate, selection, observedAt);
-      const graph = await requestInvestigation(payload);
+      setExecutionContext(payload);
+      const execution = startInvestigation(payload, setProgress);
+      progressStop.current = execution.stop;
+      const graph = await execution.result;
+      setProgress(previous => ({...previous, state:"complete", stage:"complete", updated_at:new Date().toISOString(),
+        completed:previous.completed}));
       dispatch({type:'success', graph, key:crypto.randomUUID()});
       if (graph.replay_id) setReplays(previous => [{id:graph.replay_id, label:`${selectedCandidate.pair} · ${graph.historical.as_of} · saved historical run`}, ...previous]);
       setFile('');
-    } catch (err) { dispatch({type:'failure', error:err.message}); }
+    } catch (err) {
+      setProgress(previous => previous ? {...previous, state:'failed', updated_at:new Date().toISOString()} : null);
+      dispatch({type:'failure', error:err.message});
+    }
   }
   useEffect(() => {
     if (!file) return;
@@ -96,7 +109,7 @@ export default function App() {
       </div>}
       <button disabled={running || !selectedCandidate || !selection} onClick={investigateCandidate}>{selectedCandidate?.mode === 'historical' ? `Investigate at ${selectedCandidate.requested_as_of}` : 'Investigate candidate'}</button>
     </details>
-    {running && <p role="status">Investigation running… The current graph and review remain available.</p>}
+    {progress && executionContext && <InvestigationProgress status={progress} context={executionContext} />}
     {error && <p className="review-error" role="alert">{error}</p>}
     {loaded ? <InvestigationWorkspace key={loaded.key} graph={loaded.graph} fresh={loaded.fresh} /> : <p className="loading" role="status">Loading investigation…</p>}
 

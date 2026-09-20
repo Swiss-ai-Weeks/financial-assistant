@@ -449,8 +449,13 @@ def main() -> None:
 
 
 def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
-                       max_documents=4, claims_per_document=2, max_claims=8):
+                       max_documents=4, claims_per_document=2, max_claims=8, progress=None):
     """Shared retrieval/reasoning pipeline; callers supply the observed signal and provider."""
+    def report(stage, message, **metrics):
+        if progress is not None:
+            progress(stage, message, metrics)
+
+    report("preparing", "Preparing investigation")
     if observed_at.tzinfo is None or observed_at.utcoffset() is None:
         raise ValueError("observed_at must include a timezone offset")
     anomaly = signal.anomaly
@@ -520,6 +525,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     plan = plan.model_copy(update={"tasks": tuple(
         task.model_copy(update={"entities": resolve_entities(task.entities)}) for task in plan.tasks
     )})
+    report("research_plan", "Research plan created", research_tasks=len(plan.tasks))
     # The caller selects the provider used for query expansion and reasoning.
 
     def query_expander(
@@ -613,6 +619,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
 	)
 	
 
+    report("retrieval", "Searching BookReader and the web")
     bundle = timed(
         "retrieval",
         lambda: execute_research_plan(
@@ -639,6 +646,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             ),
         ),
     )
+    report("retrieval_complete", "Retrieval complete", search_hits=len(bundle.hits), retrieval_records=len(bundle.records), query_expansions=len(bundle.query_expansions))
 
 
 	
@@ -704,6 +712,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             ),
         )
     )
+    report("evidence_selection", "Historical evidence selected", documents_selected=len(documents))
 
     print()
     print(
@@ -751,6 +760,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     # 6. Source-grounded claim extraction. re-use nvidia nim provider created earlier.
     # -------------------------------------------------
 
+    report("claim_extraction", "Extracting grounded claims", documents=len(documents))
     extraction_results = timed(
         "claim_extraction",
         lambda: extract_document_claims(
@@ -876,6 +886,8 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     # 8. Competing explanations.
     # -------------------------------------------------
 
+    report("claim_extraction_complete", "Grounded claims extracted", claims=len(claims))
+    report("hypothesis_generation", "Generating competing hypotheses")
     hypothesis_run, hypotheses = timed(
         "hypothesis_generation",
         lambda: generate_hypotheses(
@@ -884,6 +896,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             provider,
         ),
     )
+    report("hypothesis_generation_complete", "Competing hypotheses generated", hypotheses=len(hypotheses))
 
     # The dedicated audit stage owns assumptions.
     hypotheses = tuple(
@@ -913,6 +926,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     # 9. Premise / evidence-gap audit.
     # -------------------------------------------------
 
+    report("hypothesis_audit", "Auditing assumptions and evidence gaps")
     audit_run, audits = timed(
         "hypothesis_audit",
         lambda: audit_hypotheses(
@@ -922,6 +936,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             provider,
         ),
     )
+    report("hypothesis_audit_complete", "Hypotheses audited", audits=len(audits))
 
     print(
         "HYPOTHESIS AUDITS:",
@@ -932,6 +947,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     # 10. Claim ↔ hypothesis assessments.
     # -------------------------------------------------
 
+    report("relationship_assessment", "Assessing claim-hypothesis relationships")
     relation_runs, assessments = timed(
         "relationship_assessment",
         lambda: assess_relationships(
@@ -941,6 +957,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             max_workers=4,
         ),
     )
+    report("relationship_assessment_complete", "Relationships assessed", relationships=len(assessments), model_runs=len(relation_runs))
 
     print(
         "RELATIONSHIP RUNS:",
@@ -995,12 +1012,14 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     # 12. ClaimGraph.
     # -------------------------------------------------
 
+    report("graph_build", "Building ClaimGraph")
     graph = timed(
         "graph_build",
         lambda: build_investigation_graph(
             state
         ),
     )
+    report("graph_complete", "ClaimGraph built", nodes=len(graph.nodes), edges=len(graph.edges))
 
     print()
     print(
