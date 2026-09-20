@@ -205,3 +205,17 @@ def test_all_sources_contribute_and_progress_is_sanitized(monkeypatch):
     assert 'sensitive' not in json.dumps(result)
     ids = {n['node_id'] for n in result['nodes']}
     assert all(e['source'] in ids and e['target'] in ids for e in result['edges'])
+
+
+def test_two_turn_deltas_preserve_prior_history(empty_cycle):
+    original = graph()
+    requirement = next(n['node_id'] for n in original['nodes'] if n['kind'] == 'evidence_requirement')
+    provider = Mock(provider_name='test', model_name='test')
+    first = f.run_followup(original, requirement, provider, 'TURN1', lambda *a, **kw: None, peer_rows=[])
+    second = f.run_followup(first, requirement, provider, 'TURN2', lambda *a, **kw: None, peer_rows=[])
+    assert second['followups'][0] == first['followups'][0]
+    delta = second['followups'][-1]['delta']
+    assert set(delta['added_node_ids']) == {n['node_id'] for n in second['nodes']} - {n['node_id'] for n in first['nodes']}
+    assert set(delta['added_edge_ids']) == {e['edge_id'] for e in second['edges']} - {e['edge_id'] for e in first['edges']}
+    assert not set(delta['added_node_ids']) & set(first['followups'][0]['delta']['added_node_ids'])
+    assert delta['previous_resolution'] == delta['new_resolution'] == 'unresolved'

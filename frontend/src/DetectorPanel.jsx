@@ -4,7 +4,7 @@ import {
 
 
 export default function DetectorPanel({
-  onSelectCandidate,
+  onSelectCandidate, sharedAsOf, onAsOf,
 }) {
   const [mode, setMode] = useState("live");
   const [asOf, setAsOf] = useState("2026-08-28");
@@ -45,7 +45,7 @@ export default function DetectorPanel({
           },
 
           body: JSON.stringify({
-            as_of: asOf,
+            as_of: sharedAsOf ?? asOf,
             entry,
             corr_min: corrMin,
             alpha,
@@ -84,8 +84,8 @@ export default function DetectorPanel({
       <label>Mode<select value={mode} disabled={running} onChange={e => {setMode(e.target.value); setResult(null); onSelectCandidate?.(null);}}>
         <option value="live">Live</option><option value="historical">Time Travel</option>
       </select></label>
-      {mode === 'historical' && <label>Time Travel · As-of date<input type="date" value={asOf} disabled={running}
-        onChange={e => {setAsOf(e.target.value); setResult(null); onSelectCandidate?.(null);}} /></label>}
+      {mode === 'historical' && <label>Time Travel · As-of date<input type="date" value={sharedAsOf ?? asOf} disabled={running}
+        onChange={e => {setAsOf(e.target.value); onAsOf?.(e.target.value); setResult(null); onSelectCandidate?.(null);}} /></label>}
 
       <p className="detector-description">
         Configure which statistical

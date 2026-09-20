@@ -60,7 +60,25 @@ def _investigate(request, *, prices, fits, as_of, formation_observations, report
     if selected is None:
         raise ValueError("Select a configured model/provider")
     historical = request.get("mode") == "historical"
-    if historical:
+    event_override = None
+    if request.get('mode') in ('holding', 'research_pair'):
+        from types import SimpleNamespace
+        from financial_assistant.domain import AnomalyEvent
+        from financial_assistant.portfolio.returns import validate_portfolio
+        weights = validate_portfolio(request['portfolio'])
+        ticker = request['ticker_a']
+        peer = request.get('ticker_b') if request.get('mode') == 'research_pair' else None
+        if request.get('mode') == 'holding' and ticker not in weights:
+            raise ValueError('Holding is not in the supplied portfolio')
+        observed_at = datetime.combine(date.fromisoformat(request['as_of']), time.max, timezone.utc)
+        event_override = AnomalyEvent(anomaly_id=f'HOLDING-{uuid4()}', ticker=ticker,
+            related_entities=(peer,) if peer else (), detected_at=observed_at, anomaly_type='human_research_request',
+            summary=f'Human-requested research of {ticker}' + (f' / {peer}' if peer else ' portfolio holding'),
+            metadata={'observed_at': observed_at.isoformat(), 'portfolio_weight': weights.get(ticker),
+                      'interpretation': 'Prioritisation context; no anomaly or causal assertion'})
+        signal = SimpleNamespace(as_of=observed_at.date(), anomaly=None,
+                                 fit=SimpleNamespace(ticker_a=ticker, ticker_b=peer or ticker))
+    elif historical:
         metadata, signal = selected_signal(request)
         observed_at = datetime.combine(date.fromisoformat(metadata['as_of']), time.max, timezone.utc)
     else:
@@ -90,10 +108,37 @@ def _investigate(request, *, prices, fits, as_of, formation_observations, report
         provider_name=selected["provider"], model_name=selected["model"],
         base_url=selected["base_url"], max_tokens=2048,
     )
-    graph, _bundle = investigate_signal(signal, observed_at=observed_at, provider=provider, progress=report)
+    from financial_assistant.portfolio.service import market_context, attach_market_graph
+    from financial_assistant.portfolio.returns import analyze_portfolio, simulate_overlay
+    research_context = {}
+    if request.get('portfolio'):
+        analysis = analyze_portfolio(prices, request['portfolio'], observed_at)
+        research_context['portfolio'] = {k: v for k, v in analysis.items() if k != 'provenance'}
+    if request.get('simulation') and request.get('portfolio') and signal.fit.ticker_a != signal.fit.ticker_b:
+        simulation = simulate_overlay(prices, request['portfolio'],
+            {'ticker_a': signal.fit.ticker_a, 'ticker_b': signal.fit.ticker_b}, observed_at,
+            request['simulation'].get('gross_overlay', .02))
+        research_context['simulation'] = {k: v for k, v in simulation.items() if k != 'provenance'}
+    kwargs = {'event_override': event_override, 'research_context': research_context} if event_override or research_context else {}
+    if hasattr(prices, 'columns'):
+        kwargs['market_performance'] = market_context((signal.fit.ticker_a, signal.fit.ticker_b), observed_at, prices)
+    graph, _bundle = investigate_signal(signal, observed_at=observed_at, provider=provider, progress=report, **kwargs)
     # Each execution gets a separate institutional review, even for the same pair/date.
     graph = graph.model_copy(update={"investigation_id": f"{graph.investigation_id}-{uuid4()}"})
     result = graph.model_dump(mode="json")
+    attach_market_graph(result, market_context((signal.fit.ticker_a, signal.fit.ticker_b), observed_at, prices))
+    if research_context:
+        result['nodes'].append(dict(node_id=f'context:portfolio-{run_id}', kind='context',
+            label='Portfolio research context (not admitted evidence)',
+            data={'subtype': 'research_context', 'context': research_context}))
+    if research_context.get('simulation', {}).get('status') == 'available':
+        from financial_assistant.portfolio.service import attach_simulation_graph
+        attach_simulation_graph(result, simulation, run_id)
+        result['nodes'].append(dict(node_id=f'missing:simulation-{run_id}', kind='missing_evidence',
+            label=research_context['simulation']['remaining_question'], data={'resolution_status': 'unresolved'}))
+        for node in result['nodes']:
+            if node['kind'] == 'hypothesis':
+                result['edges'].append(dict(edge_id=f"{node['node_id']}-simulation-question", source=node['node_id'], target=f'missing:simulation-{run_id}', kind='requires', data={}))
     if historical:
         report("hindsight")
         # Reasoning is COMPLETE before the simulator can access future prices.

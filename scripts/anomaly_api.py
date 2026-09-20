@@ -442,7 +442,7 @@ class Handler(
     def do_POST(self) -> None:
         if (
             self.path
-            not in ("/api/anomalies/scan", "/api/anomalies/historical-scan", "/api/investigations", "/api/investigations/followup")
+            not in ("/api/anomalies/scan", "/api/anomalies/historical-scan", "/api/investigations", "/api/investigations/followup", "/api/portfolio/analysis", "/api/portfolio/simulate", "/api/portfolio/market")
         ):
             self.send_json(
                 404,
@@ -472,7 +472,17 @@ class Handler(
                 else {}
             )
 
-            if self.path == "/api/investigations/followup":
+            if self.path in ('/api/portfolio/analysis', '/api/portfolio/simulate', '/api/portfolio/market'):
+                from financial_assistant.portfolio.returns import analyze_portfolio, simulate_overlay
+                if self.path.endswith('/market'):
+                    from financial_assistant.portfolio.service import market_context
+                    result = market_context(request['tickers'], request['as_of'], PRICES)
+                elif self.path.endswith('/analysis'):
+                    result = analyze_portfolio(PRICES, request['portfolio'], request['as_of'])
+                else:
+                    result = simulate_overlay(PRICES, request['portfolio'], request['candidate'], request['as_of'],
+                                              request.get('gross_overlay', .02), request.get('lookback', 252))
+            elif self.path == "/api/investigations/followup":
                 result = investigate_missing_evidence(request)
             elif self.path == "/api/investigations":
                 result = investigate(

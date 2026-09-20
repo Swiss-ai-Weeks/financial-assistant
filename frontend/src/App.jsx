@@ -8,6 +8,7 @@ import ClaimGraph from './ClaimGraph';
 import NodeInspector from './NodeInspector';
 import { ReviewHeader, ReviewSummary } from './ReviewWorkspace';
 import { createReview, updateReview, itemKey, restoreReview, serializeReview } from './reviewModel.js';
+import { turnOverlay } from './workspaceStore';
 import './App.css';
 import './index.css';
 
@@ -29,20 +30,22 @@ function exportReview(graph, review) {
   link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export default function App() {
+export default function App({workspace, onSnapshot, onSimulate}) {
   const savedRequest = useRef(null);
   const progressStop = useRef(null);
   const [progress, setProgress] = useState(null);
   const [executionContext, setExecutionContext] = useState(null);
   useEffect(() => () => progressStop.current?.(), []);
-  const [file, setFile] = useState(EXAMPLES[0][0]);
-  const [{loaded, error, running}, dispatch] = useReducer(investigationReducer, {loaded:null, error:null, running:false});
+  const [file, setFile] = useState(workspace?.graph || workspace?.candidate ? '' : EXAMPLES[0][0]);
+  const [{loaded, error, running}, dispatch] = useReducer(investigationReducer, {loaded:workspace?.graph ? {graph:workspace.graph,key:workspace.id} : null, error:null, running:false});
   const [replays, setReplays] = useState([]);
   const [models, setModels] = useState([]);
-  const [selection, setSelection] = useState(null);
+  const [selection, setSelection] = useState(workspace?.model ?? null);
   const [modelError, setModelError] = useState(null);
-  const [selectedCandidate, setSelectedCandidate] = useState(null);
-  const [observedAt, setObservedAt] = useState('');
+  const [selectedCandidate, setSelectedCandidate] = useState(workspace?.candidate ?? null);
+  const [observedAt, setObservedAt] = useState(workspace?.candidate ? `${workspace.candidate.signal_date}T23:59:59.999999+00:00` : '');
+  const workspaceId = workspace?.id;
+  useEffect(() => { if (onSnapshot && workspaceId) onSnapshot(workspaceId,{graph:loaded?.graph,model:selection}); }, [loaded?.graph, selection, onSnapshot, workspaceId]);
   useEffect(() => {
     const controller = new AbortController();
     fetch('/api/replays', {signal:controller.signal}).then(r => r.json()).then(p => setReplays(p.replays ?? [])).catch(() => {});
@@ -50,7 +53,7 @@ export default function App() {
       if (!response.ok) throw new Error('Could not load configured models');
       const payload = await response.json();
       if (!payload.models?.length) throw new Error('No inference models configured');
-      setModels(payload.models); setSelection(payload.models[0]);
+      setModels(payload.models); setSelection(previous => previous ?? payload.models[0]);
     }).catch(err => { if (err.name !== 'AbortError') setModelError(err.message); });
     return () => controller.abort();
   }, []);
@@ -58,7 +61,7 @@ export default function App() {
     savedRequest.current?.abort();
     dispatch({type:'start'});
     try {
-      const payload = candidatePayload(selectedCandidate, selection, observedAt);
+      const payload = ['holding','research_pair'].includes(selectedCandidate?.mode) ? {...selection,mode:selectedCandidate.mode,ticker_b:selectedCandidate.ticker_b,ticker_a:selectedCandidate.ticker_a,as_of:workspace.as_of,portfolio:workspace.portfolio,simulation:workspace.simulation} : {...candidatePayload(selectedCandidate, selection, observedAt),portfolio:workspace?.portfolio,simulation:workspace?.simulation};
       setExecutionContext(payload);
       const execution = startInvestigation(payload, setProgress);
       progressStop.current = execution.stop;
@@ -102,7 +105,7 @@ export default function App() {
     }).catch(err => { if (err.name !== 'AbortError') dispatch({type:'failure', error:err.message}); });
     return () => controller.abort();
   }, [file]);
-  return <div className="app-shell">
+  return <div className="app-shell"><details className="workspace-settings" open={!loaded}><summary>Investigation settings / replay / model</summary>
     <nav className="case-selector"><label>Saved investigation<select value={file} disabled={running} onChange={e => setFile(e.target.value)}>
       <option value="" disabled>Live investigation</option>
       {replays.map(item => <option key={item.id} value={`/api/replays/${item.id}`}>{item.label}</option>)}
@@ -113,7 +116,7 @@ export default function App() {
       } catch (err) {dispatch({type:'failure', error:err.message});}
     }} /></label><span>Review workspace · local prototype</span></nav>
     <details className="detector-drawer" open><summary>Explore market anomaly candidates</summary>
-      <DetectorPanel onSelectCandidate={candidate => {setSelectedCandidate(candidate); setObservedAt(candidate ? `${candidate.signal_date}T23:59:59+00:00` : "");}} />
+      {!workspace && <DetectorPanel onSelectCandidate={candidate => {setSelectedCandidate(candidate); setObservedAt(candidate ? `${candidate.signal_date}T23:59:59+00:00` : "");}} />}
       <label>Model/provider for the next investigation<select disabled={running || !models.length} value={selection ? JSON.stringify(selection) : ''}
         onChange={e => {const next = JSON.parse(e.target.value); setSelection(selectModel(models, next.provider, next.model));}}>
         {!selection && <option value="">Loading configured models…</option>}
@@ -126,18 +129,19 @@ export default function App() {
       </div>}
       <button disabled={running || !selectedCandidate || !selection} onClick={investigateCandidate}>{selectedCandidate?.mode === 'historical' ? `Investigate at ${selectedCandidate.requested_as_of}` : 'Investigate candidate'}</button>
     </details>
-    {progress && executionContext && <InvestigationProgress status={progress} context={executionContext} />}
+    </details>
+    {progress && executionContext && <details className="progress-drawer" open={running}><summary>Execution · {progress.state}</summary><InvestigationProgress status={progress} context={executionContext} /></details>}
     {error && <p className="review-error" role="alert">{error}</p>}
-    {loaded ? <InvestigationWorkspace key={loaded.key} graph={loaded.graph} fresh={loaded.fresh} onInvestigate={investigateQuestion} followupDisabled={running || !selection} /> : <p className="loading" role="status">Loading investigation…</p>}
+    {loaded ? <InvestigationWorkspace key={loaded.key} graph={loaded.graph} fresh={loaded.fresh} onInvestigate={investigateQuestion} followupDisabled={running || !selection} workspaceId={workspace?.id} onSimulate={onSimulate} /> : <p className="loading" role="status">Loading investigation…</p>}
 
   </div>;
 }
 
-function InvestigationWorkspace({graph, fresh, onInvestigate, followupDisabled}) {
+function InvestigationWorkspace({graph, fresh, onInvestigate, followupDisabled, workspaceId, onSimulate}) {
   const [initial] = useState(() => {
     if (fresh) return {review:createReview(graph), reason:'New investigation · new institutional review'};
     try {
-      return restoreReview(graph, localStorage.getItem(storageKey(graph)));
+      return restoreReview(graph, localStorage.getItem(`${storageKey(graph)}:${workspaceId ?? "default"}`));
     } catch { return {review:createReview(graph),reason:'Browser storage unavailable · export to retain a copy'}; }
   });
   const [cutoff, setCutoff] = useState(() => originalCutoff(graph) ?? '');
@@ -146,10 +150,16 @@ function InvestigationWorkspace({graph, fresh, onInvestigate, followupDisabled})
   const [persistence, setPersistence] = useState(initial.reason);
   const [selectedNode, setSelectedNode] = useState(null);
   const [view, setView] = useState('graph');
+  const [turn,setTurn] = useState(null);
+  const [onlyNew,setOnlyNew] = useState(false);
+  const latestTurn = graph.followups?.at(-1)?.run_id;
+  useEffect(() => { queueMicrotask(() => {setTurn(null);setOnlyNew(false);}); }, [latestTurn]);
+  const activeTurn = turn === null ? graph.followups?.at(-1)?.run_id : turn;
+  const delta = turnOverlay(graph,activeTurn);
   function saveReview(next) {
     setReview(next);
     try {
-      localStorage.setItem(storageKey(graph), serializeReview(graph, next));
+      localStorage.setItem(`${storageKey(graph)}:${workspaceId ?? "default"}`, serializeReview(graph, next));
       setPersistence('Stored in this browser only · export to retain a copy');
     } catch { setPersistence('Browser storage unavailable · changes are in memory; export to retain a copy'); }
   }
@@ -159,6 +169,7 @@ function InvestigationWorkspace({graph, fresh, onInvestigate, followupDisabled})
   const onSelect = node => {setSelectedNode(node);};
   const anomaly = graph.nodes.find(n => n.kind === 'anomaly');
   return <>
+    <details className="review-controls"><summary>Review / Time Travel / export</summary>
     <ReviewHeader graph={inspectionGraph} review={review} onChange={onChange} persistence={persistence} onExport={() => exportReview(graph,review)} />
     <section className="claim-summary"><div className="claim-summary__label">Attention event</div>
       <div className="claim-summary__text">{anomaly?.label ?? 'No anomaly recorded'}</div>
@@ -181,14 +192,24 @@ function InvestigationWorkspace({graph, fresh, onInvestigate, followupDisabled})
       </>}
     </details>}
     <TemporalReview graph={graph} cutoff={cutoff} onChange={setCutoff} onSelect={onSelect} />
+    </details>
+    <div className="turn-controls"><button onClick={() => setView(view === 'graph' ? 'summary' : 'graph')}>{view === 'graph' ? 'Review summary' : 'Back to graph'}</button><label>Investigation turn <select value={activeTurn ?? ''} onChange={e => {setTurn(e.target.value);setOnlyNew(false);}}><option value="">Current graph</option><option value="initial">Initial investigation</option>{graph.followups?.map((f,i) => <option key={f.run_id} value={f.run_id}>Follow-up {i+1}</option>)}</select></label>
+      {onSimulate && <button onClick={() => {const d = anomaly?.data; const a = d?.ticker ?? graph.ticker, b = d?.related_entities?.[0]; if (b) onSimulate({mode:'research_pair',ticker_a:a,ticker_b:b,pair:`${a}/${b}`,signal_date:originalCutoff(graph)?.slice(0,10)},originalCutoff(graph)?.slice(0,10));}} disabled={!anomaly?.data?.related_entities?.length}>Simulate against portfolio</button>}
+    </div>
+    {delta && <aside className="followup-result"><strong>{activeTurn === 'initial' ? 'INITIAL INVESTIGATION' : 'FOLLOW-UP COMPLETE'}</strong><p>{delta.question}</p><p>New: {delta.added_node_ids.length} nodes · {delta.added_edge_ids.length} relationships</p>
+      <p>{['claim','calculation','observation'].map(kind => `${graph.nodes.filter(n => delta.added_node_ids.includes(n.node_id) && n.kind === kind).length} ${kind}s`).join(' · ')}</p>
+      <p>{delta.new_supporting_ids?.length ?? 0} supporting · {delta.new_weakening_ids?.length ?? 0} weakening · {delta.new_contradicting_ids?.length ?? 0} contradicting</p>
+      <p>Reassessed: {delta.reassessed_hypothesis_ids.length ? delta.reassessed_hypothesis_ids.map(id => <button key={id} onClick={() => onSelect(graph.nodes.find(n => n.node_id === id))}>{id}</button>) : 'No completed reassessment recorded'}</p>{delta.previous_resolution && <p>{delta.previous_resolution} → {delta.new_resolution}</p>}<details><summary>What was searched / new evidence</summary>{graph.nodes.filter(n => delta.added_node_ids.includes(n.node_id) && ['research_task','tool_call','claim','calculation'].includes(n.kind)).map(n => <p key={n.node_id}><button onClick={() => onSelect(n)}>{n.kind.replaceAll('_',' ')}: {n.label}</button></p>)}</details><p>Still missing: {delta.remaining_question ?? 'No remaining question recorded'}</p>
+      <button onClick={() => setOnlyNew(true)}>Show only new</button><button onClick={() => setOnlyNew(false)}>Show in context</button><button onClick={() => onSelect(graph.nodes.find(n => n.node_id === delta.action_id))}>Inspect provenance / searches</button><button onClick={() => {setTurn('');setOnlyNew(false);}}>Dismiss</button>
+    </aside>}
     <main className="workspace"><section className="graph-panel">
       <div className="workspace-tabs"><button aria-pressed={view === 'graph'} onClick={() => setView('graph')}>Evidence graph</button><button aria-pressed={view === 'summary'} onClick={() => setView('summary')}>Review summary</button></div>
       <div hidden={view !== 'graph'}><div className="panel-header"><div><h2>Investigation graph</h2><p>Inspect typed propositions, evidence relationships, sources and execution.</p></div><div className="legend">{graph.nodes.length} nodes · {graph.edges.length} relationships</div></div>
-        <ClaimGraph graph={graph} cutoff={cutoff} onSelectItem={onSelect} itemReviews={review.item_reviews} />
+        <ClaimGraph graph={graph} cutoff={cutoff} onSelectItem={onSelect} itemReviews={review.item_reviews} delta={delta} onlyNew={onlyNew} workspaceId={workspaceId} />
       </div>
       {view === 'summary' && <ReviewSummary graph={inspectionGraph} review={review} onChange={onChange} onSelect={onSelect} onAction={onAction} />}
-    </section><NodeInspector key={selectedNode ? itemKey(selectedNode) : 'empty'} node={graph.nodes.find(n => n.node_id === selectedNode?.node_id) ?? selectedNode} graph={graph} onInvestigate={onInvestigate} followupDisabled={followupDisabled} cutoff={cutoff} onSelect={onSelect} onAction={onAction}
-      reviewState={selectedNode ? review.item_reviews[itemKey(selectedNode)] : null} />
+    </section>{selectedNode && <div className="inspector-drawer"><button className="close-inspector" onClick={() => setSelectedNode(null)}>Close inspector ×</button><NodeInspector key={selectedNode ? itemKey(selectedNode) : 'empty'} node={graph.nodes.find(n => n.node_id === selectedNode?.node_id) ?? selectedNode} graph={graph} onInvestigate={onInvestigate} followupDisabled={followupDisabled} cutoff={cutoff} onSelect={onSelect} onAction={onAction}
+      reviewState={selectedNode ? review.item_reviews[itemKey(selectedNode)] : null} /></div>}
     </main>
   </>;
 }

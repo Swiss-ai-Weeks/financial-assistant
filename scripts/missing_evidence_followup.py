@@ -191,12 +191,14 @@ def run_followup(graph, requirement_id, provider, run_id, report, *, fundamental
     new_calculations = tuple(c for c in calculations if 'calculation:' + c.calculation_id not in old_ids)
     report('relationship_assessment')
     assessments = []
+    reassessed_ids = []
     for hypothesis in hypotheses:
         if not (new_claims or new_observations or new_calculations):
             break
         try:
             rr, aa = assess_relationships(new_claims, (hypothesis,), provider,
                 observations=new_observations, calculations=new_calculations)
+            reassessed_ids.append('hypothesis:' + hypothesis.hypothesis_id)
             runs.extend(rr)
             assessments.extend(a.model_copy(update={'assessment_id': f'{run_id}-{a.assessment_id}'}) for a in aa)
         except Exception:
@@ -287,6 +289,26 @@ def run_followup(graph, requirement_id, provider, run_id, report, *, fundamental
     original['edges'].extend(edges)
     # Preserve the original financial snapshot; follow-up bundles are separately recorded.
     original.setdefault('followups', []).append({'run_id': run_id, 'requirement_id': requirement_id,
-        'cutoff': cutoff.isoformat(), 'resolution': resolution_data, 'action_id': action_id})
+         'cutoff': cutoff.isoformat(), 'resolution': resolution_data, 'action_id': action_id,
+        'delta': {**followup_delta(graph, original, run_id, requirement_id, question, action_id), 'reassessed_hypothesis_ids': reassessed_ids}})
     report('graph_complete', metrics={'nodes': len(original['nodes']), 'edges': len(original['edges'])})
     return original
+
+
+def followup_delta(before, after, run_id, requirement_id, question, action_id):
+    old_nodes = {n['node_id'] for n in before['nodes']}
+    old_edges = {e['edge_id'] for e in before['edges']}
+    edges = [e for e in after['edges'] if e['edge_id'] not in old_edges]
+    previous = next(n for n in before['nodes'] if n['node_id'] == requirement_id)['data']
+    current = next(n for n in after['nodes'] if n['node_id'] == requirement_id)['data']
+    delta = dict(run_id=run_id, requirement_id=requirement_id, question=question, action_id=action_id,
+        added_node_ids=[n['node_id'] for n in after['nodes'] if n['node_id'] not in old_nodes],
+        added_edge_ids=[e['edge_id'] for e in edges],
+        previous_resolution=previous.get('resolution_status', 'unresolved'),
+        new_resolution=current.get('resolution_status', 'unresolved'),
+        remaining_question=current.get('resolution', {}).get('remaining_question'))
+    for name, kind in [('supporting', 'supports'), ('weakening', 'weakens'), ('contradicting', 'contradicts'), ('context', 'context_for')]:
+        delta[f'new_{name}_ids'] = [e['edge_id'] for e in edges if e['kind'] == kind]
+    hypotheses = {n['node_id'] for n in after['nodes'] if n['kind'] == 'hypothesis'}
+    delta['reassessed_hypothesis_ids'] = sorted({e['target'] for e in edges if e['target'] in hypotheses and e['kind'] in ('supports', 'weakens', 'contradicts', 'context_for')})
+    return delta

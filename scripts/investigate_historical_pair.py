@@ -450,7 +450,7 @@ def main() -> None:
 
 def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
                        max_documents=4, claims_per_document=2, max_claims=8, progress=None,
-                       fundamentals_service=None):
+                       fundamentals_service=None, event_override=None, research_context=None, market_performance=None):
     """Shared retrieval/reasoning pipeline; callers supply the observed signal and provider."""
     def report(stage, message, **metrics):
         if progress is not None:
@@ -478,51 +478,22 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
         observed_at.isoformat(),
     )
 
-    print(
-        "Z SCORE:",
-        f"{anomaly.z_score:+.3f}",
-    )
-
-    print(
-        "CORRELATION:",
-        f"{fit.correlation:.3f}",
-    )
-
-    print(
-        "COINTEGRATION P:",
-        f"{fit.pvalue:.5f}",
-    )
-
-    print(
-        "BETA:",
-        f"{fit.beta:.3f}",
-    )
-
-    print(
-        "FORMATION:",
-        fit.formation_start,
-        "→",
-        fit.formation_end,
-    )
-
-    # -------------------------------------------------
-    # 2. Convert quant observation into ClaimGraph's
-    #    neutral attention-event contract.
-    # -------------------------------------------------
-
-    event = pair_anomaly_to_event(
-        anomaly,
-        observed_at=observed_at,
-    )
+    event = event_override or pair_anomaly_to_event(anomaly, observed_at=observed_at)
 
     # -------------------------------------------------
     # 3. Deterministic historical research plan.
     # -------------------------------------------------
 
     from financial_assistant.fundamentals.service import load_pair, model_context, domain_evidence
-    fundamentals = load_pair((fit.ticker_a, fit.ticker_b), observed_at,
+    fundamentals = load_pair(tuple(dict.fromkeys((fit.ticker_a, fit.ticker_b))), observed_at,
                              service=fundamentals_service, progress=report)
-    financial_context = model_context(fundamentals)
+    import json
+    from financial_assistant.portfolio.service import market_context
+    performance = market_performance if market_performance is not None else market_context((fit.ticker_a, fit.ticker_b), observed_at)
+    financial_context = model_context(fundamentals) + '\nDeterministic market context:\n' + json.dumps(performance)
+    if research_context:
+        financial_context += '\nHuman research/prioritisation context, NOT admitted evidence:\n' + json.dumps(research_context)
+
     financial_documents, financial_observations, financial_calculations = domain_evidence(fundamentals)
 
     plan = plan_research(
