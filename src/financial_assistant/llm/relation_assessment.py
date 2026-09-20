@@ -21,7 +21,9 @@ from financial_assistant.domain import (
 from .provider import StructuredLLM
 
 
-PROMPT_VERSION = "relation-assessment-v1"
+PROMPT_VERSION = "relation-assessment-v2"
+
+NO_RATIONALE = "The model gave no rationale for this classification."
 
 
 class _AssessmentCandidate(BaseModel):
@@ -40,7 +42,11 @@ class _AssessmentCandidate(BaseModel):
         le=1.0,
     )
 
-    rationale: str
+    # Plain JSON mode does not enforce required fields, and
+    # the first real run dropped this one on every answer.
+    # The relation and its strength carry the verdict, so a
+    # missing explanation is recorded as missing, not fatal.
+    rationale: str = ""
 
     assumptions: tuple[str, ...] = ()
     missing_information: tuple[str, ...] = ()
@@ -121,6 +127,9 @@ Important rules:
 
 9. Return exactly one assessment for every supplied
    claim-hypothesis pair.
+10. rationale is REQUIRED in every assessment: one sentence,
+    at most 30 words, saying why this relation was chosen.
+    Never omit it and never leave it empty.
 
 Return JSON only:
 
@@ -297,6 +306,7 @@ def _assess_one_hypothesis(
                     candidate
                     .rationale
                     .strip()
+                    or NO_RATIONALE
                 ),
 
                 assumptions=tuple(

@@ -375,3 +375,39 @@ def test_rejects_invalid_worker_count():
             GoodProvider(),
             max_workers=0,
         )
+
+
+def test_a_missing_rationale_is_recorded_not_fatal():
+    """
+    Seen on the first real run: in plain JSON mode the model
+    dropped `rationale` from every assessment. The relation
+    and its strength carry the verdict, so the answer is kept
+    and the gap is stated rather than invented.
+    """
+
+    class TerseProvider:
+        provider_name = "fake"
+        model_name = "fake-model"
+
+        def complete_json(self, *, system, user, reasoning=False):
+            hypothesis_id = "H-1" if "HYPOTHESIS ID: H-1" in user else "H-2"
+
+            return {
+                "assessments": [
+                    {
+                        "claim_id": claim.claim_id,
+                        "hypothesis_id": hypothesis_id,
+                        "relation": "supports",
+                        "strength": 0.7,
+                    }
+                    for claim in CLAIMS
+                ]
+            }
+
+    _, assessments = assess_relationships(CLAIMS, HYPOTHESES, TerseProvider())
+
+    assert len(assessments) == len(CLAIMS) * len(HYPOTHESES)
+    assert {a.rationale for a in assessments} == {
+        "The model gave no rationale for this classification."
+    }
+    assert {a.strength for a in assessments} == {0.7}
