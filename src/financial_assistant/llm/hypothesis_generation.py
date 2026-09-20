@@ -14,7 +14,7 @@ from financial_assistant.domain import (
     ModelRun,
 )
 
-from .provider import StructuredLLM
+from .provider import StructuredLLM, complete_structured
 
 
 PROMPT_VERSION = "hypothesis-generation-v2"
@@ -187,7 +187,8 @@ def generate_hypotheses(
     # what was wrong, it reliably produces alternatives. A
     # second failure is a real failure and is raised.
     for attempt in range(2):
-        raw = provider.complete_json(
+        raw = complete_structured(
+            provider,
             system=SYSTEM_PROMPT,
             user=(
                 request
@@ -201,6 +202,7 @@ def generate_hypotheses(
                     "explanation, not rewordings of one."
                 )
             ),
+            response_model=_HypothesisResponse,
             reasoning=False,
         )
 

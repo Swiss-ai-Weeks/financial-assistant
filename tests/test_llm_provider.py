@@ -82,22 +82,69 @@ def test_request_carries_key_json_mode_and_thinking_switch(endpoint):
     assert sent["chat_template_kwargs"] == {"enable_thinking": False}
 
 
-def test_refused_fields_are_given_up_one_at_a_time(endpoint):
-    # The gateway refuses the thinking switch, then JSON mode,
-    # then answers in a code fence after thinking out loud.
+def test_a_refused_request_is_relaxed_one_step_at_a_time(endpoint):
+    # The server refuses the thinking switch, then the schema,
+    # then JSON mode, then answers in a code fence after
+    # thinking out loud.
     fake = endpoint(
         400,
         422,
+        400,
         '<think>Let me see.</think>\n```json\n{"verdict": "no_event"}\n```',
     )
 
-    assert provider().complete_json(system="s", user="u") == {"verdict": "no_event"}
+    answer = provider().complete_json(
+        system="s", user="u", schema={"type": "object"}
+    )
 
-    first, second, third = fake.requests
+    assert answer == {"verdict": "no_event"}
 
-    assert "chat_template_kwargs" in first and "response_format" in first
-    assert "chat_template_kwargs" not in second and "response_format" in second
-    assert "chat_template_kwargs" not in third and "response_format" not in third
+    formats = [r.get("response_format", {}).get("type") for r in fake.requests]
+
+    # Least valuable first: thinking control, schema, JSON mode.
+    assert "chat_template_kwargs" in fake.requests[0]
+    assert all("chat_template_kwargs" not in r for r in fake.requests[1:])
+    assert formats == ["json_schema", "json_schema", "json_object", None]
+
+
+def test_the_schema_is_handed_to_the_decoder(endpoint):
+    from pydantic import BaseModel
+
+    from financial_assistant.llm.provider import complete_structured
+
+    class Answer(BaseModel):
+        verdict: str
+
+    fake = endpoint('{"verdict": "no_event"}')
+
+    complete_structured(provider(), system="s", user="u", response_model=Answer)
+
+    sent = fake.requests[0]["response_format"]
+
+    assert sent["type"] == "json_schema"
+    assert sent["json_schema"]["strict"] is True
+    assert sent["json_schema"]["schema"]["required"] == ["verdict"]
+
+
+def test_providers_without_schema_support_get_the_plain_request():
+    from pydantic import BaseModel
+
+    from financial_assistant.llm.provider import complete_structured
+
+    class Answer(BaseModel):
+        verdict: str
+
+    class Plain:
+        provider_name = "fake"
+        model_name = "fake-model"
+
+        def complete_json(self, *, system, user, reasoning=False):
+            return {"verdict": "ok"}
+
+    # Would raise TypeError if `schema` were passed.
+    assert complete_structured(
+        Plain(), system="s", user="u", response_model=Answer
+    ) == {"verdict": "ok"}
 
 
 def test_rate_limits_are_waited_out(endpoint):

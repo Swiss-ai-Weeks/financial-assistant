@@ -13,7 +13,7 @@ from financial_assistant.domain import (
     ModelRun,
 )
 
-from .provider import StructuredLLM
+from .provider import StructuredLLM, complete_structured
 
 
 PROMPT_VERSION = "causal-triage-v2"
@@ -205,7 +205,8 @@ def triage_anomaly(
     if not headline_context:
         headline_context = "No headlines were published."
 
-    raw = provider.complete_json(
+    raw = complete_structured(
+        provider,
         system=SYSTEM_PROMPT,
         user=(
             "ANOMALY:\n"
@@ -216,6 +217,7 @@ def triage_anomaly(
             + "\n\nHEADLINES:\n"
             + headline_context
         ),
+        response_model=_TriageResponse,
         reasoning=False,
     )
 

@@ -22,6 +22,7 @@ from financial_assistant.domain import (
 
 from .provider import (
     StructuredLLM,
+    complete_structured,
 )
 
 
@@ -170,7 +171,8 @@ def extract_claims(
         ]
     )
 
-    raw = provider.complete_json(
+    raw = complete_structured(
+        provider,
         # Every claim is ~90 output tokens. Asking for more
         # than the caller keeps is paid for in latency.
         system=SYSTEM_PROMPT.replace(
@@ -189,6 +191,7 @@ def extract_claims(
             f"{source_text}"
         ),
 
+        response_model=_ClaimExtractionResponse,
         reasoning=False,
     )
 

@@ -18,7 +18,7 @@ from financial_assistant.domain import (
     RelationshipAssessment,
 )
 
-from .provider import StructuredLLM
+from .provider import StructuredLLM, complete_structured
 
 
 PROMPT_VERSION = "relation-assessment-v2"
@@ -172,7 +172,8 @@ def _assess_one_hypothesis(
         f"TEXT: {hypothesis.text}"
     )
 
-    raw = provider.complete_json(
+    raw = complete_structured(
+        provider,
         system=SYSTEM_PROMPT,
         user=(
             "VALIDATED CLAIMS:\n"
@@ -183,6 +184,7 @@ def _assess_one_hypothesis(
             "one for every supplied claim against this "
             "single hypothesis."
         ),
+        response_model=_AssessmentResponse,
         reasoning=False,
     )
 

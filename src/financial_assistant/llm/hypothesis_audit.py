@@ -15,7 +15,7 @@ from financial_assistant.domain import (
     ModelRun,
 )
 
-from .provider import StructuredLLM
+from .provider import StructuredLLM, complete_structured
 
 
 PROMPT_VERSION = "hypothesis-audit-v1"
@@ -171,7 +171,8 @@ def audit_hypotheses(
         for hypothesis in hypotheses
     )
 
-    raw = provider.complete_json(
+    raw = complete_structured(
+        provider,
         system=SYSTEM_PROMPT,
         user=(
             "ANOMALY:\n"
@@ -181,6 +182,7 @@ def audit_hypotheses(
             "HYPOTHESES TO AUDIT:\n"
             f"{hypothesis_context}"
         ),
+        response_model=_AuditResponse,
         reasoning=False,
     )
 

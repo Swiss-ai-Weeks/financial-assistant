@@ -14,14 +14,6 @@ from urllib.request import (
 )
 
 
-# Optional request fields, in the order they are given up
-# when a server refuses the request. Self-hosted vLLM takes
-# all of them; hosted gateways differ in which they accept.
-OPTIONAL_FIELDS = (
-    "chat_template_kwargs",
-    "response_format",
-)
-
 RATE_LIMIT_RETRIES = 4
 
 # A shared gateway answers the same request in 3 seconds or
@@ -168,6 +160,10 @@ class OpenAICompatibleProvider:
     semantic validation remains ClaimGraph's job.
     """
 
+    # complete_json accepts `schema` and constrains decoding
+    # with it. See provider.complete_structured.
+    supports_json_schema = True
+
     THINKING_CONTROLS = (
         "system_prompt",
         "chat_template",
@@ -210,6 +206,7 @@ class OpenAICompatibleProvider:
         system: str,
         user: str,
         reasoning: bool = False,
+        schema: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         system_content = system
 
@@ -237,9 +234,20 @@ class OpenAICompatibleProvider:
                 },
             ],
 
-            "response_format": {
-                "type": "json_object"
-            },
+            "response_format": (
+                {
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "answer",
+                        "schema": schema,
+                        "strict": True,
+                    },
+                }
+                if schema is not None
+                else {
+                    "type": "json_object"
+                }
+            ),
 
             "temperature":
                 self.temperature,
@@ -317,6 +325,37 @@ class OpenAICompatibleProvider:
             content
         )
 
+    @staticmethod
+    def _give_something_up(
+        payload: dict[str, Any],
+    ) -> bool:
+        """
+        A server refused the request. Relax it one step, from
+        the least to the most valuable thing we ask for:
+        thinking control, then the schema (falling back to
+        plain JSON mode), then JSON mode itself.
+        """
+
+        if "chat_template_kwargs" in payload:
+            del payload["chat_template_kwargs"]
+            return True
+
+        response_format = payload.get(
+            "response_format"
+        )
+
+        if response_format is None:
+            return False
+
+        if response_format["type"] == "json_schema":
+            payload["response_format"] = {
+                "type": "json_object"
+            }
+        else:
+            del payload["response_format"]
+
+        return True
+
     def _post(
         self,
         payload: dict[str, Any],
@@ -326,9 +365,9 @@ class OpenAICompatibleProvider:
         Send the request, adapting to the server instead
         of failing on the first difference:
 
-          400 / 422   an optional field was refused: give
-                      one up and try again, thinking
-                      control first, JSON mode last
+          400 / 422   something optional was refused:
+                      relax the request one step and try
+                      again (see _give_something_up)
           429         rate limited: wait and try again
         """
 
@@ -370,20 +409,12 @@ class OpenAICompatibleProvider:
                     )
                     continue
 
-                refused = next(
-                    (
-                        field
-                        for field in OPTIONAL_FIELDS
-                        if field in payload
-                    ),
-                    None,
-                )
-
                 if (
                     error.code in (400, 422)
-                    and refused is not None
+                    and self._give_something_up(
+                        payload
+                    )
                 ):
-                    del payload[refused]
                     continue
 
                 detail = error.read().decode(
