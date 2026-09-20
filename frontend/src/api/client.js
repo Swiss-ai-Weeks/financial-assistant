@@ -1,4 +1,9 @@
-const BASE = import.meta.env.VITE_API_URL ?? "/api";
+// Resolved against the page, not the host root: behind a
+// forwarding prefix (/proxy/8081/) "/api" would leave the
+// prefix and hit the proxy itself, which answers 404.
+const BASE =
+  import.meta.env.VITE_API_URL ??
+  new URL("api", document.baseURI).href.replace(/\/$/, "");
 
 async function request(path, options = {}) {
   const response = await fetch(`${BASE}${path}`, {

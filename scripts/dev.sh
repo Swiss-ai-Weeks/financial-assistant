@@ -11,16 +11,8 @@ cd "$(dirname "$0")/.."
 # must not be stopped). Start from the requested port and take
 # the first free one, so the API never silently fails to bind
 # while the UI comes up and talks to somebody else's server.
-port_is_free() {
-  ! (exec 3<>"/dev/tcp/127.0.0.1/$1") 2>/dev/null
-}
-
-API_PORT="${API_PORT:-8080}"
-REQUESTED_PORT="$API_PORT"
-
-while ! port_is_free "$API_PORT"; do
-  API_PORT=$((API_PORT + 1))
-done
+REQUESTED_PORT="${API_PORT:-8080}"
+API_PORT="$(./scripts/free_port.sh "$REQUESTED_PORT")"
 
 if [[ "$API_PORT" != "$REQUESTED_PORT" ]]; then
   echo "Port $REQUESTED_PORT is in use: the API will listen on $API_PORT."

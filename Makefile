@@ -1,7 +1,8 @@
 # Pythia
 #
 #   make setup   install backend + frontend dependencies
-#   make dev     run the API (:8080) and the UI (:5173)
+#   make dev     run the API and the UI with hot reload (for coding)
+#   make serve   one port, built UI: for a machine opened in a browser
 #
 #   make news    download historical news into the local archive
 #   make warm    pre-build the slow caches before a demo
@@ -48,8 +49,12 @@ web:
 build:
 	cd frontend && npm run build
 
+# Use this when the machine is reached through a browser (VS
+# Code web, Launchpad): forward or open the ONE port it prints.
 serve: build
-	$(BIN)/uvicorn financial_assistant.api.main:app --host 0.0.0.0 --port $(API_PORT)
+	@PORT=$$(./scripts/free_port.sh $(API_PORT)); \
+	echo; echo "  Pythia: http://localhost:$$PORT   (forward or open this one port)"; echo; \
+	$(BIN)/uvicorn financial_assistant.api.main:app --host 0.0.0.0 --port $$PORT
 
 # Resumable. Pass options with ARGS, e.g. ARGS="--universe".
 news:

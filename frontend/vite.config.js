@@ -14,6 +14,12 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
 
+    // Relative asset paths: the built desk then works at "/"
+    // and equally under a forwarding prefix such as
+    // /proxy/8081/, which is how browser-based VS Code and
+    // Launchpad expose a port.
+    base: './',
+
     server: {
       host: '0.0.0.0',
       port: 5173,

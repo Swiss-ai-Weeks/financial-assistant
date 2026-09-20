@@ -29,7 +29,7 @@ installs dependencies and vLLM, and sets `LLM_PROFILE=local`. Then, in tmux:
 
 ```bash
 make llm     # serves Nemotron on both H100s; first start downloads ~60 GB
-make dev     # API and UI
+make serve   # the desk, on one port (see step 3)
 make warm    # once
 ```
 
@@ -37,15 +37,30 @@ If the weights are gated, `huggingface-cli login` first. If `make llm` rejects a
 flag, the installed vLLM is older than the model card expects: upgrade vLLM, or
 pass the card's flags through `VLLM_EXTRA_ARGS`.
 
-## 3. From the laptop
+## 3. Open it
+
+**The machine is opened in a browser (VS Code web, NVIDIA Launchpad).** Plain
+`ssh` from a laptop does not work: the hostname only resolves inside. Run the
+desk on ONE port, with the UI pre-built and served by the API:
 
 ```bash
-ssh -L 5173:localhost:5173 -L 8080:localhost:8080 <user>@<gpu-host>
+make serve        # prints the port it took, e.g. 8081
 ```
 
-then open <http://localhost:5173>. The NEMOTRON pill turns green when vLLM is
-up. No SSH (NVIDIA Launchpad)? Set `VITE_HMR_HOST=<public-hostname>` in
-`frontend/.env` and use the Launchpad URL for port 5173.
+then in VS Code: **PORTS** tab -> *Forward a Port* -> that port -> globe icon.
+The desk is served with relative paths, so it works under a forwarding prefix
+such as `/proxy/8081/`. `make dev` does not: its hot-reload server assumes it
+owns the host root, and the forwarded URL answers 404.
+
+**The machine is reached over SSH.** Either mode works:
+
+```bash
+ssh -L 8081:localhost:8081 <user>@<gpu-host>      # then http://localhost:8081
+```
+
+Ports: on the hackathon box 8080 is the instance's own shell gateway
+(`openshell-gateway`, do not stop it) and 5173 is another team member's app.
+`make dev` and `make serve` both take the first free port and print it.
 
 ## 4. Optional keys on the instance
 
