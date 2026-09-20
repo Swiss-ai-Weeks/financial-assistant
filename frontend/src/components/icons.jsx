@@ -57,14 +57,6 @@ export const GraphIcon = (props) => (
   </Icon>
 );
 
-export const ChipIcon = (props) => (
-  <Icon {...props}>
-    <rect x="6.5" y="6.5" width="11" height="11" rx="1.2" />
-    <rect x="10" y="10" width="4" height="4" />
-    <path d="M9 3.5v3M15 3.5v3M9 17.5v3M15 17.5v3M3.5 9h3M3.5 15h3M17.5 9h3M17.5 15h3" />
-  </Icon>
-);
-
 export const SunIcon = (props) => (
   <Icon {...props}>
     <circle cx="12" cy="12" r="3.6" />

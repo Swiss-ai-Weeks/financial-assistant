@@ -12,7 +12,6 @@ import SideRail from "./components/layout/SideRail";
 import Tabs from "./components/layout/Tabs";
 import TickerTape from "./components/layout/TickerTape";
 import TopBar from "./components/layout/TopBar";
-import ModelPanel from "./components/model/ModelPanel";
 import NewsFeed from "./components/news/NewsFeed";
 import NewsTable from "./components/news/NewsTable";
 import PerformanceStrip from "./components/portfolio/PerformanceStrip";
@@ -301,16 +300,9 @@ export default function App() {
         onSelectTicker={selectTicker}
         onAddTicker={addTicker}
         onRemoveTicker={removeTicker}
-        onOpenModel={() => setView("model")}
       />
 
       <SideRail view={view} onChange={setView} />
-
-      {view === "model" && (
-        <main className="app__main app__main--full">
-          <ModelPanel system={system.data} investigations={investigations.data} />
-        </main>
-      )}
 
       {view === "graph" && (
         <main className="app__main app__main--full">

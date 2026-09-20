@@ -95,8 +95,9 @@ desk says so.
    post-mortem already reported them.
 5. **Add a name.** Search a company in the top bar and press *Add*: the desk
    immediately tests it for cointegrated partners.
-6. **The hardware story.** The chip icon explains the model choice and shows
-   measured latency per stage.
+6. **The hardware story.** The **NEMOTRON** pill in the top bar is green when the
+   model is reachable, and every Explain shows measured latency per stage. Why
+   this model, on this hardware: [docs/MODEL.md](docs/MODEL.md).
 
 ## Documentation
 

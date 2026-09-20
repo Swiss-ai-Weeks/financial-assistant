@@ -1,4 +1,4 @@
-import { ChipIcon, CloverIcon, GraphIcon, PastIcon, ScopeIcon } from "../icons";
+import { CloverIcon, GraphIcon, PastIcon, ScopeIcon } from "../icons";
 
 /*
  * The three stories are one loop, read as a timeline:
@@ -9,7 +9,6 @@ const VIEWS = [
   { key: "copilot", label: "Now", title: "Copilot: what is happening to this stock?", icon: ScopeIcon },
   { key: "discovery", label: "Next", title: "Discovery: what should I look at?", icon: CloverIcon },
   { key: "graph", label: "Why", title: "ClaimGraph: why are these connected?", icon: GraphIcon, divider: true },
-  { key: "model", label: "Model", title: "The model and the hardware", icon: ChipIcon },
 ];
 
 export default function SideRail({ view, onChange }) {

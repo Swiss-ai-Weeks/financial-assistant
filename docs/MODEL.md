@@ -98,8 +98,7 @@ editing the script. Model card:
 <https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16>
 
 Check it from the desk: the **NEMOTRON** pill in the top bar turns green, and
-the Model page (chip icon in the left rail) shows measured per-stage latency of
-the last investigation.
+every Explain shows the measured latency of each stage as it completes.
 
 ## Without GPUs
 
@@ -145,9 +144,10 @@ adapts instead of failing (`llm/openai_compatible.py`):
 
 Two things keep this honest. A hosted endpoint lists its models to anyone, so
 without `LLM_API_KEY` the desk reports the model **offline** rather than letting
-the first real request fail with 401. And the Model page says so when inference
-is not local: "nothing leaves the machine" is a claim about the H100 setup, not
-about development mode.
+the first real request fail with 401. And every saved run records the provider
+and model that produced it (`make runs`): "nothing leaves the machine" is a claim
+about the H100 setup, not about development mode, and the record shows which one
+an explanation came from.
 
 Charts, findings, the copilot and discovery's deterministic stages work with no
 model at all. Only **Explain** and discovery's triage need one, and both replay

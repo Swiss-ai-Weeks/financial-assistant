@@ -21,7 +21,6 @@ export default function TopBar({
   onSelectTicker,
   onAddTicker,
   onRemoveTicker,
-  onOpenModel,
 }) {
   const holdings = portfolio?.positions ?? [];
   const held = holdings.some((position) => position.ticker === ticker);
@@ -74,10 +73,10 @@ export default function TopBar({
           </div>
         </div>
 
-        <button className="topbar__model" onClick={onOpenModel} title={llm?.detail}>
+        <div className="topbar__model" title={llm?.detail}>
           <span className={`dot ${llm?.online ? "dot--on" : "dot--off"}`} />
           <span className="mono">NEMOTRON</span>
-        </button>
+        </div>
 
         <button className="topbar__icon" onClick={onToggleTheme} title="Toggle theme">
           {theme === "light" ? <SunIcon /> : <MoonIcon />}

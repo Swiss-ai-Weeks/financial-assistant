@@ -25,7 +25,6 @@ src/
     anomalies/           blotter, strategy monitor marketplace, pair scan result
     news/                ticker wire, book wire
     investigation/       explain panel, stages, verdicts, claims, ClaimGraph view
-    model/               why this model, on this hardware
   App.jsx                desk state and composition
 ```
 
