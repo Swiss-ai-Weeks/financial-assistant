@@ -87,18 +87,12 @@ from financial_assistant.simulation import (
 )
 
 
-timings: dict[str, float] = {}
-
-
 def timed(name, func):
     started = perf_counter()
 
     result = func()
 
-    timings[name] = (
-        perf_counter()
-        - started
-    )
+    print(f"{name}: {perf_counter() - started:.2f}s")
 
     return result
 
@@ -444,51 +438,29 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    prices = pd.read_csv(
-        args.prices
+    prices = pd.read_csv(args.prices)
+    signal = find_signal(prices, as_of=args.as_of,
+                         ticker_a=args.ticker_a, ticker_b=args.ticker_b)
+    provider = OpenAICompatibleProvider(
+        provider_name="nvidia-nim",
+        model_name="nvidia/llama-3.3-nemotron-super-49b-v1.5",
+        base_url="http://127.0.0.1:8000/v1",
+        max_tokens=2048,
     )
-
-    ticker_a = (
-        args.ticker_a
-        .strip()
-        .upper()
+    graph, bundle = investigate_signal(
+        signal, observed_at=parse_aware_datetime(args.observed_at),
+        provider=provider, per_task_limit=args.per_task_limit,
+        max_documents=args.max_documents,
+        claims_per_document=args.claims_per_document, max_claims=args.max_claims,
     )
+    persist_historical_outputs(signal, prices, graph, bundle)
 
-    ticker_b = (
-        args.ticker_b
-        .strip()
-        .upper()
-    )
 
-    observed_at = (
-        parse_aware_datetime(
-            args.observed_at
-        )
-    )
-
-    print()
-    print(
-        "HISTORICAL INVESTIGATION"
-    )
-
-    print(
-        "=" * 60
-    )
-
-    # -------------------------------------------------
-    # 1. Reconstruct quantitative signal.
-    # -------------------------------------------------
-
-    signal = timed(
-        "historical_scan",
-        lambda: find_signal(
-            prices,
-            as_of=args.as_of,
-            ticker_a=ticker_a,
-            ticker_b=ticker_b,
-        ),
-    )
-
+def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
+                       max_documents=4, claims_per_document=2, max_claims=8):
+    """Shared retrieval/reasoning pipeline; callers supply the observed signal and provider."""
+    if observed_at.tzinfo is None or observed_at.utcoffset() is None:
+        raise ValueError("observed_at must include a timezone offset")
     anomaly = signal.anomaly
     fit = signal.fit
 
@@ -552,32 +524,7 @@ def main() -> None:
     plan = plan_research(
         event
     )
-	
-	# -------------------------------------------------
-# 4. NVIDIA NIM.
-#
-# Create the model provider before retrieval because
-# Nemotron now participates in query expansion as
-# well as the later evidence reasoning stages.
-# -------------------------------------------------
-
-
-    provider = OpenAICompatibleProvider(
-
-            provider_name="nvidia-nim",
-
-            model_name=(
-                "nvidia/"
-                "llama-3.3-nemotron-super-49b-v1.5"
-            ),
-
-            base_url=(
-                "http://127.0.0.1:8000/v1"
-            ),
-
-            max_tokens=2048,
-        )
-
+    # The caller selects the provider used for query expansion and reasoning.
 
     def query_expander(
             task,
@@ -599,15 +546,6 @@ def main() -> None:
             )	
             
             
-
-    provider = OpenAICompatibleProvider(
-            provider_name="nvidia-nim",
-            model_name=(
-				"nvidia/"
-				"llama-3.3-nemotron-super-49b-v1.5"),
-			base_url=("http://127.0.0.1:8000/v1"),
-			max_tokens=2048,)
-
 
     print()
     print("RESEARCH CUTOFF:",
@@ -697,7 +635,7 @@ def main() -> None:
             ),
 
             per_task_limit=(
-                args.per_task_limit
+                per_task_limit
             ),
 
             query_expander=(
@@ -728,15 +666,8 @@ def main() -> None:
                 " ",
                 expansion.task_id,)
 
-    for query in expansion.queries:
-        print(
-				"   ",
-				query.proximity.value,
-				"|",
-                query.relation,
-                "|",
-                query.text,
-            )
+        for query in expansion.queries:
+            print("   ", query.proximity.value, "|", query.relation, "|", query.text)
 
     status_counts = Counter(
         record.status.value
@@ -773,7 +704,7 @@ def main() -> None:
             plan,
 
             limit=(
-                args.max_documents
+                max_documents
             ),
         )
     )
@@ -894,19 +825,19 @@ def main() -> None:
 
             if (
                 added_from_document
-                >= args.claims_per_document
+                >= claims_per_document
             ):
                 break
 
             if (
                 len(selected_claims)
-                >= args.max_claims
+                >= max_claims
             ):
                 break
 
         if (
             len(selected_claims)
-            >= args.max_claims
+            >= max_claims
         ):
             break
 
@@ -1086,6 +1017,11 @@ def main() -> None:
         len(graph.edges),
     )
 
+    return graph, bundle
+
+
+def persist_historical_outputs(signal, prices, graph, bundle):
+    fit = signal.fit
     # -------------------------------------------------
     # 13. Hindsight-only forward simulation.
     # -------------------------------------------------
@@ -1249,29 +1185,6 @@ def main() -> None:
         simulation_path,
     )
 
-    # -------------------------------------------------
-    # 15. Timing.
-    # -------------------------------------------------
-
-    print()
-    print(
-        "TIMINGS"
-    )
-
-    for name, seconds in (
-        timings.items()
-    ):
-        print(
-            f"{name:28} "
-            f"{seconds:7.2f}s"
-        )
-
-    print(
-        f"{'measured total':28} "
-        f"{sum(timings.values()):7.2f}s"
-    )
-
-    print()
     print(
         "TEMPORAL PROVENANCE NOTE:"
     )

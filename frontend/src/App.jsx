@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
+import { candidatePayload, selectModel, requestInvestigation, investigationReducer, validateGraph } from './investigationClient.js';
 import DetectorPanel from './DetectorPanel';
 import ClaimGraph from './ClaimGraph';
 import NodeInspector from './NodeInspector';
@@ -25,31 +26,75 @@ function exportReview(graph, review) {
 }
 
 export default function App() {
+  const savedRequest = useRef(null);
   const [file, setFile] = useState(EXAMPLES[0][0]);
-  const [loaded, setLoaded] = useState(null);
-  const [error, setError] = useState(null);
+  const [{loaded, error, running}, dispatch] = useReducer(investigationReducer, {loaded:null, error:null, running:false});
+  const [models, setModels] = useState([]);
+  const [selection, setSelection] = useState(null);
+  const [modelError, setModelError] = useState(null);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [observedAt, setObservedAt] = useState('');
   useEffect(() => {
     const controller = new AbortController();
+    fetch('/api/investigations/models', {signal:controller.signal}).then(async response => {
+      if (!response.ok) throw new Error('Could not load configured models');
+      const payload = await response.json();
+      if (!payload.models?.length) throw new Error('No inference models configured');
+      setModels(payload.models); setSelection(payload.models[0]);
+    }).catch(err => { if (err.name !== 'AbortError') setModelError(err.message); });
+    return () => controller.abort();
+  }, []);
+  async function investigateCandidate() {
+    savedRequest.current?.abort();
+    dispatch({type:'start'});
+    try {
+      const payload = candidatePayload(selectedCandidate, selection, observedAt);
+      const graph = await requestInvestigation(payload);
+      dispatch({type:'success', graph, key:crypto.randomUUID()});
+      setFile('');
+    } catch (err) { dispatch({type:'failure', error:err.message}); }
+  }
+  useEffect(() => {
+    if (!file) return;
+    const controller = new AbortController();
+    savedRequest.current = controller;
     fetch(`/${file}`, {signal:controller.signal}).then(response => {
       if (!response.ok) throw new Error(`Could not load investigation: HTTP ${response.status}`);
       return response.json();
     }).then(graph => {
-      if (!Array.isArray(graph.nodes) || !Array.isArray(graph.edges)) throw new Error('Invalid investigation graph');
-      setLoaded({file,graph});
-    }).catch(err => { if (err.name !== 'AbortError') setError(err.message); });
+      if (!controller.signal.aborted) dispatch({type:'saved', graph:validateGraph(graph), key:file});
+    }).catch(err => { if (err.name !== 'AbortError') dispatch({type:'failure', error:err.message}); });
     return () => controller.abort();
   }, [file]);
   return <div className="app-shell">
-    <nav className="case-selector"><label>Saved investigation<select value={file} onChange={e => {setFile(e.target.value); setError(null);}}>
+    <nav className="case-selector"><label>Saved investigation<select value={file} disabled={running} onChange={e => setFile(e.target.value)}>
+      <option value="" disabled>Live investigation</option>
       {EXAMPLES.map(([path,label]) => <option key={path} value={path}>{label}</option>)}
     </select></label><span>Review workspace · local prototype</span></nav>
-    {error ? <p className="review-error" role="alert">{error}</p> : loaded?.file === file
-      ? <InvestigationWorkspace key={file} graph={loaded.graph} /> : <p className="loading" role="status">Loading investigation…</p>}
+    <details className="detector-drawer"><summary>Explore market anomaly candidates</summary>
+      <DetectorPanel onSelectCandidate={candidate => {setSelectedCandidate(candidate); setObservedAt(`${candidate.signal_date}T23:59:59+00:00`);}} />
+      <label>Model/provider for the next investigation<select disabled={running || !models.length} value={selection ? JSON.stringify(selection) : ''}
+        onChange={e => {const next = JSON.parse(e.target.value); setSelection(selectModel(models, next.provider, next.model));}}>
+        {!selection && <option value="">Loading configured models…</option>}
+        {models.map(item => <option key={JSON.stringify(item)} value={JSON.stringify(item)}>{item.provider} · {item.model}</option>)}
+      </select></label>
+      {modelError && <p role="alert">{modelError}</p>}
+      {selectedCandidate && <div className="selected-candidate">Selected candidate: <strong>{selectedCandidate.pair}</strong> · {selectedCandidate.signal_date}
+        <label>Observed at / evidence cutoff (timezone required)<input value={observedAt} disabled={running} onChange={e => setObservedAt(e.target.value)} /></label>
+        <p>Defaults to the end of the candidate day in UTC. Adjust to the actual observation time.</p>
+      </div>}
+      <button disabled={running || !selectedCandidate || !selection} onClick={investigateCandidate}>Investigate candidate</button>
+    </details>
+    {running && <p role="status">Investigation running… The current graph and review remain available.</p>}
+    {error && <p className="review-error" role="alert">{error}</p>}
+    {loaded ? <InvestigationWorkspace key={loaded.key} graph={loaded.graph} fresh={loaded.fresh} /> : <p className="loading" role="status">Loading investigation…</p>}
+
   </div>;
 }
 
-function InvestigationWorkspace({graph}) {
+function InvestigationWorkspace({graph, fresh}) {
   const [initial] = useState(() => {
+    if (fresh) return {review:createReview(graph), reason:'New investigation · new institutional review'};
     try {
       return restoreReview(graph, localStorage.getItem(storageKey(graph)));
     } catch { return {review:createReview(graph),reason:'Browser storage unavailable · export to retain a copy'}; }
@@ -57,7 +102,6 @@ function InvestigationWorkspace({graph}) {
   const [review, setReview] = useState(initial.review);
   const [persistence, setPersistence] = useState(initial.reason);
   const [selectedNode, setSelectedNode] = useState(null);
-  const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [view, setView] = useState('graph');
   function saveReview(next) {
     setReview(next);
@@ -75,11 +119,8 @@ function InvestigationWorkspace({graph}) {
     <ReviewHeader graph={graph} review={review} onChange={onChange} persistence={persistence} onExport={() => exportReview(graph,review)} />
     <section className="claim-summary"><div className="claim-summary__label">Attention event</div>
       <div className="claim-summary__text">{anomaly?.label ?? 'No anomaly recorded'}</div>
-      <div className="claim-summary__qualification">An attention event triggers investigation; it does not establish causality. Saved output is replayed here; no model is running.</div>
+      <div className="claim-summary__qualification">An attention event triggers investigation; it does not establish causality. Recorded model_run nodes describe the execution that produced this graph. The model selection above applies to the next investigation.</div>
     </section>
-    <details className="detector-drawer"><summary>Explore market anomaly candidates</summary><DetectorPanel onSelectCandidate={setSelectedCandidate} />
-      {selectedCandidate && <p className="selected-candidate">Selected candidate: <strong>{selectedCandidate.pair}</strong> · z {selectedCandidate.z_score.toFixed(2)}. Candidate selection does not generate an investigation. The saved review above remains active.</p>}
-    </details>
     <main className="workspace"><section className="graph-panel">
       <div className="workspace-tabs"><button aria-pressed={view === 'graph'} onClick={() => setView('graph')}>Evidence graph</button><button aria-pressed={view === 'summary'} onClick={() => setView('summary')}>Review summary</button></div>
       <div hidden={view !== 'graph'}><div className="panel-header"><div><h2>Investigation graph</h2><p>Inspect typed propositions, evidence relationships, sources and execution.</p></div><div className="legend">{graph.nodes.length} nodes · {graph.edges.length} relationships</div></div>

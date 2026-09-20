@@ -382,3 +382,20 @@
 
   gap: 12px;
 }
+
+.detector-drawer > label,
+.selected-candidate > label {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+}
+.detector-drawer > label select,
+.selected-candidate input {
+  width: 100%;
+  max-width: 680px;
+  padding: 8px;
+}
+.detector-drawer > button {
+  margin: 8px 0 16px;
+  padding: 10px 16px;
+}

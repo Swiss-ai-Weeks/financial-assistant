@@ -42,8 +42,39 @@ counter-evidence. Requirement satisfaction is shown only if explicitly recorded 
 Missing tool/query metadata stays unavailable.
 
 The anomaly scanner remains available in **Explore market anomaly candidates**. Selecting
-a candidate does not launch research or replace the saved investigation; the existing API
-only scans candidates.
+a candidate only selects it. Choose the model/provider for the **next** investigation,
+check the timezone-aware observation/evidence cutoff, then click **Investigate candidate**.
+The observation defaults to the end of the candidate day in UTC; adjust it when the actual
+observation time is known. Recorded `model_run` provenance remains in the graph inspector.
+
+Start the backend from the repository root with
+`PYTHONPATH=src .venv/bin/python scripts/anomaly_api.py`, then run `npm run dev` here.
+Vite proxies `/api` to port 8001. The backend requires the existing
+`data/cache/market/global_demo_daily.csv` and `demo_pair_fits.json`, plus the existing
+BookReader, SearXNG and inference services. Restart it after updating the market caches;
+scans and investigations share the same in-memory cache snapshot.
+
+`GET /api/investigations/models` exposes the configured model/provider pairs. NIM/Nemotron
+at the existing local endpoint is the default. Operators can set `CLAIMGRAPH_MODELS` to a
+JSON list of `{ "provider": "...", "model": "...", "base_url": "..." }` entries for
+existing OpenAI-compatible deployments; the first entry is the default. Endpoint URLs stay
+server-side. The browser cannot supply arbitrary inference URLs. No credentials change.
+
+`POST /api/investigations` accepts `ticker_a`, `ticker_b`, `as_of` (YYYY-MM-DD),
+`observed_at` (ISO timestamp with timezone), `provider`, `model`, and the candidate's
+`entry` threshold. It validates the current cache date and pair, reconstructs the anomaly
+from the detector's frozen fit and prices, and calls `investigate_signal` from the historical
+script. The existing BookReader + SearXNG retrieval, claim extraction, hypothesis/audit and
+relationship pipeline builds and returns the complete v0.2 graph. This is a synchronous HTTP
+request, without a queue or persistence service. Allow long requests through any deployment
+proxy. Hindsight simulation and saved-file writing remain CLI-only.
+
+The graph and review stay visible during execution and failures. Success directly loads the
+response and opens a fresh review with a unique investigation ID; source and model provenance
+are retained. Export the new graph/review to keep a portable copy. Saved examples still use
+explicit paths, but live investigations never read or write those paths. Previously, writing
+a new JSON into `frontend/public` did not display it because the UI fetched only explicitly
+listed saved filenames and had no investigation response handler.
 
 Validation (after installing the existing lockfile dependencies):
 

@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import time
 
+from investigation_api import investigate, public_models
+
 from http.server import (
     BaseHTTPRequestHandler,
     ThreadingHTTPServer,
@@ -347,6 +349,9 @@ class Handler(
 
 
     def do_GET(self) -> None:
+        if self.path == "/api/investigations/models":
+            self.send_json(200, public_models())
+            return
         if self.path == "/api/health":
             self.send_json(
                 200,
@@ -382,7 +387,7 @@ class Handler(
     def do_POST(self) -> None:
         if (
             self.path
-            != "/api/anomalies/scan"
+            not in ("/api/anomalies/scan", "/api/investigations")
         ):
             self.send_json(
                 404,
@@ -411,6 +416,14 @@ class Handler(
                 if raw
                 else {}
             )
+
+            if self.path == "/api/investigations":
+                result = investigate(
+                    request, prices=PRICES, fits=ALL_FITS, as_of=AS_OF,
+                    formation_observations=FIT_PAYLOAD["formation_observations"],
+                )
+                self.send_json(200, result)
+                return
 
             result = scan(
                 corr_min=float(
