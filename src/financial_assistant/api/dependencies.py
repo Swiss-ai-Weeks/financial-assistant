@@ -211,6 +211,7 @@ def build_llm() -> OpenAICompatibleProvider:
         api_key=settings.llm_api_key,
         thinking_control=settings.llm_thinking_control,
         max_tokens=settings.llm_max_tokens,
+        timeout_seconds=settings.llm_timeout_seconds,
     )
 
 

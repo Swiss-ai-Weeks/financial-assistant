@@ -3,6 +3,7 @@ from .claim_extraction import (
 )
 
 from .openai_compatible import (
+    LLMTransportError,
     OpenAICompatibleProvider,
 )
 

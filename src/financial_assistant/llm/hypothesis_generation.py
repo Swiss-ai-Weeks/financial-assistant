@@ -17,7 +17,7 @@ from financial_assistant.domain import (
 from .provider import StructuredLLM
 
 
-PROMPT_VERSION = "hypothesis-generation-v1"
+PROMPT_VERSION = "hypothesis-generation-v2"
 
 
 class _HypothesisCandidate(BaseModel):
@@ -127,17 +127,18 @@ Do not state an assumption as though it had been observed.
 
 
 
-Return JSON only:
+Return JSON only. The array MUST contain at least 2 and at
+most 4 entries, each a different kind of explanation (for
+example: company-specific, the other security, sector-wide,
+technical or flow-driven):
 
 {
   "hypotheses": [
-    {
-      "text": "...",
-    }
+    {"text": "The anomaly may reflect ..."},
+    {"text": "One possibility is ..."},
+    {"text": "The move could reflect ..."}
   ]
 }
-
-
 """.strip()
 
 
@@ -172,41 +173,68 @@ def generate_hypotheses(
             "No extracted source claims are currently available."
         )
 
-    raw = provider.complete_json(
-        system=SYSTEM_PROMPT,
-        user=(
-            "ANOMALY:\n"
-            f"{anomaly_json}\n\n"
-            "VALIDATED SOURCE CLAIMS:\n"
-            f"{claim_context}"
-        ),
-        reasoning=False,
+    request = (
+        "ANOMALY:\n"
+        f"{anomaly_json}\n\n"
+        "VALIDATED SOURCE CLAIMS:\n"
+        f"{claim_context}"
     )
 
-    parsed = _HypothesisResponse.model_validate(
-        raw
-    )
-
-    # Remove exact duplicate hypothesis texts while
-    # preserving model order.
     unique_texts: list[str] = []
-    seen: set[str] = set()
 
-    for candidate in parsed.hypotheses:
-        text = candidate.text.strip()
+    # One corrective retry. A fast model with thinking off
+    # sometimes commits to a single explanation; told exactly
+    # what was wrong, it reliably produces alternatives. A
+    # second failure is a real failure and is raised.
+    for attempt in range(2):
+        raw = provider.complete_json(
+            system=SYSTEM_PROMPT,
+            user=(
+                request
+                if attempt == 0
+                else (
+                    f"{request}\n\n"
+                    "YOUR PREVIOUS ANSWER WAS REJECTED: it "
+                    f"contained {len(unique_texts)} distinct "
+                    "hypothesis. Return at least 2 and at most "
+                    "4 hypotheses that are different KINDS of "
+                    "explanation, not rewordings of one."
+                )
+            ),
+            reasoning=False,
+        )
 
-        if not text:
-            continue
+        parsed = _HypothesisResponse.model_validate(
+            raw
+        )
 
-        key = text.casefold()
+        # Remove exact duplicate hypothesis texts while
+        # preserving model order.
+        unique_texts = []
+        seen: set[str] = set()
 
-        if key in seen:
-            continue
+        for candidate in parsed.hypotheses:
+            text = candidate.text.strip()
 
-        seen.add(key)
-        unique_texts.append(text)
+            if not text:
+                continue
 
-    if not 2 <= len(unique_texts) <= 4:
+            key = text.casefold()
+
+            if key in seen:
+                continue
+
+            seen.add(key)
+            unique_texts.append(text)
+
+        # More than asked for is not an error: the model
+        # orders them, so the first four are kept.
+        unique_texts = unique_texts[:4]
+
+        if len(unique_texts) >= 2:
+            break
+
+    if len(unique_texts) < 2:
         raise ValueError(
             "Hypothesis generation must produce "
             "between 2 and 4 distinct hypotheses; "

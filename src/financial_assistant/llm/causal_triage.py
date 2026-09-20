@@ -16,7 +16,7 @@ from financial_assistant.domain import (
 from .provider import StructuredLLM
 
 
-PROMPT_VERSION = "causal-triage-v1"
+PROMPT_VERSION = "causal-triage-v2"
 
 MAX_HEADLINES = 12
 MAX_SUMMARY_CHARS = 300
@@ -138,8 +138,10 @@ Rules:
    For no_event, headline_id MUST be null.
 5. why_now is ONE sentence, at most 40 words, that a trader
    can read at a glance. State what the headline reports and
-   which security it concerns. Do not give investment advice
-   and do not predict prices.
+   which security it concerns, naming the company. Never
+   mention headline ids such as N3, the z-score, or the word
+   "cointegration": the reader sees those elsewhere. Do not
+   give investment advice and do not predict prices.
 6. If you are unsure between lasting_event and
    transient_event, choose transient_event.
 

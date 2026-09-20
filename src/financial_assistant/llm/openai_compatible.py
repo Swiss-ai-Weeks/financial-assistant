@@ -6,7 +6,7 @@ import time
 
 from typing import Any
 
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 from urllib.request import (
     Request,
@@ -23,6 +23,20 @@ OPTIONAL_FIELDS = (
 )
 
 RATE_LIMIT_RETRIES = 4
+
+# A shared gateway answers the same request in 3 seconds or
+# not at all, so a short timeout retried beats a long one.
+TIMEOUT_RETRIES = 2
+
+
+class LLMTransportError(RuntimeError):
+    """
+    The model could not be reached or did not answer.
+
+    Distinct from ValueError, which means it answered and the
+    answer was not acceptable. Callers report the two very
+    differently: one is an outage, the other is the model.
+    """
 
 
 def extract_json_object(content: str) -> dict[str, Any]:
@@ -238,6 +252,7 @@ class OpenAICompatibleProvider:
 
         payload = dict(payload)
         rate_limited = 0
+        timed_out = 0
 
         while True:
             request = Request(
@@ -294,7 +309,21 @@ class OpenAICompatibleProvider:
                     errors="replace",
                 )[:300]
 
-                raise ValueError(
+                raise LLMTransportError(
                     f"Model endpoint answered HTTP "
                     f"{error.code}: {detail}"
+                ) from error
+
+            except (
+                TimeoutError,
+                URLError,
+                ConnectionError,
+            ) as error:
+                if timed_out < TIMEOUT_RETRIES:
+                    timed_out += 1
+                    continue
+
+                raise LLMTransportError(
+                    "Model endpoint did not answer after "
+                    f"{timed_out + 1} attempts: {error}"
                 ) from error

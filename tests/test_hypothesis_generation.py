@@ -143,3 +143,58 @@ def test_duplicate_hypotheses_are_rejected_after_deduplication():
             (),
             DuplicateProvider(),
         )
+
+
+def test_a_single_hypothesis_is_corrected_once_then_accepted():
+    """
+    Seen on the first real run: with thinking off, the model
+    committed to one explanation. Told what was wrong, it
+    produces alternatives.
+    """
+
+    from datetime import datetime, timezone
+
+    from financial_assistant.domain import AnomalyEvent
+    from financial_assistant.llm import generate_hypotheses
+
+    class Provider:
+        provider_name = "fake"
+        model_name = "fake-model"
+
+        def __init__(self):
+            self.prompts = []
+
+        def complete_json(self, *, system, user, reasoning=False):
+            self.prompts.append(user)
+
+            if len(self.prompts) == 1:
+                return {"hypotheses": [{"text": "The move may reflect X."}]}
+
+            return {
+                "hypotheses": [
+                    {"text": "The move may reflect X."},
+                    {"text": "One possibility is Y."},
+                    {"text": "The move could reflect Z."},
+                    {"text": "It may be explained by W."},
+                    {"text": "A fifth one, beyond the limit."},
+                ]
+            }
+
+    provider = Provider()
+
+    anomaly = AnomalyEvent(
+        anomaly_id="A-1",
+        ticker="AAA",
+        detected_at=datetime(2026, 9, 18, 21, tzinfo=timezone.utc),
+        anomaly_type="volume_spike",
+        summary="AAA traded 4x its average volume",
+    )
+
+    _, hypotheses = generate_hypotheses(anomaly, (), provider)
+
+    assert len(provider.prompts) == 2
+    assert "PREVIOUS ANSWER WAS REJECTED" in provider.prompts[1]
+    assert "contained 1 distinct" in provider.prompts[1]
+
+    # More than four is trimmed, not failed.
+    assert len(hypotheses) == 4

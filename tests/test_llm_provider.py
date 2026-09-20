@@ -4,7 +4,7 @@ from urllib.error import HTTPError
 
 import pytest
 
-from financial_assistant.llm import OpenAICompatibleProvider
+from financial_assistant.llm import LLMTransportError, OpenAICompatibleProvider
 from financial_assistant.llm import openai_compatible as module
 from financial_assistant.llm.openai_compatible import extract_json_object
 
@@ -22,6 +22,9 @@ class FakeEndpoint:
         )
 
         answer = self.answers.pop(0)
+
+        if answer is TimeoutError:
+            raise TimeoutError("The read operation timed out")
 
         if isinstance(answer, int):
             raise HTTPError(
@@ -102,7 +105,20 @@ def test_rate_limits_are_waited_out(endpoint):
 def test_other_errors_surface_with_the_servers_explanation(endpoint):
     endpoint(401)
 
-    with pytest.raises(ValueError, match="HTTP 401"):
+    with pytest.raises(LLMTransportError, match="HTTP 401"):
+        provider().complete_json(system="s", user="u")
+
+
+def test_a_slow_gateway_is_retried_before_giving_up(endpoint):
+    fake = endpoint(TimeoutError, TimeoutError, '{"ok": true}')
+
+    assert provider().complete_json(system="s", user="u") == {"ok": True}
+    assert len(fake.requests) == 3
+
+    endpoint(TimeoutError, TimeoutError, TimeoutError)
+
+    # An outage is not a bad answer: callers tell them apart.
+    with pytest.raises(LLMTransportError, match="did not answer"):
         provider().complete_json(system="s", user="u")
 
 

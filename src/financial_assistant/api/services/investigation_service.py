@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import time
+from collections import Counter
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
@@ -39,6 +40,7 @@ from financial_assistant.domain import (
     SourceDocument,
 )
 from financial_assistant.llm import (
+    LLMTransportError,
     StructuredLLM,
     assess_relationships,
     audit_hypotheses,
@@ -164,6 +166,34 @@ class InvestigationService:
         )
 
         self._health: tuple[float, ServiceStatus] | None = None
+
+        self._recover_interrupted()
+
+    def _recover_interrupted(self) -> None:
+        """
+        A run is carried by a thread of this process. If the
+        process restarted, nobody is working on the runs it left
+        "running": they would stay that way forever, and since
+        an active run is handed back instead of starting a new
+        one, that anomaly could never be explained again.
+        """
+
+        for run in self._investigations.list():
+            if run.status not in (
+                InvestigationStatus.QUEUED,
+                InvestigationStatus.RUNNING,
+            ):
+                continue
+
+            run.status = InvestigationStatus.FAILED
+            run.error = "Interrupted by a restart of the desk. Explain again."
+            run.finished_at = datetime.now(timezone.utc)
+
+            for stage in run.stages:
+                if stage.status in (StageStatus.PENDING, StageStatus.RUNNING):
+                    stage.status = StageStatus.SKIPPED
+
+            self._investigations.save(run)
 
     # -------------------------------------------------
     # Queries
@@ -331,8 +361,15 @@ class InvestigationService:
                 raise RuntimeError("No article could be read.")
 
         with self._stage(run, "claims") as stage:
-            claim_runs, claims = self._extract_claims(documents, llm)
-            stage.detail = f"{len(claims)} claims, each with its source quote"
+            claim_runs, claims, failures = self._extract_claims(documents, llm)
+
+            stage.detail = (
+                f"{len(claims)} claims, each with its source quote, from "
+                f"{len(claim_runs)} of {len(documents)} articles"
+            )
+
+            if failures:
+                stage.detail += f". Not read: {'; '.join(failures)}"
 
             if not claims:
                 raise RuntimeError(
@@ -575,8 +612,12 @@ class InvestigationService:
                     llm,
                     max_document_chars=MAX_DOCUMENT_CHARS,
                 )
-            except Exception:
-                return None
+            except LLMTransportError:
+                return "the model did not answer"
+            except Exception as error:
+                # The model answered, but a quote it gave could
+                # not be found verbatim in the article.
+                return f"{type(error).__name__}"
 
         with ThreadPoolExecutor(
             max_workers=min(self._llm_workers, len(documents)),
@@ -586,9 +627,11 @@ class InvestigationService:
         runs = []
         claims: list[ExtractedClaim] = []
         seen: set[str] = set()
+        failures: Counter[str] = Counter()
 
         for result in results:
-            if result is None:
+            if isinstance(result, str):
+                failures[result] += 1
                 continue
 
             run, extracted = result
@@ -609,7 +652,11 @@ class InvestigationService:
                 if kept >= CLAIMS_PER_DOCUMENT:
                     break
 
-        return tuple(runs), tuple(claims)
+        return (
+            tuple(runs),
+            tuple(claims),
+            [f"{count} ({reason})" for reason, count in failures.items()],
+        )
 
     @staticmethod
     def _verdict(hypothesis, assessments, audit) -> HypothesisVerdict:

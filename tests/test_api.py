@@ -905,7 +905,8 @@ def test_one_word_selects_a_consistent_llm_profile(monkeypatch):
 
     assert hosted.llm_provider_name == "nvidia-nim"
     assert hosted.llm_model == "nvidia/nemotron-3.5-lightning-30b-a3b"
-    assert hosted.llm_workers == 4
+    assert hosted.llm_workers == 3
+    assert hosted.llm_timeout_seconds == 60
     assert not hosted.llm_is_local
 
     monkeypatch.setenv("LLM_PROFILE", "local")
@@ -914,6 +915,7 @@ def test_one_word_selects_a_consistent_llm_profile(monkeypatch):
     assert local.llm_provider_name == "vllm-local"
     assert local.llm_model.endswith("-BF16")
     assert local.llm_is_local
+    assert local.llm_workers == 8 and local.llm_timeout_seconds == 120
 
     # An explicit value still wins over its profile default.
     monkeypatch.setenv("LLM_BASE_URL", "http://10.0.0.5:8000/v1")
@@ -924,3 +926,66 @@ def test_one_word_selects_a_consistent_llm_profile(monkeypatch):
 
     with pytest.raises(ValueError, match="LLM_PROFILE"):
         Settings.from_env()
+
+
+def test_runs_orphaned_by_a_restart_do_not_block_the_anomaly(tmp_path):
+    from financial_assistant.api.models import (
+        Anomaly,
+        Investigation,
+        InvestigationStage,
+        InvestigationStatus,
+        StageStatus,
+    )
+
+    store = InvestigationRepository(tmp_path)
+
+    store.save(
+        Investigation(
+            investigation_id="INV-ORPHAN",
+            anomaly=Anomaly(
+                anomaly_id="A-1",
+                ticker="AAA",
+                strategy="pairs",
+                kind="cointegration_spread_deviation",
+                observed_on=date(2026, 9, 18),
+                z_score=-3.0,
+                threshold=2.0,
+                severity=0.5,
+                direction="a_below_equilibrium",
+                summary="AAA/BBB spread",
+            ),
+            status=InvestigationStatus.RUNNING,
+            created_at=datetime(2026, 9, 20, tzinfo=timezone.utc),
+            evidence_cutoff=datetime(2026, 9, 18, 21, tzinfo=timezone.utc),
+            model="m",
+            provider="p",
+            stages=[
+                InvestigationStage(key="news", label="News", status=StageStatus.DONE),
+                InvestigationStage(key="claims", label="Claims", status=StageStatus.RUNNING),
+                InvestigationStage(key="graph", label="Graph"),
+            ],
+        )
+    )
+
+    # A new process comes up with that run still on disk.
+    InvestigationService(
+        InvestigationRepository(tmp_path),
+        anomalies=None,
+        news=None,
+        llm_factory=FakeLLM,
+        llm_base_url="http://llm.invalid/v1",
+        llm_api_key=None,
+        model="m",
+        provider="p",
+        document_fetcher=FakeFetcher(),
+    )
+
+    run = InvestigationRepository(tmp_path).get("INV-ORPHAN")
+
+    assert run.status == InvestigationStatus.FAILED
+    assert "Interrupted" in run.error
+    assert [s.status for s in run.stages] == [
+        StageStatus.DONE,
+        StageStatus.SKIPPED,
+        StageStatus.SKIPPED,
+    ]

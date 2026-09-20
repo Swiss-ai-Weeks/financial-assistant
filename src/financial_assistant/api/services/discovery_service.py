@@ -35,6 +35,7 @@ from financial_assistant.api.services.anomaly_service import AnomalyService
 from financial_assistant.api.services.news_service import NewsService
 from financial_assistant.api.services.postmortem_service import relationship_of
 from financial_assistant.llm import (
+    LLMTransportError,
     StructuredLLM,
     TriageHeadline,
     TriageVerdict,
@@ -308,7 +309,8 @@ class DiscoveryService:
             else:
                 pending.append((setup, offered, key))
 
-        failed = 0
+        rejected = 0
+        unreachable = 0
 
         if pending and self._llm_available():
             llm = self._llm_factory()
@@ -322,13 +324,15 @@ class DiscoveryService:
                 )
 
                 for (setup, offered, _), stored in zip(pending, results):
-                    if stored is None:
-                        failed += 1
-                    else:
+                    if isinstance(stored, StoredTriage):
                         setup.triage = self._view(stored, offered)
+                    elif stored == "unreachable":
+                        unreachable += 1
+                    else:
+                        rejected += 1
 
         read = [s for s in setups if s.triage is not None]
-        unread = len(setups) - len(read) - failed
+        unread = len(setups) - len(read) - rejected - unreachable
 
         if not read and unread:
             return "Nemotron is offline: no candidate was read, none dropped."
@@ -343,8 +347,14 @@ class DiscoveryService:
             f"{verdicts[TriageVerdict.NO_EVENT.value]} unexplained"
         )
 
-        if failed:
-            detail += f"; {failed} answers rejected by verification and kept unread"
+        if rejected:
+            detail += f"; {rejected} answers rejected by verification and kept unread"
+
+        if unreachable:
+            detail += (
+                f"; {unreachable} not read (the model did not answer). "
+                "Scan again to read them"
+            )
 
         if unread:
             detail += f"; {unread} unread (model offline)"
@@ -357,11 +367,11 @@ class DiscoveryService:
         setup: Setup,
         offered: list[NewsItem],
         key: str,
-    ) -> StoredTriage | None:
+    ) -> StoredTriage | str:
         event = self._anomalies.event(setup.anomaly.anomaly_id)
 
         if event is None:
-            return None
+            return "rejected"
 
         headlines = tuple(
             TriageHeadline(
@@ -377,10 +387,13 @@ class DiscoveryService:
 
         try:
             run, triage = triage_anomaly(event, headlines, llm)
+        except LLMTransportError:
+            # An outage says nothing about the candidate.
+            return "unreachable"
         except Exception:
             # A malformed or unverifiable answer is not a
             # verdict. The candidate simply stays unread.
-            return None
+            return "rejected"
 
         cited = (
             offered[int(triage.headline_id[1:]) - 1].news_id

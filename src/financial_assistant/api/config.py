@@ -27,13 +27,17 @@ LLM_PROFILES = {
         "base_url": "http://127.0.0.1:8000/v1",
         "model": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
         "workers": "8",
+        "timeout": "120",
     },
     "hosted": {
         "provider": "nvidia-nim",
         "base_url": "https://integrate.api.nvidia.com/v1",
         "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-        # A free tier is rate limited.
-        "workers": "4",
+        # Measured on the free tier: the same request takes 3 to
+        # 70 seconds or never returns, and parallelism makes it
+        # worse. Few workers, short timeout, retried.
+        "workers": "3",
+        "timeout": "60",
     },
 }
 
@@ -91,6 +95,7 @@ class Settings:
     llm_thinking_control: str
     llm_max_tokens: int
     llm_workers: int
+    llm_timeout_seconds: float
 
     searxng_url: str | None
     newsapi_key: str | None
@@ -197,6 +202,9 @@ class Settings:
             llm_thinking_control=env("LLM_THINKING_CONTROL", "chat_template"),
             llm_max_tokens=int(env("LLM_MAX_TOKENS", "2048")),
             llm_workers=int(env("LLM_WORKERS", profile["workers"])),
+            llm_timeout_seconds=float(
+                env("LLM_TIMEOUT_SECONDS", profile["timeout"])
+            ),
             searxng_url=env("SEARXNG_URL") or None,
             newsapi_key=env("NEWS_API_KEY") or None,
             finnhub_api_key=env("FINNHUB_API_KEY") or None,
