@@ -105,8 +105,33 @@ the last investigation.
 
 The provider is any OpenAI-compatible endpoint, and NVIDIA hosts this exact
 model (`nvidia/nemotron-3.5-lightning-30b-a3b` at
-`https://integrate.api.nvidia.com/v1`, verified in its model list). Activate
-block A in `.env`, paste a key from <https://build.nvidia.com>, restart.
+`https://integrate.api.nvidia.com/v1`, verified in its model list). Set
+`LLM_PROFILE=hosted` in `.env`, paste a key from <https://build.nvidia.com> into
+`LLM_API_KEY`, restart.
+
+### Development on hosted, recordings on local
+
+`LLM_PROFILE` is one word so the switch cannot be half-made:
+
+| Profile | For | Inference | Needs |
+|---|---|---|---|
+| `hosted` | development, prompt tuning | NVIDIA's gateway | `LLM_API_KEY` |
+| `local` | final recordings, the value proposition | vLLM on the two H100s | `make llm` |
+
+Saved explanations and triage readings are replayed without calling a model.
+That is what makes a recording reproducible, and it is also how a run made with
+the hosted model would end up in the final recording. Before recording:
+
+```bash
+# .env: LLM_PROFILE=local       and on the GPU box: make llm
+make runs           # which model produced each saved run
+make forget-runs    # drop them; the book is untouched
+make warm           # pre-build the slow caches
+```
+
+Then run **Explain** on the findings you will show and press 🍀 once. Every saved
+run records its provider and model, so `make runs` can prove the recording was
+produced locally.
 
 Hosted gateways differ from self-hosted vLLM in what they accept, so the client
 adapts instead of failing (`llm/openai_compatible.py`):

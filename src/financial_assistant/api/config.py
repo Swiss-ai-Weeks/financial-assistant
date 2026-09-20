@@ -11,6 +11,32 @@ from urllib.parse import urlparse
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
+# Where the model runs. One word in .env (LLM_PROFILE) selects a
+# whole, consistent set of values, because switching by
+# commenting blocks in and out is how two half-edited blocks end
+# up active at once. Any LLM_* variable still overrides its
+# profile default.
+#
+#   local    the value proposition: open weights on our own
+#            GPUs, prompts never leave the machine
+#   hosted   development without a GPU: the same model served
+#            by NVIDIA, needs LLM_API_KEY
+LLM_PROFILES = {
+    "local": {
+        "provider": "vllm-local",
+        "base_url": "http://127.0.0.1:8000/v1",
+        "model": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
+        "workers": "8",
+    },
+    "hosted": {
+        "provider": "nvidia-nim",
+        "base_url": "https://integrate.api.nvidia.com/v1",
+        "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+        # A free tier is rate limited.
+        "workers": "4",
+    },
+}
+
 
 def load_env_file(path: Path) -> None:
     """
@@ -130,6 +156,16 @@ class Settings:
         env = os.environ.get
         data_dir = Path(env("DATA_DIR", PROJECT_ROOT / "data"))
 
+        profile_name = env("LLM_PROFILE", "local").strip().lower()
+
+        if profile_name not in LLM_PROFILES:
+            raise ValueError(
+                f"LLM_PROFILE must be one of {sorted(LLM_PROFILES)}, "
+                f"not {profile_name!r}"
+            )
+
+        profile = LLM_PROFILES[profile_name]
+
         return cls(
             data_dir=data_dir,
             universe_file=Path(
@@ -154,16 +190,13 @@ class Settings:
             ),
             pairs_alpha=float(env("PAIRS_ALPHA", "0.05")),
             pairs_entry=float(env("PAIRS_ENTRY", "2.0")),
-            llm_provider_name=env("LLM_PROVIDER", "vllm-local"),
-            llm_base_url=env("LLM_BASE_URL", "http://127.0.0.1:8000/v1"),
-            llm_model=env(
-                "LLM_MODEL",
-                "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
-            ),
+            llm_provider_name=env("LLM_PROVIDER", profile["provider"]),
+            llm_base_url=env("LLM_BASE_URL", profile["base_url"]),
+            llm_model=env("LLM_MODEL", profile["model"]),
             llm_api_key=env("LLM_API_KEY") or None,
             llm_thinking_control=env("LLM_THINKING_CONTROL", "chat_template"),
             llm_max_tokens=int(env("LLM_MAX_TOKENS", "2048")),
-            llm_workers=int(env("LLM_WORKERS", "8")),
+            llm_workers=int(env("LLM_WORKERS", profile["workers"])),
             searxng_url=env("SEARXNG_URL") or None,
             newsapi_key=env("NEWS_API_KEY") or None,
             finnhub_api_key=env("FINNHUB_API_KEY") or None,

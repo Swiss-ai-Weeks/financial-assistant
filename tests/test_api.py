@@ -892,3 +892,35 @@ def test_a_hosted_endpoint_without_a_key_is_not_reported_online(tmp_path):
     assert settings("http://gpu-box:8000/v1").llm_is_local
     assert settings("http://10.0.3.7:8000/v1").llm_is_local
     assert not settings("https://integrate.api.nvidia.com/v1").llm_is_local
+
+
+def test_one_word_selects_a_consistent_llm_profile(monkeypatch):
+    from financial_assistant.api.config import Settings
+
+    for name in ("LLM_PROVIDER", "LLM_BASE_URL", "LLM_MODEL", "LLM_WORKERS"):
+        monkeypatch.delenv(name, raising=False)
+
+    monkeypatch.setenv("LLM_PROFILE", "hosted")
+    hosted = Settings.from_env()
+
+    assert hosted.llm_provider_name == "nvidia-nim"
+    assert hosted.llm_model == "nvidia/nemotron-3.5-lightning-30b-a3b"
+    assert hosted.llm_workers == 4
+    assert not hosted.llm_is_local
+
+    monkeypatch.setenv("LLM_PROFILE", "local")
+    local = Settings.from_env()
+
+    assert local.llm_provider_name == "vllm-local"
+    assert local.llm_model.endswith("-BF16")
+    assert local.llm_is_local
+
+    # An explicit value still wins over its profile default.
+    monkeypatch.setenv("LLM_BASE_URL", "http://10.0.0.5:8000/v1")
+
+    assert Settings.from_env().llm_base_url == "http://10.0.0.5:8000/v1"
+
+    monkeypatch.setenv("LLM_PROFILE", "cloud")
+
+    with pytest.raises(ValueError, match="LLM_PROFILE"):
+        Settings.from_env()

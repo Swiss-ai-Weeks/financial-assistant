@@ -5,6 +5,8 @@
 #
 #   make news    download historical news into the local archive
 #   make warm    pre-build the slow caches before a demo
+#   make runs    which model produced each saved explanation
+#   make forget-runs   drop them (before recording on the H100s)
 #
 # On the GPU box, additionally:
 #
@@ -18,7 +20,7 @@ API_PORT ?= 8080
 
 .DEFAULT_GOAL := help
 
-.PHONY: help setup dev api web build serve news warm llm search test lint reset
+.PHONY: help setup dev api web build serve news warm runs forget-runs llm search test lint reset
 
 help:
 	@awk '/^# /{sub(/^# ?/,"");print} /^$$/{exit}' Makefile
@@ -58,6 +60,18 @@ news:
 # the first "I'm Feeling Lucky" of the demo is instant.
 warm:
 	$(BIN)/python -c "from financial_assistant.api.dependencies import get_discovery_service as s; d = s().scan(); print(d.analogue_breaks, 'analogue breaks;', len(d.setups), 'new setups')"
+
+# Saved explanations and triage readings are replayed without a
+# model, which is what makes a recording reproducible. It also
+# means a run made with the hosted model during development
+# would be replayed in the final recording. These two targets
+# show, and remove, exactly that state. The book is untouched.
+runs:
+	@$(BIN)/python scripts/list_runs.py
+
+forget-runs:
+	rm -rf data/state/investigations data/state/triage
+	@echo "Forgotten. Explain and triage will run again on the active LLM_PROFILE."
 
 llm:
 	./scripts/serve_llm.sh
