@@ -21,7 +21,7 @@ from financial_assistant.domain import (
 from .provider import StructuredLLM, complete_structured
 
 
-PROMPT_VERSION = "relation-assessment-v3"
+PROMPT_VERSION = "relation-assessment-v4"
 
 # Claims judged per request. Asked for twelve assessments in
 # one answer, the real model returned one and the whole
@@ -191,6 +191,22 @@ def _assess_one_hypothesis(
         maxItems=len(claims),
     )
 
+    # Nor can it misspell an identifier. Models do not copy
+    # twelve-character hashes reliably (the first real run
+    # returned "H-bba4733" for "H-bba479d15d1c"), so the only
+    # ids the decoder may produce are the ones supplied.
+    candidate = schema["$defs"]["_AssessmentCandidate"]["properties"]
+
+    candidate["claim_id"] = {
+        "type": "string",
+        "enum": [claim.claim_id for claim in claims],
+    }
+
+    candidate["hypothesis_id"] = {
+        "type": "string",
+        "enum": [hypothesis.hypothesis_id],
+    }
+
     hypothesis_context = (
         f"HYPOTHESIS ID: {hypothesis.hypothesis_id}\n"
         f"TEXT: {hypothesis.text}"
@@ -215,6 +231,23 @@ def _assess_one_hypothesis(
 
     parsed = _AssessmentResponse.model_validate(
         raw
+    )
+
+    # This request was about one hypothesis, so which one is
+    # not the model's to say. It matters for providers that
+    # cannot constrain decoding; claim ids are still checked.
+    parsed = parsed.model_copy(
+        update={
+            "assessments": tuple(
+                candidate.model_copy(
+                    update={
+                        "hypothesis_id":
+                            hypothesis.hypothesis_id,
+                    }
+                )
+                for candidate in parsed.assessments
+            )
+        }
     )
 
     expected_pairs = {

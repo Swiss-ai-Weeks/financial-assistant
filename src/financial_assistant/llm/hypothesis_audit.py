@@ -18,7 +18,7 @@ from financial_assistant.domain import (
 from .provider import StructuredLLM, complete_structured
 
 
-PROMPT_VERSION = "hypothesis-audit-v1"
+PROMPT_VERSION = "hypothesis-audit-v2"
 
 
 class _AuditCandidate(BaseModel):
@@ -171,6 +171,26 @@ def audit_hypotheses(
         for hypothesis in hypotheses
     )
 
+    # The decoder may only produce the ids that were
+    # supplied, one audit per hypothesis: models do not copy
+    # twelve-character hashes reliably.
+    schema = _AuditResponse.model_json_schema()
+
+    schema["properties"]["audits"].update(
+        minItems=len(hypotheses),
+        maxItems=len(hypotheses),
+    )
+
+    schema["$defs"]["_AuditCandidate"]["properties"][
+        "hypothesis_id"
+    ] = {
+        "type": "string",
+        "enum": [
+            hypothesis.hypothesis_id
+            for hypothesis in hypotheses
+        ],
+    }
+
     raw = complete_structured(
         provider,
         system=SYSTEM_PROMPT,
@@ -183,6 +203,7 @@ def audit_hypotheses(
             f"{hypothesis_context}"
         ),
         response_model=_AuditResponse,
+        schema=schema,
         reasoning=False,
     )
 

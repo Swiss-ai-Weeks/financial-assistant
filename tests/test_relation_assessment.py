@@ -476,3 +476,67 @@ def test_claims_are_judged_in_small_batches_with_a_pinned_length():
 
     # Order follows hypotheses, then claims, however calls finish.
     assert [a.source_id for a in assessments[:10]] == [c.claim_id for c in claims]
+
+
+def test_a_misspelt_hypothesis_id_cannot_fail_the_run():
+    """
+    The first real run returned "H-bba4733" for
+    "H-bba479d15d1c". Within one request the hypothesis is
+    known, so the model's spelling of it is irrelevant, and
+    a constraining decoder is only offered the real ids.
+    """
+
+    class Misspeller:
+        provider_name = "fake"
+        model_name = "fake-model"
+        supports_json_schema = True
+        schemas = []
+
+        def complete_json(self, *, system, user, reasoning=False, schema=None):
+            import re
+
+            Misspeller.schemas.append(schema)
+
+            return {
+                "assessments": [
+                    {
+                        "claim_id": claim_id,
+                        "hypothesis_id": "H-typo",
+                        "relation": "supports",
+                        "strength": 0.9,
+                        "rationale": "Directly relevant.",
+                    }
+                    for claim_id in re.findall(r"CLAIM ID: (\S+)", user)
+                ]
+            }
+
+    _, assessments = assess_relationships(CLAIMS, HYPOTHESES, Misspeller())
+
+    assert {a.target_id for a in assessments} == {h.hypothesis_id for h in HYPOTHESES}
+
+    ids = Misspeller.schemas[0]["$defs"]["_AssessmentCandidate"]["properties"]
+
+    assert ids["claim_id"]["enum"] == [claim.claim_id for claim in CLAIMS]
+    assert ids["hypothesis_id"]["enum"] == [HYPOTHESES[0].hypothesis_id]
+
+
+def test_a_misspelt_claim_id_is_still_rejected():
+    class Inventor:
+        provider_name = "fake"
+        model_name = "fake-model"
+
+        def complete_json(self, *, system, user, reasoning=False):
+            return {
+                "assessments": [
+                    {
+                        "claim_id": f"C-invented-{n}",
+                        "hypothesis_id": "H-1",
+                        "relation": "supports",
+                        "rationale": "x",
+                    }
+                    for n in range(len(CLAIMS))
+                ]
+            }
+
+    with pytest.raises(ValueError, match="do not match"):
+        assess_relationships(CLAIMS, HYPOTHESES, Inventor())
