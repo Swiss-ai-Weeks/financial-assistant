@@ -4,7 +4,11 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timedelta, timezone
 
 from financial_assistant.api.models import Anomaly, NewsItem
-from financial_assistant.api.relevance import company_aliases, relevance
+from financial_assistant.api.relevance import (
+    company_aliases,
+    one_per_story,
+    relevance,
+)
 from financial_assistant.api.repositories import (
     InstrumentRepository,
     NewsRepository,
@@ -156,13 +160,13 @@ class NewsService:
     def _wire(self, ticker: str) -> list[NewsItem]:
         start, end = self.window()
 
-        return [
+        return one_per_story(
             item
             for item in self._news.get(
                 ticker, self._company(ticker), start=start, end=end
             )
             if start <= item.published_at <= end
-        ]
+        )
 
     def _company(self, ticker: str) -> str:
         for position in self._portfolios.load().positions:

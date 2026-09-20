@@ -89,3 +89,34 @@ def relevance(item: NewsItem, aliases: tuple[str, ...]) -> int:
         return 2
 
     return 1 if mentions(item.summary) else 0
+
+
+def one_per_story(items) -> list[NewsItem]:
+    """
+    Collapse the same story arriving from several providers.
+
+    Providers disagree on the URL (one links the publisher,
+    another its own redirect), so URLs cannot identify a
+    story. Its headline and publication day can. Without
+    this, one article read through two feeds would count as
+    two pieces of evidence.
+
+    The copy kept is the one that links the publisher
+    directly, then the one with the fuller summary.
+    """
+
+    def quality(item: NewsItem) -> tuple[bool, int]:
+        return ("finnhub.io" not in item.url, len(item.summary))
+
+    best: dict[tuple[str, str], NewsItem] = {}
+
+    for item in items:
+        key = (
+            re.sub(r"[^a-z0-9]+", "", item.title.lower()),
+            item.published_at.date().isoformat(),
+        )
+
+        if key not in best or quality(item) > quality(best[key]):
+            best[key] = item
+
+    return list(best.values())

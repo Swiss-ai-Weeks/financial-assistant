@@ -476,6 +476,34 @@ def test_stories_naming_the_company_outrank_passing_mentions():
     assert relevance(story("Insider sells Bank of Montreal stock"), aliases) == 0
 
 
+def test_one_story_from_two_providers_is_one_piece_of_evidence():
+    from financial_assistant.api.relevance import one_per_story
+
+    def story(url, provider, summary="", title="Lam Research Climbs 5%"):
+        return NewsItem(
+            news_id=url,
+            ticker="LRCX",
+            title=title,
+            url=url,
+            published_at=datetime(2026, 9, 18, 16, 59, tzinfo=timezone.utc),
+            summary=summary,
+            provider=provider,
+        )
+
+    kept = one_per_story(
+        [
+            story("https://finnhub.io/api/news?id=1", "finnhub", "A long summary."),
+            story("https://247wallst.com/lam", "yahoo-finance", "Short."),
+            story("https://benzinga.com/x", "finnhub", title="A different story"),
+        ]
+    )
+
+    assert len(kept) == 2
+
+    # The copy that links the publisher wins over the redirect.
+    assert kept[0].url == "https://247wallst.com/lam"
+
+
 def test_investigation_explains_an_anomaly_from_admissible_news(client):
     anomaly = client.get("/api/anomalies?strategy=pairs").json()[0]
 
