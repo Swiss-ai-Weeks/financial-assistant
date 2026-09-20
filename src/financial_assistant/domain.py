@@ -33,6 +33,7 @@ class ArgumentNodeKind(StrEnum):
 
 
 class ModelOperation(StrEnum):
+    COPILOT = "copilot"
     CLAIM_EXTRACTION = "claim_extraction"
     HYPOTHESIS_GENERATION = "hypothesis_generation"
     HYPOTHESIS_AUDIT = "hypothesis_audit"
@@ -136,6 +137,18 @@ class ModelRun(BaseModel):
     prompt_version: str = Field(min_length=1)
 
     created_at: datetime
+    requested_interaction: str | None = None
+    route: str | None = None
+    chosen_model_id: str | None = None
+    locality: str | None = None
+    max_tokens: int | None = None
+    finish_reason: str | None = None
+    latency_ms: int | None = None
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    total_tokens: int | None = None
+    target_workspace: str | None = None
+    target_node: str | None = None
 
 
 class ExtractedClaim(BaseModel):

@@ -15,12 +15,12 @@ function EvidenceNode({data}) {
 }
 const NODE_TYPES = { evidenceNode:EvidenceNode };
 
-export default function ClaimGraph({graph, onSelectItem, itemReviews = {}, cutoff = 'latest', delta, onlyNew = false, workspaceId}) {
+export default function ClaimGraph({graph, onSelectItem, itemReviews = {}, cutoff = 'latest', delta, onlyNew = false, workspaceId, filters, setFilters, fitRequest}) {
   const [showAtomic, setShowAtomic] = useState(false);
   const [showOlder, setShowOlder] = useState(false);
   const [expanded, setExpanded] = useState([]);
-  const [filters, setFilters] = useState(['hypothesis','claim','calculation','inference','missing_evidence','evidence_requirement','anomaly']);
   const [flow, setFlow] = useState(null);
+  useEffect(() => { if (fitRequest) flow?.fitView({padding:0.15}); }, [fitRequest, flow]);
   const [layoutNodes, setLayoutNodes] = useState(() => {
     const initial = toReactFlowNodes(graph.nodes);
     try {

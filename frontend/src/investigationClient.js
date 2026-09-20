@@ -1,5 +1,5 @@
-export function selectModel(models, provider, model) {
-  const selected = models.find(item => item.provider === provider && item.model === model);
+export function selectModel(models, provider, model, id) {
+  const selected = models.find(item => item.provider === provider && item.model === model && (!id || item.id === id));
   if (!selected) throw new Error('Select a configured model/provider');
   return selected;
 }
@@ -9,14 +9,14 @@ export function candidatePayload(candidate, selection, observedAt) {
   if (!selection?.provider || !selection?.model) throw new Error('Select a model/provider');
   if (candidate.mode === 'historical') return {mode:'historical', scan_id:candidate.scan_id,
     as_of:candidate.requested_as_of, ticker_a:candidate.ticker_a, ticker_b:candidate.ticker_b,
-    provider:selection.provider, model:selection.model};
+    provider:selection.provider, model:selection.model, ...(selection.id ? {model_id:selection.id} : {})};
   if (!/(Z|[+-]\d{2}:\d{2})$/.test(observedAt) || !Number.isFinite(Date.parse(observedAt))) {
     throw new Error('Observed at must be a valid timestamp with a timezone offset');
   }
   if (observedAt.slice(0, 10) !== candidate.signal_date) throw new Error('Observed at must fall on the candidate date');
   return { ticker_a:candidate.ticker_a, ticker_b:candidate.ticker_b,
     as_of:candidate.signal_date, observed_at:observedAt,
-    provider:selection.provider, model:selection.model, entry:candidate.threshold };
+    provider:selection.provider, model:selection.model, ...(selection.id ? {model_id:selection.id} : {}), entry:candidate.threshold };
 }
 
 export function validateGraph(graph) {

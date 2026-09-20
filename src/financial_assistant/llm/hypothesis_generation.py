@@ -231,6 +231,7 @@ def generate_hypotheses(
     ).hexdigest()[:12]
 
     run = ModelRun(
+        **getattr(provider, 'last_completion', {}),
         run_id=f"MR-HYP-{run_digest}",
         provider=provider.provider_name,
         model=provider.model_name,

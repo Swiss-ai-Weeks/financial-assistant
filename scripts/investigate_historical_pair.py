@@ -35,7 +35,6 @@ from financial_assistant.domain import (
 )
 
 from financial_assistant.llm import (
-    OpenAICompatibleProvider,
     assess_relationships,
     audit_hypotheses,
     extract_claims,
@@ -433,12 +432,8 @@ def main() -> None:
     prices = pd.read_csv(args.prices)
     signal = find_signal(prices, as_of=args.as_of,
                          ticker_a=args.ticker_a, ticker_b=args.ticker_b)
-    provider = OpenAICompatibleProvider(
-        provider_name="nvidia-nim",
-        model_name="nvidia/llama-3.3-nemotron-super-49b-v1.5",
-        base_url="http://127.0.0.1:8000/v1",
-        max_tokens=2048,
-    )
+    from financial_assistant.llm.model_registry import registry, make_provider
+    provider = make_provider(next(m for m in registry() if 'analysis' in m.roles))
     graph, bundle = investigate_signal(
         signal, observed_at=parse_aware_datetime(args.observed_at),
         provider=provider, per_task_limit=args.per_task_limit,

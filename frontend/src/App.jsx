@@ -1,3 +1,5 @@
+import CopilotPanel from './CopilotPanel';
+import { buildCopilotViewContext, applyCopilotAction } from './copilotContext.js';
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { candidatePayload, selectModel, startInvestigation, investigationReducer, validateGraph } from './investigationClient.js';
 import InvestigationProgress from './InvestigationProgress';
@@ -53,7 +55,8 @@ export default function App({workspace, onSnapshot, onSimulate}) {
       if (!response.ok) throw new Error('Could not load configured models');
       const payload = await response.json();
       if (!payload.models?.length) throw new Error('No inference models configured');
-      setModels(payload.models); setSelection(previous => previous ?? payload.models[0]);
+      const analysisModels = payload.models.filter(m => !m.roles || m.roles.includes('analysis'));
+      setModels(analysisModels); setSelection(previous => analysisModels.find(m => m.id === previous?.id && m.provider === previous?.provider && m.model === previous?.model) ?? analysisModels.find(m => m.provider === previous?.provider && m.model === previous?.model) ?? analysisModels[0]);
     }).catch(err => { if (err.name !== 'AbortError') setModelError(err.message); });
     return () => controller.abort();
   }, []);
@@ -118,9 +121,9 @@ export default function App({workspace, onSnapshot, onSimulate}) {
     <details className="detector-drawer" open><summary>Explore market anomaly candidates</summary>
       {!workspace && <DetectorPanel onSelectCandidate={candidate => {setSelectedCandidate(candidate); setObservedAt(candidate ? `${candidate.signal_date}T23:59:59+00:00` : "");}} />}
       <label>Model/provider for the next investigation<select disabled={running || !models.length} value={selection ? JSON.stringify(selection) : ''}
-        onChange={e => {const next = JSON.parse(e.target.value); setSelection(selectModel(models, next.provider, next.model));}}>
+        onChange={e => {const next = JSON.parse(e.target.value); setSelection(selectModel(models, next.provider, next.model, next.id));}}>
         {!selection && <option value="">Loading configured models…</option>}
-        {models.map(item => <option key={JSON.stringify(item)} value={JSON.stringify(item)}>{item.provider} · {item.model}</option>)}
+        {models.map(item => <option key={JSON.stringify(item)} value={JSON.stringify(item)}>{item.label ?? item.model} · {item.locality ?? 'local'}{item.available === false ? ' · unavailable' : ''}</option>)}
       </select></label>
       {modelError && <p role="alert">{modelError}</p>}
       {selectedCandidate && <div className="selected-candidate">Selected candidate: <strong>{selectedCandidate.pair}</strong> · {selectedCandidate.signal_date}
@@ -132,12 +135,12 @@ export default function App({workspace, onSnapshot, onSimulate}) {
     </details>
     {progress && executionContext && <details className="progress-drawer" open={running}><summary>Execution · {progress.state}</summary><InvestigationProgress status={progress} context={executionContext} /></details>}
     {error && <p className="review-error" role="alert">{error}</p>}
-    {loaded ? <InvestigationWorkspace key={loaded.key} graph={loaded.graph} fresh={loaded.fresh} onInvestigate={investigateQuestion} followupDisabled={running || !selection} workspaceId={workspace?.id} onSimulate={onSimulate} /> : <p className="loading" role="status">Loading investigation…</p>}
+    {loaded ? <InvestigationWorkspace key={loaded.key} graph={loaded.graph} fresh={loaded.fresh} model={selection} onInvestigate={investigateQuestion} followupDisabled={running || !selection} workspaceId={workspace?.id} onSimulate={onSimulate} /> : <p className="loading" role="status">Loading investigation…</p>}
 
   </div>;
 }
 
-function InvestigationWorkspace({graph, fresh, onInvestigate, followupDisabled, workspaceId, onSimulate}) {
+function InvestigationWorkspace({graph, model, fresh, onInvestigate, followupDisabled, workspaceId, onSimulate}) {
   const [initial] = useState(() => {
     if (fresh) return {review:createReview(graph), reason:'New investigation · new institutional review'};
     try {
@@ -152,6 +155,8 @@ function InvestigationWorkspace({graph, fresh, onInvestigate, followupDisabled, 
   const [view, setView] = useState('graph');
   const [turn,setTurn] = useState(null);
   const [onlyNew,setOnlyNew] = useState(false);
+  const [filters,setFilters] = useState(['hypothesis','claim','calculation','inference','missing_evidence','evidence_requirement','anomaly']);
+  const [fitRequest,setFitRequest] = useState(0);
   const latestTurn = graph.followups?.at(-1)?.run_id;
   useEffect(() => { queueMicrotask(() => {setTurn(null);setOnlyNew(false);}); }, [latestTurn]);
   const activeTurn = turn === null ? graph.followups?.at(-1)?.run_id : turn;
@@ -205,11 +210,16 @@ function InvestigationWorkspace({graph, fresh, onInvestigate, followupDisabled, 
     <main className="workspace"><section className="graph-panel">
       <div className="workspace-tabs"><button aria-pressed={view === 'graph'} onClick={() => setView('graph')}>Evidence graph</button><button aria-pressed={view === 'summary'} onClick={() => setView('summary')}>Review summary</button></div>
       <div hidden={view !== 'graph'}><div className="panel-header"><div><h2>Investigation graph</h2><p>Inspect typed propositions, evidence relationships, sources and execution.</p></div><div className="legend">{graph.nodes.length} nodes · {graph.edges.length} relationships</div></div>
-        <ClaimGraph graph={graph} cutoff={cutoff} onSelectItem={onSelect} itemReviews={review.item_reviews} delta={delta} onlyNew={onlyNew} workspaceId={workspaceId} />
+        <ClaimGraph filters={filters} setFilters={setFilters} fitRequest={fitRequest} graph={graph} cutoff={cutoff} onSelectItem={onSelect} itemReviews={review.item_reviews} delta={delta} onlyNew={onlyNew} workspaceId={workspaceId} />
       </div>
       {view === 'summary' && <ReviewSummary graph={inspectionGraph} review={review} onChange={onChange} onSelect={onSelect} onAction={onAction} />}
     </section>{selectedNode && <div className="inspector-drawer"><button className="close-inspector" onClick={() => setSelectedNode(null)}>Close inspector ×</button><NodeInspector key={selectedNode ? itemKey(selectedNode) : 'empty'} node={graph.nodes.find(n => n.node_id === selectedNode?.node_id) ?? selectedNode} graph={graph} onInvestigate={onInvestigate} followupDisabled={followupDisabled} cutoff={cutoff} onSelect={onSelect} onAction={onAction}
       reviewState={selectedNode ? review.item_reviews[itemKey(selectedNode)] : null} /></div>}
     </main>
+    <CopilotPanel context={buildCopilotViewContext({graph, workspaceId, model, selected:selectedNode, cutoff, filters, onlyNew})}
+      model={model} graph={graph} disabled={followupDisabled} onInvestigate={onInvestigate}
+      onAction={action => applyCopilotAction(action, inspectionGraph, {select:onSelect,
+        filters:value => {setFilters(value);setOnlyNew(false);setTurn('');setView('graph');},
+        fit:() => {setView('graph');setFitRequest(n => n+1);}})} />
   </>;
 }

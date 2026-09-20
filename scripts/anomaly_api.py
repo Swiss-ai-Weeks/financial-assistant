@@ -405,7 +405,7 @@ class Handler(
             return
 
         if self.path == "/api/investigations/models":
-            self.send_json(200, public_models())
+            self.send_json(200, public_models(check_health=True))
             return
         if self.path == "/api/health":
             self.send_json(
@@ -442,7 +442,7 @@ class Handler(
     def do_POST(self) -> None:
         if (
             self.path
-            not in ("/api/anomalies/scan", "/api/anomalies/historical-scan", "/api/investigations", "/api/investigations/followup", "/api/portfolio/analysis", "/api/portfolio/simulate", "/api/portfolio/market")
+            not in ("/api/copilot", "/api/anomalies/scan", "/api/anomalies/historical-scan", "/api/investigations", "/api/investigations/followup", "/api/portfolio/analysis", "/api/portfolio/simulate", "/api/portfolio/market")
         ):
             self.send_json(
                 404,
@@ -462,6 +462,8 @@ class Handler(
                 )
             )
 
+            if self.path == '/api/copilot' and not 0 < length <= 40000:
+                raise ValueError('Copilot request exceeds the 40KB limit')
             raw = self.rfile.read(
                 length
             )
@@ -472,7 +474,10 @@ class Handler(
                 else {}
             )
 
-            if self.path in ('/api/portfolio/analysis', '/api/portfolio/simulate', '/api/portfolio/market'):
+            if self.path == "/api/copilot":
+                from financial_assistant.copilot.service import copilot
+                result = copilot(request)
+            elif self.path in ('/api/portfolio/analysis', '/api/portfolio/simulate', '/api/portfolio/market'):
                 from financial_assistant.portfolio.returns import analyze_portfolio, simulate_overlay
                 if self.path.endswith('/market'):
                     from financial_assistant.portfolio.service import market_context
@@ -522,6 +527,10 @@ class Handler(
                 )
 
         except Exception as exc:
+            if self.path == '/api/copilot':
+                self.send_json(400, {'error': str(exc) if isinstance(exc, ValueError) else 'Copilot failed',
+                                     'code': getattr(exc, 'code', 'invalid_request')})
+                return
             self.send_json(
                 400,
                 {

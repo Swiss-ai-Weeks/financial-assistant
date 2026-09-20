@@ -88,7 +88,7 @@ def _assess_one_hypothesis(arguments, hypothesis, provider):
         raise ValueError('Relationship assessment pairs do not match the supplied evidence and hypothesis')
     created_at = datetime.now(timezone.utc)
     digest = sha1(f'{provider.provider_name}|{provider.model_name}|{hypothesis.hypothesis_id}|{PROMPT_VERSION}|{created_at.isoformat()}'.encode()).hexdigest()[:12]
-    run = ModelRun(run_id=f'MR-REL-{digest}', provider=provider.provider_name, model=provider.model_name,
+    run = ModelRun(**getattr(provider, 'last_completion', {}), run_id=f'MR-REL-{digest}', provider=provider.provider_name, model=provider.model_name,
         operation=ModelOperation.RELATION_ASSESSMENT, prompt_version=PROMPT_VERSION, created_at=created_at)
     assessments = []
     for item in parsed.assessments:

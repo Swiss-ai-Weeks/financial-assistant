@@ -297,7 +297,7 @@ def build_investigation_graph(
 
     from financial_assistant.llm.evidence_arguments import relationship_diagnostics
     for run in state.model_runs:
-        run_data = run.model_dump(mode="json")
+        run_data = run.model_dump(mode="json", exclude_none=True)
         if run.operation.value == 'relation_assessment':
             assessed = tuple(a for a in state.relationship_assessments if a.model_run_id == run.run_id)
             run_data['relationship_diagnostics'] = relationship_diagnostics(assessed)

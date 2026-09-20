@@ -413,3 +413,8 @@
 .investigation-progress .pending { opacity: .6; }
 .investigation-progress .failed { color: #e87979; }
 .investigation-progress .completed > :first-child { color: #55bba0; }
+
+.copilot-panel { position: fixed; bottom: 18px; left: 18px; z-index: 15; width: min(390px, 90vw); max-height: 65vh; overflow: auto; padding: 12px; background: #152431; color: #eef5fa; border: 1px solid #58788b; border-radius: 10px; box-shadow: 0 4px 24px #0007; }
+.copilot-panel label { display: block; margin: 8px 0; }
+.copilot-panel pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.copilot-panel small { display: block; }

@@ -252,3 +252,12 @@ def test_real_pipeline_reports_order_at_execution_boundaries(monkeypatch):
         "hypothesis_generation_complete", "hypothesis_audit", "hypothesis_audit_complete",
         "relationship_assessment", "relationship_assessment_complete", "graph_build", "graph_complete"]
     assert stages[-1][2] == {"nodes": 2, "edges": 1}
+
+
+def test_investigation_uses_configured_output_budget(setup, monkeypatch):
+    import json
+    request, kwargs, _, engine = setup
+    selected = {**api.DEFAULT_MODELS[0], 'max_tokens': 12345}
+    monkeypatch.setenv('CLAIMGRAPH_MODELS', json.dumps([selected]))
+    api.investigate(request, **kwargs)
+    assert engine.call_args.kwargs['provider'].max_tokens == 12345
