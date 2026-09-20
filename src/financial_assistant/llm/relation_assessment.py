@@ -21,7 +21,13 @@ from financial_assistant.domain import (
 from .provider import StructuredLLM, complete_structured
 
 
-PROMPT_VERSION = "relation-assessment-v2"
+PROMPT_VERSION = "relation-assessment-v3"
+
+# Claims judged per request. Asked for twelve assessments in
+# one answer, the real model returned one and the whole
+# investigation failed; asked for four, it returns four.
+# Short answers also finish sooner and run in parallel.
+BATCH_SIZE = 4
 
 NO_RATIONALE = "The model gave no rationale for this classification."
 
@@ -154,7 +160,6 @@ def _assess_one_hypothesis(
     claims: tuple[ExtractedClaim, ...],
     hypothesis: Hypothesis,
     provider: StructuredLLM,
-    claim_context: str,
 ) -> tuple[
     ModelRun,
     tuple[RelationshipAssessment, ...],
@@ -162,10 +167,29 @@ def _assess_one_hypothesis(
     """
     Perform one independent relationship-assessment call.
 
-    Keeping this unit aligned to one hypothesis preserves
-    execution provenance: one inference request produces one
-    ModelRun.
+    `claims` is one batch. Keeping the unit aligned to one
+    request preserves execution provenance: one inference
+    request produces one ModelRun.
     """
+
+    claim_context = "\n\n".join(
+        (
+            f"CLAIM ID: {claim.claim_id}\n"
+            f"TYPE: {claim.claim_type.value}\n"
+            f"TEXT: {claim.text}\n"
+            f"SOURCE QUOTE: {claim.source_quote}"
+        )
+        for claim in claims
+    )
+
+    # The decoder is told how many assessments the answer
+    # must hold, not only what each one looks like.
+    schema = _AssessmentResponse.model_json_schema()
+
+    schema["properties"]["assessments"].update(
+        minItems=len(claims),
+        maxItems=len(claims),
+    )
 
     hypothesis_context = (
         f"HYPOTHESIS ID: {hypothesis.hypothesis_id}\n"
@@ -185,6 +209,7 @@ def _assess_one_hypothesis(
             "single hypothesis."
         ),
         response_model=_AssessmentResponse,
+        schema=schema,
         reasoning=False,
     )
 
@@ -376,54 +401,56 @@ def assess_relationships(
             "max_workers must be at least 1."
         )
 
-    claim_context = "\n\n".join(
+    # One task per (hypothesis, batch of claims), in a fixed
+    # order, so that results are deterministic however the
+    # requests happen to finish.
+    tasks = [
         (
-            f"CLAIM ID: {claim.claim_id}\n"
-            f"TYPE: {claim.claim_type.value}\n"
-            f"TEXT: {claim.text}\n"
-            f"SOURCE QUOTE: {claim.source_quote}"
+            hypothesis,
+            claims[start:start + BATCH_SIZE],
         )
-        for claim in claims
-    )
+        for hypothesis in hypotheses
+        for start in range(
+            0,
+            len(claims),
+            BATCH_SIZE,
+        )
+    ]
 
-    def assess(
-        hypothesis: Hypothesis,
-    ):
+    def assess(task):
+        hypothesis, batch = task
+
         return _assess_one_hypothesis(
-            claims=claims,
+            claims=batch,
             hypothesis=hypothesis,
             provider=provider,
-            claim_context=claim_context,
         )
 
     if (
         max_workers == 1
-        or len(hypotheses) == 1
+        or len(tasks) == 1
     ):
         results = [
-            assess(hypothesis)
-            for hypothesis
-            in hypotheses
+            assess(task)
+            for task in tasks
         ]
 
     else:
-        worker_count = min(
-            max_workers,
-            len(hypotheses),
-        )
-
         with ThreadPoolExecutor(
-            max_workers=worker_count,
+            max_workers=min(
+                max_workers,
+                len(tasks),
+            ),
             thread_name_prefix=(
                 "claimgraph-relation"
             ),
         ) as executor:
             # executor.map intentionally preserves the
-            # ordering of hypotheses.
+            # ordering of tasks.
             results = list(
                 executor.map(
                     assess,
-                    hypotheses,
+                    tasks,
                 )
             )
 

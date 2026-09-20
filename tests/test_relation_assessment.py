@@ -411,3 +411,68 @@ def test_a_missing_rationale_is_recorded_not_fatal():
         "The model gave no rationale for this classification."
     }
     assert {a.strength for a in assessments} == {0.7}
+
+
+def test_claims_are_judged_in_small_batches_with_a_pinned_length():
+    """
+    Asked for twelve assessments in one answer, the real
+    model returned one. Asked for four, it returns four.
+    """
+
+    from financial_assistant.llm import relation_assessment as stage
+
+    claims = tuple(
+        CLAIMS[0].model_copy(update={"claim_id": f"C-{n}"}) for n in range(1, 11)
+    )
+
+    class BatchProvider:
+        provider_name = "fake"
+        model_name = "fake-model"
+        supports_json_schema = True
+
+        def __init__(self):
+            self.calls = []
+
+        def complete_json(self, *, system, user, reasoning=False, schema=None):
+            import re
+
+            ids = re.findall(r"CLAIM ID: (C-\d+)", user)
+            hypothesis_id = re.search(r"HYPOTHESIS ID: (\S+)", user).group(1)
+
+            self.calls.append((hypothesis_id, ids, schema))
+
+            return {
+                "assessments": [
+                    {
+                        "claim_id": claim_id,
+                        "hypothesis_id": hypothesis_id,
+                        "relation": "context_for",
+                        "strength": 0.5,
+                        "rationale": "Relevant context.",
+                    }
+                    for claim_id in ids
+                ]
+            }
+
+    provider = BatchProvider()
+    runs, assessments = assess_relationships(claims, HYPOTHESES, provider)
+
+    # 10 claims in batches of 4 -> 4 + 4 + 2, per hypothesis.
+    sizes = [len(ids) for _, ids, _ in provider.calls]
+
+    assert stage.BATCH_SIZE == 4
+    assert sizes == [4, 4, 2] * len(HYPOTHESES)
+
+    # One request, one ModelRun; every pair assessed exactly once.
+    assert len(runs) == len(provider.calls)
+    assert len(assessments) == len(claims) * len(HYPOTHESES)
+    assert len({(a.source_id, a.target_id) for a in assessments}) == len(assessments)
+
+    # The decoder is told exactly how many items to produce.
+    for _, ids, schema in provider.calls:
+        pinned = schema["properties"]["assessments"]
+
+        assert pinned["minItems"] == pinned["maxItems"] == len(ids)
+
+    # Order follows hypotheses, then claims, however calls finish.
+    assert [a.source_id for a in assessments[:10]] == [c.claim_id for c in claims]

@@ -26,6 +26,7 @@ def complete_structured(
     user: str,
     response_model: type[BaseModel],
     reasoning: bool = False,
+    schema: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
     Ask for JSON that matches `response_model`.
@@ -42,6 +43,10 @@ def complete_structured(
     and validation downstream is unchanged either way: the
     schema makes good answers likely, it does not replace
     checking them.
+
+    `schema` replaces the model's own schema when a call
+    knows more than the type does, such as exactly how many
+    items the answer must contain.
     """
 
     if getattr(provider, "supports_json_schema", False):
@@ -49,7 +54,7 @@ def complete_structured(
             system=system,
             user=user,
             reasoning=reasoning,
-            schema=response_model.model_json_schema(),
+            schema=schema or response_model.model_json_schema(),
         )
 
     return provider.complete_json(
