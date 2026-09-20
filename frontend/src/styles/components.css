@@ -1272,3 +1272,12 @@
 .discovery__known + .discovery__known {
   margin-top: 16px;
 }
+
+.model__notice {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--text) !important;
+  font-size: 13.5px !important;
+}

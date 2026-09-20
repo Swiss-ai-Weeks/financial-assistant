@@ -28,6 +28,7 @@ def get_system_status(
     return SystemStatus(
         as_of=settings.as_of,
         llm=investigations.llm_status(),
+        llm_local=settings.llm_is_local,
         model=settings.llm_model,
         provider=settings.llm_provider_name,
         news_sources=list(news.source_names),

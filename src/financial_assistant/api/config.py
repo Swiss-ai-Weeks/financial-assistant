@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import ipaddress
 import os
 from datetime import date
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -74,6 +76,26 @@ class Settings:
     min_liquidity_musd: float
 
     cors_origins: tuple[str, ...]
+
+    @property
+    def llm_is_local(self) -> bool:
+        """
+        Whether prompts stay on our own hardware. Decides what
+        the desk may claim about privacy, and whether an API
+        key is expected.
+        """
+
+        host = urlparse(self.llm_base_url).hostname or ""
+
+        if host == "localhost" or "." not in host:
+            return True
+
+        try:
+            address = ipaddress.ip_address(host)
+        except ValueError:
+            return False
+
+        return address.is_loopback or address.is_private
 
     @property
     def market_cache_dir(self) -> Path:

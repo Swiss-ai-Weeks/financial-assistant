@@ -166,6 +166,7 @@ class ServiceStatus(BaseModel):
 class SystemStatus(BaseModel):
     as_of: date | None
     llm: ServiceStatus
+    llm_local: bool
     model: str
     provider: str
     news_sources: list[str]

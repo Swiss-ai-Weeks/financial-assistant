@@ -854,3 +854,41 @@ def test_an_unverifiable_answer_is_not_a_verdict(client):
     assert body["repriced"] == []
     assert "rejected by verification" in stage["detail"]
     assert all(s["triage"] is None for s in body["on_your_desk"])
+
+
+def test_a_hosted_endpoint_without_a_key_is_not_reported_online(tmp_path):
+    """
+    Hosted gateways list their models to anyone. Reachable is
+    not usable: without a key every real request is a 401.
+    """
+
+    from financial_assistant.api.config import Settings
+
+    service = InvestigationService(
+        InvestigationRepository(tmp_path),
+        anomalies=None,
+        news=None,
+        llm_factory=FakeLLM,
+        llm_base_url="https://integrate.api.nvidia.com/v1",
+        llm_api_key=None,
+        llm_is_local=False,
+        model="nvidia/nemotron-3.5-lightning-30b-a3b",
+        provider="nvidia-nim",
+        document_fetcher=FakeFetcher(),
+    )
+
+    status = service.llm_status()
+
+    assert not status.online
+    assert "LLM_API_KEY" in status.detail
+
+    def settings(url):
+        return Settings.from_env().__class__(
+            **{**Settings.from_env().__dict__, "llm_base_url": url}
+        )
+
+    assert settings("http://127.0.0.1:8000/v1").llm_is_local
+    assert settings("http://localhost:8000/v1").llm_is_local
+    assert settings("http://gpu-box:8000/v1").llm_is_local
+    assert settings("http://10.0.3.7:8000/v1").llm_is_local
+    assert not settings("https://integrate.api.nvidia.com/v1").llm_is_local

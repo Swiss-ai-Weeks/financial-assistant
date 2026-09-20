@@ -1,13 +1,73 @@
 from __future__ import annotations
 
 import json
+import re
+import time
 
 from typing import Any
+
+from urllib.error import HTTPError
 
 from urllib.request import (
     Request,
     urlopen,
 )
+
+
+# Optional request fields, in the order they are given up
+# when a server refuses the request. Self-hosted vLLM takes
+# all of them; hosted gateways differ in which they accept.
+OPTIONAL_FIELDS = (
+    "chat_template_kwargs",
+    "response_format",
+)
+
+RATE_LIMIT_RETRIES = 4
+
+
+def extract_json_object(content: str) -> dict[str, Any]:
+    """
+    Read the JSON object out of a model reply.
+
+    With JSON mode the reply IS the object. Without it (a
+    server that refused response_format, or one that did
+    not switch thinking off) the object can arrive after a
+    <think> block or inside a code fence. Only the wrapping
+    is removed: whatever is inside must still be one valid
+    JSON object, and its meaning is validated by the caller.
+    """
+
+    text = re.sub(
+        r"<think>.*?</think>",
+        "",
+        content,
+        flags=re.DOTALL,
+    ).strip()
+
+    fenced = re.search(
+        r"```(?:json)?\s*(\{.*\})\s*```",
+        text,
+        flags=re.DOTALL,
+    )
+
+    if fenced:
+        text = fenced.group(1)
+
+    elif not text.startswith("{"):
+        start, end = text.find("{"), text.rfind("}")
+
+        if start != -1 and end > start:
+            text = text[start:end + 1]
+
+    parsed = json.loads(text)
+
+    if not isinstance(parsed, dict):
+        raise ValueError(
+            "Model response must be "
+            "a JSON object"
+        )
+
+    return parsed
 
 
 class OpenAICompatibleProvider:
@@ -124,25 +184,10 @@ class OpenAICompatibleProvider:
                 f"Bearer {self.api_key}"
             )
 
-        request = Request(
-            (
-                f"{self.base_url}/"
-                "chat/completions"
-            ),
-            data=json.dumps(
-                payload
-            ).encode("utf-8"),
-            headers=headers,
-            method="POST",
+        result = self._post(
+            payload,
+            headers,
         )
-
-        with urlopen(
-            request,
-            timeout=self.timeout_seconds,
-        ) as response:
-            result = json.load(
-                response
-            )
 
         try:
             choice = result[
@@ -172,17 +217,84 @@ class OpenAICompatibleProvider:
                 f"finish_reason={finish_reason}"
             )
 
-        parsed = json.loads(
+        return extract_json_object(
             content
         )
 
-        if not isinstance(
-            parsed,
-            dict,
-        ):
-            raise ValueError(
-                "Model response must be "
-                "a JSON object"
+    def _post(
+        self,
+        payload: dict[str, Any],
+        headers: dict[str, str],
+    ) -> dict[str, Any]:
+        """
+        Send the request, adapting to the server instead
+        of failing on the first difference:
+
+          400 / 422   an optional field was refused: give
+                      one up and try again, thinking
+                      control first, JSON mode last
+          429         rate limited: wait and try again
+        """
+
+        payload = dict(payload)
+        rate_limited = 0
+
+        while True:
+            request = Request(
+                (
+                    f"{self.base_url}/"
+                    "chat/completions"
+                ),
+                data=json.dumps(
+                    payload
+                ).encode("utf-8"),
+                headers=headers,
+                method="POST",
             )
 
-        return parsed
+            try:
+                with urlopen(
+                    request,
+                    timeout=self.timeout_seconds,
+                ) as response:
+                    return json.load(
+                        response
+                    )
+
+            except HTTPError as error:
+                if (
+                    error.code == 429
+                    and rate_limited
+                    < RATE_LIMIT_RETRIES
+                ):
+                    rate_limited += 1
+                    time.sleep(
+                        2.0 * rate_limited
+                    )
+                    continue
+
+                refused = next(
+                    (
+                        field
+                        for field in OPTIONAL_FIELDS
+                        if field in payload
+                    ),
+                    None,
+                )
+
+                if (
+                    error.code in (400, 422)
+                    and refused is not None
+                ):
+                    del payload[refused]
+                    continue
+
+                detail = error.read().decode(
+                    "utf-8",
+                    errors="replace",
+                )[:300]
+
+                raise ValueError(
+                    f"Model endpoint answered HTTP "
+                    f"{error.code}: {detail}"
+                ) from error

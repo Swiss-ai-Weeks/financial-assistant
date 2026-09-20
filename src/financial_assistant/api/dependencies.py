@@ -225,6 +225,7 @@ def get_investigation_service() -> InvestigationService:
         llm_factory=build_llm,
         llm_base_url=settings.llm_base_url,
         llm_api_key=settings.llm_api_key,
+        llm_is_local=settings.llm_is_local,
         model=settings.llm_model,
         provider=settings.llm_provider_name,
         document_fetcher=CachedDocumentFetcher(

@@ -71,6 +71,14 @@ export default function ModelPanel({ system, investigations }) {
           That division is why a small, fast, local model is the right one.
         </p>
 
+        {system && !system.llm_local && (
+          <p className="model__notice">
+            Development mode: this desk is calling the same model hosted by
+            NVIDIA, so prompts leave the machine. The topology and the privacy
+            argument below describe the production setup on the two H100s.
+          </p>
+        )}
+
         <div className="model__status mono">
           <span className={`dot ${system?.llm.online ? "dot--on" : "dot--off"}`} />
           <span>{system?.model}</span>

@@ -129,6 +129,7 @@ class InvestigationService:
         llm_factory: Callable[[], StructuredLLM],
         llm_base_url: str,
         llm_api_key: str | None,
+        llm_is_local: bool = True,
         model: str,
         provider: str,
         document_fetcher: DocumentFetcher,
@@ -145,6 +146,7 @@ class InvestigationService:
         self._llm_factory = llm_factory
         self._llm_base_url = llm_base_url
         self._llm_api_key = llm_api_key
+        self._llm_is_local = llm_is_local
         self._model = model
         self._provider = provider
 
@@ -184,6 +186,16 @@ class InvestigationService:
             and time.time() - self._health[0] < HEALTH_CACHE_SECONDS
         ):
             return self._health[1]
+
+        # A hosted gateway lists its models to anyone, so without
+        # this check it would look online and then answer every
+        # real request with 401.
+        if not self._llm_is_local and not self._llm_api_key:
+            return ServiceStatus(
+                name=self._provider,
+                online=False,
+                detail="LLM_API_KEY is not set for the hosted endpoint",
+            )
 
         headers = {}
 

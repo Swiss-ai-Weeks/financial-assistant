@@ -103,18 +103,30 @@ the last investigation.
 
 ## Without GPUs
 
-The provider is any OpenAI-compatible endpoint. For development, point the desk
-at the same model hosted by NVIDIA:
+The provider is any OpenAI-compatible endpoint, and NVIDIA hosts this exact
+model (`nvidia/nemotron-3.5-lightning-30b-a3b` at
+`https://integrate.api.nvidia.com/v1`, verified in its model list). Activate
+block A in `.env`, paste a key from <https://build.nvidia.com>, restart.
 
-```bash
-LLM_PROVIDER=nvidia-nim
-LLM_BASE_URL=https://integrate.api.nvidia.com/v1
-LLM_MODEL=nvidia/nemotron-3.5-lightning-30b-a3b
-LLM_API_KEY=nvapi-...
-```
+Hosted gateways differ from self-hosted vLLM in what they accept, so the client
+adapts instead of failing (`llm/openai_compatible.py`):
 
-Charts, anomalies, pair scans and news work with no model at all. Only the
-**Explain** button needs one.
+- a refused optional field (HTTP 400/422) is given up and the request retried:
+  the thinking switch first, JSON mode last;
+- without JSON mode the object is read out of a `<think>` block or a code fence.
+  Only the wrapping is forgiven; the content still has to validate;
+- HTTP 429 is waited out, and `LLM_WORKERS=4` keeps a free tier from being hit
+  by eight parallel requests.
+
+Two things keep this honest. A hosted endpoint lists its models to anyone, so
+without `LLM_API_KEY` the desk reports the model **offline** rather than letting
+the first real request fail with 401. And the Model page says so when inference
+is not local: "nothing leaves the machine" is a claim about the H100 setup, not
+about development mode.
+
+Charts, findings, the copilot and discovery's deterministic stages work with no
+model at all. Only **Explain** and discovery's triage need one, and both replay
+their stored results without it.
 
 ## What we would measure next
 
