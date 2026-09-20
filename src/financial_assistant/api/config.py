@@ -33,11 +33,14 @@ LLM_PROFILES = {
         "provider": "nvidia-nim",
         "base_url": "https://integrate.api.nvidia.com/v1",
         "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-        # Measured on the free tier: the same request takes 3 to
-        # 70 seconds or never returns, and parallelism makes it
-        # worse. Few workers, short timeout, retried.
+        # Measured on the free tier: about 25 tokens per second,
+        # and in JSON mode the gateway buffers the whole answer
+        # and sends it as one chunk, so the timeout bounds total
+        # generation time. A full-length answer (2048 tokens)
+        # needs ~80 s plus queueing. Parallelism makes every
+        # request slower, so few workers.
         "workers": "3",
-        "timeout": "60",
+        "timeout": "180",
     },
 }
 

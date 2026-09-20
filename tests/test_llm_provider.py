@@ -6,7 +6,10 @@ import pytest
 
 from financial_assistant.llm import LLMTransportError, OpenAICompatibleProvider
 from financial_assistant.llm import openai_compatible as module
-from financial_assistant.llm.openai_compatible import extract_json_object
+from financial_assistant.llm.openai_compatible import (
+    extract_json_object,
+    read_completion,
+)
 
 
 class FakeEndpoint:
@@ -110,12 +113,12 @@ def test_other_errors_surface_with_the_servers_explanation(endpoint):
 
 
 def test_a_slow_gateway_is_retried_before_giving_up(endpoint):
-    fake = endpoint(TimeoutError, TimeoutError, '{"ok": true}')
+    fake = endpoint(TimeoutError, '{"ok": true}')
 
     assert provider().complete_json(system="s", user="u") == {"ok": True}
-    assert len(fake.requests) == 3
+    assert len(fake.requests) == 2
 
-    endpoint(TimeoutError, TimeoutError, TimeoutError)
+    endpoint(TimeoutError, TimeoutError)
 
     # An outage is not a bad answer: callers tell them apart.
     with pytest.raises(LLMTransportError, match="did not answer"):
@@ -131,3 +134,47 @@ def test_only_the_wrapping_is_forgiven_never_the_content():
 
     with pytest.raises(ValueError):
         extract_json_object("I could not decide.")
+
+
+def sse(*events):
+    return io.BytesIO(
+        "".join(f"data: {event}\n\n" for event in events).encode()
+    )
+
+
+def test_a_streamed_answer_is_assembled_from_its_pieces():
+    def delta(text=None, finish=None):
+        return json.dumps(
+            {"choices": [{"delta": {"content": text}, "finish_reason": finish}]}
+        )
+
+    result = read_completion(
+        sse(
+            delta(""),
+            delta('{"verdict": '),
+            delta('"no_event"}'),
+            delta(finish="stop"),
+            # Usage-only chunk some servers append.
+            json.dumps({"choices": [], "usage": {"completion_tokens": 9}}),
+            "[DONE]",
+        )
+    )
+
+    choice = result["choices"][0]
+
+    assert choice["message"]["content"] == '{"verdict": "no_event"}'
+    assert choice["finish_reason"] == "stop"
+
+
+def test_a_server_that_ignores_streaming_is_still_understood():
+    body = {"choices": [{"message": {"content": "{}"}, "finish_reason": "stop"}]}
+
+    assert read_completion(io.BytesIO(json.dumps(body).encode())) == body
+    assert read_completion(io.BytesIO(b"\n" + json.dumps(body, indent=2).encode())) == body
+
+
+def test_requests_ask_for_a_stream(endpoint):
+    fake = endpoint('{"ok": true}')
+    provider().complete_json(system="s", user="u")
+
+    assert fake.requests[0]["stream"] is True

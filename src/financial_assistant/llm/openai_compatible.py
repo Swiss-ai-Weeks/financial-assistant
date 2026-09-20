@@ -26,7 +26,7 @@ RATE_LIMIT_RETRIES = 4
 
 # A shared gateway answers the same request in 3 seconds or
 # not at all, so a short timeout retried beats a long one.
-TIMEOUT_RETRIES = 2
+TIMEOUT_RETRIES = 1
 
 
 class LLMTransportError(RuntimeError):
@@ -37,6 +37,69 @@ class LLMTransportError(RuntimeError):
     answer was not acceptable. Callers report the two very
     differently: one is an outage, the other is the model.
     """
+
+
+def read_completion(response) -> dict[str, Any]:
+    """
+    Read a chat completion, streamed or not, into the shape
+    of a non-streamed one.
+
+    Requests are streamed so that, where the server streams,
+    the socket timeout measures SILENCE rather than total
+    duration: a long answer keeps arriving and is never cut
+    off, while a hung request is detected quickly.
+
+    Not every server does. Measured on NVIDIA's hosted
+    gateway, a JSON-mode answer is buffered and delivered as
+    one chunk at the end, so there the timeout still has to
+    cover the whole generation. A server that ignores
+    `stream` and answers with one JSON body is read as such.
+    """
+
+    first = response.readline()
+
+    while first and not first.strip():
+        first = response.readline()
+
+    if not first.lstrip().startswith(b"data:"):
+        return json.loads(first + response.read())
+
+    content: list[str] = []
+    finish_reason = None
+    line = first
+
+    while line:
+        text = line.decode("utf-8", errors="replace").strip()
+        line = response.readline()
+
+        if not text.startswith("data:"):
+            continue
+
+        data = text[len("data:"):].strip()
+
+        if data == "[DONE]":
+            break
+
+        choices = json.loads(data).get("choices") or []
+
+        if not choices:
+            continue
+
+        piece = (choices[0].get("delta") or {}).get("content")
+
+        if piece:
+            content.append(piece)
+
+        finish_reason = choices[0].get("finish_reason") or finish_reason
+
+    return {
+        "choices": [
+            {
+                "message": {"content": "".join(content)},
+                "finish_reason": finish_reason,
+            }
+        ]
+    }
 
 
 def extract_json_object(content: str) -> dict[str, Any]:
@@ -181,6 +244,10 @@ class OpenAICompatibleProvider:
 
             "max_tokens":
                 self.max_tokens,
+
+            # See read_completion: makes the timeout an
+            # idle timeout.
+            "stream": True,
         }
 
         if self.thinking_control == "chat_template":
@@ -272,7 +339,7 @@ class OpenAICompatibleProvider:
                     request,
                     timeout=self.timeout_seconds,
                 ) as response:
-                    return json.load(
+                    return read_completion(
                         response
                     )
 

@@ -906,7 +906,8 @@ def test_one_word_selects_a_consistent_llm_profile(monkeypatch):
     assert hosted.llm_provider_name == "nvidia-nim"
     assert hosted.llm_model == "nvidia/nemotron-3.5-lightning-30b-a3b"
     assert hosted.llm_workers == 3
-    assert hosted.llm_timeout_seconds == 60
+    # Long enough for a full-length answer at the measured speed.
+    assert hosted.llm_timeout_seconds == 180
     assert not hosted.llm_is_local
 
     monkeypatch.setenv("LLM_PROFILE", "local")
