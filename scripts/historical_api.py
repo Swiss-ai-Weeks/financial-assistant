@@ -1,6 +1,6 @@
 """Point-in-time scans. Never imports or consults the live pair-fit cache."""
 from collections import OrderedDict
-from datetime import date
+from datetime import date, timedelta
 from threading import Lock
 from time import perf_counter
 from uuid import uuid4
@@ -12,11 +12,12 @@ _SCANS = OrderedDict()
 _LOCK = Lock()
 
 
-def historical_scan(request, prices, formation_observations=252):
+def historical_scan(request, prices, formation_observations=252, *, universe=None,
+                    corr_floor=.50, alpha_ceiling=.10, max_peers_per_ticker=5):
     requested = date.fromisoformat(request['as_of'])
     corr, alpha, entry = (float(request.get(k, v)) for k, v in
                           [('corr_min', .65), ('alpha', .05), ('entry', 1.5)])
-    if not (.5 <= corr <= 1 and .0001 <= alpha <= .1 and .5 <= entry <= 4):
+    if not (corr_floor <= corr <= 1 and .0001 <= alpha <= alpha_ceiling and .5 <= entry <= 4):
         raise ValueError('Invalid historical scan thresholds')
     started = perf_counter()
     # Cut before pair selection, including eligibility checks.
@@ -24,16 +25,22 @@ def historical_scan(request, prices, formation_observations=252):
     if available.empty:
         raise ValueError('No market session on or before selected date')
     session = pd.Timestamp(available.date.max()).date()
+    diagnostics = {}
     signals = scan_pairs_as_of(available, as_of=session,
                               formation_observations=formation_observations,
-                              corr_min=corr, alpha=alpha, entry=entry)
+                              corr_min=corr, alpha=alpha, entry=entry,
+                              universe=universe, corr_floor=corr_floor,
+                              alpha_ceiling=alpha_ceiling,
+                              max_peers_per_ticker=max_peers_per_ticker,
+                              diagnostics=diagnostics)
     scan_id = str(uuid4())
-    dates = sorted(pd.to_datetime(available.date).dt.date.unique())
-    formation = [d for d in dates if d < session][-formation_observations:]
+    # This is the screening envelope; candidate PairFits carry exact windows.
+    formation_start = session - timedelta(days=450)
+    formation_end = session - timedelta(days=1)
     metadata = dict(as_of=requested.isoformat(), resolved_session=session.isoformat(),
-                    formation_start=formation[0].isoformat(), formation_end=formation[-1].isoformat(),
+                    formation_start=formation_start.isoformat(), formation_end=formation_end.isoformat(),
                     price_observations_through=session.isoformat(), fits_recomputed=True,
-                    operation='historical_market_reconstruction', compute_backend='cpu',
+                    operation='historical_market_reconstruction', **diagnostics,
                     universe_limitation='Available cache universe; survivorship and historical data revisions are not reconstructed.',
                     elapsed_ms=round((perf_counter()-started)*1000, 1))
     with _LOCK:
@@ -49,7 +56,7 @@ def historical_scan(request, prices, formation_observations=252):
             correlation=fit.correlation, cointegration_p=fit.pvalue, beta=fit.beta,
             formation_start=fit.formation_start.isoformat(), formation_end=fit.formation_end.isoformat()))
     return dict(**metadata, scan_id=scan_id, candidates=candidates, candidate_count=len(signals),
-                eligible_fit_count=None, cache=dict(price_securities=int(available.ticker.nunique())))
+                cache=dict(price_securities=int(available.ticker.nunique())))
 
 
 def selected_signal(request):

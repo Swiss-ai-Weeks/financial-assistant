@@ -119,3 +119,80 @@ def test_real_fits_ignore_mutated_future_and_change_with_date():
     assert first[0].anomaly.z_score != later[0].anomaly.z_score
     assert first[0].fit.formation_end == dates[269].date()
     assert later[0].fit.formation_end == dates[270].date()
+
+
+def test_precompute_and_historical_share_real_construction(tmp_path, monkeypatch):
+    import precompute_demo_pairs
+    from test_historical_scanner import international_prices
+    from financial_assistant.anomaly_detection.models import PairFit
+    from financial_assistant.anomaly_detection.cointegration import monitor_pairs
+    prices, universe, day = international_prices()
+    prices_path, universe_path, output = [tmp_path / name for name in ('prices.csv', 'universe.csv', 'fits.json')]
+    prices.to_csv(prices_path, index=False)
+    universe.to_csv(universe_path, index=False)
+    monkeypatch.setattr(sys, 'argv', ['precompute_demo_pairs', '--prices', str(prices_path),
+        '--universe', str(universe_path), '--output', str(output), '--as-of', str(day)])
+    precompute_demo_pairs.main()
+    payload = json.loads(output.read_text())
+    construction = {k: payload[k] for k in ('formation_observations', 'corr_floor',
+                                          'alpha_ceiling', 'max_peers_per_ticker')}
+    from financial_assistant.anomaly_detection import historical
+    reconstructed = []
+    original_fitter = historical.fit_universe_pairs
+    def capture_fits(*args, **kwargs):
+        result = original_fitter(*args, **kwargs)
+        reconstructed.extend(result[0])
+        return result
+    monkeypatch.setattr(historical, 'fit_universe_pairs', capture_fits)
+    result = historical_api.historical_scan(dict(as_of=str(day), corr_min=.65, alpha=.05, entry=1.5),
+                                            prices, universe=universe, **construction)
+    fits = tuple(PairFit.model_validate({k: v for k, v in r.items() if k in PairFit.model_fields})
+                 for r in payload['fits'])
+    assert tuple(reconstructed) == fits
+    eligible = tuple(f for f in fits if f.correlation >= .65 and f.pvalue < .05)
+    _, anomalies = monitor_pairs(prices, eligible, start=day, end=day, entry=1.5)
+    assert result['raw_fit_count'] == payload['fit_count'] > 0
+    assert result['eligible_fit_count'] == len(eligible) > 0
+    assert result['candidate_count'] == len(anomalies) > 0
+    signals = historical_api._SCANS[result['scan_id']][1]
+    by_pair = {(f.ticker_a, f.ticker_b): f for f in eligible}
+    assert {(s.fit.ticker_a, s.fit.ticker_b) for s in signals} == {(a.ticker_a, a.ticker_b) for a in anomalies}
+    assert all(s.fit == by_pair[s.fit.ticker_a, s.fit.ticker_b] for s in signals)
+    assert all(result[k] == v for k, v in construction.items())
+    assert result['price_securities'] == 4 and result['groups_processed'] == 1
+    assert result['compute_backend'] == 'cpu' and result['elapsed_ms'] >= 0
+
+
+def test_http_historical_route_passes_loaded_mapping_and_cache_policy(monkeypatch):
+    import io
+    import runpy
+    cache = dict(fits=[], as_of='2026-09-18', formation_observations=200,
+                 corr_floor=.55, alpha_ceiling=.08, max_peers_per_ticker=3)
+    prices = pd.DataFrame(dict(date=['2026-09-18'], ticker=['AAA'], close=[100]))
+    universe = pd.DataFrame(dict(yahoo_ticker=['AAA', 'BAD'], mapping_status=['mapped', 'unmapped']))
+    reads = []
+    def read_csv(path):
+        reads.append(str(path))
+        return universe.copy() if str(path).endswith('global_equities.csv') else prices.copy()
+    monkeypatch.setattr(pd, 'read_csv', read_csv)
+    monkeypatch.setattr(Path, 'read_text', lambda *args, **kwargs: json.dumps(cache))
+    scanner = Mock(return_value={'candidate_count': 0})
+    monkeypatch.setattr(historical_api, 'historical_scan', scanner)
+    server = runpy.run_path(str(Path(__file__).resolve().parents[1] / 'scripts/anomaly_api.py'))
+    handler = object.__new__(server['Handler'])
+    handler.path = '/api/anomalies/historical-scan'
+    handler.send_json = Mock()
+    request = dict(as_of='2026-09-18', corr_min=.65, alpha=.05, entry=1.5)
+    raw = json.dumps(request).encode()
+    handler.headers = {'Content-Length': str(len(raw))}
+    for _ in range(2):
+        handler.rfile = io.BytesIO(raw)
+        handler.do_POST()
+    assert reads.count('data/universe/global_equities.csv') == 1
+    args, kwargs = scanner.call_args
+    assert args[0] == request
+    assert kwargs['universe'].yahoo_ticker.tolist() == ['AAA']
+    assert {k: kwargs[k] for k in cache if k not in ('fits', 'as_of')} == {
+        k: v for k, v in cache.items() if k not in ('fits', 'as_of')}
+    assert 'fits' not in kwargs
+    handler.send_json.assert_called_with(200, {'candidate_count': 0})

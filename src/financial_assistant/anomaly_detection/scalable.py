@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 
 import numpy as np
 import pandas as pd
@@ -384,3 +384,48 @@ def fit_bounded_pairs(
             ),
         )
     )
+
+
+def fit_universe_pairs(
+    prices: pd.DataFrame,
+    universe: pd.DataFrame,
+    *,
+    as_of: str | date,
+    formation_observations: int = 252,
+    metric: str = "close",
+    corr_floor: float = 0.50,
+    alpha_ceiling: float = 0.10,
+    max_peers_per_ticker: int = 5,
+) -> tuple[tuple[PairFit, ...], list[dict]]:
+    """Shared live-cache/historical policy, with a strict formation cutoff.
+
+    The calendar envelope is for peer screening only. Each PairFit records
+    its own final exact N pairwise-complete formation observations.
+    """
+    as_of = pd.Timestamp(as_of).normalize()
+    formation_start = as_of.date() - timedelta(days=450)
+    formation_end = as_of.date() - timedelta(days=1)
+    frame = prices.copy()
+    frame["date"] = pd.to_datetime(frame["date"]).dt.normalize()
+    frame = frame.loc[frame["date"] < as_of]
+    mapped = universe.loc[universe["mapping_status"] == "mapped"]
+    all_fits = []
+    summaries = []
+    for (universe_name, currency), group in mapped.groupby(
+        ["universe", "currency"], dropna=False
+    ):
+        tickers = set(group["yahoo_ticker"].dropna().astype(str))
+        subset = frame.loc[frame["ticker"].isin(tickers)].copy()
+        available = int(subset["ticker"].nunique())
+        if available < 2:
+            continue
+        fits = fit_bounded_pairs(
+            subset, start=formation_start, end=formation_end, metric=metric,
+            formation_observations=formation_observations,
+            corr_floor=corr_floor, alpha_ceiling=alpha_ceiling,
+            max_peers_per_ticker=max_peers_per_ticker,
+        )
+        summaries.append(dict(group=f"{universe_name}/{currency}",
+                              tickers=available, fits=len(fits)))
+        all_fits.extend(fits)
+    return tuple(all_fits), summaries

@@ -62,6 +62,10 @@ FIT_PAYLOAD = json.loads(
 )
 
 
+UNIVERSE = pd.read_csv("data/universe/global_equities.csv")
+UNIVERSE = UNIVERSE.loc[UNIVERSE["mapping_status"] == "mapped"].copy()
+
+
 FIT_RECORDS = tuple(
     FIT_PAYLOAD["fits"]
 )
@@ -464,7 +468,13 @@ class Handler(
                     formation_observations=FIT_PAYLOAD["formation_observations"],
                 )
             elif self.path == "/api/anomalies/historical-scan":
-                result = historical_scan(request, PRICES)
+                result = historical_scan(
+                    request, PRICES, universe=UNIVERSE,
+                    formation_observations=FIT_PAYLOAD["formation_observations"],
+                    corr_floor=FIT_PAYLOAD["corr_floor"],
+                    alpha_ceiling=FIT_PAYLOAD["alpha_ceiling"],
+                    max_peers_per_ticker=FIT_PAYLOAD["max_peers_per_ticker"],
+                )
             else:
                 result = scan(
                     corr_min=float(

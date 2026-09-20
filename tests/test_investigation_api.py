@@ -82,7 +82,7 @@ def test_http_route_returns_graph_and_error(monkeypatch, setup):
 
     request, kwargs, _, _ = setup
     cache = {"fits":[], "as_of":"2026-03-20", "corr_floor":.5, "alpha_ceiling":.1, "formation_observations":252}
-    with patch("pandas.read_csv", return_value=pd.DataFrame({"date":[], "ticker":[]})), \
+    with patch("pandas.read_csv", return_value=pd.DataFrame({"date":[], "ticker":[], "mapping_status":[]})), \
          patch.object(Path, "read_text", return_value=json.dumps(cache)):
         server = runpy.run_path(str(Path(__file__).resolve().parents[1] / "scripts/anomaly_api.py"))
     handler = object.__new__(server["Handler"])
@@ -109,7 +109,7 @@ def test_completed_investigation_disconnect_never_sends_400(delivery_error):
 
     cache = {"fits": [], "as_of": "2026-03-20", "corr_floor": .5,
              "alpha_ceiling": .1, "formation_observations": 252}
-    with patch("pandas.read_csv", return_value=pd.DataFrame({"date": [], "ticker": []})), \
+    with patch("pandas.read_csv", return_value=pd.DataFrame({"date": [], "ticker": [], "mapping_status": []})), \
          patch.object(Path, "read_text", return_value=json.dumps(cache)):
         server = runpy.run_path(str(Path(__file__).resolve().parents[1] / "scripts/anomaly_api.py"))
     handler = object.__new__(server["Handler"])
