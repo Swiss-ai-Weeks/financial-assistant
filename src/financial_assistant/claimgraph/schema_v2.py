@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
+from financial_assistant.fundamentals.models import FundamentalEvidenceBundle
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -97,6 +98,7 @@ class InvestigationGraph(BaseModel):
     )
 
     schema_version: str = "0.2"
+    fundamentals: tuple[FundamentalEvidenceBundle, ...] = ()
 
     investigation_id: str = Field(min_length=1)
     anomaly_id: str = Field(min_length=1)

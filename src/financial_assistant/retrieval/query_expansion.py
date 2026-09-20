@@ -347,6 +347,7 @@ def expand_research_task(
     task: ResearchTask,
     *,
     as_of: datetime,
+    financial_context: str = "",
 ) -> QueryExpansion:
     """
     Use the LLM to convert one semantic ResearchTask
@@ -358,7 +359,7 @@ def expand_research_task(
         user=build_query_expansion_prompt(
             task,
             as_of=as_of,
-        ),
+        ) + "\n\nFinancial context for neutral explanatory searches (not causal findings):\n" + financial_context,
         reasoning=False,
     )
 

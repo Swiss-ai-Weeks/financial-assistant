@@ -182,6 +182,16 @@ def build_investigation_graph(
         )
     )
 
+    for bundle in state.fundamentals:
+        if bundle.status == "unavailable":
+            missing_id = _node_id("missing_evidence", f"fundamentals-{bundle.ticker}")
+            nodes.append(GraphNode(node_id=missing_id, kind=NodeKind.MISSING_EVIDENCE,
+                label=f"{bundle.ticker}: fundamentals unavailable",
+                data={"ticker": bundle.ticker, "provider": "SEC EDGAR", "warnings": bundle.warnings,
+                      "as_of": bundle.as_of.isoformat(), "execution": bundle.provider_execution_metadata}))
+            edges.append(GraphEdge(edge_id=_edge_id(anomaly_node_id, EdgeKind.REQUIRES, missing_id),
+                                   source=anomaly_node_id, target=missing_id, kind=EdgeKind.REQUIRES))
+
     # -------------------------------------------------
     # Sources and retrieved documents
     # -------------------------------------------------
@@ -879,6 +889,30 @@ def build_investigation_graph(
                 )
             )
 
+    # Calculations can depend on deterministic intermediate calculations.
+    def check_calculation(identifier, path):
+        if identifier in path:
+            raise ValueError("Calculation dependency cycle")
+        if identifier not in calculations:
+            raise ValueError(f"Unknown input calculation: {identifier}")
+        for dependency in calculations[identifier].input_calculation_ids:
+            check_calculation(dependency, path | {identifier})
+
+    for calculation in state.calculations:
+        check_calculation(calculation.calculation_id, set())
+        source = _node_id("calculation", calculation.calculation_id)
+        for identifier in calculation.input_calculation_ids:
+            target = _node_id("calculation", identifier)
+            edges.append(GraphEdge(edge_id=_edge_id(source, EdgeKind.CALCULATED_FROM, target),
+                                   source=source, target=target, kind=EdgeKind.CALCULATED_FROM))
+        metric_id = calculation.metadata.get("metric_id", "")
+        if metric_id in {"roic", "operating_margin", "net_debt_to_ebitda"} or metric_id.endswith("_trend"):
+            for hypothesis in state.hypotheses:
+                target = _node_id("hypothesis", hypothesis.hypothesis_id)
+                edges.append(GraphEdge(edge_id=_edge_id(source, EdgeKind.CONTEXT_FOR, target),
+                    source=source, target=target, kind=EdgeKind.CONTEXT_FOR,
+                    data={"rationale": "Financial context supplied to hypothesis generation; not causal support."}))
+
     # -------------------------------------------------
     # Inferences
     # -------------------------------------------------
@@ -1007,6 +1041,7 @@ def build_investigation_graph(
         )
 
     return InvestigationGraph(
+        fundamentals=state.fundamentals,
         investigation_id=(
             state.investigation_id
         ),

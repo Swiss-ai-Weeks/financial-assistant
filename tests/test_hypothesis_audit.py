@@ -188,7 +188,7 @@ def test_exact_ids_pass_without_retry_and_keep_content():
         ("H-2", ("Premise for H-2",)), ("H-1", ("Premise for H-1",)),
     ]
     assert (run.provider, run.model, run.prompt_version) == (
-        "fake", "fake-model", "hypothesis-audit-v2",
+        "fake", "fake-model", "hypothesis-audit-v3-fundamentals",
     )
     assert run.created_at.tzinfo is not None
 

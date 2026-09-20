@@ -17,7 +17,7 @@ from financial_assistant.domain import (
 from .provider import StructuredLLM
 
 
-PROMPT_VERSION = "hypothesis-generation-v1"
+PROMPT_VERSION = "hypothesis-generation-v2-fundamentals"
 
 
 class _HypothesisCandidate(BaseModel):
@@ -47,7 +47,9 @@ market anomaly.
 These are hypotheses to investigate, not conclusions.
 
 The anomaly and supplied claims contain the only observations
-you may treat as known.
+you may treat as known, together with supplied application-calculated financial evidence.
+Never calculate financial metrics yourself. Cite supplied calculation IDs. Financial
+trends are descriptive context, not proof of causation.
 
 Rules:
 
@@ -145,6 +147,7 @@ def generate_hypotheses(
     anomaly: AnomalyEvent,
     claims: tuple[ExtractedClaim, ...],
     provider: StructuredLLM,
+    *, financial_context: str = "",
 ) -> tuple[
     ModelRun,
     tuple[Hypothesis, ...],
@@ -178,7 +181,7 @@ def generate_hypotheses(
             "ANOMALY:\n"
             f"{anomaly_json}\n\n"
             "VALIDATED SOURCE CLAIMS:\n"
-            f"{claim_context}"
+            f"{claim_context}\n\nDETERMINISTIC FINANCIAL CONTEXT:\n{financial_context}"
         ),
         reasoning=False,
     )

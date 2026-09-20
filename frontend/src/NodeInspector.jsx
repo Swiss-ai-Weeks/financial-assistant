@@ -19,7 +19,7 @@ function Details({data}) {
   useEffect(() => {sourceConfig().then(p => setBase(p.base_url ?? '')).catch(() => {});}, []);
   return Object.entries(data).map(([key,value]) => <div className="inspector-row" key={key}>
     <span>{labelFor(key)}</span><div>{['url','source_uri'].includes(key) && /^https?:\/\//i.test(String(value))
-      ? <a href={base === null ? undefined : sourceHref(value, base) ?? undefined} target="_blank" rel="noreferrer">Open source ↗</a> : renderValue(value)}</div>
+      ? <a href={base === null && !/^https:\/\/www\.sec\.gov\//i.test(String(value)) ? undefined : sourceHref(value, base ?? '') ?? undefined} target="_blank" rel="noreferrer">Open source ↗</a> : renderValue(value)}</div>
   </div>);
 }
 
@@ -30,6 +30,7 @@ export default function NodeInspector({node, graph, onSelect, onAction, reviewSt
   const isEdge = node.inspectorType === 'edge';
   const details = isEdge ? {...node.data, ...Object.fromEntries(Object.entries(node).filter(([key]) => !['data','inspectorType','displayKind','label','edge_id'].includes(key)))}
     : node.data ?? Object.fromEntries(Object.entries(node).filter(([key]) => !['node_id','kind','label','inspectorType','displayKind','support','counter','humanState'].includes(key)));
+  const financial = details.metadata?.metric_id || details.metadata?.concept ? details.metadata : null;
   const provenance = provenanceFor(graph,node);
   const selectId = id => {const target = graph.nodes.find(n => n.node_id === id); if (target) onSelect(target);};
   return <aside className="inspector">
@@ -40,6 +41,14 @@ export default function NodeInspector({node, graph, onSelect, onAction, reviewSt
         event_at:details.event_at ?? 'Unavailable', observed_at:details.observed_at ?? originalCutoff(graph) ?? 'Unavailable', retrieved_at:details.retrieved_at ?? 'Unavailable'}} />
       <p>Inspector retains future and hidden items for audit. Retrieval time never establishes publication time.</p>
     </section>
+    {financial && <section><h3>Financial evidence</h3><Details data={{
+      metric:financial.display_name ?? financial.concept,
+      value:financial.value == null ? 'Unavailable' : financial.unit === 'ratio' ? `${(financial.value * 100).toFixed(2)}%` : `${financial.value.toLocaleString()} ${financial.unit}`,
+      period_end:financial.period_end, formula_version:financial.formula_version,
+      formula:financial.formula, available_since:financial.available_at,
+      xbrl_tag:financial.tag, filed_at:financial.filed_at, form:financial.form,
+      accession:financial.accession, execution:financial.execution, assumptions:financial.assumptions, warnings:financial.warnings,
+    }} /><p className="muted">Follow calculated-from relationships to inspect component values and SEC filings.</p></section>}
     <Details data={{[isEdge ? 'edge_id' : 'node_id']:node.edge_id ?? node.node_id}} />
     {!isEdge && ['source','document','calculation','inference'].includes(node.kind) && <Details data={{display_source_category:sourceCategory(node)}} />}
     {isEdge && <div className="relationship-endpoints"><button onClick={() => selectId(node.source)}>Inspect source node</button><span>{labelFor(node.kind)}</span><button onClick={() => selectId(node.target)}>Inspect target node</button></div>}

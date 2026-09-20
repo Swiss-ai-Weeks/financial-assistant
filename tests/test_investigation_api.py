@@ -211,6 +211,7 @@ def test_status_http_unknown_and_known():
 
 
 def test_real_pipeline_reports_order_at_execution_boundaries(monkeypatch):
+    monkeypatch.delenv("SEC_USER_AGENT", raising=False)
     import investigate_historical_pair as pipeline
     from datetime import datetime, timezone
     from test_pair_simulation import make_signal
@@ -245,7 +246,8 @@ def test_real_pipeline_reports_order_at_execution_boundaries(monkeypatch):
     pipeline.investigate_signal(make_signal(), observed_at=observed, provider=object(),
                                 progress=lambda *args: stages.append(args))
     assert [stage for stage, _, _ in stages] == [
-        "preparing", "research_plan", "retrieval", "retrieval_complete", "evidence_selection",
+        "preparing", "fundamentals", "fundamentals", "fundamentals_complete",
+        "research_plan", "retrieval", "retrieval_complete", "evidence_selection",
         "claim_extraction", "claim_extraction_complete", "hypothesis_generation",
         "hypothesis_generation_complete", "hypothesis_audit", "hypothesis_audit_complete",
         "relationship_assessment", "relationship_assessment_complete", "graph_build", "graph_complete"]

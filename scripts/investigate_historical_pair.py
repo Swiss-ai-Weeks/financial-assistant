@@ -449,7 +449,8 @@ def main() -> None:
 
 
 def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
-                       max_documents=4, claims_per_document=2, max_claims=8, progress=None):
+                       max_documents=4, claims_per_document=2, max_claims=8, progress=None,
+                       fundamentals_service=None):
     """Shared retrieval/reasoning pipeline; callers supply the observed signal and provider."""
     def report(stage, message, **metrics):
         if progress is not None:
@@ -518,6 +519,12 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     # 3. Deterministic historical research plan.
     # -------------------------------------------------
 
+    from financial_assistant.fundamentals.service import load_pair, model_context, domain_evidence
+    fundamentals = load_pair((fit.ticker_a, fit.ticker_b), observed_at,
+                             service=fundamentals_service, progress=report)
+    financial_context = model_context(fundamentals)
+    financial_documents, financial_observations, financial_calculations = domain_evidence(fundamentals)
+
     plan = plan_research(
         event
     )
@@ -545,6 +552,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
                 provider,
                 task,
                 as_of=as_of,
+                financial_context=financial_context,
             )	
             
             
@@ -894,6 +902,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             event,
             claims,
             provider,
+            financial_context=financial_context,
         ),
     )
     report("hypothesis_generation_complete", "Competing hypotheses generated", hypotheses=len(hypotheses))
@@ -934,6 +943,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             claims,
             hypotheses,
             provider,
+            financial_context=financial_context,
         ),
     )
     report("hypothesis_audit_complete", "Hypotheses audited", audits=len(audits))
@@ -982,8 +992,9 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
         ),
 
         anomaly=event,
+        fundamentals=fundamentals,
 
-        documents=documents,
+        documents=(*documents, *financial_documents),
 
         model_runs=(
             *claim_runs,
@@ -1003,8 +1014,8 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
         ),
 
         evidence_requirements=(),
-        observations=(),
-        calculations=(),
+        observations=financial_observations,
+        calculations=financial_calculations,
         inferences=(),
     )
 

@@ -2,8 +2,11 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl
+
+from financial_assistant.fundamentals.models import FundamentalEvidenceBundle
 
 
 class ClaimType(StrEnum):
@@ -111,6 +114,7 @@ class SourceDocument(BaseModel):
 
     # Syndicated copies can share one information lineage.
     lineage_id: str | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class ModelRun(BaseModel):
@@ -283,6 +287,7 @@ class Observation(BaseModel):
     unit: str | None = None
 
     source_document_id: str = Field(min_length=1)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class Calculation(BaseModel):
@@ -301,6 +306,8 @@ class Calculation(BaseModel):
     expression: str = Field(min_length=1)
 
     input_observation_ids: tuple[str, ...]
+    input_calculation_ids: tuple[str, ...] = ()
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
     value: float
     unit: str | None = None
@@ -343,6 +350,8 @@ class InvestigationState(BaseModel):
     investigation_id: str = Field(
         min_length=1
     )
+
+    fundamentals: tuple[FundamentalEvidenceBundle, ...] = ()
 
     anomaly: AnomalyEvent
 

@@ -6,11 +6,12 @@ from threading import Lock
 import re
 from uuid import uuid4
 
-COUNTS = frozenset('research_tasks search_hits retrieval_records query_expansions documents_selected documents claims hypotheses audits relationships model_runs nodes edges'.split())
-COMPLETIONS = {'research_plan': 'research_plan', 'retrieval_complete': 'retrieval',
+COUNTS = frozenset('fundamental_facts_selected fundamental_metrics_calculated research_tasks search_hits retrieval_records query_expansions documents_selected documents claims hypotheses audits relationships model_runs nodes edges'.split())
+COMPLETIONS = {'fundamentals_complete': 'financial_metrics', 'research_plan': 'research_plan', 'retrieval_complete': 'retrieval',
                'evidence_selection': 'evidence_selection', 'graph_complete': 'graph_build',
                **{f'{stage}_complete': stage for stage in ('claim_extraction', 'hypothesis_generation', 'hypothesis_audit', 'relationship_assessment')}}
-MESSAGES = dict(preparing='Preparing investigation', research_plan='Research plan created',
+MESSAGES = dict(fundamentals='Loading historical fundamentals', financial_metrics='Calculating financial metrics',
+    fundamentals_complete='Fundamentals enrichment complete', preparing='Preparing investigation', research_plan='Research plan created',
     retrieval='Searching BookReader and the web', retrieval_complete='Retrieval complete',
     evidence_selection='Historical evidence selected', claim_extraction='Extracting grounded claims',
     claim_extraction_complete='Grounded claims extracted', hypothesis_generation='Generating competing hypotheses',

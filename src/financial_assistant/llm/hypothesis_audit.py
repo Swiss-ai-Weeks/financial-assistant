@@ -18,7 +18,7 @@ from financial_assistant.domain import (
 from .provider import StructuredLLM
 
 
-PROMPT_VERSION = "hypothesis-audit-v2"
+PROMPT_VERSION = "hypothesis-audit-v3-fundamentals"
 
 
 class _AuditCandidate(BaseModel):
@@ -166,6 +166,7 @@ def audit_hypotheses(
     claims: tuple[ExtractedClaim, ...],
     hypotheses: tuple[Hypothesis, ...],
     provider: StructuredLLM,
+    *, financial_context: str = "",
 ) -> tuple[
     ModelRun,
     tuple[HypothesisAudit, ...],
@@ -210,7 +211,7 @@ def audit_hypotheses(
             "ANOMALY:\n"
             f"{anomaly_json}\n\n"
             "VALIDATED SOURCE CLAIMS:\n"
-            f"{claim_context}\n\n"
+            f"{claim_context}\n\nDETERMINISTIC FINANCIAL CONTEXT:\n{financial_context}\n\n"
             "HYPOTHESES TO AUDIT:\n"
             f"{hypothesis_context}"
         ),
@@ -233,7 +234,7 @@ def audit_hypotheses(
                 "ANOMALY:\n"
                 f"{anomaly_json}\n\n"
                 "VALIDATED SOURCE CLAIMS:\n"
-                f"{claim_context}\n\n"
+                f"{claim_context}\n\nDETERMINISTIC FINANCIAL CONTEXT:\n{financial_context}\n\n"
                 "Return the audits again. Use each allowed ID exactly once.\n"
                 "Do not create, shorten, normalize, renumber, translate or modify any ID.\n"
                 "Preserve the audit content where possible. "
