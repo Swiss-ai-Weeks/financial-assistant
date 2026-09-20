@@ -1036,3 +1036,115 @@ def test_discovery_runs_in_the_background_and_reports_progress(client):
     assert job["status"] == "completed" and job["stage"] == "Done"
     assert job["seconds"] is not None
     assert job["discovery"]["funnel"] == body["funnel"]
+
+
+def test_a_divergence_is_read_around_its_onset_and_peak_not_only_today():
+    """
+    Found on real data: AVGO/NVDA broke on Aug 19 and was
+    detected on Sep 18. Ordered by recency, all twelve
+    articles an investigation read were from Sep 18 and none
+    of the 230 published around the onset, which included the
+    actual cause.
+    """
+
+    from financial_assistant.api.models import Anomaly
+    from financial_assistant.api.services.news_service import NewsService
+
+    anomaly = Anomaly(
+        anomaly_id="PAIR-AVGO-NVDA-2026-09-18",
+        ticker="AVGO",
+        related_tickers=("NVDA",),
+        strategy="pairs",
+        kind="cointegration_spread_deviation",
+        observed_on=date(2026, 9, 18),
+        z_score=-2.8,
+        threshold=2.0,
+        severity=0.5,
+        direction="a_below_equilibrium",
+        summary="AVGO/NVDA spread",
+        metrics={"first_flag": "2026-08-19", "peak_date": "2026-09-04"},
+    )
+
+    keys = NewsService.key_dates(anomaly)
+
+    assert [(k.label, k.day.isoformat()) for k in keys] == [
+        ("onset", "2026-08-19"),
+        ("peak", "2026-09-04"),
+        ("latest", "2026-09-18"),
+    ]
+
+    def story(day, hour, name, relevance):
+        item = NewsItem(
+            news_id=name,
+            ticker="AVGO",
+            title=name,
+            url=f"https://news.example.com/{name}",
+            published_at=datetime(2026, *day, hour, tzinfo=timezone.utc),
+            provider="fake",
+        )
+
+        return item, relevance
+
+    stories = [
+        story((9, 18), 15, "today-a", 2),
+        story((9, 18), 12, "today-b", 2),
+        story((9, 17), 12, "yesterday", 2),
+        story((9, 4), 14, "peak", 2),
+        story((8, 19), 16, "onset-names-company", 2),
+        story((8, 19), 20, "onset-passing-mention", 0),
+        story((8, 18), 9, "day-before-onset", 2),
+        # The day AFTER the onset cannot have caused it.
+        story((8, 20), 9, "after-onset", 2),
+        story((8, 30), 9, "in-between", 2),
+    ]
+
+    ordered = NewsService._by_key_date(
+        [item for item, _ in stories],
+        {item.news_id: relevance for item, relevance in stories},
+        keys,
+    )
+
+    names = [item.news_id for item in ordered]
+
+    # The dates take turns, so the first three span all of them.
+    assert names[:3] == ["onset-names-company", "peak", "today-a"]
+
+    # Around a date: naming the company beats a passing mention,
+    # then the closest to that session's close.
+    assert names.index("onset-names-company") < names.index("day-before-onset")
+    assert names.index("day-before-onset") < names.index("onset-passing-mention")
+
+    # Nothing is lost, and what is near no key date comes last.
+    assert sorted(names) == sorted(item.news_id for item, _ in stories)
+    assert set(names[-2:]) == {"after-onset", "in-between"}
+
+
+def test_a_single_session_signal_has_one_key_date():
+    from financial_assistant.api.models import Anomaly
+    from financial_assistant.api.services.news_service import NewsService
+
+    spike = Anomaly(
+        anomaly_id="VOLUME_SPIKE-CVX-2026-09-18",
+        ticker="CVX",
+        strategy="vwap",
+        kind="volume_spike",
+        observed_on=date(2026, 9, 18),
+        z_score=9.0,
+        threshold=3.0,
+        severity=1.0,
+        direction="down",
+        summary="CVX volume spike",
+    )
+
+    assert [(k.label, k.day) for k in NewsService.key_dates(spike)] == [
+        ("latest", date(2026, 9, 18))
+    ]
+
+    # Onset and peak on the same session are one date, not two.
+    same_day = spike.model_copy(
+        update={"metrics": {"first_flag": "2026-09-18", "peak_date": "2026-09-18"}}
+    )
+
+    assert [k.label for k in NewsService.key_dates(same_day)] == [
+        "onset / peak / latest"
+    ]

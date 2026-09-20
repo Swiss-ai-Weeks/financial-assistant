@@ -82,6 +82,12 @@ class PairAnomaly(BaseModel):
     z_score: float
     max_abs_z: float
 
+    # Session on which the spread was most stretched. A
+    # divergence is a process with an onset, a peak and a
+    # latest state, and its explanation is usually dated
+    # near the first two rather than the last.
+    peak_date: date | None = None
+
     # Neutral description of relative deviation.
     relative_direction: str
 

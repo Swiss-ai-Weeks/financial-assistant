@@ -139,6 +139,11 @@ class StrategyCard(BaseModel):
     anomaly_count: int
 
 
+class KeyDate(BaseModel):
+    label: str
+    day: date
+
+
 class AnomalyNews(BaseModel):
     """
     News split by the evidence cutoff. Only `admissible`
@@ -148,6 +153,11 @@ class AnomalyNews(BaseModel):
 
     anomaly_id: str
     cutoff: str
+
+    # The moments an explanation is most likely dated near.
+    # `admissible` leads with articles from around each.
+    key_dates: list[KeyDate] = []
+
     admissible: list[NewsItem]
     hindsight: list[NewsItem]
 

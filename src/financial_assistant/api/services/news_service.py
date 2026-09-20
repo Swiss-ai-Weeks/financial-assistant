@@ -14,12 +14,17 @@ from financial_assistant.api.repositories import (
     NewsRepository,
     PortfolioRepository,
 )
-from financial_assistant.api.schemas import AnomalyNews
+from financial_assistant.api.schemas import AnomalyNews, KeyDate
 from financial_assistant.api.services.anomaly_service import session_close
 
 
 LOOKBACK_DAYS = 7
 HINDSIGHT_DAYS = 3
+
+# News counts as "around" a key date from this many days
+# before it until the close of that session. The cause of a
+# move is published before or on the day, never after.
+KEY_DATE_DAYS_BEFORE = 2
 
 class NewsService:
     """
@@ -123,21 +128,125 @@ class NewsService:
                     relevance(item, aliases),
                 )
 
-        # Feeds tag a story to every ticker it mentions in
-        # passing. Stories that name the company come first,
-        # then the freshest.
-        ordered = sorted(
-            unique.values(),
-            key=lambda item: (scores[item.news_id], item.published_at),
-            reverse=True,
+        key_dates = self.key_dates(anomaly)
+
+        admissible = self._by_key_date(
+            [item for item in unique.values() if item.published_at <= cutoff],
+            scores,
+            key_dates,
+        )
+
+        hindsight = sorted(
+            (item for item in unique.values() if item.published_at > cutoff),
+            key=lambda item: item.published_at,
         )
 
         return AnomalyNews(
             anomaly_id=anomaly.anomaly_id,
             cutoff=cutoff.isoformat(),
-            admissible=[i for i in ordered if i.published_at <= cutoff],
-            hindsight=[i for i in ordered if i.published_at > cutoff],
+            key_dates=key_dates,
+            admissible=admissible,
+            hindsight=hindsight,
         )
+
+    @staticmethod
+    def key_dates(anomaly: Anomaly) -> list[KeyDate]:
+        """
+        A relationship does not break on the day it is looked
+        at. It has an onset (first session beyond the
+        threshold), a peak (most stretched) and a latest
+        state, and what caused it is dated near the first two.
+        A single-session signal has only its own date.
+        """
+
+        def parsed(name: str):
+            value = anomaly.metrics.get(name)
+
+            return datetime.fromisoformat(str(value)).date() if value else None
+
+        candidates = (
+            ("onset", parsed("first_flag")),
+            ("peak", parsed("peak_date")),
+            ("latest", anomaly.observed_on),
+        )
+
+        dates: list[KeyDate] = []
+
+        for label, day in candidates:
+            if day is None:
+                continue
+
+            same = next((k for k in dates if k.day == day), None)
+
+            if same is None:
+                dates.append(KeyDate(label=label, day=day))
+            else:
+                same.label += f" / {label}"
+
+        return dates
+
+    @staticmethod
+    def _by_key_date(
+        items: list[NewsItem],
+        scores: dict[str, int],
+        key_dates: list[KeyDate],
+    ) -> list[NewsItem]:
+        """
+        Order evidence so that whatever reads the first few
+        articles, a person, triage or an investigation, reads
+        around every key date, not only the most recent one.
+
+        Ordered by recency alone, a month-long divergence was
+        explained from the news of the day it was detected:
+        twelve of twelve articles from the last session and
+        none from the week it began.
+
+        Articles around each key date are ranked by whether
+        they name the company, then by closeness to the date,
+        and the dates take turns. Everything else follows,
+        most relevant and most recent first.
+        """
+
+        def ranked(bucket: list[NewsItem], close_of_day: datetime):
+            return sorted(
+                bucket,
+                key=lambda item: (
+                    -scores[item.news_id],
+                    close_of_day - item.published_at,
+                ),
+            )
+
+        buckets = []
+        taken: set[str] = set()
+
+        for key in key_dates:
+            close_of_day = session_close(key.day)
+            opens = close_of_day - timedelta(days=KEY_DATE_DAYS_BEFORE + 1)
+
+            bucket = [
+                item
+                for item in items
+                if opens < item.published_at <= close_of_day
+                and item.news_id not in taken
+            ]
+
+            taken.update(item.news_id for item in bucket)
+            buckets.append(ranked(bucket, close_of_day))
+
+        ordered: list[NewsItem] = []
+
+        while any(buckets):
+            for bucket in buckets:
+                if bucket:
+                    ordered.append(bucket.pop(0))
+
+        rest = sorted(
+            (item for item in items if item.news_id not in taken),
+            key=lambda item: (scores[item.news_id], item.published_at),
+            reverse=True,
+        )
+
+        return ordered + rest
 
     @staticmethod
     def evidence_window_start(anomaly: Anomaly) -> datetime:

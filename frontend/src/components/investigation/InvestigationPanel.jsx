@@ -114,12 +114,26 @@ export default function InvestigationPanel({
       <section className="explain__section">
         <div className="explain__section-head">
           <span className="eyebrow">
-            Admissible news · {news?.admissible.length ?? "…"} · most relevant first
+            Admissible news · {news?.admissible.length ?? "…"}
           </span>
           {news && (
             <span className="muted mono">cutoff {dateTime(news.cutoff)} UTC</span>
           )}
         </div>
+
+        {news?.key_dates.length > 0 && (
+          <p className="explain__keydates">
+            Read around{" "}
+            {news.key_dates.map((key, index) => (
+              <span key={key.day}>
+                {index > 0 && ", "}
+                the <strong>{key.label}</strong> ({shortDate(key.day)})
+              </span>
+            ))}
+            : what caused a divergence is dated near where it began and peaked,
+            not where it was noticed.
+          </p>
+        )}
 
         {anomalyNews.error && <div className="error-banner">{anomalyNews.error}</div>}
 

@@ -636,6 +636,10 @@ def monitor_pairs(
                     z.abs().max()
                 ),
 
+                peak_date=(
+                    z.abs().idxmax().date()
+                ),
+
                 relative_direction=(
                     direction
                 ),

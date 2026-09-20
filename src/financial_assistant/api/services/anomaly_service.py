@@ -457,6 +457,11 @@ class AnomalyService:
                 "first_flag": anomaly.first_flag.isoformat(),
                 "n_days_flagged": anomaly.n_days_flagged,
                 "max_abs_z": anomaly.max_abs_z,
+                **(
+                    {"peak_date": anomaly.peak_date.isoformat()}
+                    if anomaly.peak_date
+                    else {}
+                ),
                 "beta": anomaly.beta,
                 "formation_start": anomaly.formation_start.isoformat(),
                 "formation_end": anomaly.formation_end.isoformat(),

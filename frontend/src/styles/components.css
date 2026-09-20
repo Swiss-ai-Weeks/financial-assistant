@@ -1290,3 +1290,15 @@
   font-size: 13px;
   color: var(--text-muted);
 }
+
+.explain__keydates {
+  margin: 0 24px 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.explain__keydates strong {
+  color: var(--text);
+  font-weight: 600;
+}

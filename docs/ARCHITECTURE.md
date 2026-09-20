@@ -114,6 +114,15 @@ the **evidence cutoff** of an anomaly:
 - published > cutoff → *hindsight*, shown dimmed, never sent to the model;
 - undated → never admissible.
 
+Evidence is organised around **key dates**, not recency. A relationship does
+not break on the day it is looked at: it has an onset (first session beyond the
+threshold), a peak (most stretched) and a latest state, and its cause is dated
+near the first two. Articles from the two days up to each key date lead the
+list, the dates taking turns, so whoever reads the first few (a person, triage,
+an investigation) reads around all of them. Ordered by recency, AVGO/NVDA, which
+broke on Aug 19 and was detected on Sep 18, was explained from twelve Sep 18
+articles and none of the 230 around its onset.
+
 Fetched pages must also match their headline, because publishers answer
 automated requests with consent walls that extract into clean, irrelevant text.
 
