@@ -97,3 +97,32 @@ def test_http_route_returns_graph_and_error(monkeypatch, setup):
         status, result = handler.send_json.call_args.args
         assert status == (400 if side_effect else 200)
         assert result == ({"error":"Inference failed"} if side_effect else {"nodes":[], "edges":[]})
+
+
+@pytest.mark.parametrize("delivery_error", [BrokenPipeError, ConnectionResetError])
+def test_completed_investigation_disconnect_never_sends_400(delivery_error):
+    import io
+    import json
+    import runpy
+    from unittest.mock import patch
+    import pandas as pd
+
+    cache = {"fits": [], "as_of": "2026-03-20", "corr_floor": .5,
+             "alpha_ceiling": .1, "formation_observations": 252}
+    with patch("pandas.read_csv", return_value=pd.DataFrame({"date": [], "ticker": []})), \
+         patch.object(Path, "read_text", return_value=json.dumps(cache)):
+        server = runpy.run_path(str(Path(__file__).resolve().parents[1] / "scripts/anomaly_api.py"))
+    handler = object.__new__(server["Handler"])
+    handler.path = "/api/investigations"
+    handler.headers = {"Content-Length": "2"}
+    handler.rfile = io.BytesIO(b"{}")
+    graph = {"nodes": [{"id": "completed"}], "edges": []}
+    investigate = Mock(return_value=graph)
+    handler.do_POST.__globals__["investigate"] = investigate
+    handler.send_json = Mock(side_effect=delivery_error("disconnected"))
+    handler.log_message = Mock()
+    handler.do_POST()
+    investigate.assert_called_once()
+    handler.send_json.assert_called_once_with(200, graph)
+    handler.log_message.assert_called_once()
+    assert "completed but the client disconnected" in handler.log_message.call_args.args[0]

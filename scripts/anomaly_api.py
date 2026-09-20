@@ -422,36 +422,29 @@ class Handler(
                     request, prices=PRICES, fits=ALL_FITS, as_of=AS_OF,
                     formation_observations=FIT_PAYLOAD["formation_observations"],
                 )
-                self.send_json(200, result)
-                return
+            else:
+                result = scan(
+                    corr_min=float(
+                        request.get(
+                            "corr_min",
+                            0.65,
+                        )
+                    ),
 
-            result = scan(
-                corr_min=float(
-                    request.get(
-                        "corr_min",
-                        0.65,
-                    )
-                ),
+                    alpha=float(
+                        request.get(
+                            "alpha",
+                            0.05,
+                        )
+                    ),
 
-                alpha=float(
-                    request.get(
-                        "alpha",
-                        0.05,
-                    )
-                ),
-
-                entry=float(
-                    request.get(
-                        "entry",
-                        1.5,
-                    )
-                ),
-            )
-
-            self.send_json(
-                200,
-                result,
-            )
+                    entry=float(
+                        request.get(
+                            "entry",
+                            1.5,
+                        )
+                    ),
+                )
 
         except Exception as exc:
             self.send_json(
@@ -460,6 +453,16 @@ class Handler(
                     "error":
                         str(exc)
                 },
+            )
+            return
+
+        # Response delivery is separate from application execution errors.
+        try:
+            self.send_json(200, result)
+        except (BrokenPipeError, ConnectionResetError):
+            self.log_message(
+                "%s completed but the client disconnected during response delivery",
+                "Investigation" if self.path == "/api/investigations" else "Scan",
             )
 
 

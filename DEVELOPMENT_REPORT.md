@@ -310,3 +310,92 @@ use the existing configured BookReader/SearXNG and selected NIM/Nemotron provide
 6. 75–90s: Enter a reviewer and record a challenge/request for evidence with rationale.
    End on the human review, not a trading recommendation. There is no GPU screening
    provenance to demonstrate in this implementation.
+
+## Synchronous response delivery and audit identifier stability
+
+### Root causes and changes
+
+The observed 100–120 second investigation completed graph construction, but its
+response encountered a disconnected client. Vite had no explicit long-running
+proxy timeout. The handler's broad exception boundary included response writes,
+so a BrokenPipeError was incorrectly treated as an application failure and caused
+a second HTTP 400 write to the dead socket.
+
+`frontend/vite.config.js` now sets both API `timeout` and `proxyTimeout` to
+300000 ms. Existing target, HMR and Launchpad settings are unchanged.
+`scripts/anomaly_api.py` separates request parsing/execution from completed-response
+delivery. Genuine execution failures still return HTTP 400 with the original
+error text. BrokenPipeError and ConnectionResetError on completed-response delivery
+are logged as client disconnects, with no second response or investigation rerun.
+The shared scan response uses the same delivery boundary.
+
+The audit model sometimes returned mutated or duplicate application-owned IDs.
+`src/financial_assistant/llm/hypothesis_audit.py` now uses prompt version
+`hypothesis-audit-v2` with explicit opaque-ID copying rules. The initial batch call
+is unchanged in shape. Only a schema-valid response failing the ID validator gets
+one constrained repair call. Its prompt contains the exact allowed IDs, original
+hypotheses and evidence context, and previous response, and requests preserved
+content where possible without positional assignment or guessing ambiguous identity.
+The repair passes through the same `_AuditResponse` model and the same deterministic
+validator: no duplicates and exact set equality. A second ID failure raises the
+existing ValueError; schema failures and provider errors propagate without further
+retry. Application code never normalizes IDs or reassigns content by position.
+
+ModelRun retains the actual provider/model, hypothesis-audit operation, new prompt
+version and UTC creation timestamp after successful validation. Its existing frozen
+schema has no metadata/details field for retry count. No extra run, fabricated
+retry provenance, or schema migration was introduced; individual retry events are
+not represented separately in the returned ModelRun.
+
+### Exact files changed
+
+- `frontend/vite.config.js`
+- `scripts/anomaly_api.py`
+- `src/financial_assistant/llm/hypothesis_audit.py`
+- `frontend/tests/viteConfig.test.js`
+- `tests/test_investigation_api.py`
+- `tests/test_hypothesis_audit.py`
+- `DEVELOPMENT_REPORT.md`
+
+### Validation
+
+- `npm --prefix frontend test`: 5 test files passed, 0 failed (Node reports 5 tests).
+- `npm --prefix frontend run lint`: passed, exit 0, no diagnostics.
+- `npm --prefix frontend run build`: passed, 181 modules transformed.
+- `source .venv/bin/activate` then `python -m pytest -q`: 89 passed, 0 failed.
+- `git diff --check`: passed.
+
+New tests cover both completed-response socket failures without a second response,
+proxy timeouts, exact IDs without retry, duplicate/mutated/missing ID repair,
+successful repair with reversed order and preserved content associations, strict
+failure after one repair, and initial/repaired schema rejection. Existing genuine
+investigation-error, hypothesis audit, live investigation, temporal, review,
+execution provenance and exact source-quote grounding tests remain passing.
+No live NIM, retrieval service, or H100 browser acceptance run was performed.
+
+### Remaining limitations
+
+Vite's five-minute settings cannot override an NVIDIA Launchpad outer proxy limit.
+If that proxy disconnects sooner, the browser can still report NetworkError even
+though the backend finishes; the backend now records the disconnect honestly.
+There is no result-recovery endpoint or background job infrastructure in this patch.
+The H100 acceptance sequence remains: select anomaly, choose NIM/Nemotron, explicitly
+Investigate candidate, wait roughly two minutes, and verify the completed graph
+replaces the previous graph without a disconnect or misleading HTTP 400 and with
+exact audit IDs. A repair adds one model-call latency. Outer-proxy behavior must be
+checked there; async job API work would require a separate request.
+
+The separate ticker/issuer issue originates in
+`src/financial_assistant/retrieval/query_expansion.py`: its system prompt asks the
+model to resolve canonical names, while `build_query_expansion_prompt` passes
+ResearchTask entity/ticker strings without a deterministic issuer mapping.
+`data/universe/global_equities.csv` already contains BUSE → FIRST BUSEY and
+PNW → PINNACLE WEST. This metadata is not supplied to that prompt. The observed
+“Buse Health” expansion and Pacific Northwest/local-news results are therefore
+entity-resolution/relevance failures, not reasons to relax grounding or dates.
+A future focused change should supply deterministic universe issuer metadata before
+LLM query expansion. Historically eligible but irrelevant BookReader FT/WSJ pages
+remain a separate relevance issue. No retrieval behavior was changed here.
+Temporal rules, strict publication cutoff, hybrid retrieval, exact source spans,
+prospective model selection, historical model_run provenance, explicit investigation
+action, and existing graph/review preservation behavior were left intact.
