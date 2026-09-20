@@ -304,3 +304,20 @@ class Discovery(BaseModel):
     repriced: list[Setup]
     analogue_breaks: int
     analogue_period: str
+
+
+class DiscoveryJob(BaseModel):
+    """
+    State of the one discovery scan the desk runs at a time.
+
+    A scan can take minutes (a first scan replays years of
+    history), far longer than any proxy keeps a request open,
+    so it runs in the background and is polled.
+    """
+
+    status: str = "idle"          # idle | running | completed | failed
+    stage: str = ""
+    started_at: str | None = None
+    seconds: float | None = None
+    error: str | None = None
+    discovery: Discovery | None = None

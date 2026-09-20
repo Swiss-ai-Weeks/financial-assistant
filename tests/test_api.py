@@ -316,6 +316,24 @@ def client(tmp_path):
         run_inline=True,
     )
 
+    discovery = DiscoveryService(
+    anomalies,
+    news,
+    market,
+    portfolios,
+    instruments,
+    cache_dir=tmp_path / "analogues",
+    formation_observations=252,
+    corr_min=0.5,
+    alpha=0.05,
+    entry=2.0,
+    min_liquidity_musd=1.0,
+    analogue_builder=fake_analogue_base,
+    triage_store=TriageRepository(tmp_path / "triage"),
+    llm_factory=FakeLLM,
+    llm_available=lambda: TRIAGE["online"],
+)
+
     app = create_app()
 
     app.dependency_overrides.update(
@@ -331,23 +349,8 @@ def client(tmp_path):
             deps.get_microscope_service: lambda: MicroscopeService(
                 market, portfolios, instruments, anomalies, benchmark="SPY"
             ),
-            deps.get_discovery_service: lambda: DiscoveryService(
-                anomalies,
-                news,
-                market,
-                portfolios,
-                instruments,
-                cache_dir=tmp_path / "analogues",
-                formation_observations=252,
-                corr_min=0.5,
-                alpha=0.05,
-                entry=2.0,
-                min_liquidity_musd=1.0,
-                analogue_builder=fake_analogue_base,
-                triage_store=TriageRepository(tmp_path / "triage"),
-                llm_factory=FakeLLM,
-                llm_available=lambda: TRIAGE["online"],
-            ),
+            # One instance: a scan's state lives on the service.
+            deps.get_discovery_service: lambda: discovery,
             deps.get_market_service: lambda: MarketService(market, review_days=30),
             deps.get_anomaly_service: lambda: anomalies,
             deps.get_news_service: lambda: news,
@@ -669,7 +672,7 @@ def test_microscope_reads_the_same_security_differently_per_horizon(client):
 
 
 def test_discovery_funnel_narrows_to_a_setup(client):
-    body = client.get("/api/discovery").json()
+    body = discover(client)
     counts = [step["count"] for step in body["funnel"]]
 
     assert body["funnel"][0]["label"] == "securities scanned"
@@ -708,7 +711,7 @@ def test_discovery_is_about_what_is_not_already_held(client):
     client.delete("/api/portfolio/positions/AAA")
     client.post("/api/portfolio/positions", json={"ticker": "CCC"})
 
-    body = client.get("/api/discovery").json()
+    body = discover(client)
 
     new = {(s["long"], s["short"]) for s in body["setups"]}
     known = {(s["long"], s["short"]) for s in body["on_your_desk"]}
@@ -784,12 +787,32 @@ def test_sector_prior_admits_related_names_at_a_looser_correlation():
 # -----------------------------------------------------
 
 
+def discover(client):
+    """Start a scan and poll until it settles, as the page does."""
+
+    import time
+
+    assert client.post("/api/discovery").status_code == 202
+
+    for _ in range(400):
+        job = client.get("/api/discovery").json()
+
+        if job["status"] != "running":
+            break
+
+        time.sleep(0.02)
+
+    assert job["status"] == "completed", job["error"]
+
+    return job["discovery"]
+
+
 def step(body, label):
     return next(s for s in body["funnel"] if s["label"] == label)
 
 
 def test_nemotron_drops_justified_repricings_in_the_open(client):
-    body = client.get("/api/discovery").json()
+    body = discover(client)
 
     dropped = {frozenset((s["long"], s["short"])) for s in body["repriced"]}
     kept = {frozenset((s["long"], s["short"])) for s in body["on_your_desk"]}
@@ -815,13 +838,13 @@ def test_nemotron_drops_justified_repricings_in_the_open(client):
 
 
 def test_triage_is_replayed_from_disk_without_a_model(client):
-    first = client.get("/api/discovery").json()
+    first = discover(client)
     calls = TRIAGE["calls"]
 
     assert calls == 2
 
     TRIAGE["online"] = False
-    again = client.get("/api/discovery").json()
+    again = discover(client)
 
     assert TRIAGE["calls"] == calls
     assert again["repriced"] == first["repriced"]
@@ -831,7 +854,7 @@ def test_triage_is_replayed_from_disk_without_a_model(client):
 def test_an_offline_model_drops_nothing(client):
     TRIAGE["online"] = False
 
-    body = client.get("/api/discovery").json()
+    body = discover(client)
     stage = step(body, "dislocation, not a justified repricing")
 
     assert body["repriced"] == []
@@ -848,7 +871,7 @@ def test_an_unverifiable_answer_is_not_a_verdict(client):
         "why_now": "Invented.",
     }
 
-    body = client.get("/api/discovery").json()
+    body = discover(client)
     stage = step(body, "dislocation, not a justified repricing")
 
     assert body["repriced"] == []
@@ -990,3 +1013,26 @@ def test_runs_orphaned_by_a_restart_do_not_block_the_anomaly(tmp_path):
         StageStatus.SKIPPED,
         StageStatus.SKIPPED,
     ]
+
+
+def test_discovery_runs_in_the_background_and_reports_progress(client):
+    """
+    A first scan replays years of history and takes minutes,
+    longer than any proxy keeps a request open. Starting it
+    must return at once.
+    """
+
+    assert client.get("/api/discovery").json()["status"] == "idle"
+
+    started = client.post("/api/discovery")
+
+    assert started.status_code == 202
+    assert started.json()["status"] in ("running", "completed")
+    assert started.json()["discovery"] is None or started.json()["status"] == "completed"
+
+    body = discover(client)
+    job = client.get("/api/discovery").json()
+
+    assert job["status"] == "completed" and job["stage"] == "Done"
+    assert job["seconds"] is not None
+    assert job["discovery"]["funnel"] == body["funnel"]

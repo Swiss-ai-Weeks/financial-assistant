@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import threading
+import time
 from collections import Counter
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
@@ -27,6 +28,7 @@ from financial_assistant.api.repositories import (
 )
 from financial_assistant.api.schemas import (
     Discovery,
+    DiscoveryJob,
     FunnelStep,
     Setup,
     TriageView,
@@ -105,16 +107,87 @@ class DiscoveryService:
 
         self._lock = threading.Lock()
 
+        self._job = DiscoveryJob()
+        self._job_lock = threading.Lock()
+
+    # -------------------------------------------------
+    # Background job
+    # -------------------------------------------------
+
+    def job(self) -> DiscoveryJob:
+        with self._job_lock:
+            return self._job.model_copy()
+
+    def start(self) -> DiscoveryJob:
+        """
+        Start a scan unless one is already running, and return
+        at once. Progress and the result are read with job().
+        """
+
+        with self._job_lock:
+            if self._job.status == "running":
+                return self._job.model_copy()
+
+            self._job = DiscoveryJob(
+                status="running",
+                stage="Starting",
+                started_at=datetime.now(timezone.utc).isoformat(),
+            )
+
+        threading.Thread(
+            target=self._run_job,
+            name="discovery",
+            daemon=True,
+        ).start()
+
+        return self.job()
+
+    def _run_job(self) -> None:
+        started = time.perf_counter()
+
+        try:
+            discovery = self.scan()
+            outcome = {"status": "completed", "discovery": discovery, "stage": "Done"}
+
+        except Exception as error:
+            outcome = {
+                "status": "failed",
+                "error": str(error) or type(error).__name__,
+            }
+
+        with self._job_lock:
+            self._job = self._job.model_copy(
+                update={**outcome, "seconds": round(time.perf_counter() - started, 1)}
+            )
+
+    def _stage(self, text: str) -> None:
+        with self._job_lock:
+            if self._job.status == "running":
+                self._job = self._job.model_copy(update={"stage": text})
+
+    # -------------------------------------------------
+
     def scan(self) -> Discovery:
         holdings = set(self._portfolios.load().tickers)
 
         universe = tuple(dict.fromkeys((*holdings, *self._instruments.universe)))
 
+        self._stage(f"Loading prices for {len(universe)} securities")
         prices = self._market.get_available(universe)
         securities = int(prices["ticker"].nunique())
 
+        self._stage(
+            f"Testing {securities * (securities - 1) // 2:,} possible relationships"
+        )
         scan = self._anomalies.pair_scan(focus=universe)
+
+        self._stage(
+            "Replaying history for analogues "
+            "(minutes on the first scan, cached afterwards)"
+        )
         base = self._analogue_base(prices)
+
+        self._stage("Reading the news behind every unusual relationship")
 
         unusual = [
             anomaly
@@ -187,7 +260,10 @@ class DiscoveryService:
         # Nemotron reads the headlines behind every candidate.
         # A lasting, company-specific event means the gap is a
         # repricing, not a dislocation, and the candidate goes.
+        self._stage(f"Nemotron is reading {len(liquid)} candidates")
         triage_detail = self._triage(liquid, admissible)
+
+        self._stage("Ranking")
 
         repriced = [
             s

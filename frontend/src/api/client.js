@@ -63,6 +63,7 @@ export const api = {
   microscope: (ticker, horizon) =>
     request(`/microscope/${encodeURIComponent(ticker)}${query({ horizon })}`),
   discovery: () => request("/discovery"),
+  startDiscovery: () => request("/discovery", { method: "POST" }),
 
   investigations: () => request("/investigations"),
   investigation: (id) => request(`/investigations/${encodeURIComponent(id)}`),

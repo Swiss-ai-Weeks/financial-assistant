@@ -15,7 +15,7 @@ from financial_assistant.api.dependencies import (
     get_microscope_service,
     get_postmortem_service,
 )
-from financial_assistant.api.schemas import Discovery, Microscope, PostMortem
+from financial_assistant.api.schemas import DiscoveryJob, Microscope, PostMortem
 from financial_assistant.api.services import (
     DiscoveryService,
     MicroscopeService,
@@ -42,8 +42,15 @@ def get_microscope(
     return service.read(ticker, horizon)
 
 
-@router.get("/discovery", response_model=Discovery)
+@router.post("/discovery", response_model=DiscoveryJob, status_code=202)
+def start_discovery(
+    service: DiscoveryService = Depends(get_discovery_service),
+):
+    return service.start()
+
+
+@router.get("/discovery", response_model=DiscoveryJob)
 def get_discovery(
     service: DiscoveryService = Depends(get_discovery_service),
 ):
-    return service.scan()
+    return service.job()

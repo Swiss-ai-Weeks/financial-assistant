@@ -1281,3 +1281,12 @@
   color: var(--text) !important;
   font-size: 13.5px !important;
 }
+
+.discovery__stage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-muted);
+}

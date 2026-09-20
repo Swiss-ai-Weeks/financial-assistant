@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { api } from "../../api/client";
 import { CloverIcon } from "../icons";
@@ -154,20 +154,69 @@ function SetupCard({ setup, asOf, label, leading, onReason }) {
  * Story 3. Nobody asked about anything: the pipeline runs
  * backwards, from the whole market down to one setup.
  */
+const POLL_MS = 1500;
+
 export default function DiscoveryView({ onReason }) {
-  const [state, setState] = useState({ status: "idle" });
+  const [job, setJob] = useState({ status: "idle" });
+  const timer = useRef(null);
+
+  // A scan runs in the background on the server: it can take
+  // minutes, longer than a proxy keeps one request open. The
+  // page polls, so it also picks up a scan that is already
+  // running or already finished when it is opened.
+  useEffect(() => {
+    let cancelled = false;
+
+    const poll = async () => {
+      try {
+        const next = await api.discovery();
+
+        if (cancelled) return;
+
+        setJob(next);
+
+        if (next.status === "running") timer.current = setTimeout(poll, POLL_MS);
+      } catch (error) {
+        if (!cancelled) setJob({ status: "failed", error: error.message });
+      }
+    };
+
+    poll();
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer.current);
+    };
+  }, []);
 
   const scan = async () => {
-    setState({ status: "scanning" });
+    clearTimeout(timer.current);
 
     try {
-      setState({ status: "done", discovery: await api.discovery() });
+      setJob(await api.startDiscovery());
     } catch (error) {
-      setState({ status: "failed", error: error.message });
+      setJob({ status: "failed", error: error.message });
+      return;
     }
+
+    const poll = async () => {
+      try {
+        const next = await api.discovery();
+
+        setJob(next);
+
+        if (next.status === "running") timer.current = setTimeout(poll, POLL_MS);
+      } catch {
+        // The desk may be restarting: keep trying.
+        timer.current = setTimeout(poll, POLL_MS * 2);
+      }
+    };
+
+    timer.current = setTimeout(poll, POLL_MS);
   };
 
-  const { discovery } = state;
+  const state = job;
+  const { discovery } = job;
 
   return (
     <div className="discovery">
@@ -177,17 +226,16 @@ export default function DiscoveryView({ onReason }) {
 
         <button
           className="btn discovery__button"
-          disabled={state.status === "scanning"}
+          disabled={state.status === "running"}
           onClick={scan}
         >
           <CloverIcon size={20} />
-          {state.status === "scanning" ? "Scanning the universe…" : "I’m Feeling Lucky"}
+          {state.status === "running" ? "Scanning the universe…" : "I’m Feeling Lucky"}
         </button>
 
-        {state.status === "scanning" && (
-          <p className="muted">
-            Fitting every relationship on the past year, then replaying history
-            for analogues. The first scan of a session takes longest.
+        {state.status === "running" && (
+          <p className="discovery__stage">
+            <span className="spinner" /> {state.stage}
           </p>
         )}
 
