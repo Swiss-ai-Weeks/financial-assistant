@@ -1,0 +1,135 @@
+# ~100 liquid US large caps, grouped so that economically
+# related names (the ones worth testing for relationships)
+# sit together. Used by the pair scan and by discovery.
+
+# Banks / brokers
+JPM
+BAC
+C
+WFC
+GS
+MS
+USB
+PNC
+SCHW
+
+# Payments / consumer finance
+V
+MA
+AXP
+COF
+PYPL
+
+# Insurance / asset managers
+BLK
+MET
+AIG
+CB
+PGR
+
+# Energy
+XOM
+CVX
+COP
+EOG
+SLB
+OXY
+MPC
+PSX
+
+# Pharma / GLP-1 / biotech
+NVO
+LLY
+PFE
+MRK
+JNJ
+ABBV
+BMY
+AMGN
+GILD
+AZN
+
+# Health services / devices
+UNH
+CVS
+ELV
+ABT
+MDT
+TMO
+DHR
+
+# Semiconductors
+NVDA
+AMD
+AVGO
+TSM
+QCOM
+INTC
+MU
+TXN
+AMAT
+LRCX
+
+# Enterprise hardware / IT
+HPE
+DELL
+HPQ
+IBM
+CSCO
+ORCL
+ACN
+
+# Platforms / software
+AAPL
+MSFT
+GOOGL
+META
+AMZN
+CRM
+ADBE
+NFLX
+
+# Staples
+KO
+PEP
+PG
+CL
+MDLZ
+COST
+WMT
+TGT
+
+# Home improvement / discretionary
+HD
+LOW
+NKE
+SBUX
+MCD
+DIS
+
+# Industrials / machinery
+CAT
+DE
+HON
+GE
+RTX
+LMT
+BA
+MMM
+
+# Transport / airlines
+UPS
+FDX
+UNP
+CSX
+DAL
+UAL
+
+# Autos / telecom / utilities
+F
+GM
+TSLA
+T
+VZ
+NEE
+DUK

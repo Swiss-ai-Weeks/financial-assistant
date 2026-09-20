@@ -211,7 +211,7 @@ def build_pair_analogue_base(
     corr_min: float = 0.70,
     alpha: float = 0.05,
     entry: float = 2.0,
-    step_sessions: int = 5,
+    step_sessions: int = 10,
     lookback_sessions: int = 500,
     until: date | None = None,
 ) -> PairAnalogueBase:

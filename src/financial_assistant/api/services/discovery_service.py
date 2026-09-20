@@ -51,6 +51,7 @@ class DiscoveryService:
         alpha: float,
         entry: float,
         min_liquidity_musd: float,
+        analogue_builder=build_pair_analogue_base,
     ):
         self._anomalies = anomalies
         self._news = news
@@ -64,15 +65,14 @@ class DiscoveryService:
         self._alpha = alpha
         self._entry = entry
         self._min_liquidity_musd = min_liquidity_musd
+        self._build_analogues = analogue_builder
 
         self._lock = threading.Lock()
 
     def scan(self) -> Discovery:
-        universe = tuple(
-            dict.fromkeys(
-                (*self._portfolios.load().tickers, *self._instruments.universe)
-            )
-        )
+        holdings = set(self._portfolios.load().tickers)
+
+        universe = tuple(dict.fromkeys((*holdings, *self._instruments.universe)))
 
         prices = self._market.get_available(universe)
         securities = int(prices["ticker"].nunique())
@@ -151,6 +151,18 @@ class DiscoveryService:
 
         favourable.sort(key=lambda setup: setup.score, reverse=True)
 
+        # Discovery means what the manager is NOT already
+        # looking at. A relationship involving a holding was
+        # found by the post-mortem, from the same data on the
+        # same day, so it is listed apart instead of being
+        # announced a second time.
+        def held(setup: Setup) -> bool:
+            return bool(
+                holdings & {setup.anomaly.ticker, *setup.anomaly.related_tickers}
+            )
+
+        new = [setup for setup in favourable if not held(setup)]
+
         return Discovery(
             as_of=scan.monitoring_end,
             funnel=[
@@ -170,8 +182,10 @@ class DiscoveryService:
                     label="favourable in historical analogues",
                     count=len(favourable),
                 ),
+                FunnelStep(label="new to you", count=len(new)),
             ],
-            setups=favourable,
+            setups=new,
+            on_your_desk=[setup for setup in favourable if held(setup)],
             analogue_breaks=len(base.breaks),
             analogue_period=(
                 f"{base.first_as_of} → {base.last_as_of}"
@@ -269,7 +283,7 @@ class DiscoveryService:
             if path.is_file():
                 return PairAnalogueBase.model_validate_json(path.read_text())
 
-            base = build_pair_analogue_base(
+            base = self._build_analogues(
                 prices,
                 formation_observations=self._formation_observations,
                 corr_min=self._corr_min,

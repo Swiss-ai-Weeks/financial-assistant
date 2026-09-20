@@ -55,6 +55,12 @@ MicroscopeService   present  horizon reading + peers that did not follow + analo
 DiscoveryService    future   universe funnel -> ranked setups
 ```
 
+- **Past and Next never show the same thing as news twice.** Both run the same
+  detector on the same day, so a broken relationship that involves a holding
+  would otherwise be a post-mortem finding *and* "today's discovery". Discovery
+  headlines only setups with no held leg and lists the others as already on the
+  desk. The universe (`data/universes/us_large_caps.txt`, ~100 names;
+  `UNIVERSE_FILE` to change it) is what gives discovery something to find.
 - **Abnormal return** is the return a market model (beta on the previous 252
   sessions) does not explain. Its size is judged event-study style: daily
   abnormal volatility from the year *before* the horizon, scaled by √horizon.

@@ -26,12 +26,10 @@ function Funnel({ steps }) {
   );
 }
 
-function SetupCard({ setup, asOf, leading, onReason }) {
+function SetupCard({ setup, asOf, label, leading, onReason }) {
   return (
     <article className={`setup ${leading ? "is-leading" : ""}`}>
-      <span className="eyebrow">
-        {leading ? "🍀 Today’s discovery" : "Also surfaced"}
-      </span>
+      <span className="eyebrow">{label}</span>
 
       <h2 className="mono">
         LONG {setup.long} / SHORT {setup.short}
@@ -160,10 +158,11 @@ export default function DiscoveryView({ onReason }) {
           <main>
             {discovery.setups.length === 0 ? (
               <div className="setup">
-                <h2>Nothing clears the bar today</h2>
+                <h2>Nothing new clears the bar today</h2>
                 <p className="muted">
-                  No relationship is both unusual, liquid and favourable in the
-                  historical record. Saying so is part of the product.
+                  No relationship outside your book is unusual, liquid and
+                  favourable in the historical record. Saying so is part of
+                  the product.
                 </p>
               </div>
             ) : (
@@ -172,10 +171,36 @@ export default function DiscoveryView({ onReason }) {
                   key={setup.anomaly.anomaly_id}
                   setup={setup}
                   asOf={discovery.as_of}
+                  label={index === 0 ? "🍀 Today’s discovery" : "Also surfaced"}
                   leading={index === 0}
                   onReason={onReason}
                 />
               ))
+            )}
+
+            {discovery.on_your_desk.length > 0 && (
+              <section className="discovery__known">
+                <span className="eyebrow">
+                  Already on your desk · reported in your post-mortem
+                </span>
+
+                {discovery.on_your_desk.map((setup) => (
+                  <button
+                    key={setup.anomaly.anomaly_id}
+                    className="discovery__known-row"
+                    onClick={() => onReason(setup.anomaly)}
+                  >
+                    <span className="mono strong">
+                      {setup.long} / {setup.short}
+                    </span>
+                    <span className="mono">{Math.abs(setup.z_score).toFixed(1)}σ</span>
+                    <span className="muted">
+                      Involves a holding, so it is not news to you. Open it in
+                      Past →
+                    </span>
+                  </button>
+                ))}
+              </section>
             )}
 
             <p className="muted discovery__disclaimer">

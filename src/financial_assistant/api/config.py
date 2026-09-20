@@ -110,7 +110,7 @@ class Settings:
         return cls(
             data_dir=data_dir,
             universe_file=Path(
-                env("UNIVERSE_FILE", data_dir / "universes" / "demo_us.txt")
+                env("UNIVERSE_FILE", data_dir / "universes" / "us_large_caps.txt")
             ),
             seed_portfolio_file=Path(
                 env("SEED_PORTFOLIO_FILE", data_dir / "seed" / "portfolio.json")

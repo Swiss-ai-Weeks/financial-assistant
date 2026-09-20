@@ -274,6 +274,13 @@ class Setup(BaseModel):
 class Discovery(BaseModel):
     as_of: date
     funnel: list[FunnelStep]
+
+    # Relationships the manager is not already looking at.
     setups: list[Setup]
+
+    # Setups that involve a holding. They are real, but the
+    # post-mortem has already reported them: showing one as
+    # "today's discovery" would present old news as new.
+    on_your_desk: list[Setup]
     analogue_breaks: int
     analogue_period: str

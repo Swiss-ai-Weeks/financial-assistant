@@ -8,13 +8,14 @@ and the ClaimGraph pipeline run for real.
 """
 
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 import numpy as np
 import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 
+from financial_assistant.analytics import PairAnalogueBase, PairBreak
 from financial_assistant.api import dependencies as deps
 from financial_assistant.api.main import create_app
 from financial_assistant.api.models import Instrument, NewsItem
@@ -100,6 +101,34 @@ def fake_download(tickers, *, start, end):
         return pd.DataFrame(columns=columns), None
 
     return pd.concat(frames, ignore_index=True), None
+
+
+def fake_analogue_base(prices, **settings):
+    """
+    Past breaks that all converged, six at every size, so
+    that whatever the fixture's z-score turns out to be it
+    has comparable analogues. Replaying years of history
+    belongs to test_analytics.
+    """
+
+    return PairAnalogueBase(
+        universe_size=int(prices["ticker"].nunique()),
+        first_as_of=date(2025, 1, 2),
+        last_as_of=date(2026, 8, 3),
+        breaks=tuple(
+            PairBreak(
+                as_of=date(2025, month, 3),
+                ticker_a="AAA",
+                ticker_b="BBB",
+                z_score=-float(size),
+                return_5_pct=0.8,
+                return_10_pct=1.5,
+                reverted=True,
+            )
+            for size in range(2, 60)
+            for month in range(1, 7)
+        ),
+    )
 
 
 class FakeNewsSource:
@@ -208,7 +237,7 @@ class FakeLLM:
 @pytest.fixture()
 def client(tmp_path):
     universe = tmp_path / "universe.txt"
-    universe.write_text("BBB\nCCC\n")
+    universe.write_text("AAA\nBBB\nCCC\n")
 
     seed = tmp_path / "seed.json"
     seed.write_text(
@@ -294,6 +323,7 @@ def client(tmp_path):
                 alpha=0.05,
                 entry=2.0,
                 min_liquidity_musd=1.0,
+                analogue_builder=fake_analogue_base,
             ),
             deps.get_market_service: lambda: MarketService(market, review_days=30),
             deps.get_anomaly_service: lambda: anomalies,
@@ -592,8 +622,33 @@ def test_discovery_funnel_narrows_to_a_setup(client):
     # Every stage can only keep or drop candidates.
     assert counts[1:] == sorted(counts[1:], reverse=True)
 
-    for setup in body["setups"]:
+    # AAA is held, so its broken relationships are the
+    # post-mortem's news, not today's discovery.
+    assert body["setups"] == []
+    assert body["funnel"][-1] == {"label": "new to you", "count": 0}
+    assert body["on_your_desk"]
+
+    for setup in body["on_your_desk"]:
         # AAA fell below the relationship: it is the cheap leg.
         assert setup["long"] == "AAA" and setup["short"] in ("BBB", "CCC")
         assert setup["outcome"]["analogues"] >= 5
         assert len(setup["invalidation"]) == 3
+
+
+def test_discovery_is_about_what_is_not_already_held(client):
+    """
+    The same break is a discovery for someone who holds
+    neither leg, and old news for someone who holds one.
+    """
+
+    client.delete("/api/portfolio/positions/AAA")
+    client.post("/api/portfolio/positions", json={"ticker": "CCC"})
+
+    body = client.get("/api/discovery").json()
+
+    new = {(s["long"], s["short"]) for s in body["setups"]}
+    known = {(s["long"], s["short"]) for s in body["on_your_desk"]}
+
+    assert ("AAA", "BBB") in new
+    assert ("AAA", "CCC") in known
+    assert not new & known

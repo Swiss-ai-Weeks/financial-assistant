@@ -1206,3 +1206,26 @@
   border-top: 1px solid var(--border);
   font-size: 12px;
 }
+
+.discovery__known {
+  margin-top: 8px;
+  padding: 18px 20px;
+  border: 1px dashed var(--border-strong);
+}
+
+.discovery__known-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  width: 100%;
+  padding: 10px 0 0;
+  text-align: left;
+}
+
+.discovery__known-row:hover .muted {
+  color: var(--text);
+}
+
+.discovery__known-row .strong {
+  font-weight: 700;
+}

@@ -36,31 +36,3 @@ FDX
 # Airlines
 DAL
 UAL
-
-# Pharma / GLP-1
-NVO
-LLY
-PFE
-MRK
-JNJ
-ABBV
-
-# Semiconductors
-NVDA
-AMD
-AVGO
-TSM
-QCOM
-INTC
-
-# Enterprise hardware
-HPE
-DELL
-HPQ
-
-# Platforms
-AAPL
-MSFT
-GOOGL
-META
-AMZN

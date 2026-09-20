@@ -63,7 +63,7 @@ questions. They are the first three icons of the left rail.
 |---|---|---|
 | **Past** · post-mortem | *What did I miss?* | Findings ranked by money lost **after a signal was already visible**. Relationships that broke come first: "BAC underperformed JPM by 2.8% since Sep 15, 3.4σ outside their historical relationship", portfolio impact, what a hedge would have changed, the signal you could have seen, why the two are related, likely explanation and evidence confidence. |
 | **Now** · copilot | *What is happening to this stock?* | A horizon slider (1D · 1W · 1M · 3M · 1Y) that changes the **interpretation**, not the zoom: abnormal return against a market model, volume, which historical peers did *not* follow, and what usually happened next in comparable situations. Reachable from any web page through the [Chrome extension](extension/README.md). |
-| **Next** · discovery | *What should I be looking at?* | **I'm Feeling Lucky** inverts the pipeline: universe → possible relationships → co-moving → cointegrated → unusual → liquid → favourable in out-of-sample analogues → one setup, with what would invalidate it and a button to the reasoning. |
+| **Next** · discovery | *What should I be looking at?* | **I'm Feeling Lucky** inverts the pipeline: universe → possible relationships → co-moving → cointegrated → unusual → liquid → favourable in out-of-sample analogues → **new to you** → one setup, with what would invalidate it and a button to the reasoning. |
 
 All three end in the same place: **Explain** reads the news that was public at
 the time, and the **ClaimGraph** shows why two things are connected and what the
@@ -84,8 +84,10 @@ desk says so.
 3. **Now.** On any finance page, highlight "Bank of America", right-click →
    *Analyse unusual activity*. Drag the horizon: unusual over a week (3σ),
    ordinary over a day, a month, a year. "JPM has not followed the move."
-4. **Next.** Press 🍀. Watch 45 securities become 990 relationships become one
-   idea, then **Show me the reasoning**.
+4. **Next.** Press 🍀. Watch 104 securities become 5,356 possible relationships
+   become one idea the manager was *not* already looking at, then **Show me the
+   reasoning**. Relationships involving a holding are listed apart: the
+   post-mortem already reported them.
 5. **Add a name.** Search a company in the top bar and press *Add*: the desk
    immediately tests it for cointegrated partners.
 6. **The hardware story.** The chip icon explains the model choice and shows
