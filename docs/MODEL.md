@@ -14,10 +14,21 @@ investigation is a fan-out of narrow, structured tasks:
 | Hypothesis generation | 1 | competing explanations for the anomaly |
 | Hypothesis audit | 1 | premises each explanation silently assumes |
 | Relation assessment | one per hypothesis | supports / contradicts / weakens / context, per claim |
+| Causal triage (discovery) | one per unusual relationship | is there an event behind the move, does it last, which headline says so |
+
+Triage is the clearest case for this model. Discovery finds a handful of
+unusual relationships per scan and every one needs a reading before it can be
+ranked, so the stage must be cheap enough to run on all of them: headlines and
+summaries only, no article fetch, one short JSON answer. It is a filter, not a
+judgement. A lasting, company-specific event means the gap is a repricing and
+the candidate is dropped; the full ClaimGraph is reserved for what survives.
 
 Everything else is deterministic code: which news is admissible (published
 before the anomaly's evidence cutoff), quote verification (the quote must occur
-literally in the article), verdict tallies and the ClaimGraph.
+literally in the article), verdict tallies and the ClaimGraph. For triage, code
+checks that the cited headline is one that was offered and was published
+before the anomaly; an answer that fails is discarded, never repaired, and
+nothing is dropped when the model is offline.
 
 So the workload is **many short, independent, JSON-constrained requests over
 long inputs**. That profile, not leaderboard rank, drives the choice.

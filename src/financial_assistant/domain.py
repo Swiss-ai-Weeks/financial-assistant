@@ -34,6 +34,7 @@ class ModelOperation(StrEnum):
     HYPOTHESIS_GENERATION = "hypothesis_generation"
     HYPOTHESIS_AUDIT = "hypothesis_audit"
     RELATION_ASSESSMENT = "relation_assessment"
+    CAUSAL_TRIAGE = "causal_triage"
     FUNDAMENTAL_TEST_SELECTION = "fundamental_test_selection"
     INFERENCE = "inference"
 

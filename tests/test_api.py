@@ -25,6 +25,7 @@ from financial_assistant.api.repositories import (
     MarketDataRepository,
     NewsRepository,
     PortfolioRepository,
+    TriageRepository,
 )
 from financial_assistant.api.services import (
     AnomalyService,
@@ -174,11 +175,28 @@ class FakeFetcher:
         )
 
 
+# What the fake model and its endpoint do in the triage tests.
+TRIAGE = {"online": True, "answer": None, "calls": 0}
+
+
 class FakeLLM:
     provider_name = "fake"
     model_name = "fake-model"
 
     def complete_json(self, *, system, user, reasoning=False):
+        if system.lstrip().startswith("Triage a quantitative"):
+            TRIAGE["calls"] += 1
+
+            if TRIAGE["answer"] is not None:
+                return TRIAGE["answer"]
+
+            # CCC's break is read as a lasting event, BBB's as noise.
+            return {
+                "verdict": "lasting_event" if '"CCC"' in user else "transient_event",
+                "headline_id": "N1",
+                "why_now": "AAA warned that unrealised bond losses widened.",
+            }
+
         if system.lstrip().startswith("Extract atomic"):
             return {
                 "claims": [
@@ -236,6 +254,8 @@ class FakeLLM:
 
 @pytest.fixture()
 def client(tmp_path):
+    TRIAGE.update(online=True, answer=None, calls=0)
+
     universe = tmp_path / "universe.txt"
     universe.write_text("AAA\nBBB\nCCC\n")
 
@@ -324,6 +344,9 @@ def client(tmp_path):
                 entry=2.0,
                 min_liquidity_musd=1.0,
                 analogue_builder=fake_analogue_base,
+                triage_store=TriageRepository(tmp_path / "triage"),
+                llm_factory=FakeLLM,
+                llm_available=lambda: TRIAGE["online"],
             ),
             deps.get_market_service: lambda: MarketService(market, review_days=30),
             deps.get_anomaly_service: lambda: anomalies,
@@ -658,7 +681,7 @@ def test_discovery_funnel_narrows_to_a_setup(client):
     # AAA is held, so its broken relationships are the
     # post-mortem's news, not today's discovery.
     assert body["setups"] == []
-    assert body["funnel"][-1] == {"label": "new to you", "count": 0}
+    assert body["funnel"][-1] == {"label": "new to you", "count": 0, "detail": None}
     assert body["on_your_desk"]
 
     for setup in body["on_your_desk"]:
@@ -673,6 +696,14 @@ def test_discovery_is_about_what_is_not_already_held(client):
     The same break is a discovery for someone who holds
     neither leg, and old news for someone who holds one.
     """
+
+    # Every candidate reads as a dislocation, so this test is
+    # only about who holds what.
+    TRIAGE["answer"] = {
+        "verdict": "transient_event",
+        "headline_id": "N1",
+        "why_now": "A one-day reaction.",
+    }
 
     client.delete("/api/portfolio/positions/AAA")
     client.post("/api/portfolio/positions", json={"ticker": "CCC"})
@@ -746,3 +777,80 @@ def test_sector_prior_admits_related_names_at_a_looser_correlation():
     )
 
     assert unrelated == ()
+
+
+# -----------------------------------------------------
+# Causal triage inside discovery
+# -----------------------------------------------------
+
+
+def step(body, label):
+    return next(s for s in body["funnel"] if s["label"] == label)
+
+
+def test_nemotron_drops_justified_repricings_in_the_open(client):
+    body = client.get("/api/discovery").json()
+
+    dropped = {frozenset((s["long"], s["short"])) for s in body["repriced"]}
+    kept = {frozenset((s["long"], s["short"])) for s in body["on_your_desk"]}
+
+    assert dropped == {frozenset(("AAA", "CCC"))}
+    assert kept == {frozenset(("AAA", "BBB"))}
+
+    stage = step(body, "dislocation, not a justified repricing")
+
+    assert stage["count"] == step(body, "liquid enough")["count"] - 1
+    assert stage["detail"] == (
+        "Nemotron read 2: 1 lasting event dropped, 1 transient, 0 unexplained."
+    )
+
+    triage = body["on_your_desk"][0]["triage"]
+
+    assert triage["verdict"] == "transient_event"
+    assert triage["model"] == "fake-model"
+
+    # The citation resolves to a real, admissible headline.
+    assert triage["headline"]["title"].endswith("warns on bond losses")
+    assert triage["headline"]["published_at"] <= "2026-09-18T21:00:00Z"
+
+
+def test_triage_is_replayed_from_disk_without_a_model(client):
+    first = client.get("/api/discovery").json()
+    calls = TRIAGE["calls"]
+
+    assert calls == 2
+
+    TRIAGE["online"] = False
+    again = client.get("/api/discovery").json()
+
+    assert TRIAGE["calls"] == calls
+    assert again["repriced"] == first["repriced"]
+    assert again["on_your_desk"][0]["triage"] == first["on_your_desk"][0]["triage"]
+
+
+def test_an_offline_model_drops_nothing(client):
+    TRIAGE["online"] = False
+
+    body = client.get("/api/discovery").json()
+    stage = step(body, "dislocation, not a justified repricing")
+
+    assert body["repriced"] == []
+    assert stage["count"] == step(body, "liquid enough")["count"]
+    assert "offline" in stage["detail"]
+    assert all(s["triage"] is None for s in body["on_your_desk"])
+
+
+def test_an_unverifiable_answer_is_not_a_verdict(client):
+    # Cites a headline that was never offered.
+    TRIAGE["answer"] = {
+        "verdict": "lasting_event",
+        "headline_id": "N99",
+        "why_now": "Invented.",
+    }
+
+    body = client.get("/api/discovery").json()
+    stage = step(body, "dislocation, not a justified repricing")
+
+    assert body["repriced"] == []
+    assert "rejected by verification" in stage["detail"]
+    assert all(s["triage"] is None for s in body["on_your_desk"])

@@ -46,6 +46,11 @@ const PIPELINE = [
   ["Nemotron × 1", "Audit each explanation for unsupported premises"],
   ["Nemotron × N explanations", "Weigh every claim against every explanation"],
   ["Deterministic", "Tally verdicts and build the ClaimGraph"],
+  [
+    "Nemotron × N candidates",
+    "Discovery triage: is there an event behind each unusual relationship, and does it last",
+  ],
+  ["Deterministic", "Check the cited headline exists and predates the anomaly; drop repricings"],
 ];
 
 export default function ModelPanel({ system, investigations }) {

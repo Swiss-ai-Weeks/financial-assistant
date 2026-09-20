@@ -24,6 +24,7 @@ from financial_assistant.api.repositories import (
     NewsRepository,
     PortfolioRepository,
     SearchProviderNewsSource,
+    TriageRepository,
     YahooNewsSource,
 )
 from financial_assistant.api.services import (
@@ -279,4 +280,8 @@ def get_discovery_service() -> DiscoveryService:
         alpha=settings.pairs_alpha,
         entry=settings.pairs_entry,
         min_liquidity_musd=settings.min_liquidity_musd,
+        triage_store=TriageRepository(settings.state_dir / "triage"),
+        llm_factory=build_llm,
+        llm_available=lambda: get_investigation_service().llm_status().online,
+        llm_workers=settings.llm_workers,
     )

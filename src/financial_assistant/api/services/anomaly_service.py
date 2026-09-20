@@ -225,6 +225,11 @@ class AnomalyService:
 
         raise NotFound(f"Unknown anomaly {anomaly_id}.")
 
+    def event(self, anomaly_id: str) -> AnomalyEvent | None:
+        """The attention event of an anomaly already detected."""
+
+        return self._events.get(anomaly_id)
+
     # -------------------------------------------------
     # Pairs
     # -------------------------------------------------

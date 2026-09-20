@@ -55,6 +55,13 @@ MicroscopeService   present  horizon reading + peers that did not follow + analo
 DiscoveryService    future   universe funnel -> ranked setups
 ```
 
+- **Discovery's causal stage is the model's.** Between "liquid enough" and the
+  analogues, Nemotron reads the top admissible headlines of every candidate
+  (`llm/causal_triage.py`) and returns `lasting_event`, `transient_event` or
+  `no_event` with the headline it rests on. Lasting events are dropped as
+  justified repricings and listed as such. Readings are stored under
+  `data/state/triage/`, keyed by the anomaly and the exact headlines offered, so
+  an unchanged desk replays them without a GPU and new news gets a new reading.
 - **Past and Next never show the same thing as news twice.** Both run the same
   detector on the same day, so a broken relationship that involves a holding
   would otherwise be a post-mortem finding *and* "today's discovery". Discovery

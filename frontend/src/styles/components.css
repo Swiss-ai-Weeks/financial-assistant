@@ -1229,3 +1229,46 @@
 .discovery__known-row .strong {
   font-weight: 700;
 }
+
+.funnel__detail {
+  display: block;
+  margin-top: 4px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--accent);
+}
+
+.triage {
+  margin-top: 10px;
+  padding: 14px 16px;
+  border-left: 2px solid var(--accent);
+  background: var(--surface);
+}
+
+.triage__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 11.5px;
+}
+
+.triage__verdict.is-lasting_event { color: var(--down); border-color: currentColor; }
+.triage__verdict.is-transient_event { color: var(--accent); border-color: currentColor; }
+.triage__verdict.is-no_event { color: var(--text-muted); }
+
+.triage__source {
+  display: block;
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: var(--accent);
+}
+
+.triage__source:hover {
+  text-decoration: underline;
+}
+
+.discovery__known + .discovery__known {
+  margin-top: 16px;
+}

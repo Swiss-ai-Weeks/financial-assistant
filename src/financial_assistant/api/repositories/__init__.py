@@ -12,6 +12,7 @@ from .news_repository import (
     YahooNewsSource,
 )
 from .portfolio_repository import PortfolioRepository
+from .triage_repository import StoredTriage, TriageRepository
 
 __all__ = [
     "CachedDocumentFetcher",
@@ -28,5 +29,7 @@ __all__ = [
     "NewsSource",
     "PortfolioRepository",
     "SearchProviderNewsSource",
+    "StoredTriage",
+    "TriageRepository",
     "YahooNewsSource",
 ]

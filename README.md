@@ -68,7 +68,7 @@ questions. They are the first three icons of the left rail.
 |---|---|---|
 | **Past** · post-mortem | *What did I miss?* | Findings ranked by money lost **after a signal was already visible**. Relationships that broke come first: "BAC underperformed JPM by 2.8% since Sep 15, 3.4σ outside their historical relationship", portfolio impact, what a hedge would have changed, the signal you could have seen, why the two are related, likely explanation and evidence confidence. |
 | **Now** · copilot | *What is happening to this stock?* | A horizon slider (1D · 1W · 1M · 3M · 1Y) that changes the **interpretation**, not the zoom: abnormal return against a market model, volume, which historical peers did *not* follow, and what usually happened next in comparable situations. Reachable from any web page through the [Chrome extension](extension/README.md). |
-| **Next** · discovery | *What should I be looking at?* | **I'm Feeling Lucky** inverts the pipeline: universe → possible relationships → co-moving → cointegrated → unusual → liquid → favourable in out-of-sample analogues → **new to you** → one setup, with what would invalidate it and a button to the reasoning. |
+| **Next** · discovery | *What should I be looking at?* | **I'm Feeling Lucky** inverts the pipeline: universe → possible relationships → co-moving → cointegrated → unusual → liquid → **Nemotron drops justified repricings** → favourable in out-of-sample analogues → **new to you** → one setup, with what would invalidate it and a button to the reasoning. |
 
 All three end in the same place: **Explain** reads the news that was public at
 the time, and the **ClaimGraph** shows why two things are connected and what the

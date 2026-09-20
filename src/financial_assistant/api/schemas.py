@@ -254,6 +254,19 @@ class Microscope(BaseModel):
 class FunnelStep(BaseModel):
     label: str
     count: int
+    detail: str | None = None
+
+
+class TriageView(BaseModel):
+    """
+    Nemotron's first reading of one candidate: is there an
+    event behind the move, and does it last.
+    """
+
+    verdict: str
+    why_now: str
+    headline: NewsItem | None = None
+    model: str
 
 
 class Setup(BaseModel):
@@ -269,6 +282,7 @@ class Setup(BaseModel):
     why_connected: list[str]
     invalidation: list[str]
     score: float
+    triage: TriageView | None = None
 
 
 class Discovery(BaseModel):
@@ -282,5 +296,10 @@ class Discovery(BaseModel):
     # post-mortem has already reported them: showing one as
     # "today's discovery" would present old news as new.
     on_your_desk: list[Setup]
+
+    # Candidates the model read as a lasting, company-specific
+    # event. The gap is then a repricing that should not be
+    # expected to close, so they are dropped, in the open.
+    repriced: list[Setup]
     analogue_breaks: int
     analogue_period: str

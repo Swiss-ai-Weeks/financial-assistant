@@ -12,7 +12,10 @@ function Funnel({ steps }) {
       {steps.map((step, index) => (
         <li key={step.label} style={{ animationDelay: `${index * 140}ms` }}>
           <span className="funnel__count mono">{step.count.toLocaleString("en-US")}</span>
-          <span className="funnel__label">{step.label}</span>
+          <span className="funnel__label">
+            {step.label}
+            {step.detail && <small className="funnel__detail">{step.detail}</small>}
+          </span>
           <span
             className="funnel__bar"
             style={{
@@ -23,6 +26,57 @@ function Funnel({ steps }) {
         </li>
       ))}
     </ol>
+  );
+}
+
+const VERDICTS = {
+  lasting_event: "Lasting event",
+  transient_event: "Transient event",
+  no_event: "No identifiable event",
+};
+
+/**
+ * Nemotron's reading of the headlines behind the move, with
+ * the headline it rests on. Without a reading the card says
+ * what it does know instead of pretending.
+ */
+function WhyNow({ setup }) {
+  const { triage } = setup;
+
+  if (!triage) {
+    return (
+      <p className="muted">
+        {setup.headlines} headlines named these companies before the evidence
+        cutoff. Nemotron has not read them: whether one justifies the gap is
+        what the reasoning view answers.
+      </p>
+    );
+  }
+
+  return (
+    <div className="triage">
+      <div className="triage__head">
+        <span className={`chip triage__verdict is-${triage.verdict}`}>
+          {VERDICTS[triage.verdict]}
+        </span>
+        <span className="muted mono">
+          read by {triage.model.split("/").pop()} · {setup.headlines} headlines
+        </span>
+      </div>
+
+      <p>{triage.why_now}</p>
+
+      {triage.headline && (
+        <a
+          className="triage__source mono"
+          href={triage.headline.url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {triage.headline.publisher ?? "Source"} · {triage.headline.title}
+        </a>
+      )}
+    </div>
   );
 }
 
@@ -56,11 +110,7 @@ function SetupCard({ setup, asOf, label, leading, onReason }) {
       <section>
         <span className="eyebrow">Why now</span>
         <p>{setup.anomaly.summary}.</p>
-        <p className="muted">
-          {setup.headlines} headlines named these companies before the evidence
-          cutoff. Whether one of them justifies the gap is what the reasoning
-          view answers.
-        </p>
+        <WhyNow setup={setup} />
       </section>
 
       <section>
@@ -176,6 +226,28 @@ export default function DiscoveryView({ onReason }) {
                   onReason={onReason}
                 />
               ))
+            )}
+
+            {discovery.repriced.length > 0 && (
+              <section className="discovery__known">
+                <span className="eyebrow">
+                  Dropped by Nemotron · the gap looks like a justified repricing
+                </span>
+
+                {discovery.repriced.map((setup) => (
+                  <button
+                    key={setup.anomaly.anomaly_id}
+                    className="discovery__known-row"
+                    onClick={() => onReason(setup.anomaly)}
+                  >
+                    <span className="mono strong">
+                      {setup.long} / {setup.short}
+                    </span>
+                    <span className="mono">{Math.abs(setup.z_score).toFixed(1)}σ</span>
+                    <span className="muted">{setup.triage.why_now}</span>
+                  </button>
+                ))}
+              </section>
             )}
 
             {discovery.on_your_desk.length > 0 && (

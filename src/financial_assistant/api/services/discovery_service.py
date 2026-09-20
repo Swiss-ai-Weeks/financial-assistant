@@ -2,6 +2,10 @@ from __future__ import annotations
 
 import json
 import threading
+from collections import Counter
+from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
 from hashlib import sha1
 from pathlib import Path
 
@@ -12,16 +16,31 @@ from financial_assistant.analytics import (
     PairAnalogueBase,
     build_pair_analogue_base,
 )
+from financial_assistant.api.models import NewsItem
 from financial_assistant.api.relevance import company_aliases, relevance
 from financial_assistant.api.repositories import (
     InstrumentRepository,
     MarketDataRepository,
     PortfolioRepository,
+    StoredTriage,
+    TriageRepository,
 )
-from financial_assistant.api.schemas import Discovery, FunnelStep, Setup
+from financial_assistant.api.schemas import (
+    Discovery,
+    FunnelStep,
+    Setup,
+    TriageView,
+)
 from financial_assistant.api.services.anomaly_service import AnomalyService
 from financial_assistant.api.services.news_service import NewsService
 from financial_assistant.api.services.postmortem_service import relationship_of
+from financial_assistant.llm import (
+    StructuredLLM,
+    TriageHeadline,
+    TriageVerdict,
+    triage_anomaly,
+)
+from financial_assistant.llm.causal_triage import MAX_HEADLINES, PROMPT_VERSION
 
 
 LIQUIDITY_SESSIONS = 20
@@ -58,6 +77,10 @@ class DiscoveryService:
         min_liquidity_musd: float,
         corr_min_same_sector: float | None = None,
         analogue_builder=build_pair_analogue_base,
+        triage_store: TriageRepository | None = None,
+        llm_factory: Callable[[], StructuredLLM] | None = None,
+        llm_available: Callable[[], bool] = lambda: False,
+        llm_workers: int = 8,
     ):
         self._anomalies = anomalies
         self._news = news
@@ -73,6 +96,11 @@ class DiscoveryService:
         self._entry = entry
         self._min_liquidity_musd = min_liquidity_musd
         self._build_analogues = analogue_builder
+
+        self._triage_store = triage_store
+        self._llm_factory = llm_factory
+        self._llm_available = llm_available
+        self._llm_workers = llm_workers
 
         self._lock = threading.Lock()
 
@@ -96,6 +124,7 @@ class DiscoveryService:
         liquidity = self._liquidity(prices)
 
         setups = []
+        admissible: dict[str, list[NewsItem]] = {}
 
         for anomaly in unusual:
             a, b = anomaly.ticker, anomaly.related_tickers[0]
@@ -108,6 +137,9 @@ class DiscoveryService:
             long, short = (b, a) if anomaly.z_score > 0 else (a, b)
             outcome = base.outcome(anomaly.z_score)
 
+            # Relevance-ranked, all published before the cutoff.
+            admissible[anomaly.anomaly_id] = self._news.around(anomaly).admissible
+
             setups.append(
                 Setup(
                     anomaly=anomaly,
@@ -117,7 +149,9 @@ class DiscoveryService:
                     relationship=relationship,
                     outcome=outcome,
                     expected_horizon=self._horizon(relationship.half_life_days),
-                    headlines=self._headlines(anomaly),
+                    headlines=self._headlines(
+                        anomaly, admissible[anomaly.anomaly_id]
+                    ),
                     liquidity_musd=min(liquidity.get(a, 0.0), liquidity.get(b, 0.0)),
                     why_connected=[
                         f"Returns correlated {relationship.correlation:.2f} over "
@@ -149,9 +183,23 @@ class DiscoveryService:
 
         liquid = [s for s in setups if s.liquidity_musd >= self._min_liquidity_musd]
 
-        favourable = [
+        # Nemotron reads the headlines behind every candidate.
+        # A lasting, company-specific event means the gap is a
+        # repricing, not a dislocation, and the candidate goes.
+        triage_detail = self._triage(liquid, admissible)
+
+        repriced = [
             s
             for s in liquid
+            if s.triage is not None
+            and s.triage.verdict == TriageVerdict.LASTING_EVENT.value
+        ]
+
+        dislocations = [s for s in liquid if s not in repriced]
+
+        favourable = [
+            s
+            for s in dislocations
             if s.outcome is not None
             and s.outcome.expected_abnormal_return_pct > 0
         ]
@@ -186,6 +234,11 @@ class DiscoveryService:
                 FunnelStep(label="unusual today", count=len(setups)),
                 FunnelStep(label="liquid enough", count=len(liquid)),
                 FunnelStep(
+                    label="dislocation, not a justified repricing",
+                    count=len(dislocations),
+                    detail=triage_detail,
+                ),
+                FunnelStep(
                     label="favourable in historical analogues",
                     count=len(favourable),
                 ),
@@ -193,6 +246,7 @@ class DiscoveryService:
             ],
             setups=new,
             on_your_desk=[setup for setup in favourable if held(setup)],
+            repriced=repriced,
             analogue_breaks=len(base.breaks),
             analogue_period=(
                 f"{base.first_as_of} → {base.last_as_of}"
@@ -220,13 +274,160 @@ class DiscoveryService:
 
         return f"{low}–{high} trading days"
 
-    def _headlines(self, anomaly) -> int:
+    # -------------------------------------------------
+    # Causal triage
+    # -------------------------------------------------
+
+    def _triage(
+        self,
+        setups: list[Setup],
+        admissible: dict[str, list[NewsItem]],
+    ) -> str:
+        """
+        Attach a TriageView to every setup that can get one and
+        describe, for the funnel, what the model did.
+
+        Stored readings are replayed without a model. Only the
+        missing ones need it, and if it is offline they stay
+        unread: nothing is dropped on a guess.
+        """
+
+        if self._llm_factory is None or self._triage_store is None:
+            return "Causal triage is not configured."
+
+        pending = []
+
+        for setup in setups:
+            offered = admissible[setup.anomaly.anomaly_id][:MAX_HEADLINES]
+            key = self._triage_key(setup.anomaly.anomaly_id, offered)
+
+            stored = self._triage_store.get(key)
+
+            if stored is not None:
+                setup.triage = self._view(stored, offered)
+            else:
+                pending.append((setup, offered, key))
+
+        failed = 0
+
+        if pending and self._llm_available():
+            llm = self._llm_factory()
+
+            with ThreadPoolExecutor(
+                max_workers=min(self._llm_workers, len(pending)),
+            ) as pool:
+                results = pool.map(
+                    lambda item: self._read(llm, *item),
+                    pending,
+                )
+
+                for (setup, offered, _), stored in zip(pending, results):
+                    if stored is None:
+                        failed += 1
+                    else:
+                        setup.triage = self._view(stored, offered)
+
+        read = [s for s in setups if s.triage is not None]
+        unread = len(setups) - len(read) - failed
+
+        if not read and unread:
+            return "Nemotron is offline: no candidate was read, none dropped."
+
+        verdicts = Counter(s.triage.verdict for s in read)
+        lasting = verdicts[TriageVerdict.LASTING_EVENT.value]
+
+        detail = (
+            f"Nemotron read {len(read)}: "
+            f"{lasting} lasting event{'' if lasting == 1 else 's'} dropped, "
+            f"{verdicts[TriageVerdict.TRANSIENT_EVENT.value]} transient, "
+            f"{verdicts[TriageVerdict.NO_EVENT.value]} unexplained"
+        )
+
+        if failed:
+            detail += f"; {failed} answers rejected by verification and kept unread"
+
+        if unread:
+            detail += f"; {unread} unread (model offline)"
+
+        return detail + "."
+
+    def _read(
+        self,
+        llm: StructuredLLM,
+        setup: Setup,
+        offered: list[NewsItem],
+        key: str,
+    ) -> StoredTriage | None:
+        event = self._anomalies.event(setup.anomaly.anomaly_id)
+
+        if event is None:
+            return None
+
+        headlines = tuple(
+            TriageHeadline(
+                headline_id=f"N{number}",
+                ticker=item.ticker,
+                title=item.title,
+                summary=item.summary,
+                publisher=item.publisher,
+                published_at=item.published_at,
+            )
+            for number, item in enumerate(offered, start=1)
+        )
+
+        try:
+            run, triage = triage_anomaly(event, headlines, llm)
+        except Exception:
+            # A malformed or unverifiable answer is not a
+            # verdict. The candidate simply stays unread.
+            return None
+
+        cited = (
+            offered[int(triage.headline_id[1:]) - 1].news_id
+            if triage.headline_id
+            else None
+        )
+
+        return self._triage_store.save(
+            StoredTriage(
+                key=key,
+                anomaly_id=setup.anomaly.anomaly_id,
+                verdict=triage.verdict.value,
+                why_now=triage.why_now,
+                headline_news_id=cited,
+                model=run.model,
+                created_at=datetime.now(timezone.utc),
+            )
+        )
+
+    @staticmethod
+    def _view(stored: StoredTriage, offered: list[NewsItem]) -> TriageView:
+        return TriageView(
+            verdict=stored.verdict,
+            why_now=stored.why_now,
+            headline=next(
+                (i for i in offered if i.news_id == stored.headline_news_id),
+                None,
+            ),
+            model=stored.model,
+        )
+
+    @staticmethod
+    def _triage_key(anomaly_id: str, offered: list[NewsItem]) -> str:
+        return sha1(
+            json.dumps(
+                [anomaly_id, PROMPT_VERSION, [item.news_id for item in offered]]
+            ).encode()
+        ).hexdigest()[:16]
+
+    # -------------------------------------------------
+
+    def _headlines(self, anomaly, items: list[NewsItem]) -> int:
         """
         Headlines naming either company before the evidence
         cutoff: whether there is anything to explain the move.
         """
 
-        items = self._news.around(anomaly).admissible
         named = 0
 
         for ticker in (anomaly.ticker, *anomaly.related_tickers):
