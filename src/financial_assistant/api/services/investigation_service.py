@@ -376,6 +376,10 @@ class InvestigationService:
                     "No source-grounded claim could be extracted."
                 )
 
+            # Shown as soon as they exist, and kept even if a
+            # later stage fails: the evidence is the product.
+            run.claims = self._evidence(claims, documents)
+
         with self._stage(run, "hypotheses") as stage:
             hypothesis_run, hypotheses = generate_hypotheses(
                 event, claims, llm
@@ -388,6 +392,11 @@ class InvestigationService:
             )
 
             stage.detail = f"{len(hypotheses)} competing explanations"
+
+            run.hypotheses = [
+                self._verdict(hypothesis, (), None)
+                for hypothesis in hypotheses
+            ]
 
         with self._stage(run, "audit") as stage:
             audit_run, audits = audit_hypotheses(
@@ -446,23 +455,6 @@ class InvestigationService:
             key=lambda verdict: verdict.score,
             reverse=True,
         )
-
-        documents_by_id = {d.document_id: d for d in documents}
-
-        run.claims = [
-            EvidenceClaim(
-                claim_id=claim.claim_id,
-                text=claim.text,
-                claim_type=claim.claim_type.value,
-                source_quote=claim.source_quote,
-                document_id=claim.document_id,
-                document_title=documents_by_id[claim.document_id].title,
-                publisher=documents_by_id[claim.document_id].publisher,
-                url=str(documents_by_id[claim.document_id].url),
-                published_at=documents_by_id[claim.document_id].published_at,
-            )
-            for claim in claims
-        ]
 
     # -------------------------------------------------
     # Stages
@@ -611,6 +603,7 @@ class InvestigationService:
                     document,
                     llm,
                     max_document_chars=MAX_DOCUMENT_CHARS,
+                    max_claims=CLAIMS_PER_DOCUMENT,
                 )
             except LLMTransportError:
                 return "the model did not answer"
@@ -657,6 +650,25 @@ class InvestigationService:
             tuple(claims),
             [f"{count} ({reason})" for reason, count in failures.items()],
         )
+
+    @staticmethod
+    def _evidence(claims, documents) -> list[EvidenceClaim]:
+        documents_by_id = {d.document_id: d for d in documents}
+
+        return [
+            EvidenceClaim(
+                claim_id=claim.claim_id,
+                text=claim.text,
+                claim_type=claim.claim_type.value,
+                source_quote=claim.source_quote,
+                document_id=claim.document_id,
+                document_title=documents_by_id[claim.document_id].title,
+                publisher=documents_by_id[claim.document_id].publisher,
+                url=str(documents_by_id[claim.document_id].url),
+                published_at=documents_by_id[claim.document_id].published_at,
+            )
+            for claim in claims
+        ]
 
     @staticmethod
     def _verdict(hypothesis, assessments, audit) -> HypothesisVerdict:

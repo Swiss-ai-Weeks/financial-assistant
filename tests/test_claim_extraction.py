@@ -196,3 +196,20 @@ def test_straight_quote_can_resolve_to_exact_source_span():
     )
 
     assert resolved in source
+
+
+def test_only_as_many_claims_are_requested_as_will_be_kept():
+    class Spy:
+        provider_name = "fake"
+        model_name = "fake-model"
+        system = None
+
+        def complete_json(self, *, system, user, reasoning=False):
+            Spy.system = system
+
+            return {"claims": []}
+
+    extract_claims(DOCUMENT, Spy(), max_claims=3)
+
+    assert "Extract at most 3 claims" in Spy.system
+    assert "{max_claims}" not in Spy.system

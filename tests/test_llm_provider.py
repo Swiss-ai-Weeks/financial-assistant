@@ -34,8 +34,13 @@ class FakeEndpoint:
                 request.full_url, answer, "refused", {}, io.BytesIO(b'{"detail": "no"}')
             )
 
+        finish = "stop"
+
+        if isinstance(answer, tuple):
+            answer, finish = answer
+
         body = {
-            "choices": [{"message": {"content": answer}, "finish_reason": "stop"}]
+            "choices": [{"message": {"content": answer}, "finish_reason": finish}]
         }
 
         return io.BytesIO(json.dumps(body).encode())
@@ -178,3 +183,19 @@ def test_requests_ask_for_a_stream(endpoint):
     provider().complete_json(system="s", user="u")
 
     assert fake.requests[0]["stream"] is True
+
+
+def test_a_runaway_answer_gets_one_nudge(endpoint):
+    fake = endpoint(('{"hypotheses": [', "length"), '{"ok": true}')
+
+    assert provider().complete_json(system="s", user="u") == {"ok": True}
+
+    first, second = fake.requests
+
+    assert first["temperature"] == 0.0
+    assert second["temperature"] > 0
+
+    endpoint(("{", "length"), ("{", "length"))
+
+    with pytest.raises(ValueError, match="finish_reason=length"):
+        provider().complete_json(system="s", user="u")

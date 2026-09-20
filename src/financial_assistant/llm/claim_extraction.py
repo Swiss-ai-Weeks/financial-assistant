@@ -62,7 +62,8 @@ Allowed claim_type values ONLY:
 
 Rules:
 
-1. Extract at most 8 claims.
+1. Extract at most {max_claims} claims: the most
+   consequential ones for an investor.
 
 2. Each claim must express one independently
    assessable proposition.
@@ -158,6 +159,7 @@ def extract_claims(
     provider: StructuredLLM,
     *,
     max_document_chars: int = 16000,
+    max_claims: int = 8,
 ) -> tuple[
     ModelRun,
     tuple[ExtractedClaim, ...],
@@ -169,7 +171,12 @@ def extract_claims(
     )
 
     raw = provider.complete_json(
-        system=SYSTEM_PROMPT,
+        # Every claim is ~90 output tokens. Asking for more
+        # than the caller keeps is paid for in latency.
+        system=SYSTEM_PROMPT.replace(
+            "{max_claims}",
+            str(max_claims),
+        ),
 
         user=(
             "DOCUMENT TITLE:\n"

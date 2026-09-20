@@ -28,6 +28,8 @@ RATE_LIMIT_RETRIES = 4
 # not at all, so a short timeout retried beats a long one.
 TIMEOUT_RETRIES = 1
 
+RUNAWAY_TEMPERATURE = 0.4
+
 
 class LLMTransportError(RuntimeError):
     """
@@ -265,32 +267,45 @@ class OpenAICompatibleProvider:
                 f"Bearer {self.api_key}"
             )
 
-        result = self._post(
-            payload,
-            headers,
-        )
+        # At temperature 0 a model that starts repeating
+        # itself never stops, and the answer runs to the token
+        # limit. A little randomness breaks the loop, so that
+        # case gets exactly one second attempt.
+        for attempt_temperature in (
+            self.temperature,
+            max(self.temperature, RUNAWAY_TEMPERATURE),
+        ):
+            payload["temperature"] = attempt_temperature
 
-        try:
-            choice = result[
-                "choices"
-            ][0]
+            result = self._post(
+                payload,
+                headers,
+            )
 
-            content = choice[
-                "message"
-            ]["content"]
+            try:
+                choice = result[
+                    "choices"
+                ][0]
 
-            finish_reason = choice[
-                "finish_reason"
-            ]
+                content = choice[
+                    "message"
+                ]["content"]
 
-        except (
-            KeyError,
-            IndexError,
-            TypeError,
-        ) as exc:
-            raise ValueError(
-                "Unexpected model response shape"
-            ) from exc
+                finish_reason = choice[
+                    "finish_reason"
+                ]
+
+            except (
+                KeyError,
+                IndexError,
+                TypeError,
+            ) as exc:
+                raise ValueError(
+                    "Unexpected model response shape"
+                ) from exc
+
+            if finish_reason != "length":
+                break
 
         if finish_reason != "stop":
             raise ValueError(
