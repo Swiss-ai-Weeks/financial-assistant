@@ -16,7 +16,7 @@ from financial_assistant.api.repositories import (
     MarketDataRepository,
     PortfolioRepository,
 )
-from financial_assistant.api.schemas import HorizonTick, Microscope
+from financial_assistant.api.schemas import HorizonTick, MatrixRow, Microscope
 from financial_assistant.api.services.anomaly_service import AnomalyService
 
 
@@ -86,6 +86,40 @@ class MicroscopeService:
         self._anomalies = anomalies
         self._benchmark = benchmark
 
+    def _ticks(
+        self,
+        prices: pd.DataFrame,
+        ticker: str,
+    ) -> tuple[list[HorizonTick], dict[str, HorizonReading]]:
+        """One security at every horizon it has history for."""
+
+        ticks = []
+        readings: dict[str, HorizonReading] = {}
+
+        for name in HORIZONS:
+            try:
+                readings[name] = read_horizon(
+                    prices, ticker=ticker, benchmark=self._benchmark, horizon=name
+                )
+            except (ValueError, IndexError, KeyError):
+                ticks.append(
+                    HorizonTick(
+                        horizon=name, z_score=None, unusual=False, available=False
+                    )
+                )
+                continue
+
+            ticks.append(
+                HorizonTick(
+                    horizon=name,
+                    z_score=readings[name].z_score,
+                    unusual=readings[name].unusual,
+                    available=True,
+                )
+            )
+
+        return ticks, readings
+
     def read(self, ticker: str, horizon: str) -> Microscope:
         symbol = ticker.strip().upper()
 
@@ -106,30 +140,7 @@ class MicroscopeService:
 
         prices = pd.concat([subject, others], ignore_index=True)
 
-        ticks = []
-        readings: dict[str, HorizonReading] = {}
-
-        for name in HORIZONS:
-            try:
-                readings[name] = read_horizon(
-                    prices, ticker=symbol, benchmark=self._benchmark, horizon=name
-                )
-            except (ValueError, IndexError):
-                ticks.append(
-                    HorizonTick(
-                        horizon=name, z_score=None, unusual=False, available=False
-                    )
-                )
-                continue
-
-            ticks.append(
-                HorizonTick(
-                    horizon=name,
-                    z_score=readings[name].z_score,
-                    unusual=readings[name].unusual,
-                    available=True,
-                )
-            )
+        ticks, readings = self._ticks(prices, symbol)
 
         if horizon not in readings:
             raise DeskError(
@@ -152,6 +163,18 @@ class MicroscopeService:
             reading=reading,
             statements=describe(symbol, reading, peers),
             peers=list(peers),
+            matrix=[
+                MatrixRow(ticker=symbol, is_subject=True, ticks=ticks),
+                *(
+                    MatrixRow(
+                        ticker=peer.ticker,
+                        is_subject=False,
+                        correlation=peer.correlation,
+                        ticks=self._ticks(prices, peer.ticker)[0],
+                    )
+                    for peer in peers
+                ),
+            ],
             outcome=single_name_analogues(
                 prices,
                 ticker=symbol,

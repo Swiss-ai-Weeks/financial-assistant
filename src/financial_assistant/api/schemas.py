@@ -245,6 +245,19 @@ class HorizonTick(BaseModel):
     available: bool
 
 
+class MatrixRow(BaseModel):
+    """
+    One security read at every horizon. Side by side with
+    its peers it shows at a glance whether a move is the
+    stock's own or the group's, and at which timescale.
+    """
+
+    ticker: str
+    is_subject: bool
+    correlation: float | None = None
+    ticks: list[HorizonTick]
+
+
 class Microscope(BaseModel):
     ticker: str
     as_of: date
@@ -253,6 +266,7 @@ class Microscope(BaseModel):
     reading: HorizonReading
     statements: list[str]
     peers: list[PeerReading]
+    matrix: list[MatrixRow]
     outcome: AnalogueOutcome | None
     latest_anomaly: Anomaly | None
 

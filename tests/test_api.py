@@ -661,6 +661,20 @@ def test_microscope_reads_the_same_security_differently_per_horizon(client):
     assert {peer["ticker"] for peer in week["peers"]} == {"BBB", "CCC"}
     assert not any(peer["followed"] for peer in week["peers"])
 
+    # The same reading, for the stock and each peer, at every horizon.
+    subject, *others = week["matrix"]
+
+    assert subject["ticker"] == "AAA" and subject["is_subject"]
+    assert subject["ticks"] == week["ticks"]
+    assert {row["ticker"] for row in others} == {"BBB", "CCC"}
+    assert all(len(row["ticks"]) == 5 and row["correlation"] > 0 for row in others)
+
+    # AAA broke alone: its week is unusual, its peers' is not.
+    week_of = lambda row: next(t for t in row["ticks"] if t["horizon"] == "1w")
+
+    assert week_of(subject)["unusual"]
+    assert not any(week_of(row)["unusual"] for row in others)
+
     verdicts = {tick["horizon"]: tick for tick in week["ticks"]}
 
     assert verdicts["1w"]["unusual"]

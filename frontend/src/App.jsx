@@ -18,7 +18,8 @@ import PerformanceStrip from "./components/portfolio/PerformanceStrip";
 import PositionsTable from "./components/portfolio/PositionsTable";
 import DiscoveryView from "./components/stories/DiscoveryView";
 import FindingsPanel from "./components/stories/FindingsPanel";
-import HorizonSlider from "./components/stories/HorizonSlider";
+import CopilotStrip from "./components/stories/CopilotStrip";
+import HorizonMatrix from "./components/stories/HorizonMatrix";
 import MicroscopePanel from "./components/stories/MicroscopePanel";
 import { useInvestigation } from "./hooks/useInvestigation";
 import { useResource } from "./hooks/useResource";
@@ -51,7 +52,9 @@ export default function App() {
   const [days, setDays] = useState(180);
   const [centerTab, setCenterTab] = useState("chart");
   const [sideTab, setSideTab] = useState("findings");
-  const [bottomTab, setBottomTab] = useState("anomalies");
+  const [bottomTab, setBottomTab] = useState(
+    LINK.get("mode") === "copilot" ? "peers" : "anomalies"
+  );
 
   const [strategy, setStrategy] = useState(null);
   const [anomaly, setAnomaly] = useState(null);
@@ -188,7 +191,7 @@ export default function App() {
     setInvestigationId(null);
     setActionError(null);
     setSideTab("explain");
-    setView("postmortem");
+    setView((current) => (current === "copilot" ? "copilot" : "postmortem"));
 
     setTicker(selected.ticker);
     setNewsDay(null);
@@ -302,7 +305,15 @@ export default function App() {
         onRemoveTicker={removeTicker}
       />
 
-      <SideRail view={view} onChange={setView} />
+      <SideRail
+        view={view}
+        onChange={(next) => {
+          setView(next);
+          setSideTab("findings");
+          setBottomTab(next === "copilot" ? "peers" : "anomalies");
+          setCenterTab("chart");
+        }}
+      />
 
       {view === "graph" && (
         <main className="app__main app__main--full">
@@ -319,7 +330,16 @@ export default function App() {
       {desk && (
         <>
           <main className="app__main">
-            <PerformanceStrip portfolio={portfolio.data} asOf={system.data?.as_of} />
+            {copilot ? (
+              <CopilotStrip
+                ticker={ticker}
+                microscope={microscope.data}
+                horizon={horizon}
+                onHorizon={setHorizon}
+              />
+            ) : (
+              <PerformanceStrip portfolio={portfolio.data} asOf={system.data?.as_of} />
+            )}
 
             {(actionError || portfolio.error || candles.error) && (
               <div className="error-banner">
@@ -343,13 +363,7 @@ export default function App() {
                 </span>
               )}
 
-              {copilot ? (
-                <HorizonSlider
-                  ticks={microscope.data?.ticks ?? []}
-                  horizon={horizon}
-                  onChange={setHorizon}
-                />
-              ) : (
+              {!copilot && (
                 <div className="toolbar__ranges mono">
                   {RANGES.map((range) => (
                     <button
@@ -393,16 +407,27 @@ export default function App() {
             <section className="blotter">
               <div className="toolbar">
                 <Tabs
-                  tabs={[
-                    { key: "anomalies", label: "Anomalies", count: blotter.length },
-                    { key: "positions", label: "Positions" },
-                    { key: "news", label: "News" },
-                    {
-                      key: "investigations",
-                      label: "Investigations",
-                      count: investigations.data?.length || null,
-                    },
-                  ]}
+                  tabs={
+                    copilot
+                      ? [
+                          { key: "peers", label: "Peers × timescales" },
+                          {
+                            key: "anomalies",
+                            label: `Signals on ${ticker ?? ""}`,
+                            count: blotter.length,
+                          },
+                        ]
+                      : [
+                          { key: "anomalies", label: "Anomalies", count: blotter.length },
+                          { key: "positions", label: "Positions" },
+                          { key: "news", label: "News" },
+                          {
+                            key: "investigations",
+                            label: "Investigations",
+                            count: investigations.data?.length || null,
+                          },
+                        ]
+                  }
                   active={bottomTab}
                   onChange={setBottomTab}
                 />
@@ -418,6 +443,15 @@ export default function App() {
               </div>
 
               <div className="blotter__body">
+                {bottomTab === "peers" && (
+                  <HorizonMatrix
+                    microscope={microscope.data}
+                    horizon={horizon}
+                    onHorizon={setHorizon}
+                    onSelectTicker={selectTicker}
+                  />
+                )}
+
                 {bottomTab === "anomalies" && (
                   <AnomalyTable
                     anomalies={blotter}
@@ -456,14 +490,20 @@ export default function App() {
           <aside className="app__side">
             <div className="toolbar">
               <Tabs
-                tabs={[
+                tabs={
                   copilot
-                    ? { key: "findings", label: "Unusual" }
-                    : { key: "findings", label: "Findings" },
-                  { key: "monitors", label: "Monitors" },
-                  { key: "news", label: "News", count: tickerNews.data?.length },
-                  { key: "explain", label: "Explain" },
-                ]}
+                    ? [
+                        { key: "findings", label: "Unusual" },
+                        { key: "news", label: "News", count: tickerNews.data?.length },
+                        { key: "explain", label: "Explain" },
+                      ]
+                    : [
+                        { key: "findings", label: "Findings" },
+                        { key: "monitors", label: "Monitors" },
+                        { key: "news", label: "News", count: tickerNews.data?.length },
+                        { key: "explain", label: "Explain" },
+                      ]
+                }
                 active={sideTab}
                 onChange={setSideTab}
               />
