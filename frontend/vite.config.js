@@ -18,7 +18,15 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
       port: 5173,
 
-      allowedHosts: ['.apps.launchpad.nvidia.com'],
+      // The desk is opened through whatever forwards the port:
+      // VS Code, a Launchpad URL, a tunnel. Their hostnames are
+      // not known in advance, and a development server that
+      // answers "host not allowed" is a dead end on demo day.
+      // Set VITE_ALLOWED_HOSTS to a comma-separated list to
+      // restrict it again.
+      allowedHosts: env.VITE_ALLOWED_HOSTS
+        ? env.VITE_ALLOWED_HOSTS.split(',').map((host) => host.trim())
+        : true,
 
       proxy: {
         '/api': env.VITE_API_PROXY ?? 'http://127.0.0.1:8080',
