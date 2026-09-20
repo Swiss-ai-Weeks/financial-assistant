@@ -74,6 +74,8 @@ def scan_pairs_as_of(
     corr_min: float = 0.70,
     alpha: float = 0.01,
     entry: float = 2.0,
+    sectors: dict[str, str] | None = None,
+    corr_min_same_sector: float | None = None,
 ) -> tuple[
     HistoricalPairSignal,
     ...
@@ -206,6 +208,17 @@ def scan_pairs_as_of(
         metric=metric,
         corr_min=corr_min,
         alpha=alpha,
+        # Only named when used, so the default call is
+        # unchanged for callers that know nothing of it.
+        **(
+            {
+                "sectors": sectors,
+                "corr_min_same_sector":
+                    corr_min_same_sector,
+            }
+            if sectors is not None
+            else {}
+        ),
     )
 
     if not fits:

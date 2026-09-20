@@ -211,6 +211,8 @@ def build_pair_analogue_base(
     corr_min: float = 0.70,
     alpha: float = 0.05,
     entry: float = 2.0,
+    sectors: dict[str, str] | None = None,
+    corr_min_same_sector: float | None = None,
     step_sessions: int = 10,
     lookback_sessions: int = 500,
     until: date | None = None,
@@ -237,7 +239,7 @@ def build_pair_analogue_base(
     scan_days = usable[-lookback_sessions::step_sessions]
 
     breaks: list[PairBreak] = []
-    previously_broken: set[tuple[str, str]] = set()
+    previously_broken: set[tuple[str, ...]] = set()
 
     for day in scan_days:
         try:
@@ -248,6 +250,8 @@ def build_pair_analogue_base(
                 corr_min=corr_min,
                 alpha=alpha,
                 entry=entry,
+                sectors=sectors,
+                corr_min_same_sector=corr_min_same_sector,
             )
         except ValueError:
             continue
@@ -256,9 +260,14 @@ def build_pair_analogue_base(
 
         for signal in signals:
             pair = (signal.fit.ticker_a, signal.fit.ticker_b)
-            broken_now.add(pair)
 
-            if pair in previously_broken:
+            # Which leg is the dependent one can change from
+            # one scan to the next. It is still the same pair,
+            # and a break that persists is still one event.
+            identity = tuple(sorted(pair))
+            broken_now.add(identity)
+
+            if identity in previously_broken:
                 continue
 
             try:

@@ -61,6 +61,15 @@ DiscoveryService    future   universe funnel -> ranked setups
   headlines only setups with no held leg and lists the others as already on the
   desk. The universe (`data/universes/us_large_caps.txt`, ~100 names;
   `UNIVERSE_FILE` to change it) is what gives discovery something to find.
+- **What counts as a relationship is decided by the data, guarded by a prior.**
+  Every pair tested is a chance of a false positive, so the correlation filter
+  in front of the cointegration test is also the guard against flukes. Names in
+  the same sector (a header `# Sector · group` in the universe file) are
+  admitted at correlation ≥ 0.50, names from different sectors need ≥ 0.70.
+  Without the prior, the looser bar found KLAC/CAT and GS/DAL; with it, the book
+  keeps JPM/BAC, CRM/ADBE, AVGO/NVDA, WFC/AXP and CVX/COP. Engle-Granger is
+  asymmetric, so both orderings are tested and the stronger is kept: four of the
+  eight classic pairs that pass do so in one direction only.
 - **Abnormal return** is the return a market model (beta on the previous 252
   sessions) does not explain. Its size is judged event-study style: daily
   abnormal volatility from the year *before* the horizon, scaled by √horizon.

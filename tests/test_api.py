@@ -381,9 +381,9 @@ def test_adding_a_ticker_triggers_a_pair_scan(client):
     assert scan["focus"] == ["BBB"]
     assert scan["formation_end"] < scan["monitoring_start"]
 
-    pairs = {(fit["ticker_a"], fit["ticker_b"]) for fit in scan["fits"]}
+    pairs = {frozenset((fit["ticker_a"], fit["ticker_b"])) for fit in scan["fits"]}
 
-    assert ("AAA", "BBB") in pairs
+    assert {"AAA", "BBB"} in pairs
     assert any(a["strategy"] == "pairs" for a in scan["anomalies"])
 
 
@@ -430,8 +430,13 @@ def test_anomaly_blotter_covers_every_strategy_monitor(client):
 
 def test_pair_spread_series(client):
     body = client.get("/api/pairs/AAA/BBB/spread").json()
+    latest = body["points"][-1]["z_score"]
 
-    assert body["points"][-1]["z_score"] < -body["entry"]
+    assert {body["ticker_a"], body["ticker_b"]} == {"AAA", "BBB"}
+    assert abs(latest) > body["entry"]
+
+    # AAA fell. The sign says so from whichever leg is dependent.
+    assert (latest < 0) == (body["ticker_a"] == "AAA")
 
 
 def test_anomaly_news_is_split_at_the_evidence_cutoff(client):
@@ -680,3 +685,64 @@ def test_discovery_is_about_what_is_not_already_held(client):
     assert ("AAA", "BBB") in new
     assert ("AAA", "CCC") in known
     assert not new & known
+
+
+def test_analogue_record_is_reused_only_while_current_and_never_from_the_future():
+    def record(last_as_of):
+        return PairAnalogueBase(
+            universe_size=3,
+            first_as_of=date(2025, 1, 2),
+            last_as_of=last_as_of,
+            breaks=(),
+        )
+
+    latest = date(2026, 9, 18)
+    is_current = DiscoveryService._is_current
+
+    assert is_current(record(date(2026, 8, 21)), latest)
+
+    # Weeks of recent breaks are missing.
+    assert not is_current(record(date(2026, 6, 1)), latest)
+
+    # Built for a later date: on a replayed desk its most
+    # recent breaks have not happened yet.
+    assert not is_current(record(date(2026, 9, 15)), latest)
+    assert not is_current(record(date(2026, 12, 1)), latest)
+    assert not is_current(record(None), latest)
+
+
+def test_sector_prior_admits_related_names_at_a_looser_correlation():
+    """
+    AAA and BBB correlate about 0.85. Under a 0.95 bar they
+    are only tested when they are declared same-sector.
+    """
+
+    from financial_assistant.anomaly_detection import fit_pairs
+
+    prices, _ = fake_download(("AAA", "BBB"), start=None, end=None)
+    window = {
+        "start": prices["date"].iloc[0].date(),
+        "end": prices["date"].iloc[300].date(),
+        "corr_min": 0.95,
+        "alpha": 0.05,
+    }
+
+    assert fit_pairs(prices, **window) == ()
+
+    related = fit_pairs(
+        prices,
+        **window,
+        sectors={"AAA": "Banks", "BBB": "Banks"},
+        corr_min_same_sector=0.5,
+    )
+
+    assert len(related) == 1
+
+    unrelated = fit_pairs(
+        prices,
+        **window,
+        sectors={"AAA": "Banks", "BBB": "Airlines"},
+        corr_min_same_sector=0.5,
+    )
+
+    assert unrelated == ()

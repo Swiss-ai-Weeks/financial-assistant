@@ -52,6 +52,7 @@ class Settings:
 
     pairs_formation_observations: int
     pairs_corr_min: float
+    pairs_corr_min_same_sector: float
     pairs_alpha: float
     pairs_entry: float
 
@@ -126,6 +127,9 @@ class Settings:
             news_cache_minutes=int(env("NEWS_CACHE_MINUTES", "30")),
             pairs_formation_observations=int(env("PAIRS_FORMATION", "252")),
             pairs_corr_min=float(env("PAIRS_CORR_MIN", "0.70")),
+            pairs_corr_min_same_sector=float(
+                env("PAIRS_CORR_MIN_SAME_SECTOR", "0.50")
+            ),
             pairs_alpha=float(env("PAIRS_ALPHA", "0.05")),
             pairs_entry=float(env("PAIRS_ENTRY", "2.0")),
             llm_provider_name=env("LLM_PROVIDER", "vllm-local"),

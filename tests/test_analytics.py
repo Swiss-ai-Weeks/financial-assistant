@@ -229,9 +229,13 @@ def test_pair_analogue_base_is_walk_forward():
 
     event = injected[0]
 
-    assert (event.ticker_a, event.ticker_b) == ("AAA", "BBB")
+    assert {event.ticker_a, event.ticker_b} == {"AAA", "BBB"}
     assert event.as_of == days[400].date()
-    assert event.z_score < -2
+
+    # AAA fell: below equilibrium if it is the dependent leg,
+    # above it if BBB is.
+    assert (event.z_score < -2) == (event.ticker_a == "AAA")
+    assert abs(event.z_score) > 2
 
     # The dislocation was temporary, so the reversion trade paid.
     assert event.return_5_pct > 0

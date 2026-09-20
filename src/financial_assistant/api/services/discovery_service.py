@@ -26,6 +26,11 @@ from financial_assistant.api.services.postmortem_service import relationship_of
 
 LIQUIDITY_SESSIONS = 20
 
+# The last scan of a record is 10 to 19 sessions before the
+# latest one it was built for: 14 to 28 calendar days.
+ANALOGUE_MIN_AGE_DAYS = 14
+ANALOGUE_MAX_AGE_DAYS = 45
+
 
 class DiscoveryService:
     """
@@ -51,6 +56,7 @@ class DiscoveryService:
         alpha: float,
         entry: float,
         min_liquidity_musd: float,
+        corr_min_same_sector: float | None = None,
         analogue_builder=build_pair_analogue_base,
     ):
         self._anomalies = anomalies
@@ -62,6 +68,7 @@ class DiscoveryService:
         self._cache_dir = cache_dir
         self._formation_observations = formation_observations
         self._corr_min = corr_min
+        self._corr_min_same_sector = corr_min_same_sector
         self._alpha = alpha
         self._entry = entry
         self._min_liquidity_musd = min_liquidity_musd
@@ -250,27 +257,46 @@ class DiscoveryService:
             .dropna(axis=1)
         )
 
-        correlations = np.log(closes).diff().corr().to_numpy()
-        upper = correlations[np.triu_indices_from(correlations, k=1)]
+        correlations = np.log(closes).diff().corr()
 
-        return int((upper >= self._corr_min).sum())
+        # The same admission rule the scan applies: a looser
+        # bar inside a sector, the strict one across sectors.
+        sector = pd.Series(self._instruments.sectors).reindex(correlations.index)
+        codes = sector.to_numpy()
+
+        same_sector = (codes[:, None] == codes[None, :]) & sector.notna().to_numpy()[:, None]
+
+        required = np.where(
+            same_sector & (self._corr_min_same_sector is not None),
+            self._corr_min_same_sector or self._corr_min,
+            self._corr_min,
+        )
+
+        upper = np.triu_indices_from(required, k=1)
+
+        return int((correlations.to_numpy()[upper] >= required[upper]).sum())
 
     def _analogue_base(self, prices: pd.DataFrame) -> PairAnalogueBase:
         """
-        The walk-forward record takes tens of seconds to build
-        and only changes when the universe or the latest
-        session does, so it is kept on disk.
+        The walk-forward record takes minutes to build for a
+        large universe, so it is kept on disk and reused while
+        it is still current.
+
+        "Current" is judged against the latest session the desk
+        can see, which also keeps a replay honest: a record
+        built for a later date contains breaks from the replayed
+        desk's future and is rebuilt rather than reused.
         """
 
-        last = pd.to_datetime(prices["date"]).max().date()
+        latest = pd.to_datetime(prices["date"]).max().date()
 
         key = sha1(
             json.dumps(
                 [
                     sorted(prices["ticker"].unique()),
-                    last.isoformat(),
                     self._formation_observations,
                     self._corr_min,
+                    self._corr_min_same_sector,
                     self._alpha,
                     self._entry,
                 ]
@@ -281,7 +307,10 @@ class DiscoveryService:
 
         with self._lock:
             if path.is_file():
-                return PairAnalogueBase.model_validate_json(path.read_text())
+                base = PairAnalogueBase.model_validate_json(path.read_text())
+
+                if self._is_current(base, latest):
+                    return base
 
             base = self._build_analogues(
                 prices,
@@ -289,9 +318,23 @@ class DiscoveryService:
                 corr_min=self._corr_min,
                 alpha=self._alpha,
                 entry=self._entry,
+                sectors=self._instruments.sectors,
+                corr_min_same_sector=self._corr_min_same_sector,
             )
 
             self._cache_dir.mkdir(parents=True, exist_ok=True)
             path.write_text(base.model_dump_json())
 
             return base
+
+    @staticmethod
+    def _is_current(base: PairAnalogueBase, latest) -> bool:
+        if base.last_as_of is None:
+            return False
+
+        age = (latest - base.last_as_of).days
+
+        # Younger than MIN: its last outcomes lie beyond
+        # `latest`, i.e. it was built for a later date.
+        # Older than MAX: weeks of recent breaks are missing.
+        return ANALOGUE_MIN_AGE_DAYS <= age <= ANALOGUE_MAX_AGE_DAYS

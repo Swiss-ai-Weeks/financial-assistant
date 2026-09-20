@@ -167,6 +167,7 @@ def get_anomaly_service() -> AnomalyService:
         benchmark=settings.benchmark,
         formation_observations=settings.pairs_formation_observations,
         corr_min=settings.pairs_corr_min,
+        corr_min_same_sector=settings.pairs_corr_min_same_sector,
         alpha=settings.pairs_alpha,
         entry=settings.pairs_entry,
     )
@@ -274,6 +275,7 @@ def get_discovery_service() -> DiscoveryService:
         cache_dir=settings.analogue_cache_dir,
         formation_observations=settings.pairs_formation_observations,
         corr_min=settings.pairs_corr_min,
+        corr_min_same_sector=settings.pairs_corr_min_same_sector,
         alpha=settings.pairs_alpha,
         entry=settings.pairs_entry,
         min_liquidity_musd=settings.min_liquidity_musd,

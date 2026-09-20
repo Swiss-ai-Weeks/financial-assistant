@@ -10,15 +10,37 @@ from financial_assistant.api.models import Instrument
 TRADABLE_KINDS = {"EQUITY", "ETF"}
 
 
-def read_universe(path: Path) -> tuple[str, ...]:
-    if not path.is_file():
-        return ()
+SECTOR_SEPARATOR = "·"
 
-    return tuple(
-        line.strip().upper()
-        for line in path.read_text().splitlines()
-        if line.strip() and not line.strip().startswith("#")
-    )
+
+def read_universe(path: Path) -> dict[str, str | None]:
+    """
+    Tickers of a universe file, each with its sector.
+
+    A header such as "# Energy · majors / E&P" puts the
+    tickers below it in the Energy sector. Plain comments
+    and files without such headers leave the sector unknown.
+    """
+
+    if not path.is_file():
+        return {}
+
+    sector: str | None = None
+    universe: dict[str, str | None] = {}
+
+    for raw in path.read_text().splitlines():
+        line = raw.strip()
+
+        if line.startswith("#"):
+            if SECTOR_SEPARATOR in line:
+                sector = line.lstrip("# ").split(SECTOR_SEPARATOR)[0].strip()
+
+            continue
+
+        if line:
+            universe.setdefault(line.upper(), sector)
+
+    return universe
 
 
 class InstrumentRepository:
@@ -31,13 +53,20 @@ class InstrumentRepository:
     """
 
     def __init__(self, universe_file: Path, *, searcher=None):
-        self._universe = read_universe(universe_file)
+        self._sectors = read_universe(universe_file)
+        self._universe = tuple(self._sectors)
         self._search = searcher or self._yahoo_search
         self._described: dict[str, Instrument] = {}
 
     @property
     def universe(self) -> tuple[str, ...]:
         return self._universe
+
+    @property
+    def sectors(self) -> dict[str, str]:
+        """Sector of every universe ticker that has one."""
+
+        return {t: s for t, s in self._sectors.items() if s is not None}
 
     def search(self, query: str, *, limit: int = 8) -> tuple[Instrument, ...]:
         text = query.strip()

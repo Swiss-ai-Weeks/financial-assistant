@@ -4,6 +4,7 @@
 #   make dev     run the API (:8080) and the UI (:5173)
 #
 #   make news    download historical news into the local archive
+#   make warm    pre-build the slow caches before a demo
 #
 # On the GPU box, additionally:
 #
@@ -17,7 +18,7 @@ API_PORT ?= 8080
 
 .DEFAULT_GOAL := help
 
-.PHONY: help setup dev api web build serve news llm search test lint reset
+.PHONY: help setup dev api web build serve news warm llm search test lint reset
 
 help:
 	@awk '/^# /{sub(/^# ?/,"");print} /^$$/{exit}' Makefile
@@ -51,6 +52,12 @@ serve: build
 # Resumable. Pass options with ARGS, e.g. ARGS="--universe".
 news:
 	$(BIN)/python scripts/download_news.py $(ARGS)
+
+# Prices for the whole universe and the walk-forward analogue
+# record (minutes for ~140 names). Both are cached on disk, so
+# the first "I'm Feeling Lucky" of the demo is instant.
+warm:
+	$(BIN)/python -c "from financial_assistant.api.dependencies import get_discovery_service as s; d = s().scan(); print(d.analogue_breaks, 'analogue breaks;', len(d.setups), 'new setups')"
 
 llm:
 	./scripts/serve_llm.sh

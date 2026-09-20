@@ -1,8 +1,21 @@
-# ~100 liquid US large caps, grouped so that economically
-# related names (the ones worth testing for relationships)
-# sit together. Used by the pair scan and by discovery.
+# ~140 liquid US names, grouped so that economically related
+# securities (the ones worth testing for relationships) sit
+# together. Used by the pair scan and by discovery.
+#
+# Groups are built around classic same-driver pairs: oil
+# majors, refiners, pipelines, railroads, hotels, cruise
+# lines, homebuilders, rating agencies, exchanges, chip
+# equipment. Being listed here only makes a pair a CANDIDATE.
+# Whether it is a relationship is decided by the data: on the
+# 2025-09 to 2026-08 window only 8 of 52 classic pairs passed
+# (JPM/BAC, CRM/ADBE, AVGO/NVDA, HLT/MAR, KLAC/LRCX, UNP/CSX,
+# CVX/COP, GDX/GLD) and KO/PEP, HD/LOW, V/MA did not.
+#
+# A header reads "# Sector · group". The sector is an economic
+# prior: two names in the same sector are tested at a looser
+# correlation than two names from different ones.
 
-# Banks / brokers
+# Financials · banks / brokers
 JPM
 BAC
 C
@@ -11,33 +24,49 @@ GS
 MS
 USB
 PNC
+TFC
 SCHW
 
-# Payments / consumer finance
+# Financials · payments / consumer finance
 V
 MA
 AXP
 COF
 PYPL
 
-# Insurance / asset managers
+# Financials · exchanges / rating agencies
+SPGI
+MCO
+ICE
+CME
+
+# Financials · insurance / asset managers
 BLK
 MET
 AIG
 CB
 PGR
 
-# Energy
+# Energy · majors / E&P
 XOM
 CVX
+BP
+SHEL
 COP
 EOG
-SLB
 OXY
-MPC
-PSX
+DVN
 
-# Pharma / GLP-1 / biotech
+# Energy · services / refiners / pipelines
+SLB
+HAL
+MPC
+VLO
+PSX
+KMI
+WMB
+
+# Health care · pharma / GLP-1 / biotech
 NVO
 LLY
 PFE
@@ -49,7 +78,7 @@ AMGN
 GILD
 AZN
 
-# Health services / devices
+# Health care · services / devices
 UNH
 CVS
 ELV
@@ -58,7 +87,7 @@ MDT
 TMO
 DHR
 
-# Semiconductors
+# Technology · semiconductors
 NVDA
 AMD
 AVGO
@@ -69,8 +98,9 @@ MU
 TXN
 AMAT
 LRCX
+KLAC
 
-# Enterprise hardware / IT
+# Technology · enterprise hardware / IT
 HPE
 DELL
 HPQ
@@ -79,53 +109,76 @@ CSCO
 ORCL
 ACN
 
-# Platforms / software
+# Technology · platforms / software
 AAPL
 MSFT
 GOOGL
+GOOG
 META
 AMZN
 CRM
 ADBE
 NFLX
 
-# Staples
+# Consumer staples · staples / tobacco
 KO
 PEP
 PG
 CL
+KMB
 MDLZ
+MO
+PM
 COST
 WMT
 TGT
 
-# Home improvement / discretionary
+# Consumer discretionary · home improvement / homebuilders
 HD
 LOW
+DHI
+LEN
+
+# Consumer discretionary · hotels / cruise lines
+MAR
+HLT
+CCL
+RCL
+
+# Consumer discretionary · other
 NKE
 SBUX
 MCD
 DIS
 
-# Industrials / machinery
+# Industrials · machinery / defence / materials
 CAT
 DE
 HON
 GE
 RTX
 LMT
+NOC
+GD
 BA
 MMM
+ETN
+EMR
+SHW
+PPG
 
-# Transport / airlines
+# Industrials · transport / airlines
 UPS
 FDX
 UNP
 CSX
+NSC
 DAL
 UAL
+AAL
+LUV
 
-# Autos / telecom / utilities
+# Autos, telecom, utilities · mixed
 F
 GM
 TSLA
@@ -133,3 +186,11 @@ T
 VZ
 NEE
 DUK
+SO
+
+# Cross-asset · gold vs miners, silver, country ETFs
+GLD
+GDX
+SLV
+EWA
+EWC

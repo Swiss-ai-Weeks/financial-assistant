@@ -52,7 +52,9 @@ make search    # optional: SearXNG for wider web retrieval, then set SEARXNG_URL
 
 No GPUs at hand? Put an NVIDIA API key in `.env` (see `.env.example`) to use the
 same model hosted. Other targets: `make test`, `make serve` (UI and API as one
-process), `make reset` (restore the demo book).
+process), `make reset` (restore the demo book), and **`make warm` before a demo**:
+it pre-builds the slow caches, so the first 🍀 click is instant instead of
+taking minutes.
 
 ## Three stories, one loop
 
@@ -84,8 +86,8 @@ desk says so.
 3. **Now.** On any finance page, highlight "Bank of America", right-click →
    *Analyse unusual activity*. Drag the horizon: unusual over a week (3σ),
    ordinary over a day, a month, a year. "JPM has not followed the move."
-4. **Next.** Press 🍀. Watch 104 securities become 5,356 possible relationships
-   become one idea the manager was *not* already looking at, then **Show me the
+4. **Next.** Press 🍀. Watch 142 securities become 10,011 possible relationships
+   become a handful of ideas the manager was *not* already looking at, then **Show me the
    reasoning**. Relationships involving a holding are listed apart: the
    post-mortem already reported them.
 5. **Add a name.** Search a company in the top bar and press *Add*: the desk

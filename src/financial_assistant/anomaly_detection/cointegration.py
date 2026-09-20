@@ -239,6 +239,8 @@ def screen_pairs(
     corr_min: float = 0.70,
     alpha: float = 0.01,
     focus: frozenset[str] | None = None,
+    sectors: dict[str, str] | None = None,
+    corr_min_same_sector: float | None = None,
 ) -> tuple[PairFit, ...]:
     """
     Screen all eligible pairs using only the
@@ -246,6 +248,14 @@ def screen_pairs(
 
     The return-correlation filter reduces the number
     of pairwise Engle-Granger tests.
+
+    Every test is a chance of a false positive, so the
+    correlation filter is also the guard against flukes.
+    Two names with a shared economic driver deserve a
+    looser bar than two unrelated ones: with `sectors`
+    and `corr_min_same_sector`, same-sector pairs are
+    admitted at the looser threshold while cross-sector
+    pairs still need `corr_min`.
 
     When `focus` is given, only pairs with at least
     one leg in it are tested. A portfolio only needs
@@ -281,6 +291,24 @@ def screen_pairs(
         .corr()
     )
 
+    def required_correlation(
+        ticker_a: str,
+        ticker_b: str,
+    ) -> float:
+        same_sector = (
+            sectors is not None
+            and corr_min_same_sector is not None
+            and sectors.get(ticker_a) is not None
+            and sectors.get(ticker_a)
+            == sectors.get(ticker_b)
+        )
+
+        return (
+            corr_min_same_sector
+            if same_sector
+            else corr_min
+        )
+
     candidates = [
         (ticker_a, ticker_b)
         for ticker_a, ticker_b
@@ -293,7 +321,10 @@ def screen_pairs(
                 ticker_a,
                 ticker_b,
             ]
-            >= corr_min
+            >= required_correlation(
+                ticker_a,
+                ticker_b,
+            )
         )
         and (
             focus is None
@@ -312,18 +343,36 @@ def screen_pairs(
         log_px.index.max().date()
     )
 
-    for ticker_a, ticker_b in candidates:
-        result = engle_granger(
-            log_px[ticker_a],
-            log_px[ticker_b],
-            alpha=alpha,
-        )
+    for first, second in candidates:
+        # Engle-Granger is not symmetric: regressing A on B
+        # and B on A give different residuals and can give
+        # different verdicts. Both orderings are tested and
+        # the stronger relationship is kept, with ticker_a
+        # as its dependent leg.
+        orderings = [
+            (dependent, regressor, outcome)
+            for dependent, regressor in (
+                (first, second),
+                (second, first),
+            )
+            if (
+                outcome := engle_granger(
+                    log_px[dependent],
+                    log_px[regressor],
+                    alpha=alpha,
+                )
+            )
+            is not None
+            and outcome["cointegrated"]
+        ]
 
-        if (
-            result is None
-            or not result["cointegrated"]
-        ):
+        if not orderings:
             continue
+
+        ticker_a, ticker_b, result = min(
+            orderings,
+            key=lambda ordering: ordering[2]["pvalue"],
+        )
 
         spread = result["spread"]
 
@@ -402,6 +451,8 @@ def fit_pairs(
     corr_min: float = 0.70,
     alpha: float = 0.01,
     focus: frozenset[str] | None = None,
+    sectors: dict[str, str] | None = None,
+    corr_min_same_sector: float | None = None,
 ) -> tuple[PairFit, ...]:
     """
     Explicit alias for formation-window fitting.
@@ -420,6 +471,8 @@ def fit_pairs(
         corr_min=corr_min,
         alpha=alpha,
         focus=focus,
+        sectors=sectors,
+        corr_min_same_sector=corr_min_same_sector,
     )
 
 

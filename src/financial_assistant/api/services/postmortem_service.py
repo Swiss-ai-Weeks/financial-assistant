@@ -216,7 +216,9 @@ class PostMortemService:
         other = b if held == a else a
 
         return Finding(
-            headline=f"{a} / {b} — unusual divergence",
+            # The manager reads the pair from their own side,
+            # whichever leg the regression happens to explain.
+            headline=f"{held} / {other} — unusual divergence",
             statement=(
                 f"{laggard} underperformed {leader} by {abs(gap):.1f}% since "
                 f"{signal_date:%b %d}, {abs(anomaly.z_score):.1f}σ outside "

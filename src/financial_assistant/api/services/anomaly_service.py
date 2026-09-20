@@ -124,6 +124,7 @@ class AnomalyService:
         corr_min: float,
         alpha: float,
         entry: float,
+        corr_min_same_sector: float | None = None,
     ):
         self._portfolios = portfolios
         self._market = market
@@ -133,6 +134,7 @@ class AnomalyService:
         self._benchmark = benchmark
         self._formation_observations = formation_observations
         self._corr_min = corr_min
+        self._corr_min_same_sector = corr_min_same_sector
         self._alpha = alpha
         self._entry = entry
 
@@ -339,6 +341,8 @@ class AnomalyService:
             corr_min=self._corr_min,
             alpha=self._alpha,
             focus=focus,
+            sectors=self._instruments.sectors,
+            corr_min_same_sector=self._corr_min_same_sector,
         )
 
         zscores, detected = monitor_pairs(
