@@ -6,7 +6,7 @@ from historical_api import historical_scan
 from bookreader_viewer import document_page, source_links
 import re
 
-from investigation_api import investigate, public_models
+from investigation_api import investigate, public_models, investigate_missing_evidence
 from investigation_progress import progress_registry
 
 from http.server import (
@@ -379,6 +379,10 @@ class Handler(
             for path in sorted(Path(".run/replays").glob("*.json"), reverse=True):
                 try:
                     packet = json.loads(path.read_text())
+                    if packet.get('followups'):
+                        latest = packet['followups'][-1]
+                        packets.append({'id': path.stem, 'label': f"{packet.get('ticker', 'Investigation')} · {latest['cutoff']} · missing-evidence follow-up"})
+                        continue
                     meta = packet["historical"]
                     fit = meta["signal"]["fit"]
                     packets.append({"id": path.stem, "label": f"{fit['ticker_a']} / {fit['ticker_b']} · {meta['as_of']} · saved historical run"})
@@ -438,7 +442,7 @@ class Handler(
     def do_POST(self) -> None:
         if (
             self.path
-            not in ("/api/anomalies/scan", "/api/anomalies/historical-scan", "/api/investigations")
+            not in ("/api/anomalies/scan", "/api/anomalies/historical-scan", "/api/investigations", "/api/investigations/followup")
         ):
             self.send_json(
                 404,
@@ -468,7 +472,9 @@ class Handler(
                 else {}
             )
 
-            if self.path == "/api/investigations":
+            if self.path == "/api/investigations/followup":
+                result = investigate_missing_evidence(request)
+            elif self.path == "/api/investigations":
                 result = investigate(
                     request, prices=PRICES, fits=ALL_FITS, as_of=AS_OF,
                     formation_observations=FIT_PAYLOAD["formation_observations"],
@@ -510,7 +516,8 @@ class Handler(
                 400,
                 {
                     "error":
-                        str(exc)
+                        ("Follow-up failed; the original investigation is preserved"
+                         if self.path == "/api/investigations/followup" else str(exc))
                 },
             )
             return

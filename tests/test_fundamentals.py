@@ -248,13 +248,18 @@ def test_real_investigation_pipeline_uses_both_companies_before_research(respons
     monkeypatch.setattr(pipeline, 'extract_document_claims', lambda *a: ((document, run, (claim,), None),))
     monkeypatch.setattr(pipeline, 'generate_hypotheses', generate)
     monkeypatch.setattr(pipeline, 'audit_hypotheses', lambda *a, **kw: (run.model_copy(update={'run_id':'audit'}), ()))
-    monkeypatch.setattr(pipeline, 'assess_relationships', lambda *a, **kw: ((), ()))
+    def assess(claims, hypotheses, provider, **kwargs):
+        assert claims and hypotheses
+        assert kwargs['observations'] and kwargs['calculations']
+        assert all(c.calculation_id for c in kwargs['calculations'])
+        return (), ()
+    monkeypatch.setattr(pipeline, 'assess_relationships', assess)
     graph, _ = pipeline.investigate_signal(make_signal(), observed_at=observed, provider=object(),
         fundamentals_service=FundamentalsService(Mock(get_company_facts=get)), progress=lambda *args: stages.append(args))
     assert len(graph.fundamentals) == 2
     assert all(f.period_end.year < 2025 for b in graph.fundamentals for f in b.facts)
     assert any(n.kind.value == 'calculation' and n.data['metadata']['metric_id'] == 'roic' for n in graph.nodes)
-    assert any(e.kind.value == 'context_for' and e.source.startswith('calculation:') for e in graph.edges)
+    assert not any(e.kind.value == 'context_for' and e.source.startswith('calculation:') for e in graph.edges)  # No fabricated judgments when assessor returns none.
     assert stages[-1][0] == 'graph_complete'
     assert 'fundamental_metrics_calculated' in next(s[2] for s in stages if s[0] == 'fundamentals_complete')
 

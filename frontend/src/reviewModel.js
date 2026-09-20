@@ -43,25 +43,27 @@ export function updateReview(review, action, now = new Date().toISOString()) {
 export function evidenceRoles(graph) {
   const support = new Set(graph.nodes.filter(n => n.kind === 'evidence').map(n => n.node_id));
   const counter = new Set(graph.nodes.filter(n => n.kind === 'counter_evidence').map(n => n.node_id));
+  const context = new Set();
   for (const e of graph.edges) {
+    if (e.kind === 'context_for') context.add(e.source);
     if (e.kind === 'supports') support.add(e.source);
     if (e.kind === 'supported_by') support.add(e.target);
     if (['contradicts', 'weakens'].includes(e.kind)) counter.add(e.source);
     if (e.kind === 'contradicted_by') counter.add(e.target);
   }
   if (graph.temporalStatuses) {
-    for (const role of [support, counter]) for (const id of role) {
+    for (const role of [support, counter, context]) for (const id of role) {
       if (!['available_at_cutoff', 'derived_from_available_evidence'].includes(graph.temporalStatuses.get(id))) role.delete(id);
     }
   }
-  return { support, counter };
+  return { support, counter, context };
 }
 
 export function graphCounts(graph) {
   const count = (...kinds) => graph.nodes.filter(n => kinds.includes(n.kind)).length;
   const roles = evidenceRoles(graph);
   return { Claims: count('claim', 'primary_claim', 'subclaim'), Hypotheses: count('hypothesis'),
-    Evidence: roles.support.size, 'Counter-evidence': roles.counter.size,
+    Evidence: roles.support.size, 'Counter-evidence': roles.counter.size, Context: roles.context.size,
     Assumptions: count('assumption'), 'Missing evidence': count('missing_evidence'),
     Calculations: count('calculation'), Sources: count('source') };
 }

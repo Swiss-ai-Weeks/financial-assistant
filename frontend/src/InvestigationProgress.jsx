@@ -14,7 +14,7 @@ export default function InvestigationProgress({status, context}) {
   return <section className="investigation-progress" aria-label="Investigation execution progress">
     <strong>INVESTIGATION {status.state.toUpperCase()} · {elapsed}</strong>
     <p>{context.provider} · {context.model}</p>
-    {context.mode === 'historical' && <p><strong>Evidence cutoff: {status.evidence_cutoff ?? `End of ${context.as_of} UTC`}</strong></p>}
+    {(context.mode === 'historical' || status.followup) && <p><strong>Evidence cutoff: {status.evidence_cutoff ?? `End of ${context.as_of} UTC`}</strong></p>}
     <ol aria-live="polite">{progressRows(status, context.mode === 'historical').map(row =>
       <li key={row.id} className={row.state}><span aria-label={row.state}>{row.symbol}</span><span>{row.label}</span><small>{row.detail}</small></li>)}</ol>
     <p>Current graph and review remain available below.</p>

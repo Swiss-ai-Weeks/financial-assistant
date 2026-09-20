@@ -28,7 +28,12 @@ export default function ClaimGraph({graph, onSelectItem, itemReviews = {}, cutof
   const ids = new Set(visible.nodes.map(n => n.node_id));
   const compactLayout = toReactFlowNodes(visible.nodes);
   const positions = new Map(compactLayout.map(n => [n.id, n.position]));
-  const nodes = layoutNodes.map(n => ({...n, position: n.data.dragged ? n.position : positions.get(n.id) ?? n.position, type:'evidenceNode', hidden:!ids.has(n.id),
+  const stored = new Map(layoutNodes.map(n => [n.id, n]));
+  const mergedLayout = toReactFlowNodes(graph.nodes).map(n => {
+    const prior = stored.get(n.id);
+    return prior ? {...prior, data:{...n.data, dragged:prior.data.dragged}} : n;
+  });
+  const nodes = mergedLayout.map(n => ({...n, position: n.data.dragged || graph.followups?.length ? n.position : positions.get(n.id) ?? n.position, type:'evidenceNode', hidden:!ids.has(n.id),
     className:`${n.className}${roles.counter.has(n.id) ? ' cg-node--counter-role' : ''}`,
     data:{...n.data, temporalStatus:statuses.get(n.id), support:roles.support.has(n.id), counter:roles.counter.has(n.id), humanState:itemReviews[itemKey(n.data)]?.status}}));
   const edges = toReactFlowEdges(graph.edges).map(e => ({...e, hidden:!ids.has(e.source) || !ids.has(e.target)}));
@@ -45,7 +50,7 @@ export default function ClaimGraph({graph, onSelectItem, itemReviews = {}, cutof
     <p>{visible.nodes.length} / {graph.nodes.length} nodes visible · Filters combine selected types and roles. Only relationships between visible nodes are shown. Inspector retains the full graph.</p></div>
     {!visible.nodes.length && <p className="empty-state">No matching nodes recorded. Choose another filter or show all types.</p>}
     <div className="graph-container"><ReactFlow nodes={nodes} edges={edges} nodeTypes={NODE_TYPES} onInit={setFlow}
-      onNodesChange={changes => setLayoutNodes(current => applyNodeChanges(changes,current).map(n => changes.some(c => c.id === n.id && c.type === 'position' && c.dragging) ? {...n, data:{...n.data, dragged:true}} : n))}
+      onNodesChange={changes => setLayoutNodes(current => applyNodeChanges(changes, [...current, ...mergedLayout.filter(n => !current.some(c => c.id === n.id))]).map(n => changes.some(c => c.id === n.id && c.type === 'position' && c.dragging) ? {...n, data:{...n.data, dragged:true}} : n))}
       fitView fitViewOptions={{padding:0.12}} minZoom={0.08} maxZoom={1.8}
       onNodeClick={(_,node) => {
         onSelectItem?.(node.data);

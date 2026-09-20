@@ -965,6 +965,8 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             hypotheses,
             provider,
             max_workers=4,
+            observations=financial_observations,
+            calculations=financial_calculations,
         ),
     )
     report("relationship_assessment_complete", "Relationships assessed", relationships=len(assessments), model_runs=len(relation_runs))

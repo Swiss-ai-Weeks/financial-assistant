@@ -8,6 +8,9 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class NodeKind(StrEnum):
+    AGENT_ACTION = "agent_action"
+    RESEARCH_TASK = "research_task"
+    TOOL_CALL = "tool_call"
     CONTEXT = "context"
     ANOMALY = "anomaly"
 
@@ -30,6 +33,11 @@ class NodeKind(StrEnum):
 
 
 class EdgeKind(StrEnum):
+    INVESTIGATES = "investigates"
+    GENERATED_TASK = "generated_task"
+    RETRIEVED = "retrieved"
+    RESOLVES = "resolves"
+    PARTIALLY_RESOLVES = "partially_resolves"
     TRIGGERED = "triggered"
     CANDIDATE_EXPLANATION_FOR = "candidate_explanation_for"
 
@@ -99,6 +107,7 @@ class InvestigationGraph(BaseModel):
     )
 
     schema_version: str = "0.2"
+    followups: tuple[dict[str, Any], ...] = ()
     fundamentals: tuple[FundamentalEvidenceBundle, ...] = ()
 
     investigation_id: str = Field(min_length=1)

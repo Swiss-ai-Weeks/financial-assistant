@@ -295,7 +295,14 @@ def build_investigation_graph(
     # Execution provenance
     # -------------------------------------------------
 
+    from financial_assistant.llm.evidence_arguments import relationship_diagnostics
     for run in state.model_runs:
+        run_data = run.model_dump(mode="json")
+        if run.operation.value == 'relation_assessment':
+            assessed = tuple(a for a in state.relationship_assessments if a.model_run_id == run.run_id)
+            run_data['relationship_diagnostics'] = relationship_diagnostics(assessed)
+            # Includes unrelated judgments without inventing epistemic graph edges.
+            run_data['assessments'] = [a.model_dump(mode='json') for a in assessed]
         nodes.append(
             GraphNode(
                 node_id=_node_id(
@@ -308,9 +315,7 @@ def build_investigation_graph(
                     f"{run.model}: "
                     f"{run.operation.value}"
                 ),
-                data=run.model_dump(
-                    mode="json"
-                ),
+                data=run_data,
             )
         )
 
@@ -931,14 +936,6 @@ def build_investigation_graph(
             target = _node_id("calculation", identifier)
             edges.append(GraphEdge(edge_id=_edge_id(source, EdgeKind.CALCULATED_FROM, target),
                                    source=source, target=target, kind=EdgeKind.CALCULATED_FROM))
-        metric_id = calculation.metadata.get("metric_id", "")
-        if metric_id in {"roic", "operating_margin", "net_debt_to_ebitda"} or metric_id.endswith("_trend") or "_qoq_" in metric_id or "_yoy_" in metric_id:
-            for hypothesis in state.hypotheses:
-                target = _node_id("hypothesis", hypothesis.hypothesis_id)
-                edges.append(GraphEdge(edge_id=_edge_id(source, EdgeKind.CONTEXT_FOR, target),
-                    source=source, target=target, kind=EdgeKind.CONTEXT_FOR,
-                    data={"rationale": "Financial context supplied to hypothesis generation; not causal support."}))
-
     # -------------------------------------------------
     # Inferences
     # -------------------------------------------------

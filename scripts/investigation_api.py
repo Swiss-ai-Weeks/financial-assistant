@@ -113,3 +113,39 @@ def _investigate(request, *, prices, fits, as_of, formation_observations, report
         temporary.write_text(json.dumps(result), encoding="utf-8")
         temporary.replace(directory / f"{replay_id}.json")
     return result
+
+
+def investigate_missing_evidence(request):
+    from missing_evidence_followup import FOLLOWUP_LOCK, run_followup
+    if not FOLLOWUP_LOCK.acquire(blocking=False):
+        raise ValueError('One follow-up investigation may run at a time')
+    run_id = None
+    try:
+        selected = next((m for m in configured_models() if m['provider'] == request.get('provider')
+                         and m['model'] == request.get('model')), None)
+        if selected is None:
+            raise ValueError('Select a configured model/provider')
+        run_id = progress_registry.start(request.get('run_id'))
+        graph = request['graph']
+        anomaly = next(n['data'] for n in graph['nodes'] if n['kind'] == 'anomaly')
+        cutoff = parse_aware_datetime(anomaly.get('metadata', {}).get('observed_at', anomaly['detected_at']))
+        progress_registry.cutoff(run_id, cutoff)
+        provider = OpenAICompatibleProvider(provider_name=selected['provider'], model_name=selected['model'],
+                                            base_url=selected['base_url'], max_tokens=2048)
+        result = run_followup(graph, request['requirement_id'], provider, run_id,
+            lambda stage, message='', metrics=None: progress_registry.report(run_id, stage, message, metrics))
+        # Save a new replay, retaining the original packet and all earlier execution records.
+        directory = Path('.run/replays')
+        directory.mkdir(parents=True, exist_ok=True)
+        result['replay_id'] = str(uuid4())
+        temporary = directory / f"{result['replay_id']}.tmp"
+        temporary.write_text(json.dumps(result), encoding='utf-8')
+        temporary.replace(directory / f"{result['replay_id']}.json")
+        progress_registry.report(run_id, 'complete')
+        return result
+    except Exception:
+        if run_id:
+            progress_registry.fail(run_id)
+        raise
+    finally:
+        FOLLOWUP_LOCK.release()

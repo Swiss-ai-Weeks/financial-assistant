@@ -25,7 +25,7 @@ export function validateGraph(graph) {
 }
 
 export async function requestInvestigation(payload, fetcher = fetch) {
-  const response = await fetcher('/api/investigations', { method:'POST',
+  const response = await fetcher(payload.requirement_id ? '/api/investigations/followup' : '/api/investigations', { method:'POST',
     headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
   const graph = await response.json();
   if (!response.ok) throw new Error(graph.error ?? `Investigation failed: HTTP ${response.status}`);
@@ -38,6 +38,7 @@ export function investigationReducer(state, action) {
     case 'start': return {...state, running:true, error:null};
     case 'success': return {...state, running:false, error:null,
       loaded:{graph:action.graph, key:action.key, fresh:true}};
+    case 'followup': return {...state, running:false, error:null, loaded:{...state.loaded, graph:action.graph}};
     case 'failure': return {...state, running:false, error:action.error};
     case 'saved': return {...state, error:null, loaded:{graph:action.graph, key:action.key}};
     default: return state;
@@ -89,7 +90,17 @@ export const executionStages = [
   ['graph_build', 'Building ClaimGraph', 'nodes', 'nodes'],
 ];
 export function progressRows(status, historical) {
-  const stages = historical ? [...executionStages,
+  const stages = status.followup ? [
+    ['followup_preparing', 'Preparing follow-up'],
+    ['research_plan', 'Building research tasks'],
+    ['fundamentals', 'Retrieving peer fundamentals'],
+    ['retrieval', 'Searching BookReader and web'],
+    ['evidence_selection', 'Selecting evidence'],
+    ['claim_extraction', 'Extracting grounded claims'],
+    ['relationship_assessment', 'Reassessing affected hypotheses'],
+    ['resolution_assessment', 'Assessing resolution'],
+    ['graph_build', 'Updating ClaimGraph'],
+  ] : historical ? [...executionStages,
     ['hindsight', 'Held-out hindsight outcome (not original-investigation evidence)'],
     ['replay_save', 'Saving replay packet']] : executionStages;
   const current = status.stage === 'graph_complete' ? 'graph_build' : status.stage?.replace(/_complete$/, '');

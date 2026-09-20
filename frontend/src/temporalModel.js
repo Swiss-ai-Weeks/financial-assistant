@@ -1,7 +1,7 @@
 import { nodeData, evidenceRoles } from './reviewModel.js';
 
 const dependencies = ['extracted_from', 'sourced_from', 'calculated_from', 'derived_from'];
-const contextKinds = ['anomaly', 'hypothesis', 'assumption', 'missing_evidence', 'evidence_requirement', 'model_run'];
+const contextKinds = ['agent_action', 'research_task', 'tool_call', 'anomaly', 'hypothesis', 'assumption', 'missing_evidence', 'evidence_requirement', 'model_run'];
 const available = status => ['available_at_cutoff', 'derived_from_available_evidence'].includes(status);
 // Require an explicit timezone. Never interpret retrieval or event time as publication.
 const instant = value => typeof value === 'string' && /T.*(?:Z|[+-]\d\d:\d\d)$/.test(value) && Number.isFinite(Date.parse(value)) ? Date.parse(value) : null;

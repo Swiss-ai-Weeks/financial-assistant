@@ -73,6 +73,23 @@ export default function App() {
       dispatch({type:'failure', error:err.message});
     }
   }
+  async function investigateQuestion(requirementId) {
+    if (running || !selection) return;
+    dispatch({type:'start'});
+    const payload = {...selection, graph:loaded.graph, requirement_id:requirementId};
+    setExecutionContext({...selection, observed_at:originalCutoff(loaded.graph)});
+    try {
+      const execution = startInvestigation(payload, status => setProgress({...status, followup:true}));
+      progressStop.current = execution.stop;
+      const graph = await execution.result;
+      dispatch({type:'followup', graph});
+      if (graph.replay_id) setReplays(previous => [{id:graph.replay_id, label:`${graph.ticker} · missing-evidence follow-up`}, ...previous]);
+      setProgress(previous => ({...previous, state:'complete', stage:'complete'}));
+    } catch (err) {
+      dispatch({type:'failure', error:err.message});
+      setProgress(previous => ({...previous, state:'failed'}));
+    }
+  }
   useEffect(() => {
     if (!file) return;
     const controller = new AbortController();
@@ -111,12 +128,12 @@ export default function App() {
     </details>
     {progress && executionContext && <InvestigationProgress status={progress} context={executionContext} />}
     {error && <p className="review-error" role="alert">{error}</p>}
-    {loaded ? <InvestigationWorkspace key={loaded.key} graph={loaded.graph} fresh={loaded.fresh} /> : <p className="loading" role="status">Loading investigation…</p>}
+    {loaded ? <InvestigationWorkspace key={loaded.key} graph={loaded.graph} fresh={loaded.fresh} onInvestigate={investigateQuestion} followupDisabled={running || !selection} /> : <p className="loading" role="status">Loading investigation…</p>}
 
   </div>;
 }
 
-function InvestigationWorkspace({graph, fresh}) {
+function InvestigationWorkspace({graph, fresh, onInvestigate, followupDisabled}) {
   const [initial] = useState(() => {
     if (fresh) return {review:createReview(graph), reason:'New investigation · new institutional review'};
     try {
@@ -170,7 +187,7 @@ function InvestigationWorkspace({graph, fresh}) {
         <ClaimGraph graph={graph} cutoff={cutoff} onSelectItem={onSelect} itemReviews={review.item_reviews} />
       </div>
       {view === 'summary' && <ReviewSummary graph={inspectionGraph} review={review} onChange={onChange} onSelect={onSelect} onAction={onAction} />}
-    </section><NodeInspector key={selectedNode ? itemKey(selectedNode) : 'empty'} node={selectedNode} graph={graph} cutoff={cutoff} onSelect={onSelect} onAction={onAction}
+    </section><NodeInspector key={selectedNode ? itemKey(selectedNode) : 'empty'} node={graph.nodes.find(n => n.node_id === selectedNode?.node_id) ?? selectedNode} graph={graph} onInvestigate={onInvestigate} followupDisabled={followupDisabled} cutoff={cutoff} onSelect={onSelect} onAction={onAction}
       reviewState={selectedNode ? review.item_reviews[itemKey(selectedNode)] : null} />
     </main>
   </>;

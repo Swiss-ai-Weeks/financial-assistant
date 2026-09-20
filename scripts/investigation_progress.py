@@ -20,6 +20,10 @@ MESSAGES = dict(fundamentals='Loading historical fundamentals', financial_metric
     relationship_assessment_complete='Relationships assessed', graph_build='Building ClaimGraph', graph_complete='ClaimGraph built',
     hindsight='Calculating separately held-out hindsight outcome', replay_save='Saving replay packet', complete='Investigation complete')
 
+MESSAGES.update(followup_preparing='Preparing follow-up', resolution_assessment='Assessing resolution',
+                resolution_assessment_complete='Resolution assessed')
+COMPLETIONS['resolution_assessment_complete'] = 'resolution_assessment'
+
 class ProgressRegistry:
     def __init__(self, capacity=64):
         self.capacity = capacity
@@ -48,8 +52,10 @@ class ProgressRegistry:
             run = self._runs[run_id]
             if run['state'] != 'running' or stage not in MESSAGES:
                 return
-            if run['stage'] in ('preparing', 'hindsight', 'replay_save') and stage != run['stage']:
+            if run['stage'] in ('preparing', 'followup_preparing', 'hindsight', 'replay_save') and stage != run['stage']:
                 run['completed'].append(run['stage'])
+            if stage == 'fundamentals_complete' and 'fundamentals' not in run['completed']:
+                run['completed'].append('fundamentals')
             completed = COMPLETIONS.get(stage)
             if completed and completed not in run['completed']:
                 run['completed'].append(completed)
