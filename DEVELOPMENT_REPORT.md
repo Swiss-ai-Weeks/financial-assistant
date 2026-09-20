@@ -183,3 +183,130 @@ output through the UI and verify execution/source links. GPU services were not i
    and review history. Missing evidence remains in the graph.
 9. Return to Review summary, discuss what is and is not justified, and optionally approve for
    the stated purpose with qualifications. Export the case plus graph for human scrutiny.
+
+## Temporal provenance extension — 2026-09-20
+
+### Architecture inspected and minimum extension
+
+The v0.2 builder serializes domain document metadata into `node.data`; sources are
+publisher identities without publication timestamps. Claims/observations point to
+sources via `extracted_from`; calculations and inferences use `calculated_from` and
+`derived_from`. `produced_by` and `model_run_id` retain execution provenance.
+Anomaly adapters put the explicit historical `observed_at` in anomaly metadata and
+`detected_at`. No event timestamp is inferred from either field.
+
+BookReader receives `from_date`/`to_date`; SearXNG receives date-context queries
+(the provider itself does not translate `as_of` into a separate HTTP date filter).
+Retrieval service checks publication dates and the historical investigation script
+admits only known eligible publications. Date-only uncertainty is preserved.
+`investigate_signal` is shared by live investigation and historical CLI work; the
+CLI additionally computes and saves forward simulations separately. The historical
+scanner uses CPU pair fits/cointegration; no statistical algorithm was changed.
+Saved/live graphs use the same workspace; model selection remains for the NEXT run.
+`graphAdapter` supplies layout/data, `ClaimGraph` applies type/role filters, and
+`NodeInspector` deliberately traverses the full graph. These structures are retained.
+
+### Model and files
+
+No schema version change or dependency added. `RetrievedDocument.event_at` is optional;
+its default is unknown. The builder adds the recorded investigation `observed_at` to
+document metadata. Existing `published_at`, `published_date_only`, `retrieved_at`, and
+model execution timestamps retain their meanings. Optional
+`data.temporal_role: hindsight_outcome` marks outcomes.
+
+Files: `frontend/src/temporalModel.js` (pure dependency/status/view functions),
+`TemporalReview.jsx` (timeline and comparison), `App.jsx` (cutoff state),
+`ClaimGraph.jsx` (composed filtering/status badges), `NodeInspector.jsx` (dates/status),
+`reviewModel.js` (eligible role counts), `App.css`,
+`frontend/public/investigation_temporal_demo.json`,
+`frontend/tests/temporalModel.test.js`, `src/financial_assistant/domain.py`,
+`src/financial_assistant/claimgraph/builder_v2.py`, and this report.
+
+### Exact behavior and compatibility
+
+Default view is At anomaly. Steps use actual recorded publication bounds; Latest
+shows undated evidence with an explicit unknown badge. Earlier views exclude unknown
+and future evidence. Date-only items become eligible on the following UTC day;
+this is a conservative availability bound, not an asserted publication time.
+Retrieval/event dates never establish publication. Derived items require eligible
+input paths; cycles, absent inputs, and missing timestamps remain unknown.
+Publisher identities are shown with eligible documents as undated provenance context.
+Hypotheses, assumptions, requirements, gaps, anomaly and model runs remain labelled
+investigation context, not claims of contemporaneous execution or knowledge.
+Support/counter edges and counts require eligible evidence. Outcomes never enter
+support edges or evidence counts, even in Latest; they have a separate outcome panel.
+
+Cutoff changes preserve the original graph, review overlay, selected node, graph
+layout and type/role filters. Header and summary use the temporal view; inspector
+keeps the complete record and warns that selected items may be hidden/future.
+THEN/NOW compares eligible support/counter counts, gaps and later documents; it does
+not invent resolved gaps, changing causal scores, or predictive success.
+Existing saved fixtures load without conversion. Existing real replay JSON is unchanged.
+The new teaching replay is explicitly fictional, including its later correction,
+weakening edge and 2% outcome; it is not real market evidence.
+
+### Validation
+
+- `npm --prefix frontend test`: all 4 test files passed, including 9 new temporal
+  test cases covering pre/post cutoff, unknown/retrieval/event dates, dependency
+  propagation, cycles, immutable review/selection round-trip, composed filters,
+  hindsight exclusion, date-only bounds, and every saved fixture.
+- `npm --prefix frontend run lint`: passed.
+- `npm --prefix frontend run build`: passed.
+- `source .venv/bin/activate` then `python -m pytest -q`: 79 passed, including
+  existing live investigation tests, after the domain/builder changes.
+- `git diff --check`: passed.
+No external inference/retrieval request or browser end-to-end session was performed.
+State preservation is covered at the pure model/serialization level, not a mounted
+React interaction test.
+
+### Limitations and GPU decision
+
+Strict historical graphs cannot display later news that was never retrieved. Their
+timeline may have only At anomaly and Latest. Real CLI outcome sidecars are not
+joined automatically; the UI honestly reports no recorded outcome in those graphs.
+The full multi-step demonstration is fictional; a verified real replay with later
+news remains future work. No timestamp backfill, retrospective model rerun, gap
+resolution inference or temporal reassessment of model-authored narrative is performed.
+Context nodes describe the saved investigation, not a historical model execution.
+Date-only interpretation follows the existing UTC date-carrier convention.
+
+GPU work intentionally deferred after inspecting the CPU architecture. No CuPy
+installation, device claim, performance claim, or benchmark was made. The cached
+pair count alone does not establish a useful GPU workload; measurement would be
+required before choosing a screening backend.
+
+### Run on the H100
+
+From the repository root, in separate terminals (retain existing provider/retrieval
+environment configuration):
+
+```bash
+PYTHONPATH=src .venv/bin/python scripts/anomaly_api.py
+```
+
+```bash
+npm --prefix frontend run dev -- --host 0.0.0.0
+```
+
+Open the Vite URL printed in the terminal. No GPU-specific setup is needed for
+this temporal view. Saved replay works without model calls; live investigations
+use the existing configured BookReader/SearXNG and selected NIM/Nemotron provider.
+
+### Suggested 90-second demo
+
+1. 0–15s: Select a real anomaly in the detector; show the explicit cutoff and next-run
+   provider. Open an existing real historical case or an already completed live run
+   (do not budget an expensive investigation inside the 90 seconds).
+2. 15–30s: Show At anomaly, inspect an eligible document and an unresolved gap.
+   Inspect actual BookReader/SearXNG provenance where recorded; absent fields remain
+   unavailable. Show its actual model_run provider/model, independent of next-run selection.
+3. 30–40s: Explain that strict historical retrieval cannot contain future news.
+   Select “Fictional temporal replay · teaching case”, explicitly identifying it as fiction.
+4. 40–60s: At anomaly, show supporting items and the assumption/gap. Move to the later
+   publication step; the fictional correction and weakening relationship enter.
+5. 60–75s: Compare THEN/NOW counts. Select Latest and inspect the separate fictional
+   realised outcome; emphasize that it does not prove the original hypothesis.
+6. 75–90s: Enter a reviewer and record a challenge/request for evidence with rationale.
+   End on the human review, not a trading recommendation. There is no GPU screening
+   provenance to demonstrate in this implementation.

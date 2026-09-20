@@ -229,6 +229,10 @@ def build_investigation_graph(
             )
         )
 
+        document_data["observed_at"] = state.anomaly.metadata.get(
+            "observed_at", state.anomaly.detected_at.isoformat()
+        )
+
         nodes.append(
             GraphNode(
                 node_id=document_node_id,

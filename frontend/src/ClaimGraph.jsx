@@ -1,3 +1,4 @@
+import { temporalView, temporalStatuses } from './temporalModel.js';
 import { useMemo, useState } from 'react';
 import { Background, Controls, Handle, MiniMap, Position, ReactFlow, applyNodeChanges } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -8,22 +9,23 @@ function EvidenceNode({data}) {
   return <><Handle type="target" position={Position.Top} />
     <div className="graph-node-type">{data.displayKind}</div>
     <div className="graph-node-content">{data.label}</div>
-    <div className="graph-node-tags">{data.support && <span className="support-tag">Supports</span>}{data.counter && <span className="counter-tag">Counters / weakens</span>}
+    <div className="graph-node-tags"><span>{labelFor(data.temporalStatus)}</span>{data.support && <span className="support-tag">Supports</span>}{data.counter && <span className="counter-tag">Counters / weakens</span>}
       {data.humanState && <span>{labelFor(data.humanState)}</span>}</div>
     <Handle type="source" position={Position.Bottom} /></>;
 }
 const NODE_TYPES = { evidenceNode:EvidenceNode };
 
-export default function ClaimGraph({graph, onSelectItem, itemReviews = {}}) {
+export default function ClaimGraph({graph, onSelectItem, itemReviews = {}, cutoff = 'latest'}) {
   const [filters, setFilters] = useState([]);
   const [flow, setFlow] = useState(null);
   const [layoutNodes, setLayoutNodes] = useState(() => toReactFlowNodes(graph.nodes));
-  const roles = useMemo(() => evidenceRoles(graph), [graph]);
-  const visible = filterGraph(graph, filters);
+  const roles = useMemo(() => evidenceRoles(temporalView(graph, cutoff)), [graph, cutoff]);
+  const visible = filterGraph(temporalView(graph, cutoff), filters);
+  const statuses = temporalStatuses(graph, cutoff);
   const ids = new Set(visible.nodes.map(n => n.node_id));
   const nodes = layoutNodes.map(n => ({...n, type:'evidenceNode', hidden:!ids.has(n.id),
     className:`${n.className}${roles.counter.has(n.id) ? ' cg-node--counter-role' : ''}`,
-    data:{...n.data, support:roles.support.has(n.id), counter:roles.counter.has(n.id), humanState:itemReviews[itemKey(n.data)]?.status}}));
+    data:{...n.data, temporalStatus:statuses.get(n.id), support:roles.support.has(n.id), counter:roles.counter.has(n.id), humanState:itemReviews[itemKey(n.data)]?.status}}));
   const edges = toReactFlowEdges(graph.edges).map(e => ({...e, hidden:!ids.has(e.source) || !ids.has(e.target)}));
   const kinds = [...new Set(graph.nodes.map(n => n.kind))];
   const options = [['support','Supporting evidence'],['counter','Counter-evidence'],...kinds.map(k => [k,k === 'model_run' ? 'Agent / model actions' : labelFor(k)])];

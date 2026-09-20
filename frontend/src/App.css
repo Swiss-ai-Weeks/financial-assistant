@@ -399,3 +399,8 @@
   margin: 8px 0 16px;
   padding: 10px 16px;
 }
+
+.temporal-review { margin: 16px 0; padding: 18px; border: 1px solid #8293a5; border-radius: 6px; background: #142333; color: #e3eaf1; }
+.temporal-review p { font-size: 13px; line-height: 1.6; }
+.temporal-review button[aria-pressed="true"] { border-color: #91c9ef; background: #29465c; }
+.hindsight-outcomes { border-left: 4px solid #d9ac62; padding-left: 16px; }

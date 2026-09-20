@@ -49,6 +49,11 @@ export function evidenceRoles(graph) {
     if (['contradicts', 'weakens'].includes(e.kind)) counter.add(e.source);
     if (e.kind === 'contradicted_by') counter.add(e.target);
   }
+  if (graph.temporalStatuses) {
+    for (const role of [support, counter]) for (const id of role) {
+      if (!['available_at_cutoff', 'derived_from_available_evidence'].includes(graph.temporalStatuses.get(id))) role.delete(id);
+    }
+  }
   return { support, counter };
 }
 

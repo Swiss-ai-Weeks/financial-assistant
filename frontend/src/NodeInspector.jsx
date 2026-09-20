@@ -1,3 +1,4 @@
+import { originalCutoff, temporalStatuses } from './temporalModel.js';
 import { nodeData, provenanceFor, sourceCategory, labelFor } from './reviewModel.js';
 import { ReviewActions } from './ReviewWorkspace';
 
@@ -13,7 +14,7 @@ function Details({data}) {
   </div>);
 }
 
-export default function NodeInspector({node, graph, onSelect, onAction, reviewState}) {
+export default function NodeInspector({node, graph, onSelect, onAction, reviewState, cutoff = 'latest'}) {
   if (!node) return <aside className="inspector"><div className="node-type">Inspector</div><h2>Select a node or relationship</h2>
     <p className="muted">Inspect observations, calculations, assumptions, and inferences. Follow sources and model runs, then record a human review.</p>
     <p className="muted">Evidence roles belong to relationships: one item can support one hypothesis and weaken another.</p></aside>;
@@ -24,6 +25,12 @@ export default function NodeInspector({node, graph, onSelect, onAction, reviewSt
   const selectId = id => {const target = graph.nodes.find(n => n.node_id === id); if (target) onSelect(target);};
   return <aside className="inspector">
     <div className="node-type">{isEdge ? 'Relationship' : labelFor(node.kind)}</div><h2>{node.label ?? labelFor(node.kind)}</h2>
+    <section className="temporal-review"><h3>Temporal provenance — full recorded item</h3>
+      <Details data={{inspection_cutoff:cutoff || 'Unavailable', temporal_status:isEdge ? 'Relationship endpoints must both be eligible' : temporalStatuses(graph, cutoff).get(node.node_id),
+        published_at:details.published_date_only ? `${String(details.published_at).slice(0,10)} (date only; time unavailable)` : details.published_at ?? 'Unavailable',
+        event_at:details.event_at ?? 'Unavailable', observed_at:details.observed_at ?? originalCutoff(graph) ?? 'Unavailable', retrieved_at:details.retrieved_at ?? 'Unavailable'}} />
+      <p>Inspector retains future and hidden items for audit. Retrieval time never establishes publication time.</p>
+    </section>
     <Details data={{[isEdge ? 'edge_id' : 'node_id']:node.edge_id ?? node.node_id}} />
     {!isEdge && ['source','document','calculation','inference'].includes(node.kind) && <Details data={{display_source_category:sourceCategory(node)}} />}
     {isEdge && <div className="relationship-endpoints"><button onClick={() => selectId(node.source)}>Inspect source node</button><span>{labelFor(node.kind)}</span><button onClick={() => selectId(node.target)}>Inspect target node</button></div>}

@@ -1,5 +1,7 @@
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { candidatePayload, selectModel, requestInvestigation, investigationReducer, validateGraph } from './investigationClient.js';
+import TemporalReview from './TemporalReview';
+import { originalCutoff, temporalView } from './temporalModel.js';
 import DetectorPanel from './DetectorPanel';
 import ClaimGraph from './ClaimGraph';
 import NodeInspector from './NodeInspector';
@@ -9,6 +11,7 @@ import './App.css';
 import './index.css';
 
 const EXAMPLES = [
+  ['investigation_temporal_demo.json', 'Fictional temporal replay · teaching case'],
   ['investigation_live_nvidia.json', 'NVDA · saved NIM run / synthetic attention event'],
   ['investigation_review_demo.json', 'Illustrative review · support, counter-evidence & gaps'],
   ['investigation_gs_ual_2026-03-20.json', 'GS / UAL · saved historical investigation'],
@@ -99,6 +102,8 @@ function InvestigationWorkspace({graph, fresh}) {
       return restoreReview(graph, localStorage.getItem(storageKey(graph)));
     } catch { return {review:createReview(graph),reason:'Browser storage unavailable · export to retain a copy'}; }
   });
+  const [cutoff, setCutoff] = useState(() => originalCutoff(graph) ?? '');
+  const inspectionGraph = temporalView(graph, cutoff);
   const [review, setReview] = useState(initial.review);
   const [persistence, setPersistence] = useState(initial.reason);
   const [selectedNode, setSelectedNode] = useState(null);
@@ -116,18 +121,19 @@ function InvestigationWorkspace({graph, fresh}) {
   const onSelect = node => {setSelectedNode(node);};
   const anomaly = graph.nodes.find(n => n.kind === 'anomaly');
   return <>
-    <ReviewHeader graph={graph} review={review} onChange={onChange} persistence={persistence} onExport={() => exportReview(graph,review)} />
+    <ReviewHeader graph={inspectionGraph} review={review} onChange={onChange} persistence={persistence} onExport={() => exportReview(graph,review)} />
     <section className="claim-summary"><div className="claim-summary__label">Attention event</div>
       <div className="claim-summary__text">{anomaly?.label ?? 'No anomaly recorded'}</div>
       <div className="claim-summary__qualification">An attention event triggers investigation; it does not establish causality. Recorded model_run nodes describe the execution that produced this graph. The model selection above applies to the next investigation.</div>
     </section>
+    <TemporalReview graph={graph} cutoff={cutoff} onChange={setCutoff} onSelect={onSelect} />
     <main className="workspace"><section className="graph-panel">
       <div className="workspace-tabs"><button aria-pressed={view === 'graph'} onClick={() => setView('graph')}>Evidence graph</button><button aria-pressed={view === 'summary'} onClick={() => setView('summary')}>Review summary</button></div>
       <div hidden={view !== 'graph'}><div className="panel-header"><div><h2>Investigation graph</h2><p>Inspect typed propositions, evidence relationships, sources and execution.</p></div><div className="legend">{graph.nodes.length} nodes · {graph.edges.length} relationships</div></div>
-        <ClaimGraph graph={graph} onSelectItem={onSelect} itemReviews={review.item_reviews} />
+        <ClaimGraph graph={graph} cutoff={cutoff} onSelectItem={onSelect} itemReviews={review.item_reviews} />
       </div>
-      {view === 'summary' && <ReviewSummary graph={graph} review={review} onChange={onChange} onSelect={onSelect} onAction={onAction} />}
-    </section><NodeInspector key={selectedNode ? itemKey(selectedNode) : 'empty'} node={selectedNode} graph={graph} onSelect={onSelect} onAction={onAction}
+      {view === 'summary' && <ReviewSummary graph={inspectionGraph} review={review} onChange={onChange} onSelect={onSelect} onAction={onAction} />}
+    </section><NodeInspector key={selectedNode ? itemKey(selectedNode) : 'empty'} node={selectedNode} graph={graph} cutoff={cutoff} onSelect={onSelect} onAction={onAction}
       reviewState={selectedNode ? review.item_reviews[itemKey(selectedNode)] : null} />
     </main>
   </>;

@@ -95,6 +95,7 @@ class SourceDocument(BaseModel):
     publisher: str | None = None
     url: HttpUrl
 
+    event_at: datetime | None = None
     published_at: datetime | None = None
 
     # True when the source exposed only a calendar
