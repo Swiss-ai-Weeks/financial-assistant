@@ -30,7 +30,7 @@ export default function TopBar({
     <header className="topbar">
       <div className="logo mono" aria-label="Pythia">
         <span>PY</span>
-        <span>TA</span>
+        <span>TH</span>
       </div>
 
       <div className="topbar__instrument">
