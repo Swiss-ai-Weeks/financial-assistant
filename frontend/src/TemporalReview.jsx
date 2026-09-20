@@ -7,7 +7,7 @@ export default function TemporalReview({graph, cutoff, onChange, onSelect}) {
   const later = graph.nodes.filter(n => n.kind === 'document' && before.get(n.node_id) === 'appeared_after_cutoff');
   const outcomes = graph.nodes.filter(n => before.get(n.node_id) === 'hindsight_outcome');
   return <section className="temporal-review">
-    <h2>Information available as of</h2>
+    <h2>Evidence timeline</h2><p>Inspect publication availability inside this investigation. Use Time Travel above to reconstruct a historical market and run a new investigation.</p>
     <div className="action-buttons">{timelineSteps(graph).map(step => <button key={step.value} aria-pressed={cutoff === step.value} onClick={() => onChange(step.value)}>{step.label}</button>)}</div>
     <p>Inspection cutoff: <strong>{cutoff || 'Unavailable'}</strong> · Original cutoff: {originalCutoff(graph) ?? 'Unavailable'}</p>
     <p>Earlier views exclude future and undated evidence. Hypotheses, gaps and executions remain investigation context, not contemporaneous facts. Derived availability describes inputs, not when the analysis was performed.</p>

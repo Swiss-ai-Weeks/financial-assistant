@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { sourceHref } from './sourceLinks.js';
 import { originalCutoff, temporalStatuses } from './temporalModel.js';
 import { nodeData, provenanceFor, sourceCategory, labelFor } from './reviewModel.js';
 import { ReviewActions } from './ReviewWorkspace';
@@ -7,10 +9,17 @@ function renderValue(value) {
   if (typeof value === 'object') return <pre className="inspector-json">{JSON.stringify(value,null,2)}</pre>;
   return String(value);
 }
+let sourceConfiguration;
+function sourceConfig() {
+  sourceConfiguration ??= fetch('/api/bookreader/source-links').then(r => r.json());
+  return sourceConfiguration;
+}
 function Details({data}) {
+  const [base, setBase] = useState(null);
+  useEffect(() => {sourceConfig().then(p => setBase(p.base_url ?? '')).catch(() => {});}, []);
   return Object.entries(data).map(([key,value]) => <div className="inspector-row" key={key}>
     <span>{labelFor(key)}</span><div>{['url','source_uri'].includes(key) && /^https?:\/\//i.test(String(value))
-      ? <a href={value} target="_blank" rel="noreferrer">Open source ↗</a> : renderValue(value)}</div>
+      ? <a href={base === null ? undefined : sourceHref(value, base) ?? undefined} target="_blank" rel="noreferrer">Open source ↗</a> : renderValue(value)}</div>
   </div>);
 }
 

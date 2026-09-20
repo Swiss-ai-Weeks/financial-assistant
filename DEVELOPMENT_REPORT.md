@@ -399,3 +399,227 @@ remain a separate relevance issue. No retrieval behavior was changed here.
 Temporal rules, strict publication cutoff, hybrid retrieval, exact source spans,
 prospective model selection, historical model_run provenance, explicit investigation
 action, and existing graph/review preservation behavior were left intact.
+
+## True historical time travel
+
+### Product correction and inspection
+
+TemporalReview filters publication availability in an existing graph. It does not
+reconstruct a market, select relationships, or detect a historical anomaly. It is
+now labelled **Evidence timeline**, inside the investigation. **Live / Time Travel**
+controls the market workflow independently. Fictional replay examples remain
+explicitly labelled teaching material.
+
+Inspected the requested API/CLI, detector, retrieval, query expansion, graph builder,
+frontend, Vite configuration, report and universe metadata. Neither
+`data/cache/market/global_demo_daily.csv` nor `demo_pair_fits.json` exists in this
+checkout. Their actual data/calibration dates could not be verified. The cache
+producer `scripts/precompute_demo_pairs.py` defaults to 2026-09-18 and calibrates
+through the prior day, selecting bounded peers using formation correlations. Such
+a cache includes information after 2026-08-28 and cannot honestly be reused for
+that earlier date. Its selected pair identities also reflect that later window.
+The historical API never imports or consults those identities or fitted statistics.
+
+### Market reconstruction and anti-look-ahead rules
+
+`POST /api/anomalies/historical-scan` accepts `as_of` as YYYY-MM-DD plus `corr_min`,
+`alpha`, and `entry`. It truncates prices to dates <= the request before handing
+anything to the existing `scan_pairs_as_of`. A non-session resolves explicitly to
+the latest available session <= D; both requested date and resolved session are
+returned and displayed. Missing history returns a clear error. An old/stale cache
+can resolve to an old session: always inspect the displayed resolved date.
+
+Formation uses 252 distinct available dates strictly before the resolved session.
+The existing scanner recomputes return correlations, eligible pairs, Engle–Granger,
+hedge ratio/intercept, spread mean/std and other fit statistics from that window.
+Monitoring evaluates only the resolved session. All available cache tickers are
+considered; columns with missing formation observations are excluded by the existing
+scanner. Historical mode does not reuse the live cache's current group/peer selection.
+It also does not reproduce its bounded peer limit. This can change the historical
+candidate universe relative to live and may be substantially slower.
+
+The response includes formation bounds, observation cutoff, recomputation flag,
+CPU execution metadata, elapsed milliseconds, candidate metrics and a scan ID.
+A bounded in-memory store retains the last 16 scan snapshots. Investigation validates
+the selected pair and requested date against that snapshot; browser-supplied beta,
+p-values, threshold or other fitted metrics cannot replace the frozen signal.
+Expired snapshots require a new scan. LIVE retains the existing scan/cache path.
+
+**Data limitations:** this is a reconstruction from the available price cache,
+not a certified point-in-time security master or vintage price database. Current
+universe survivorship, historical price revisions/corporate-action adjustments,
+issuer renames, exchange holidays and cross-market close times are not reconstructed.
+There is no FX-normalization stage. These limitations prevent claiming a bias-free
+historical backtest despite strict exclusion of future price rows and fits. The UI
+explicitly displays the universe/data revision limitation. No GPU path was attempted;
+full-cache profiling and an H100 benchmark were impossible without the cache/device.
+CPU remains the existing reference implementation.
+
+### Historical investigation and retrieval
+
+A date-only investigation uses **23:59:59.999999 UTC on the selected calendar day**,
+computed server-side. The market signal retains its resolved trading-session date.
+For a weekend selection this allows weekend evidence available by the selected day's
+end, against the explicitly displayed prior-session market signal.
+
+The shared `investigate_signal` pipeline retains selected provider/model, hybrid
+BookReader/SearXNG retrieval, exact quote validation, hypothesis generation, strict
+audit ID validation/one repair, relationship assessment and v0.2 provenance graph.
+BookReader retains its bounded `from_date`/`to_date` search. SearXNG discovery is
+followed by publication-date checks after fetch, and strict document selection
+before claim extraction. Unknown publication dates cannot become evidence;
+`retrieved_at` and `event_at` do not establish availability. Date-only publications
+on D are eligible at the end of D while retaining `published_date_only=true`;
+intraday cutoffs remain conservative. The evidence timeline uses the same end-of-day
+availability bound at JavaScript millisecond precision.
+
+The cached universe's unambiguous ticker/name mapping is supplied to ResearchTask
+before model expansion, preserving ticker aliases (BUSE/FIRST BUSEY and
+PNW/PINNACLE WEST). Retrieval selection uses those task identities. The prompt tells
+the model to expand, not reinterpret, known issuers. This is an identity constraint,
+not proof of relevance; exact-source grounding remains mandatory. A contemporary
+model's training knowledge cannot itself be rewound. Evidence admission is controlled,
+but the implementation does not claim a historical model-training snapshot.
+
+### Hindsight, replay and epistemic separation
+
+Only **after** the investigation/graph has completed does the API call the existing
+`simulate_pair_forward` (`pair-forward-v2`). Entry is the next common session's open;
+horizon 1 is that session's close. Fixed signed gross-normalized notionals follow
+(-1, beta) for positive z / short spread, and (+1, -beta) for negative z / long spread.
+The simulator reports available 1/5/10/20-session returns, latest return, drawdown
+relative to initial gross capital (including zero baseline), and first frozen-spread
+equilibrium crossing. Default gross capital is 10,000 and transaction costs are zero;
+this is a hypothetical mechanical position, with no borrow/slippage execution model.
+Unavailable future data is reported without discarding the investigation.
+
+Outcome lives in a separate top-level `hindsight_outcome`, never graph nodes/edges,
+claim extraction, hypothesis generation, audit, relationship assessment or evidence
+counts. A visually distinct collapsed **Reveal HINDSIGHT OUTCOME — NOT AVAILABLE TO
+THE ORIGINAL INVESTIGATION** panel displays it. Profit does not prove a hypothesis;
+loss does not disprove all reasoning.
+
+Successful historical runs are atomically saved to `.run/replays/<uuid>.json` before
+HTTP response delivery. Packets include requested/resolved dates, formation/complete
+signal metrics, graph/source metadata, model provenance, temporal metadata and the
+separate outcome. `/api/replays` lists completed runs; `/api/replays/<uuid>` loads them.
+The saved-case selector recovers them after reconnect/reload without a model rerun.
+Export review downloads the packet plus human review; Import replay accepts that
+file. Private source text is not embedded in graph packets. Replay source viewing
+still requires the configured corpus. Files are local prototype persistence, without
+multi-user isolation or automatic retention management.
+
+### Source-link authorization
+
+BookReader's adapter uses `Authorization: Bearer <BOOKREADER_API_TOKEN>` and
+`GET <BOOKREADER_BASE_URL>/documents/<document-id>`, returning normalized JSON text.
+The browser learns only the configured base URL to recognize exact corpus links;
+public HTTP(S) URLs remain normal external links. Recognized corpus links open
+`/api/bookreader/documents/<id>`.
+
+The server validates a bounded identifier alphabet, rejects traversal, embedded URLs,
+query/fragment injection and encoded path separators, fixes the upstream origin to
+configuration, and attaches the existing bearer header. The adapter now rejects
+other origins and redirects, preventing credential forwarding. The viewer returns
+only escaped whitelisted publication/date/ID/page/hash/text fields, redacts any token
+occurrence, uses a restrictive CSP and disables response caching. It never returns
+upstream headers, authentication configuration or detailed upstream errors. No token
+is placed in a browser URL. This remains a private demo route on the existing app,
+not an arbitrary URL proxy; do not publish the demo as a public corpus service.
+
+### Detached runtime and exact H100 commands
+
+The old start/stop names delegate to the new checkout-relative scripts. They use
+nohup + setsid, detach stdin/stdout/stderr, launch the exact Python/Vite executables,
+retain inherited NIM configuration, and avoid npm wrapper PID ambiguity. PID files
+include the Linux process start time; status/stop verify that and the exact script
+argument before signalling. Unknown occupied ports are refused, not adopted or
+killed. A user-level lifecycle lock prevents concurrent start/stop races. Logs and
+PID/replay files live under ignored `.run/`, created with restrictive permissions.
+The frontend process does not inherit BOOKREADER_API_TOKEN. Required dependencies
+and caches must already exist; startup does not install anything or use root.
+
+From the ClaimGraph checkout on the H100:
+
+```bash
+# Optional: point to your EXISTING server-only shell environment file.
+# Alternatively the starter loads .env.bookreader in this checkout if present.
+export BOOKREADER_ENV_FILE=/absolute/path/to/your/existing/bookreader.env
+./scripts/demo_start.sh
+./scripts/demo_status.sh
+./scripts/demo_logs.sh backend
+./scripts/demo_logs.sh frontend
+# Ctrl-C exits log following, without stopping the services.
+./scripts/demo_stop.sh
+```
+
+If credentials are already exported, omit BOOKREADER_ENV_FILE. The backend uses
+127.0.0.1:8001; Vite uses port 5173 and refuses automatic port changes. Existing
+Launchpad host/HMR/proxy configuration is retained. Detached services survive terminal
+exit; they do not auto-restart after crashes/reboots. `.run/logs` is diagnostic output
+and should remain private. Saved replay recovery handles completed investigations
+whose browser connection disconnected; this does not add a task queue.
+
+### Files changed
+
+- `scripts/anomaly_api.py`, `scripts/investigation_api.py`, new `scripts/historical_api.py`
+- `scripts/investigate_historical_pair.py`, new `scripts/bookreader_viewer.py`
+- `src/financial_assistant/retrieval/bookreader.py`, `query_expansion.py`
+- new `src/financial_assistant/research/identity.py`
+- `frontend/src/App.jsx`, `DetectorPanel.jsx`, `NodeInspector.jsx`, `TemporalReview.jsx`
+- `frontend/src/temporalModel.js`, `investigationClient.js`, new `sourceLinks.js`, `index.css`
+- new `scripts/demo_{common,start,stop,status,logs}.sh`, legacy start/stop wrappers, `.gitignore`
+- new `tests/test_time_travel_api.py`, `test_bookreader_viewer.py`, `test_demo_runtime.py`
+- new `frontend/tests/timeTravel.test.js`, this report
+
+### Suggested 90-second demo and H100 acceptance
+
+Prepare one successful real historical investigation ahead of the demo. Verify its
+cutoff and inspect all admitted publication metadata before presenting it.
+
+1. 0–15s: Show `demo_status.sh` after disconnect/reconnect. Choose Time Travel and D;
+   Travel, show resolved session, formation bounds and dated candidate metrics.
+2. 15–30s: Select a candidate and show “Investigate at D” plus NIM/Nemotron selection.
+   Load its saved real historical packet to avoid waiting for inference during the talk.
+3. 30–55s: Inspect evidence/relationships and the end-of-day cutoff. Open an FT/WSJ
+   source through the internal viewer; verify no Unauthorized and no token in browser
+   network requests/responses. Explain that Evidence timeline is an inspection tool.
+4. 55–75s: Reveal the separate hindsight panel, entry definition, returns and reversion.
+   State that returns neither validate nor invalidate the hypothesis by themselves.
+5. 75–90s: Return to Live and run the existing scan. End on explicit human review.
+
+Full H100 acceptance remains outstanding: real cache reconstruction/timing, private
+BookReader click-through, a real historical hybrid NIM run, terminal disconnect/
+reconnect on Launchpad, and live-flow browser regression. Local tests cannot replace
+those deployment checks. Do not describe the fictional timeline fixture as market
+reconstruction or a synthetic test as a real successful historical investigation.
+
+### Validation results
+
+- `npm --prefix frontend test`: **6 test files passed**, no failures.
+- `npm --prefix frontend run lint`: **passed**, no diagnostics.
+- `npm --prefix frontend run build`: **passed**, 182 modules transformed.
+- `source .venv/bin/activate; python -m pytest -q`: **109 passed in 5.03s**, no skips.
+- `git diff --check`: **passed**.
+
+The runtime integration test required execution outside the sandbox because local
+socket creation is restricted there. It starts temporary backend/frontend HTTP
+services, verifies both survive the launching shell's exit, verifies repeat-start
+PID stability, keeps the corpus token out of the frontend environment, and stops
+only the owned processes. The test caught and fixed ownership recognition of the
+backend's `python -u` command. Separate tests reject unrelated PIDs and stale kernel
+start times. This validates the process lifecycle locally, not Launchpad's outer
+proxy or an actual SSH disconnect.
+
+Historical tests include real CPU fitting on synthetic price series: mutating all
+future prices leaves the result identical, while changing the observation date
+changes the reconstructed formation period and z-score. Existing tests cover prior
+formation windows, exact session monitoring, BookReader historical query bounds,
+future-publication filtering, strict quotes, model selection, audit ID repair,
+forward-entry/horizon definitions and timeline behavior. New API tests cover forged
+snapshot requests, end-of-day/date-only admission, rejection of undated/future
+sources, execution-before-hindsight ordering and coherent replay persistence.
+Source tests cover server-side bearer headers, token-free escaped output, external
+origin/redirect rejection, encoded traversal rejection and ordinary public links.
+No real market data, BookReader article or model response was fabricated to stand
+in for the outstanding H100 acceptance run.

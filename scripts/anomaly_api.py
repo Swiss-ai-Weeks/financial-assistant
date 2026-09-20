@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import json
 import time
+from historical_api import historical_scan
+from bookreader_viewer import document_page, source_links
+import re
 
 from investigation_api import investigate, public_models
 
@@ -349,6 +352,44 @@ class Handler(
 
 
     def do_GET(self) -> None:
+        if self.path.startswith("/api/bookreader/documents/"):
+            try:
+                body = document_page(self.path.removeprefix("/api/bookreader/documents/"))
+            except Exception:
+                self.send_json(400, {"error": "BookReader document unavailable or invalid identifier"})
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        if self.path == "/api/bookreader/source-links":
+            self.send_json(200, source_links())
+            return
+        if self.path == "/api/replays":
+            packets = []
+            for path in sorted(Path(".run/replays").glob("*.json"), reverse=True):
+                try:
+                    packet = json.loads(path.read_text())
+                    meta = packet["historical"]
+                    fit = meta["signal"]["fit"]
+                    packets.append({"id": path.stem, "label": f"{fit['ticker_a']} / {fit['ticker_b']} · {meta['as_of']} · saved historical run"})
+                except (ValueError, KeyError):
+                    continue
+            self.send_json(200, {"replays": packets})
+            return
+        if self.path.startswith("/api/replays/"):
+            replay_id = self.path.removeprefix("/api/replays/")
+            if not re.fullmatch(r"[a-f0-9-]{36}", replay_id):
+                self.send_json(400, {"error": "Invalid replay ID"})
+                return
+            path = Path(".run/replays") / f"{replay_id}.json"
+            self.send_json(200 if path.exists() else 404,
+                           json.loads(path.read_text()) if path.exists() else {"error": "Replay not found"})
+            return
         if self.path == "/api/investigations/models":
             self.send_json(200, public_models())
             return
@@ -387,7 +428,7 @@ class Handler(
     def do_POST(self) -> None:
         if (
             self.path
-            not in ("/api/anomalies/scan", "/api/investigations")
+            not in ("/api/anomalies/scan", "/api/anomalies/historical-scan", "/api/investigations")
         ):
             self.send_json(
                 404,
@@ -422,6 +463,8 @@ class Handler(
                     request, prices=PRICES, fits=ALL_FITS, as_of=AS_OF,
                     formation_observations=FIT_PAYLOAD["formation_observations"],
                 )
+            elif self.path == "/api/anomalies/historical-scan":
+                result = historical_scan(request, PRICES)
             else:
                 result = scan(
                     corr_min=float(

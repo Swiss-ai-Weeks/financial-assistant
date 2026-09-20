@@ -232,6 +232,9 @@ def select_historical_documents(
                         .published_at
                         .date()
                         < plan.as_of.date()
+                        or (document.published_at.date() == plan.as_of.date()
+                            and plan.as_of.hour == 23 and plan.as_of.minute == 59
+                            and plan.as_of.second == 59 and plan.as_of.microsecond == 999999)
                     )
                 )
                 or (
@@ -247,19 +250,8 @@ def select_historical_documents(
 
     
 
-	    # Canonical entity names already discovered during
-    # query expansion. This avoids hard-coded ticker
-    # mappings while giving document selection a simple
-    # entity-specific relevance signal.
-    entity_terms = {
-        query.text.strip().lower()
-        for expansion in bundle.query_expansions
-        for query in expansion.queries
-        if (
-            query.proximity.value == "direct"
-            and query.relation == "entity"
-        )
-    }
+    # Prefer the application's canonical issuer aliases, not an LLM's guess.
+    entity_terms = {entity.casefold() for task in plan.tasks for entity in task.entities}
 
     def entity_match_score(document):
         """
@@ -524,6 +516,10 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     plan = plan_research(
         event
     )
+    from financial_assistant.research.identity import resolve_entities
+    plan = plan.model_copy(update={"tasks": tuple(
+        task.model_copy(update={"entities": resolve_entities(task.entities)}) for task in plan.tasks
+    )})
     # The caller selects the provider used for query expansion and reasoning.
 
     def query_expander(

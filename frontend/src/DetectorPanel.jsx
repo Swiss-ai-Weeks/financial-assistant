@@ -6,6 +6,8 @@ import {
 export default function DetectorPanel({
   onSelectCandidate,
 }) {
+  const [mode, setMode] = useState("live");
+  const [asOf, setAsOf] = useState("2026-08-28");
   const [entry, setEntry] =
     useState(1.5);
 
@@ -26,12 +28,14 @@ export default function DetectorPanel({
 
 
   async function runScan() {
+    onSelectCandidate?.(null);
+    setResult(null);
     setRunning(true);
     setError(null);
 
     try {
       const response = await fetch(
-        "/api/anomalies/scan",
+        mode === "historical" ? "/api/anomalies/historical-scan" : "/api/anomalies/scan",
         {
           method: "POST",
 
@@ -41,6 +45,7 @@ export default function DetectorPanel({
           },
 
           body: JSON.stringify({
+            as_of: asOf,
             entry,
             corr_min: corrMin,
             alpha,
@@ -76,6 +81,11 @@ export default function DetectorPanel({
       </div>
 
       <h2>Anomaly detector</h2>
+      <label>Mode<select value={mode} disabled={running} onChange={e => {setMode(e.target.value); setResult(null); onSelectCandidate?.(null);}}>
+        <option value="live">Live</option><option value="historical">Time Travel</option>
+      </select></label>
+      {mode === 'historical' && <label>Time Travel · As-of date<input type="date" value={asOf} disabled={running}
+        onChange={e => {setAsOf(e.target.value); setResult(null); onSelectCandidate?.(null);}} /></label>}
 
       <p className="detector-description">
         Configure which statistical
@@ -173,7 +183,7 @@ export default function DetectorPanel({
       >
         {running
           ? "SCANNING…"
-          : "RUN SCAN"}
+          : mode === "historical" ? "TRAVEL TO DATE" : "RUN SCAN"}
       </button>
 
 
@@ -186,6 +196,11 @@ export default function DetectorPanel({
 
       {result && (
         <>
+          <p>Market state as of {result.as_of}{result.resolved_session && <> · Resolved session: {result.resolved_session}<br />
+            Formation: {result.formation_start} through {result.formation_end}<br />
+            Price observations through: {result.price_observations_through}. No future price rows used. Fits recomputed.<br />
+            {result.universe_limitation}</>}</p>
+          <h3>{result.resolved_session ? 'Anomalies on this date' : 'Current anomalies'}</h3>
           <div className="detector-stats">
             <div>
               <span>Securities</span>
@@ -202,7 +217,7 @@ export default function DetectorPanel({
               <strong>
                 {
                   result
-                  .eligible_fit_count
+                  .eligible_fit_count ?? "Recomputed"
                 }
               </strong>
             </div>

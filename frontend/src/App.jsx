@@ -32,6 +32,7 @@ export default function App() {
   const savedRequest = useRef(null);
   const [file, setFile] = useState(EXAMPLES[0][0]);
   const [{loaded, error, running}, dispatch] = useReducer(investigationReducer, {loaded:null, error:null, running:false});
+  const [replays, setReplays] = useState([]);
   const [models, setModels] = useState([]);
   const [selection, setSelection] = useState(null);
   const [modelError, setModelError] = useState(null);
@@ -39,6 +40,7 @@ export default function App() {
   const [observedAt, setObservedAt] = useState('');
   useEffect(() => {
     const controller = new AbortController();
+    fetch('/api/replays', {signal:controller.signal}).then(r => r.json()).then(p => setReplays(p.replays ?? [])).catch(() => {});
     fetch('/api/investigations/models', {signal:controller.signal}).then(async response => {
       if (!response.ok) throw new Error('Could not load configured models');
       const payload = await response.json();
@@ -54,6 +56,7 @@ export default function App() {
       const payload = candidatePayload(selectedCandidate, selection, observedAt);
       const graph = await requestInvestigation(payload);
       dispatch({type:'success', graph, key:crypto.randomUUID()});
+      if (graph.replay_id) setReplays(previous => [{id:graph.replay_id, label:`${selectedCandidate.pair} · ${graph.historical.as_of} · saved historical run`}, ...previous]);
       setFile('');
     } catch (err) { dispatch({type:'failure', error:err.message}); }
   }
@@ -61,7 +64,7 @@ export default function App() {
     if (!file) return;
     const controller = new AbortController();
     savedRequest.current = controller;
-    fetch(`/${file}`, {signal:controller.signal}).then(response => {
+    fetch(file.startsWith('/api/') ? file : `/${file}`, {signal:controller.signal}).then(response => {
       if (!response.ok) throw new Error(`Could not load investigation: HTTP ${response.status}`);
       return response.json();
     }).then(graph => {
@@ -72,10 +75,15 @@ export default function App() {
   return <div className="app-shell">
     <nav className="case-selector"><label>Saved investigation<select value={file} disabled={running} onChange={e => setFile(e.target.value)}>
       <option value="" disabled>Live investigation</option>
+      {replays.map(item => <option key={item.id} value={`/api/replays/${item.id}`}>{item.label}</option>)}
       {EXAMPLES.map(([path,label]) => <option key={path} value={path}>{label}</option>)}
-    </select></label><span>Review workspace · local prototype</span></nav>
-    <details className="detector-drawer"><summary>Explore market anomaly candidates</summary>
-      <DetectorPanel onSelectCandidate={candidate => {setSelectedCandidate(candidate); setObservedAt(`${candidate.signal_date}T23:59:59+00:00`);}} />
+    </select></label><label>Import replay<input type="file" accept="application/json" disabled={running} onChange={async e => {
+      try { const packet = JSON.parse(await e.target.files[0].text()); setFile('');
+        dispatch({type:'saved', graph:validateGraph(packet.investigation ?? packet), key:crypto.randomUUID()});
+      } catch (err) {dispatch({type:'failure', error:err.message});}
+    }} /></label><span>Review workspace · local prototype</span></nav>
+    <details className="detector-drawer" open><summary>Explore market anomaly candidates</summary>
+      <DetectorPanel onSelectCandidate={candidate => {setSelectedCandidate(candidate); setObservedAt(candidate ? `${candidate.signal_date}T23:59:59+00:00` : "");}} />
       <label>Model/provider for the next investigation<select disabled={running || !models.length} value={selection ? JSON.stringify(selection) : ''}
         onChange={e => {const next = JSON.parse(e.target.value); setSelection(selectModel(models, next.provider, next.model));}}>
         {!selection && <option value="">Loading configured models…</option>}
@@ -83,10 +91,10 @@ export default function App() {
       </select></label>
       {modelError && <p role="alert">{modelError}</p>}
       {selectedCandidate && <div className="selected-candidate">Selected candidate: <strong>{selectedCandidate.pair}</strong> · {selectedCandidate.signal_date}
-        <label>Observed at / evidence cutoff (timezone required)<input value={observedAt} disabled={running} onChange={e => setObservedAt(e.target.value)} /></label>
-        <p>Defaults to the end of the candidate day in UTC. Adjust to the actual observation time.</p>
+        {selectedCandidate.mode !== 'historical' && <label>Observed at / evidence cutoff (timezone required)<input value={observedAt} disabled={running} onChange={e => setObservedAt(e.target.value)} /></label>}
+        <p>Evidence cutoff: end of {selectedCandidate.requested_as_of ?? selectedCandidate.signal_date} in UTC. Date-only publications retain their uncertainty.</p>
       </div>}
-      <button disabled={running || !selectedCandidate || !selection} onClick={investigateCandidate}>Investigate candidate</button>
+      <button disabled={running || !selectedCandidate || !selection} onClick={investigateCandidate}>{selectedCandidate?.mode === 'historical' ? `Investigate at ${selectedCandidate.requested_as_of}` : 'Investigate candidate'}</button>
     </details>
     {running && <p role="status">Investigation running… The current graph and review remain available.</p>}
     {error && <p className="review-error" role="alert">{error}</p>}
@@ -126,6 +134,22 @@ function InvestigationWorkspace({graph, fresh}) {
       <div className="claim-summary__text">{anomaly?.label ?? 'No anomaly recorded'}</div>
       <div className="claim-summary__qualification">An attention event triggers investigation; it does not establish causality. Recorded model_run nodes describe the execution that produced this graph. The model selection above applies to the next investigation.</div>
     </section>
+    {graph.historical && <section className="temporal-review"><h2>Investigation as of {graph.historical.as_of}</h2>
+      <p>Evidence cutoff: {graph.historical.observed_at} · Market session: {graph.historical.resolved_session}</p>
+      <p>{graph.historical.universe_limitation}</p>
+      <p>Replay saved: {graph.replay_id}. Export review to download the complete replay packet.</p>
+    </section>}
+    {graph.hindsight_outcome && <details className="hindsight-outcomes"><summary>Reveal HINDSIGHT OUTCOME — NOT AVAILABLE TO THE ORIGINAL INVESTIGATION</summary>
+      <p>Future information — excluded from investigation. Returns do not prove or disprove its hypotheses.</p>
+      {graph.hindsight_outcome.unavailable ? <p>{graph.hindsight_outcome.unavailable}</p> : <>
+        <p>Entry: next common market session open · {graph.hindsight_outcome.entry_date} · {graph.hindsight_outcome.strategy_direction}</p>
+        <table><thead><tr><th>Horizon</th><th>Return</th></tr></thead><tbody>
+          {[1,5,10,20].map(h => <tr key={h}><td>{h} sessions</td><td>{graph.hindsight_outcome.forward_returns.find(p => p.horizon_observations === h)?.return_pct.toFixed(2) ?? 'Unavailable'}%</td></tr>)}
+          <tr><td>Latest ({graph.hindsight_outcome.latest_date})</td><td>{graph.hindsight_outcome.return_to_latest_pct.toFixed(2)}%</td></tr>
+          <tr><td>Max drawdown</td><td>{graph.hindsight_outcome.max_drawdown_pct.toFixed(2)}%</td></tr>
+        </tbody></table><p>Reverted: {graph.hindsight_outcome.mean_reversion_date ?? 'Not within available history'}</p>
+      </>}
+    </details>}
     <TemporalReview graph={graph} cutoff={cutoff} onChange={setCutoff} onSelect={onSelect} />
     <main className="workspace"><section className="graph-panel">
       <div className="workspace-tabs"><button aria-pressed={view === 'graph'} onClick={() => setView('graph')}>Evidence graph</button><button aria-pressed={view === 'summary'} onClick={() => setView('summary')}>Review summary</button></div>

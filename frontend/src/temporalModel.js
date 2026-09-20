@@ -13,9 +13,9 @@ export function publicationBound(node) {
   const data = nodeData(node);
   if (!data.published_at) return null;
   if (data.published_date_only || /^\d{4}-\d{2}-\d{2}$/.test(data.published_at)) {
-    // Conservative: a calendar date becomes eligible only after that entire day.
+    // Conservative: a calendar date becomes eligible at the end of that entire day.
     const start = instant(`${data.published_at.slice(0,10)}T00:00:00Z`);
-    return start === null ? null : start + 86400000;
+    return start === null ? null : start + 86399999;
   }
   return instant(data.published_at);
 }

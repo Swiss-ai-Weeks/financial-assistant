@@ -7,6 +7,9 @@ export function selectModel(models, provider, model) {
 export function candidatePayload(candidate, selection, observedAt) {
   if (!candidate?.ticker_a || !candidate?.ticker_b || !candidate?.signal_date) throw new Error('Select a candidate');
   if (!selection?.provider || !selection?.model) throw new Error('Select a model/provider');
+  if (candidate.mode === 'historical') return {mode:'historical', scan_id:candidate.scan_id,
+    as_of:candidate.requested_as_of, ticker_a:candidate.ticker_a, ticker_b:candidate.ticker_b,
+    provider:selection.provider, model:selection.model};
   if (!/(Z|[+-]\d{2}:\d{2})$/.test(observedAt) || !Number.isFinite(Date.parse(observedAt))) {
     throw new Error('Observed at must be a valid timestamp with a timezone offset');
   }

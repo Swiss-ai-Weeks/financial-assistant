@@ -293,7 +293,8 @@ def build_query_expansion_prompt(
     rather than the old web-search query string.
     """
 
-    entities = ", ".join(task.entities)
+    from financial_assistant.research.identity import resolve_entities
+    entities = ", ".join(resolve_entities(task.entities))
 
     source_preferences = ", ".join(
         preference.value
@@ -332,7 +333,7 @@ Generate retrieval concepts for this research task.
 
 Remember:
 
-- infer entity names from context only when confident;
+- Supplied ticker/issuer aliases are authoritative. Expand these identities; never reinterpret a known ticker as another company or geographic region;
 - do not make causal claims;
 - indirect concepts are things to investigate,
   not explanations already established;
