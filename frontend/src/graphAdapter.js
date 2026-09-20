@@ -45,52 +45,32 @@ const KIND_LABELS = {
 
 const MAIN_COLUMNS = 4;
 const MAIN_X_GAP = 310;
-const WRAP_Y_GAP = 140;
+const WRAP_Y_GAP = 190;
 
 
 export function toReactFlowNodes(
   graphNodes
 ) {
   const counters = {};
+  const bases = {};
+  let nextY = 40;
+  const kinds = [...new Set(graphNodes.map(node => node.kind))]
+    .filter(kind => kind !== "model_run")
+    .sort((a, b) => (ROWS[a] ?? 700) - (ROWS[b] ?? 700));
+  for (const kind of kinds) {
+    bases[kind] = nextY;
+    const count = graphNodes.filter(node => node.kind === kind).length;
+    nextY += Math.ceil(count / MAIN_COLUMNS) * WRAP_Y_GAP + 70;
+  }
 
   return graphNodes.map((node) => {
-    counters[node.kind] =
-      counters[node.kind] ?? 0;
-
-    const index =
-      counters[node.kind]++;
-
-    let x;
-    let y;
-
-    if (node.kind === "anomaly") {
-      x = 500;
-      y = ROWS.anomaly;
-    } else if (
-      node.kind === "model_run"
-    ) {
-      // Execution provenance gets its
-      // own lane on the right.
-      x =
-        1400
-        + (index % 2) * 310;
-
-      y =
-        220
-        + Math.floor(index / 2)
-          * 150;
-    } else {
-      x =
-        60
-        + (index % MAIN_COLUMNS)
-          * MAIN_X_GAP;
-
-      y =
-        (ROWS[node.kind] ?? 700)
-        + Math.floor(
-          index / MAIN_COLUMNS
-        ) * WRAP_Y_GAP;
-    }
+    const index = counters[node.kind] ?? 0;
+    counters[node.kind] = index + 1;
+    const execution = node.kind === "model_run";
+    const x = execution ? 1400 + (index % 2) * MAIN_X_GAP
+      : 60 + (index % MAIN_COLUMNS) * MAIN_X_GAP;
+    const y = execution ? 220 + Math.floor(index / 2) * WRAP_Y_GAP
+      : bases[node.kind] + Math.floor(index / MAIN_COLUMNS) * WRAP_Y_GAP;
 
     return {
       id: node.node_id,
@@ -143,8 +123,9 @@ export function toReactFlowEdges(
 
       label,
 
-      animated:
-        isChallengeRelation,
+      animated: false,
+
+      style: isChallengeRelation ? { stroke: "#dd8796", strokeWidth: 2 } : undefined,
 
       className:
         `cg-edge cg-edge--${edge.kind}`,
