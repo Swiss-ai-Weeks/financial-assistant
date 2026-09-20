@@ -1,4 +1,4 @@
-# ClaimGraph Copilot (Chrome extension)
+# Pythia Copilot (Chrome extension)
 
 Story 2's entry point. On any page, highlight a ticker or a company name,
 right-click, and choose **Analyse unusual activity**. The desk opens in Copilot

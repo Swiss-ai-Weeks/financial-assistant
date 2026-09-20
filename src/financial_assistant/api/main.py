@@ -14,7 +14,7 @@ def create_app() -> FastAPI:
     settings = get_settings()
 
     app = FastAPI(
-        title="ClaimGraph Desk API",
+        title="Pythia API",
         description=(
             "Portfolio anomalies explained by the news that was "
             "public when they happened."

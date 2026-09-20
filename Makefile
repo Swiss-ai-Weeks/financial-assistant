@@ -1,4 +1,4 @@
-# ClaimGraph Desk
+# Pythia
 #
 #   make setup   install backend + frontend dependencies
 #   make dev     run the API (:8080) and the UI (:5173)

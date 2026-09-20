@@ -1,4 +1,4 @@
-# ClaimGraph Desk — frontend
+# Pythia — frontend
 
 React + Vite. Talks to the FastAPI service through `/api` (proxied to
 `http://127.0.0.1:8080` in development).

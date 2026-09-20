@@ -28,9 +28,9 @@ export default function TopBar({
 
   return (
     <header className="topbar">
-      <div className="logo mono" aria-label="ClaimGraph">
-        <span>CL</span>
-        <span>GR</span>
+      <div className="logo mono" aria-label="Pythia">
+        <span>PY</span>
+        <span>TA</span>
       </div>
 
       <div className="topbar__instrument">

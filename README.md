@@ -1,4 +1,7 @@
-# Financial Assistant — ClaimGraph Desk
+# Pythia
+
+*The oracle for a trading desk: it tells you what you missed, what you are
+looking at, and what to look at next, and it shows its evidence.*
 
 **When a strategy stops working, the reason is usually in the news. This desk
 finds it and shows its evidence.**

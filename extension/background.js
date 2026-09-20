@@ -6,7 +6,7 @@
 // to the desk, which resolves company names to tickers.
 
 const DEFAULT_DESK = "http://localhost:5173";
-const MENU_ID = "claimgraph-analyse";
+const MENU_ID = "pythia-analyse";
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
