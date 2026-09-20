@@ -64,7 +64,7 @@ news:
 # record (minutes for ~140 names). Both are cached on disk, so
 # the first "I'm Feeling Lucky" of the demo is instant.
 warm:
-	$(BIN)/python -c "from financial_assistant.api.dependencies import get_discovery_service as s; d = s().scan(); print(d.analogue_breaks, 'analogue breaks;', len(d.setups), 'new setups')"
+	$(BIN)/python scripts/warm.py
 
 # Saved explanations and triage readings are replayed without a
 # model, which is what makes a recording reproducible. It also
