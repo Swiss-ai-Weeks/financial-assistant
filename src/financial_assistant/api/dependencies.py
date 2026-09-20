@@ -12,9 +12,12 @@ from functools import lru_cache
 
 from financial_assistant.api.config import get_settings
 from financial_assistant.api.repositories import (
+    ArchiveNewsSource,
     CachedDocumentFetcher,
-    GdeltArchive,
-    GdeltNewsSource,
+    FinnhubDownloader,
+    GdeltDownloader,
+    NewsArchive,
+    NewsDownloader,
     InstrumentRepository,
     InvestigationRepository,
     MarketDataRepository,
@@ -25,10 +28,13 @@ from financial_assistant.api.repositories import (
 )
 from financial_assistant.api.services import (
     AnomalyService,
+    DiscoveryService,
     InvestigationService,
     MarketService,
+    MicroscopeService,
     NewsService,
     PortfolioService,
+    PostMortemService,
 )
 from financial_assistant.llm import OpenAICompatibleProvider
 from financial_assistant.retrieval import (
@@ -78,21 +84,41 @@ def get_search_provider() -> SearxngSearchProvider | None:
 
 
 @lru_cache(maxsize=1)
-def get_gdelt_archive() -> GdeltArchive:
-    return GdeltArchive(get_settings().gdelt_dir)
+def get_news_archive() -> NewsArchive:
+    return NewsArchive(get_settings().news_archive_dir)
+
+
+def get_news_downloaders() -> tuple[NewsDownloader, ...]:
+    """
+    Providers `make news` fills the archive from. Finnhub is
+    preferred when a key is configured: it is ticker-tagged
+    and carries summaries. GDELT needs no key and reaches
+    further back.
+    """
+
+    settings = get_settings()
+    downloaders: list[NewsDownloader] = []
+
+    if settings.finnhub_api_key:
+        downloaders.append(FinnhubDownloader(settings.finnhub_api_key))
+
+    downloaders.append(GdeltDownloader())
+
+    return tuple(downloaders)
 
 
 @lru_cache(maxsize=1)
 def get_news_repository() -> NewsRepository:
     settings = get_settings()
 
-    # The two complement each other. GDELT, served from the
-    # archive filled by `make news`, reaches back years but
-    # its index trails the present by days. Yahoo only knows
-    # the last few weeks, which are exactly the ones GDELT
-    # is missing. NewsService hides whatever falls outside
-    # the desk's window, so both are safe on a replay date.
-    sources = [GdeltNewsSource(get_gdelt_archive()), YahooNewsSource()]
+    # The two complement each other. The archive, filled by
+    # `make news`, reaches back as far as its providers do,
+    # but a historical index trails the present by days.
+    # Yahoo only knows the last few weeks, which are exactly
+    # the ones the archive is missing. NewsService hides
+    # whatever falls outside the desk's window, so both are
+    # safe on a replay date.
+    sources = [ArchiveNewsSource(get_news_archive()), YahooNewsSource()]
 
     if (search := get_search_provider()) is not None:
         sources.append(SearchProviderNewsSource(search))
@@ -207,4 +233,48 @@ def get_investigation_service() -> InvestigationService:
         max_documents=settings.max_documents,
         max_claims=settings.max_claims,
         llm_workers=settings.llm_workers,
+    )
+
+
+@lru_cache(maxsize=1)
+def get_postmortem_service() -> PostMortemService:
+    settings = get_settings()
+
+    return PostMortemService(
+        get_anomaly_service(),
+        get_portfolio_repository(),
+        get_market_repository(),
+        get_investigation_repository(),
+        review_days=settings.review_days,
+        benchmark=settings.benchmark,
+    )
+
+
+@lru_cache(maxsize=1)
+def get_microscope_service() -> MicroscopeService:
+    return MicroscopeService(
+        get_market_repository(),
+        get_portfolio_repository(),
+        get_instrument_repository(),
+        get_anomaly_service(),
+        benchmark=get_settings().benchmark,
+    )
+
+
+@lru_cache(maxsize=1)
+def get_discovery_service() -> DiscoveryService:
+    settings = get_settings()
+
+    return DiscoveryService(
+        get_anomaly_service(),
+        get_news_service(),
+        get_market_repository(),
+        get_portfolio_repository(),
+        get_instrument_repository(),
+        cache_dir=settings.analogue_cache_dir,
+        formation_observations=settings.pairs_formation_observations,
+        corr_min=settings.pairs_corr_min,
+        alpha=settings.pairs_alpha,
+        entry=settings.pairs_entry,
+        min_liquidity_musd=settings.min_liquidity_musd,
     )

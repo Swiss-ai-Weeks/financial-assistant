@@ -6,6 +6,11 @@ from datetime import date
 
 from pydantic import BaseModel, Field
 
+from financial_assistant.analytics import (
+    AnalogueOutcome,
+    HorizonReading,
+    PeerReading,
+)
 from financial_assistant.api.models import Anomaly, NewsItem
 
 
@@ -165,3 +170,110 @@ class SystemStatus(BaseModel):
     provider: str
     news_sources: list[str]
     search: ServiceStatus
+
+
+# -----------------------------------------------------
+# Story 1 · post-mortem
+# -----------------------------------------------------
+
+
+class Relationship(BaseModel):
+    """Why two securities are treated as related."""
+
+    ticker_a: str
+    ticker_b: str
+    correlation: float
+    beta: float
+    pvalue: float
+    half_life_days: float | None
+    formation_start: date
+    formation_end: date
+
+
+class Finding(BaseModel):
+    """
+    One thing the manager missed: what diverged, what it
+    cost, when it became visible, and why it happened.
+    """
+
+    anomaly: Anomaly
+    headline: str
+    statement: str
+
+    impact: float
+    impact_since: date
+    hedged_impact: float | None = None
+
+    signal_date: date
+    sessions_of_warning: int
+    missed_signal: str
+
+    relationship: Relationship | None = None
+
+    explanation: str | None = None
+    confidence: str | None = None
+    investigation_id: str | None = None
+
+
+class PostMortem(BaseModel):
+    window: ReviewWindow
+    currency: str
+    total_impact: float
+    findings: list[Finding]
+
+
+# -----------------------------------------------------
+# Story 2 · copilot
+# -----------------------------------------------------
+
+
+class HorizonTick(BaseModel):
+    horizon: str
+    z_score: float | None
+    unusual: bool
+    available: bool
+
+
+class Microscope(BaseModel):
+    ticker: str
+    as_of: date
+    horizon: str
+    ticks: list[HorizonTick]
+    reading: HorizonReading
+    statements: list[str]
+    peers: list[PeerReading]
+    outcome: AnalogueOutcome | None
+    latest_anomaly: Anomaly | None
+
+
+# -----------------------------------------------------
+# Story 3 · discovery
+# -----------------------------------------------------
+
+
+class FunnelStep(BaseModel):
+    label: str
+    count: int
+
+
+class Setup(BaseModel):
+    anomaly: Anomaly
+    long: str
+    short: str
+    z_score: float
+    relationship: Relationship
+    outcome: AnalogueOutcome | None
+    expected_horizon: str
+    headlines: int
+    liquidity_musd: float
+    why_connected: list[str]
+    invalidation: list[str]
+    score: float
+
+
+class Discovery(BaseModel):
+    as_of: date
+    funnel: list[FunnelStep]
+    setups: list[Setup]
+    analogue_breaks: int
+    analogue_period: str

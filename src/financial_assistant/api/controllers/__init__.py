@@ -4,6 +4,7 @@ from . import (
     market_controller,
     news_controller,
     portfolio_controller,
+    story_controller,
     system_controller,
 )
 
@@ -14,4 +15,5 @@ ROUTERS = (
     anomaly_controller.router,
     news_controller.router,
     investigation_controller.router,
+    story_controller.router,
 )

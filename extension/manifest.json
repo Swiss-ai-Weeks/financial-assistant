@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "ClaimGraph Copilot",
+  "version": "0.1.0",
+  "description": "Highlight a ticker or company on any page and ask what is unusual about it right now.",
+  "permissions": ["contextMenus", "storage"],
+  "background": { "service_worker": "background.js" },
+  "options_page": "options.html",
+  "icons": { "128": "icon.png" }
+}

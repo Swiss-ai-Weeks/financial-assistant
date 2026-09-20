@@ -17,9 +17,22 @@ import NewsFeed from "./components/news/NewsFeed";
 import NewsTable from "./components/news/NewsTable";
 import PerformanceStrip from "./components/portfolio/PerformanceStrip";
 import PositionsTable from "./components/portfolio/PositionsTable";
+import DiscoveryView from "./components/stories/DiscoveryView";
+import FindingsPanel from "./components/stories/FindingsPanel";
+import HorizonSlider from "./components/stories/HorizonSlider";
+import MicroscopePanel from "./components/stories/MicroscopePanel";
 import { useInvestigation } from "./hooks/useInvestigation";
 import { useResource } from "./hooks/useResource";
 import { useTheme } from "./hooks/useTheme";
+
+// Chart depth that makes each horizon legible.
+const HORIZON_DAYS = { "1d": 45, "1w": 90, "1m": 180, "3m": 365, "1y": 730 };
+
+// Deep link used by the browser extension:
+//   /?mode=copilot&ticker=NVDA
+const LINK = new URLSearchParams(window.location.search);
+const MODES = ["postmortem", "copilot", "discovery"];
+const LINKED = LINK.get("ticker")?.trim() || null;
 
 const RANGES = [
   { key: 30, label: "1M" },
@@ -31,11 +44,14 @@ const RANGES = [
 export default function App() {
   const [theme, toggleTheme] = useTheme();
 
-  const [view, setView] = useState("desk");
+  const [view, setView] = useState(
+    MODES.includes(LINK.get("mode")) ? LINK.get("mode") : "postmortem"
+  );
+  const [horizon, setHorizon] = useState("1w");
   const [chosenTicker, setTicker] = useState(null);
   const [days, setDays] = useState(180);
   const [centerTab, setCenterTab] = useState("chart");
-  const [sideTab, setSideTab] = useState("monitors");
+  const [sideTab, setSideTab] = useState("findings");
   const [bottomTab, setBottomTab] = useState("anomalies");
 
   const [strategy, setStrategy] = useState(null);
@@ -56,16 +72,30 @@ export default function App() {
   const portfolio = useResource(api.portfolio, "portfolio");
   const investigations = useResource(api.investigations, "investigations");
 
-  // The desk opens on the holding that hurt the book most.
+  // The extension sends whatever was highlighted, which may be
+  // "NVDA" or "Nvidia". Symbol search turns both into a ticker.
+  const linked = useResource(() => api.searchInstruments(LINKED), "linked", {
+    enabled: LINKED != null,
+  });
+
+  // Otherwise the desk opens on the holding that hurt the book most.
   const ticker = useMemo(() => {
-    if (chosenTicker || !portfolio.data) return chosenTicker;
+    if (chosenTicker) return chosenTicker;
+
+    if (LINKED != null) {
+      if (linked.loading) return null;
+
+      return linked.data?.[0]?.ticker ?? LINKED.toUpperCase();
+    }
+
+    if (!portfolio.data) return null;
 
     const worst = [...portfolio.data.positions].sort(
       (a, b) => a.contribution_pct - b.contribution_pct
     )[0];
 
     return worst?.ticker ?? portfolio.data.benchmark;
-  }, [chosenTicker, portfolio.data]);
+  }, [chosenTicker, portfolio.data, linked.loading, linked.data]);
 
   // Anything computed from the holdings reloads when they change.
   const book = portfolio.data?.positions.map((p) => p.ticker).join() ?? null;
@@ -83,10 +113,21 @@ export default function App() {
   const quote = useResource(() => api.quote(ticker), `quote:${ticker}`, {
     enabled: hasTicker,
   });
+  const copilot = view === "copilot";
+  const chartDays = copilot ? HORIZON_DAYS[horizon] : days;
+
   const candles = useResource(
-    () => api.candles(ticker, days),
-    `candles:${ticker}:${days}`,
+    () => api.candles(ticker, chartDays),
+    `candles:${ticker}:${chartDays}`,
     { enabled: hasTicker }
+  );
+  const postmortem = useResource(api.postmortem, `postmortem:${book}`, {
+    enabled: hasBook,
+  });
+  const microscope = useResource(
+    () => api.microscope(ticker, horizon),
+    `microscope:${ticker}:${horizon}`,
+    { enabled: hasTicker && copilot }
   );
   const tickerAnomalies = useResource(
     () => api.anomalies(ticker),
@@ -123,7 +164,10 @@ export default function App() {
     { enabled: shownPair != null && centerTab === "spread" }
   );
 
-  const investigation = useInvestigation(investigationId, investigations.reload);
+  const investigation = useInvestigation(investigationId, () => {
+    investigations.reload();
+    postmortem.reload();
+  });
 
   // ---------------------------------------------------
   // Actions
@@ -137,7 +181,7 @@ export default function App() {
     setPairScan(null);
     setInvestigationId(null);
     setCenterTab("chart");
-    setView("desk");
+    setView((current) => (MODES.includes(current) && current !== "discovery" ? current : "postmortem"));
   }, []);
 
   const selectAnomaly = useCallback((selected) => {
@@ -145,7 +189,7 @@ export default function App() {
     setInvestigationId(null);
     setActionError(null);
     setSideTab("explain");
-    setView("desk");
+    setView("postmortem");
 
     setTicker(selected.ticker);
     setNewsDay(null);
@@ -214,7 +258,7 @@ export default function App() {
     setAnomaly(run.anomaly);
     setInvestigationId(run.investigation_id);
     setSideTab("explain");
-    setView(run.graph ? "graph" : "desk");
+    setView(run.graph ? "graph" : "postmortem");
   };
 
   // ---------------------------------------------------
@@ -231,13 +275,19 @@ export default function App() {
 
   const blotter = useMemo(
     () =>
-      (bookAnomalies.data ?? []).filter(
+      ((copilot ? tickerAnomalies.data : bookAnomalies.data) ?? []).filter(
         (item) => strategy == null || item.strategy === strategy
       ),
-    [bookAnomalies.data, strategy]
+    [copilot, tickerAnomalies.data, bookAnomalies.data, strategy]
   );
 
   const llm = system.data?.llm;
+
+  const finding = postmortem.data?.findings.find(
+    (item) => item.anomaly.anomaly_id === anomaly?.anomaly_id
+  );
+
+  const desk = view === "postmortem" || copilot;
 
   return (
     <div className="app">
@@ -268,7 +318,13 @@ export default function App() {
         </main>
       )}
 
-      {view === "desk" && (
+      {view === "discovery" && (
+        <main className="app__main app__main--full">
+          <DiscoveryView onReason={selectAnomaly} />
+        </main>
+      )}
+
+      {desk && (
         <>
           <main className="app__main">
             <PerformanceStrip portfolio={portfolio.data} asOf={system.data?.as_of} />
@@ -295,17 +351,25 @@ export default function App() {
                 </span>
               )}
 
-              <div className="toolbar__ranges mono">
-                {RANGES.map((range) => (
-                  <button
-                    key={range.key}
-                    className={days === range.key ? "is-active" : ""}
-                    onClick={() => setDays(range.key)}
-                  >
-                    {range.label}
-                  </button>
-                ))}
-              </div>
+              {copilot ? (
+                <HorizonSlider
+                  ticks={microscope.data?.ticks ?? []}
+                  horizon={horizon}
+                  onChange={setHorizon}
+                />
+              ) : (
+                <div className="toolbar__ranges mono">
+                  {RANGES.map((range) => (
+                    <button
+                      key={range.key}
+                      className={days === range.key ? "is-active" : ""}
+                      onClick={() => setDays(range.key)}
+                    >
+                      {range.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <section className="stage">
@@ -401,6 +465,9 @@ export default function App() {
             <div className="toolbar">
               <Tabs
                 tabs={[
+                  copilot
+                    ? { key: "findings", label: "Unusual" }
+                    : { key: "findings", label: "Findings" },
                   { key: "monitors", label: "Monitors" },
                   { key: "news", label: "News", count: tickerNews.data?.length },
                   { key: "explain", label: "Explain" },
@@ -411,6 +478,23 @@ export default function App() {
             </div>
 
             <div className="app__side-body">
+              {sideTab === "findings" && !copilot && (
+                <FindingsPanel
+                  postmortem={postmortem.data}
+                  selectedId={anomaly?.anomaly_id}
+                  onSelect={selectAnomaly}
+                />
+              )}
+
+              {sideTab === "findings" && copilot && (
+                <MicroscopePanel
+                  microscope={microscope.data}
+                  loading={microscope.loading}
+                  error={microscope.error}
+                  onExplain={selectAnomaly}
+                />
+              )}
+
               {sideTab === "monitors" && (
                 <StrategyMarketplace
                   strategies={strategies.data ?? []}
@@ -438,6 +522,7 @@ export default function App() {
               {sideTab === "explain" && (
                 <InvestigationPanel
                   anomaly={anomaly}
+                  finding={finding}
                   anomalyNews={anomalyNews}
                   investigation={investigation}
                   llm={llm}

@@ -44,6 +44,30 @@ ClaimGraph pipeline run for real: see `tests/test_api.py`.
 | `NewsService` | Ticker and book wire; news around an anomaly, split at the evidence cutoff and ranked by relevance. |
 | `InvestigationService` | Background ClaimGraph pipeline over admissible news, with per-stage progress. |
 
+## The three stories
+
+```
+analytics/abnormal.py    what is unusual about a security, per horizon
+analytics/analogues.py   what happened next in comparable past situations
+
+PostMortemService   past     anomalies + money + relationship + missed signal + explanation
+MicroscopeService   present  horizon reading + peers that did not follow + analogues
+DiscoveryService    future   universe funnel -> ranked setups
+```
+
+- **Abnormal return** is the return a market model (beta on the previous 252
+  sessions) does not explain. Its size is judged event-study style: daily
+  abnormal volatility from the year *before* the horizon, scaled by √horizon.
+  Standardising against past same-horizon moves breaks at long horizons, where
+  a few years of data hold only a few independent windows.
+- **Single-name analogues** are past days, pooled across the universe, on which
+  a security stood as far from normal in the same direction over the same
+  horizon, taken at least one horizon apart, with a fully elapsed outcome.
+- **Relationship analogues** are walk-forward: at each past date pairs are fitted
+  only on the year before it, the break is observed that day, and the mechanical
+  reversion trade is followed afterwards (`simulation/pair_trade.py`). Built once
+  per universe and cached under `data/cache/analogues/`.
+
 ## Strategy monitors
 
 Each strategy rests on one assumption. A monitor fires when it stops holding.
@@ -74,8 +98,9 @@ automated requests with consent walls that extract into clean, irrelevant text.
 ## News: download once, replay from disk
 
 ```
-make news ──► GdeltClient ──► data/archive/gdelt/<TICKER>.jsonl     (network, throttled, resumable)
-desk      ──► GdeltNewsSource ──► reads the archive                 (no network, ever)
+make news ──► NewsDownloader(s) ──► data/archive/news/<TICKER>.jsonl  (network, throttled, resumable)
+              Finnhub · GDELT
+desk      ──► ArchiveNewsSource ──► reads the archive                 (no network, ever)
 Explain   ──► CachedDocumentFetcher ──► data/cache/documents/*.json (fetched once, then replayed)
 ```
 
@@ -85,7 +110,11 @@ window in calendar-aligned weekly slices, records finished slices in
 `manifest.json`, and can be interrupted and resumed. The desk "fetches" news as
 it would live, from files that no longer change.
 
-Things learned from real downloads, encoded in `repositories/gdelt.py`:
+Providers are interchangeable: anything that returns articles for a company
+between two dates implements `NewsDownloader` and fills the same archive. The
+same URL reported by two providers is stored once.
+
+Things learned from real GDELT downloads, encoded in `repositories/gdelt.py`:
 
 - GDELT matches text, not tickers: the query is the written company name plus
   finance terms.
@@ -115,7 +144,7 @@ in practice.
 
 ```
 data/seed/portfolio.json          the demo book, committed
-data/archive/gdelt/*.jsonl        GDELT titles + URLs + timestamps, committable
+data/archive/news/*.jsonl         titles + summaries + URLs + timestamps, committable
 data/cache/documents/*.json       fetched article text, replayed (ignored: third-party content)
 data/state/portfolio.json         the edited book            (ignored)
 data/state/investigations/*.json  one replayable file per run (ignored)

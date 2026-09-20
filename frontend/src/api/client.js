@@ -54,6 +54,11 @@ export const api = {
   anomalyNews: (anomalyId, ticker) =>
     request(`/news/anomaly/${encodeURIComponent(anomalyId)}${query({ ticker })}`),
 
+  postmortem: () => request("/postmortem"),
+  microscope: (ticker, horizon) =>
+    request(`/microscope/${encodeURIComponent(ticker)}${query({ horizon })}`),
+  discovery: () => request("/discovery"),
+
   investigations: () => request("/investigations"),
   investigation: (id) => request(`/investigations/${encodeURIComponent(id)}`),
   startInvestigation: (anomalyId, ticker) =>

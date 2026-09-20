@@ -27,15 +27,20 @@ from financial_assistant.api.repositories import (
 )
 from financial_assistant.api.services import (
     AnomalyService,
+    DiscoveryService,
     InvestigationService,
     MarketService,
+    MicroscopeService,
     NewsService,
     PortfolioService,
+    PostMortemService,
 )
 from financial_assistant.domain import SourceDocument
 
 
-SESSIONS = 330
+# Long enough for a one-week reading: a year to estimate beta,
+# a year to measure volatility, then the horizon itself.
+SESSIONS = 560
 LAST_SESSION = pd.bdate_range(end="2026-09-18", periods=SESSIONS)[-1]
 
 ARTICLE = (
@@ -247,8 +252,10 @@ def client(tmp_path):
         entry=2.0,
     )
 
+    investigation_store = InvestigationRepository(tmp_path / "investigations")
+
     investigations = InvestigationService(
-        InvestigationRepository(tmp_path / "investigations"),
+        investigation_store,
         anomalies,
         news,
         llm_factory=FakeLLM,
@@ -264,6 +271,30 @@ def client(tmp_path):
 
     app.dependency_overrides.update(
         {
+            deps.get_postmortem_service: lambda: PostMortemService(
+                anomalies,
+                portfolios,
+                market,
+                investigation_store,
+                review_days=30,
+                benchmark="SPY",
+            ),
+            deps.get_microscope_service: lambda: MicroscopeService(
+                market, portfolios, instruments, anomalies, benchmark="SPY"
+            ),
+            deps.get_discovery_service: lambda: DiscoveryService(
+                anomalies,
+                news,
+                market,
+                portfolios,
+                instruments,
+                cache_dir=tmp_path / "analogues",
+                formation_observations=252,
+                corr_min=0.5,
+                alpha=0.05,
+                entry=2.0,
+                min_liquidity_musd=1.0,
+            ),
             deps.get_market_service: lambda: MarketService(market, review_days=30),
             deps.get_anomaly_service: lambda: anomalies,
             deps.get_news_service: lambda: news,
@@ -473,3 +504,96 @@ def test_investigation_of_unknown_anomaly_is_not_found(client):
     response = client.post("/api/investigations", json={"anomaly_id": "NOPE"})
 
     assert response.status_code == 404
+
+
+# -----------------------------------------------------
+# The three stories
+# -----------------------------------------------------
+
+
+def test_postmortem_prices_the_relationship_that_broke(client):
+    body = client.get("/api/postmortem").json()
+
+    # AAA broke away from both of its cointegrated partners.
+    finding = next(
+        f
+        for f in body["findings"]
+        if f["headline"] == "AAA / BBB — unusual divergence"
+    )
+
+    assert finding["statement"].startswith("AAA underperformed BBB by ")
+
+    # 100 shares of a ~$100 stock that fell ~10% after the signal.
+    assert -1500 < finding["impact"] < -300
+
+    # Only AAA is held, so a hedge with BBB is priced. Whether
+    # it would have helped depends on what BBB did, and the
+    # desk reports that honestly either way.
+    assert finding["hedged_impact"] is not None
+    assert finding["hedged_impact"] != finding["impact"]
+
+    assert finding["relationship"]["pvalue"] < 0.05
+    assert finding["signal_date"] <= finding["anomaly"]["observed_on"]
+    assert "hedge with BBB" in finding["missed_signal"]
+
+    # Nothing has been investigated yet, and it says so.
+    assert finding["explanation"] is None and finding["confidence"] is None
+
+    # Overlapping findings on one holding are not double counted.
+    assert body["total_impact"] >= sum(
+        f["impact"] for f in body["findings"]
+    )
+
+
+def test_postmortem_carries_the_explanation_once_investigated(client):
+    anomaly = client.get("/api/anomalies?strategy=pairs").json()[0]
+    client.post("/api/investigations", json={"anomaly_id": anomaly["anomaly_id"]})
+
+    finding = next(
+        f
+        for f in client.get("/api/postmortem").json()["findings"]
+        if f["anomaly"]["anomaly_id"] == anomaly["anomaly_id"]
+    )
+
+    assert finding["explanation"] == "AAA repriced on its own bond-loss disclosure."
+    assert finding["confidence"] == "medium"
+    assert finding["investigation_id"].startswith("INV-")
+
+
+def test_microscope_reads_the_same_security_differently_per_horizon(client):
+    week = client.get("/api/microscope/AAA?horizon=1w").json()
+
+    assert week["reading"]["unusual"]
+    assert week["reading"]["abnormal_return_pct"] < -5
+    assert "unusual at this horizon" in week["statements"][0]
+
+    # The sector peer did not take part in AAA's break.
+    assert any("BBB has not followed" in line for line in week["statements"])
+    assert {peer["ticker"] for peer in week["peers"]} == {"BBB", "CCC"}
+    assert not any(peer["followed"] for peer in week["peers"])
+
+    verdicts = {tick["horizon"]: tick for tick in week["ticks"]}
+
+    assert verdicts["1w"]["unusual"]
+    assert not verdicts["1y"]["available"]
+
+    assert client.get("/api/microscope/AAA?horizon=1y").status_code == 400
+    assert client.get("/api/microscope/AAA?horizon=2h").status_code == 400
+    assert client.get("/api/microscope/ZZZ?horizon=1w").status_code == 404
+
+
+def test_discovery_funnel_narrows_to_a_setup(client):
+    body = client.get("/api/discovery").json()
+    counts = [step["count"] for step in body["funnel"]]
+
+    assert body["funnel"][0]["label"] == "securities scanned"
+    assert counts[0] == 3 and counts[1] == 3
+
+    # Every stage can only keep or drop candidates.
+    assert counts[1:] == sorted(counts[1:], reverse=True)
+
+    for setup in body["setups"]:
+        # AAA fell below the relationship: it is the cheap leg.
+        assert setup["long"] == "AAA" and setup["short"] in ("BBB", "CCC")
+        assert setup["outcome"]["analogues"] >= 5
+        assert len(setup["invalidation"]) == 3

@@ -1,8 +1,10 @@
 from .document_cache import CachedDocumentFetcher
-from .gdelt import GdeltArchive, GdeltClient, GdeltNewsSource
+from .finnhub import FinnhubDownloader
+from .gdelt import GdeltClient, GdeltDownloader
 from .instrument_repository import InstrumentRepository
 from .investigation_repository import InvestigationRepository
 from .market_data_repository import MarketDataRepository
+from .news_archive import ArchiveNewsSource, NewsArchive, NewsDownloader
 from .news_repository import (
     NewsRepository,
     NewsSource,
@@ -13,9 +15,12 @@ from .portfolio_repository import PortfolioRepository
 
 __all__ = [
     "CachedDocumentFetcher",
-    "GdeltArchive",
+    "ArchiveNewsSource",
+    "FinnhubDownloader",
     "GdeltClient",
-    "GdeltNewsSource",
+    "GdeltDownloader",
+    "NewsArchive",
+    "NewsDownloader",
     "InstrumentRepository",
     "InvestigationRepository",
     "MarketDataRepository",

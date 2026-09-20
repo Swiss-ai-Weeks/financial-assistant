@@ -3,7 +3,7 @@
 #   make setup   install backend + frontend dependencies
 #   make dev     run the API (:8080) and the UI (:5173)
 #
-#   make news    download GDELT news into the local archive
+#   make news    download historical news into the local archive
 #
 # On the GPU box, additionally:
 #
@@ -50,7 +50,7 @@ serve: build
 
 # Resumable. Pass options with ARGS, e.g. ARGS="--universe".
 news:
-	$(BIN)/python scripts/download_gdelt.py $(ARGS)
+	$(BIN)/python scripts/download_news.py $(ARGS)
 
 llm:
 	./scripts/serve_llm.sh

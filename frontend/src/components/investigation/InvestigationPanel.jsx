@@ -2,6 +2,7 @@ import { dateTime, shortDate } from "../../lib/format";
 import { KIND_LABEL, STRATEGY_STYLE } from "../../lib/strategies";
 import { BoltIcon, GraphIcon } from "../icons";
 import NewsItem from "../news/NewsItem";
+import FindingFacts from "../stories/FindingFacts";
 import ClaimList from "./ClaimList";
 import StageList from "./StageList";
 import Verdicts from "./Verdicts";
@@ -15,6 +16,7 @@ import Verdicts from "./Verdicts";
  */
 export default function InvestigationPanel({
   anomaly,
+  finding,
   anomalyNews,
   investigation,
   llm,
@@ -46,8 +48,10 @@ export default function InvestigationPanel({
           <span className="chip">{shortDate(anomaly.observed_on)}</span>
         </div>
         <h2>{[anomaly.ticker, ...anomaly.related_tickers].join(" / ")}</h2>
-        <p>{anomaly.summary}</p>
+        <p>{finding?.statement ?? anomaly.summary}</p>
       </header>
+
+      <FindingFacts finding={finding} />
 
       <button
         className="btn btn--block"

@@ -65,9 +65,12 @@ class Settings:
 
     searxng_url: str | None
     newsapi_key: str | None
+    finnhub_api_key: str | None
 
     max_documents: int
     max_claims: int
+
+    min_liquidity_musd: float
 
     cors_origins: tuple[str, ...]
 
@@ -80,14 +83,18 @@ class Settings:
         return self.data_dir / "cache" / "news"
 
     @property
+    def analogue_cache_dir(self) -> Path:
+        return self.data_dir / "cache" / "analogues"
+
+    @property
     def document_cache_dir(self) -> Path:
         return self.data_dir / "cache" / "documents"
 
     @property
-    def gdelt_dir(self) -> Path:
-        # Titles and URLs only, so unlike data/cache this
-        # archive can be committed with the demo.
-        return self.data_dir / "archive" / "gdelt"
+    def news_archive_dir(self) -> Path:
+        # Titles, summaries and URLs only, so unlike data/cache
+        # this archive can be committed with the demo.
+        return self.data_dir / "archive" / "news"
 
     @property
     def state_dir(self) -> Path:
@@ -112,7 +119,7 @@ class Settings:
                 env("FRONTEND_DIST", PROJECT_ROOT / "frontend" / "dist")
             ),
             benchmark=env("BENCHMARK", "SPY"),
-            history_days=int(env("HISTORY_DAYS", "800")),
+            history_days=int(env("HISTORY_DAYS", "1600")),
             review_days=int(env("REVIEW_DAYS", "30")),
             as_of=date.fromisoformat(env("AS_OF")) if env("AS_OF") else None,
             market_cache_minutes=int(env("MARKET_CACHE_MINUTES", "360")),
@@ -133,8 +140,10 @@ class Settings:
             llm_workers=int(env("LLM_WORKERS", "8")),
             searxng_url=env("SEARXNG_URL") or None,
             newsapi_key=env("NEWS_API_KEY") or None,
+            finnhub_api_key=env("FINNHUB_API_KEY") or None,
             max_documents=int(env("INVESTIGATION_MAX_DOCUMENTS", "6")),
             max_claims=int(env("INVESTIGATION_MAX_CLAIMS", "12")),
+            min_liquidity_musd=float(env("MIN_LIQUIDITY_MUSD", "50")),
             cors_origins=tuple(
                 origin.strip()
                 for origin in env(

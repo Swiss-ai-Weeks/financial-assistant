@@ -28,8 +28,11 @@ make dev       # API on :8080, UI on http://localhost:5173
 That is the whole desk: live prices, the four strategy monitors, pair scans and
 the news wire need **no API key and no GPU**.
 
-News comes from [GDELT](https://www.gdeltproject.org/), downloaded once into a
-local archive and replayed from disk, so a recorded demo is reproducible:
+Historical news is downloaded once into a local archive and replayed from disk,
+so a recorded demo is reproducible. Providers are interchangeable:
+[Finnhub](https://finnhub.io/) when `FINNHUB_API_KEY` is set (ticker-tagged, with
+summaries, one year back) and [GDELT](https://www.gdeltproject.org/) (no key,
+back to 2017, heavily rate limited). Yahoo Finance fills in the latest weeks.
 
 ```bash
 make news                        # the book, current review window (resumable)
@@ -51,24 +54,41 @@ No GPUs at hand? Put an NVIDIA API key in `.env` (see `.env.example`) to use the
 same model hosted. Other targets: `make test`, `make serve` (UI and API as one
 process), `make reset` (restore the demo book).
 
-## The demo in two minutes
+## Three stories, one loop
 
-1. **The problem.** The strip under the top bar reads *Underperforming SPY by
-   2.6%* and names the largest detractors. The desk opens on the worst one.
-2. **Where it broke.** The blotter lists every moment a strategy assumption
-   failed over the month. Pick a monitor in the *Strategy Monitor Marketplace*
-   (VWAP, TWAP, MA Cross, Pairs) to filter the chart and the blotter.
-3. **What the world knew.** Click any session on the chart: the News tab shows
-   what was published that day.
-4. **Add a name.** Search a company in the top bar and press *Add*. The desk
-   immediately tests it for cointegrated partners and opens the spread if it
-   finds one.
-5. **Why.** Click *Explain →* on an anomaly. News is split at the evidence
-   cutoff (admissible vs hindsight); Nemotron extracts quoted claims, proposes
-   competing explanations, and weighs one against the other, stage by stage.
-6. **Audit it.** *Open ClaimGraph* shows every claim, source, assumption and
-   model run behind the verdict.
-7. **The hardware story.** The chip icon explains the model choice and shows
+The same engine (relationships → anomalies → evidence → analogues) answers three
+questions. They are the first three icons of the left rail.
+
+| | Question | What the desk shows |
+|---|---|---|
+| **Past** · post-mortem | *What did I miss?* | Findings ranked by money lost **after a signal was already visible**. Relationships that broke come first: "BAC underperformed JPM by 2.8% since Sep 15, 3.4σ outside their historical relationship", portfolio impact, what a hedge would have changed, the signal you could have seen, why the two are related, likely explanation and evidence confidence. |
+| **Now** · copilot | *What is happening to this stock?* | A horizon slider (1D · 1W · 1M · 3M · 1Y) that changes the **interpretation**, not the zoom: abnormal return against a market model, volume, which historical peers did *not* follow, and what usually happened next in comparable situations. Reachable from any web page through the [Chrome extension](extension/README.md). |
+| **Next** · discovery | *What should I be looking at?* | **I'm Feeling Lucky** inverts the pipeline: universe → possible relationships → co-moving → cointegrated → unusual → liquid → favourable in out-of-sample analogues → one setup, with what would invalidate it and a button to the reasoning. |
+
+All three end in the same place: **Explain** reads the news that was public at
+the time, and the **ClaimGraph** shows why two things are connected and what the
+evidence supports.
+
+Two rules keep this honest. Every number in the discovery funnel is a real count
+from that run, and every "what usually happens next" shows its sample size and
+says *historical frequencies, not a forecast*. When nothing clears the bar, the
+desk says so.
+
+## The demo in five minutes
+
+1. **Past.** The desk opens on *What you missed*: the book is −3.7% against SPY
+   −0.7%, and the first finding is a relationship, not a loser.
+2. Click it. News is split at the evidence cutoff into admissible and hindsight;
+   **Explain with Nemotron** extracts quoted claims and weighs competing
+   explanations. **Open ClaimGraph** to audit every step.
+3. **Now.** On any finance page, highlight "Bank of America", right-click →
+   *Analyse unusual activity*. Drag the horizon: unusual over a week (3σ),
+   ordinary over a day, a month, a year. "JPM has not followed the move."
+4. **Next.** Press 🍀. Watch 45 securities become 990 relationships become one
+   idea, then **Show me the reasoning**.
+5. **Add a name.** Search a company in the top bar and press *Add*: the desk
+   immediately tests it for cointegrated partners.
+6. **The hardware story.** The chip icon explains the model choice and shows
    measured latency per stage.
 
 ## Documentation

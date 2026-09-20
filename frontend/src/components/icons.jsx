@@ -25,6 +25,28 @@ export const ChartIcon = (props) => (
   </Icon>
 );
 
+export const PastIcon = (props) => (
+  <Icon {...props}>
+    <path d="M4 12a8 8 0 1 0 2.6-5.9" />
+    <path d="M4 4.5v4h4M12 8v4.5l3 1.8" />
+  </Icon>
+);
+
+export const ScopeIcon = (props) => (
+  <Icon {...props}>
+    <circle cx="12" cy="12" r="7.5" />
+    <circle cx="12" cy="12" r="2" />
+    <path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4" />
+  </Icon>
+);
+
+export const CloverIcon = (props) => (
+  <Icon {...props}>
+    <path d="M12 12c-1-4-6-4.5-6-1.2S10 14 12 12zM12 12c4-1 4.5-6 1.2-6S10 10 12 12zM12 12c1 4 6 4.5 6 1.2S14 10 12 12zM12 12c-4 1-4.5 6-1.2 6S14 14 12 12z" />
+    <path d="M12 12c1 4 2 6 4 8.5" />
+  </Icon>
+);
+
 export const GraphIcon = (props) => (
   <Icon {...props}>
     <circle cx="6" cy="6" r="2.2" />

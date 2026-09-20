@@ -1,15 +1,11 @@
 """
-GDELT news, downloaded once and replayed from disk.
+GDELT DOC 2.0 as a provider for the news archive.
 
-    GdeltClient        talks to the GDELT DOC 2.0 API
-    GdeltArchive       local archive: download into it, read from it
-    GdeltNewsSource    NewsSource that ONLY reads the archive
+    GdeltClient        throttled access to the API
+    GdeltDownloader    NewsDownloader: one slice of history
 
-Splitting download from serving is deliberate. GDELT allows
-one request every five seconds, so it cannot sit behind an
-interactive desk. Downloading ahead of time also makes a
-recorded demo reproducible: the desk "fetches" news exactly
-as it would live, but from files that no longer change.
+GDELT reaches back to 2017 and needs no key, at the price of
+a strict rate limit, noisy text matching and no summaries.
 """
 
 from __future__ import annotations
@@ -18,9 +14,8 @@ import json
 import threading
 import time
 from collections.abc import Callable
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from hashlib import sha1
-from pathlib import Path
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -32,10 +27,10 @@ from financial_assistant.api.relevance import company_phrase
 ENDPOINT = "https://api.gdeltproject.org/api/v2/doc/doc"
 
 # GDELT returns at most 250 articles per request. A busy
-# name exceeds that within days, so a window is downloaded
-# in slices and each slice keeps its most relevant articles.
+# name exceeds that within days, which is why the archive
+# downloads in weekly slices and each request is sorted by
+# relevance rather than by date.
 MAX_RECORDS = 250
-SLICE_DAYS = 7
 
 MIN_INTERVAL_SECONDS = 5.5
 RATE_LIMIT_MARKER = "limit requests"
@@ -201,256 +196,42 @@ class GdeltClient:
         self._last_request = self._clock()
 
 
-def _slices(start: datetime, end: datetime):
-    """
-    Calendar-aligned slices covering [start, end].
+class GdeltDownloader:
+    name = "gdelt"
 
-    Aligning to fixed boundaries, instead of counting from
-    `start`, means two overlapping windows share slices and
-    nothing is downloaded twice.
-    """
-
-    epoch = datetime(2017, 1, 1, tzinfo=timezone.utc)
-    step = timedelta(days=SLICE_DAYS)
-
-    cursor = epoch + step * ((start - epoch) // step)
-
-    while cursor <= end:
-        yield cursor, cursor + step - timedelta(seconds=1)
-        cursor += step
-
-
-def _parse_seen(value: str) -> datetime:
-    return datetime.strptime(value, "%Y%m%dT%H%M%SZ").replace(
-        tzinfo=timezone.utc
-    )
-
-
-class GdeltArchive:
-    """
-    Local archive of GDELT article metadata.
-
-        <dir>/<TICKER>.jsonl   one article per line
-        <dir>/manifest.json    which slices are complete
-
-    Only titles, URLs and timestamps are stored, never
-    article text, so the archive is small and can be
-    committed alongside the demo.
-    """
-
-    def __init__(self, directory: Path, client: GdeltClient | None = None):
-        self._directory = directory
+    def __init__(self, client: GdeltClient | None = None):
         self._client = client or GdeltClient()
-        self._lock = threading.Lock()
 
-    # -------------------------------------------------
-    # Download
-    # -------------------------------------------------
+    def signature(self, ticker: str, company: str) -> str:
+        return sha1(build_query(ticker, company).encode()).hexdigest()[:8]
 
-    def download(
-        self,
-        ticker: str,
-        company: str,
-        *,
-        start: datetime,
-        end: datetime,
-        now: datetime | None = None,
-        on_progress: Callable[[str], None] | None = None,
-    ) -> int:
-        """
-        Download every missing slice of the window and
-        return how many new articles were archived.
-
-        Resumable: finished slices are recorded, so an
-        interrupted or rate-limited run continues where it
-        stopped. A slice that is still open (it ends in the
-        future) is downloaded but not recorded as finished.
-        """
-
-        symbol = ticker.strip().upper()
-        query = build_query(symbol, company)
-        now = now or datetime.now(timezone.utc)
-
-        manifest = self._read_manifest()
-        added = 0
-
-        for slice_start, slice_end in _slices(start, end):
-            if slice_start > now:
-                break
-
-            key = self._slice_key(symbol, query, slice_start)
-
-            if key in manifest:
-                continue
-
-            articles = self._client.search(
-                query,
-                start=slice_start,
-                end=min(slice_end, now),
-            )
-
-            new = self._append(symbol, articles)
-            added += new
-
-            if slice_end < now:
-                manifest[key] = {
-                    "articles": len(articles),
-                    "downloaded_at": now.isoformat(),
-                }
-
-                self._write_manifest(manifest)
-
-            if on_progress:
-                on_progress(
-                    f"{symbol} {slice_start:%Y-%m-%d}: "
-                    f"{len(articles)} articles, {new} new"
-                )
-
-        return added
-
-    # -------------------------------------------------
-    # Read
-    # -------------------------------------------------
-
-    def read(
-        self,
-        ticker: str,
-        *,
-        start: datetime | None = None,
-        end: datetime | None = None,
-    ) -> tuple[NewsItem, ...]:
-        symbol = ticker.strip().upper()
-        path = self._articles_path(symbol)
-
-        if not path.is_file():
-            return ()
-
-        items = []
-
-        for line in path.read_text().splitlines():
-            row = json.loads(line)
-            seen = _parse_seen(row["seendate"])
-
-            if (start and seen < start) or (end and seen > end):
-                continue
-
-            if row.get("domain") in CONTENT_FARMS:
-                continue
-
-            items.append(
-                NewsItem(
-                    news_id="NEWS-" + sha1(row["url"].encode()).hexdigest()[:12],
-                    ticker=symbol,
-                    title=" ".join(row["title"].split()),
-                    url=row["url"],
-                    publisher=row.get("domain"),
-                    # seendate is when GDELT first crawled the
-                    # page, at 15-minute resolution. It can only
-                    # be LATER than publication, so using it as
-                    # the publication time may wrongly exclude
-                    # evidence but can never admit hindsight.
-                    published_at=seen,
-                    provider=GdeltNewsSource.name,
-                )
-            )
-
-        return tuple(items)
-
-    def covered_tickers(self) -> tuple[str, ...]:
-        if not self._directory.is_dir():
-            return ()
-
-        return tuple(sorted(p.stem for p in self._directory.glob("*.jsonl")))
-
-    # -------------------------------------------------
-
-    def _append(self, symbol: str, articles: list[dict]) -> int:
-        with self._lock:
-            path = self._articles_path(symbol)
-
-            known = set()
-
-            if path.is_file():
-                known = {
-                    json.loads(line)["url"]
-                    for line in path.read_text().splitlines()
-                }
-
-            fresh = [
-                article
-                for article in articles
-                if article.get("url")
-                and article.get("title")
-                and article.get("seendate")
-                and article["url"] not in known
-            ]
-
-            if fresh:
-                self._directory.mkdir(parents=True, exist_ok=True)
-
-                with path.open("a") as handle:
-                    for article in fresh:
-                        handle.write(
-                            json.dumps(
-                                {
-                                    key: article.get(key)
-                                    for key in (
-                                        "url",
-                                        "title",
-                                        "seendate",
-                                        "domain",
-                                        "sourcecountry",
-                                    )
-                                }
-                            )
-                            + "\n"
-                        )
-
-            return len(fresh)
-
-    @staticmethod
-    def _slice_key(symbol: str, query: str, slice_start: datetime) -> str:
-        digest = sha1(query.encode("utf-8")).hexdigest()[:8]
-
-        return f"{symbol}:{slice_start:%Y-%m-%d}:{digest}"
-
-    def _articles_path(self, symbol: str) -> Path:
-        return self._directory / f"{symbol.replace('/', '_')}.jsonl"
-
-    def _read_manifest(self) -> dict:
-        path = self._directory / "manifest.json"
-
-        return json.loads(path.read_text()) if path.is_file() else {}
-
-    def _write_manifest(self, manifest: dict) -> None:
-        self._directory.mkdir(parents=True, exist_ok=True)
-
-        (self._directory / "manifest.json").write_text(
-            json.dumps(manifest, indent=1, sort_keys=True) + "\n"
+    def fetch(self, ticker, company, *, start, end) -> list[NewsItem]:
+        articles = self._client.search(
+            build_query(ticker, company), start=start, end=end
         )
 
-
-class GdeltNewsSource:
-    """
-    Serves GDELT news from the local archive.
-
-    It never touches the network: whatever was downloaded
-    is what the desk can see, which is what makes a replay
-    reproducible.
-    """
-
-    name = "gdelt"
-    local = True
-
-    def __init__(self, archive: GdeltArchive):
-        self._archive = archive
-
-    def fetch(
-        self,
-        ticker: str,
-        company: str,
-        *,
-        start: datetime | None = None,
-        end: datetime | None = None,
-    ) -> tuple[NewsItem, ...]:
-        return self._archive.read(ticker, start=start, end=end)
+        return [
+            NewsItem(
+                news_id="NEWS-" + sha1(row["url"].encode()).hexdigest()[:12],
+                ticker=ticker,
+                title=" ".join(row["title"].split()),
+                url=row["url"],
+                publisher=row.get("domain"),
+                # seendate is when GDELT first crawled the page,
+                # at 15-minute resolution. It can only be LATER
+                # than publication, so using it as the
+                # publication time may wrongly exclude evidence
+                # but can never admit hindsight.
+                published_at=datetime.strptime(
+                    row["seendate"], "%Y%m%dT%H%M%SZ"
+                ).replace(tzinfo=timezone.utc),
+                provider=self.name,
+            )
+            for row in articles
+            if row.get("url")
+            and row.get("title")
+            and row.get("seendate")
+            # The query excludes as many farms as fit its
+            # length budget; this catches the rest.
+            and row.get("domain") not in CONTENT_FARMS
+        ]
