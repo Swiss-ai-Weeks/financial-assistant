@@ -187,10 +187,36 @@ def build_investigation_graph(
             missing_id = _node_id("missing_evidence", f"fundamentals-{bundle.ticker}")
             nodes.append(GraphNode(node_id=missing_id, kind=NodeKind.MISSING_EVIDENCE,
                 label=f"{bundle.ticker}: fundamentals unavailable",
-                data={"ticker": bundle.ticker, "provider": "SEC EDGAR", "warnings": bundle.warnings,
+                data={"ticker": bundle.ticker, "provider": "SEC EDGAR", "warnings": list(bundle.warnings),
                       "as_of": bundle.as_of.isoformat(), "execution": bundle.provider_execution_metadata}))
             edges.append(GraphEdge(edge_id=_edge_id(anomaly_node_id, EdgeKind.REQUIRES, missing_id),
                                    source=anomaly_node_id, target=missing_id, kind=EdgeKind.REQUIRES))
+
+    for bundle in state.fundamentals:
+        if not bundle.snapshots:
+            continue
+        company_id = _node_id("context", f"fundamentals-{bundle.ticker}")
+        nodes.append(GraphNode(node_id=company_id, kind=NodeKind.CONTEXT,
+            label=f"{bundle.ticker} fundamentals", data={"subtype": "fundamentals", "entity": bundle.ticker}))
+        edges.append(GraphEdge(edge_id=_edge_id(company_id, EdgeKind.CONTEXT_FOR, anomaly_node_id),
+            source=company_id, target=anomaly_node_id, kind=EdgeKind.CONTEXT_FOR))
+        for index, snapshot in enumerate(bundle.snapshots):
+            identifier = _node_id("context", snapshot.snapshot_id)
+            nodes.append(GraphNode(node_id=identifier, kind=NodeKind.CONTEXT,
+                label=f"{bundle.ticker} {snapshot.fiscal_year}-{snapshot.fiscal_quarter}",
+                data={**snapshot.model_dump(mode="json"), "older_quarter": index < len(bundle.snapshots)-4}))
+            edges.append(GraphEdge(edge_id=_edge_id(identifier, EdgeKind.CONTEXT_FOR, company_id),
+                source=identifier, target=company_id, kind=EdgeKind.CONTEXT_FOR))
+            for metric_id in snapshot.metrics.values():
+                target = _node_id("observation" if metric_id in observations else "calculation", metric_id)
+                edges.append(GraphEdge(edge_id=_edge_id(identifier, EdgeKind.DERIVED_FROM, target),
+                    source=identifier, target=target, kind=EdgeKind.DERIVED_FROM,
+                    data={"role": "snapshot membership; grouping only, not arithmetic"}))
+            for calculation in bundle.calculations:
+                if calculation.frequency == 'quarterly' and calculation.period_end == snapshot.period_end and calculation.status == 'available':
+                    target = _node_id('calculation', calculation.calculation_id)
+                    edges.append(GraphEdge(edge_id=_edge_id(identifier, EdgeKind.CONTEXT_FOR, target),
+                        source=identifier, target=target, kind=EdgeKind.CONTEXT_FOR))
 
     # -------------------------------------------------
     # Sources and retrieved documents
@@ -906,7 +932,7 @@ def build_investigation_graph(
             edges.append(GraphEdge(edge_id=_edge_id(source, EdgeKind.CALCULATED_FROM, target),
                                    source=source, target=target, kind=EdgeKind.CALCULATED_FROM))
         metric_id = calculation.metadata.get("metric_id", "")
-        if metric_id in {"roic", "operating_margin", "net_debt_to_ebitda"} or metric_id.endswith("_trend"):
+        if metric_id in {"roic", "operating_margin", "net_debt_to_ebitda"} or metric_id.endswith("_trend") or "_qoq_" in metric_id or "_yoy_" in metric_id:
             for hypothesis in state.hypotheses:
                 target = _node_id("hypothesis", hypothesis.hypothesis_id)
                 edges.append(GraphEdge(edge_id=_edge_id(source, EdgeKind.CONTEXT_FOR, target),

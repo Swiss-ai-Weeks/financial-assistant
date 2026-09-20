@@ -41,10 +41,25 @@ export default function NodeInspector({node, graph, onSelect, onAction, reviewSt
         event_at:details.event_at ?? 'Unavailable', observed_at:details.observed_at ?? originalCutoff(graph) ?? 'Unavailable', retrieved_at:details.retrieved_at ?? 'Unavailable'}} />
       <p>Inspector retains future and hidden items for audit. Retrieval time never establishes publication time.</p>
     </section>
+    {details.subtype === 'fundamental_snapshot' && <section><h3>Quarterly financial snapshot</h3>
+      <Details data={{company:details.entity, fiscal_year:details.fiscal_year, fiscal_quarter:details.fiscal_quarter,
+        period_start:details.period_start, period_end:details.period_end, filings:details.filings,
+        available_at:details.available_at, availability_cutoff:details.availability_cutoff,
+        unavailable_metrics:details.unavailable_metrics}} />
+      {['Income statement', 'Balance sheet', 'Cash flow'].map(section => <div key={section}><h4>{section}</h4>
+        {Object.entries(details.metrics ?? {}).filter(([metric]) => {
+          const cashFlow = /cash_flow|capex/.test(metric);
+          const balance = /cash|assets|liabilities|debt|equity|shares_outstanding|receivable|inventory|payable|lease/.test(metric);
+          return section === 'Cash flow' ? cashFlow : section === 'Balance sheet' ? balance && !cashFlow : !balance && !cashFlow;
+        }).map(([metric, id]) => <button className="text-button" key={metric} onClick={() => selectId(`${id.startsWith('SEC-') ? 'observation' : 'calculation'}:${id}`)}>{labelFor(metric)}</button>)}
+      </div>)}<p className="muted">Click a quarter in the graph to expand or collapse its underlying SEC evidence.</p>
+    </section>}
     {financial && <section><h3>Financial evidence</h3><Details data={{
       metric:financial.display_name ?? financial.concept,
       value:financial.value == null ? 'Unavailable' : financial.unit === 'ratio' ? `${(financial.value * 100).toFixed(2)}%` : `${financial.value.toLocaleString()} ${financial.unit}`,
-      period_end:financial.period_end, formula_version:financial.formula_version,
+      period_start:financial.period_start, period_end:financial.period_end, comparison_period:financial.comparison_period,
+      source_observation_ids:financial.input_fact_ids, taxonomy:financial.taxonomy, unit:financial.unit,
+      amended:financial.amended, restatement_status:financial.restatement_status, historically_available:financial.historically_available, formula_version:financial.formula_version,
       formula:financial.formula, available_since:financial.available_at,
       xbrl_tag:financial.tag, filed_at:financial.filed_at, form:financial.form,
       accession:financial.accession, execution:financial.execution, assumptions:financial.assumptions, warnings:financial.warnings,

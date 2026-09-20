@@ -29,7 +29,7 @@ export function temporalStatuses(graph, cutoff) {
     const node = byId.get(id), data = nodeData(node);
     let status;
     if (data.temporal_role === 'hindsight_outcome' || data.hindsight_only === true) status = 'hindsight_outcome';
-    else if (contextKinds.includes(node.kind)) status = 'investigation_context';
+    else if (contextKinds.includes(node.kind) || (node.kind === 'context' && data.subtype === 'fundamentals')) status = 'investigation_context';
     else {
       const bound = publicationBound(node);
       const inputs = graph.edges.filter(e => e.source === id && dependencies.includes(e.kind)).map(e => e.target);

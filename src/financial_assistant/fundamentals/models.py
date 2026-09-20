@@ -40,6 +40,7 @@ class MetricResult(Record):
     required_inputs: tuple[str, ...] = ()
     period_end: date
     frequency: str
+    comparison_period: date | None = None
     value: float | None = None
     unit: str
     input_ids: tuple[str, ...] = ()
@@ -51,6 +52,21 @@ class MetricResult(Record):
     warnings: tuple[str, ...] = ()
 
 
+class FundamentalSnapshot(Record):
+    snapshot_id: str
+    subtype: str = 'fundamental_snapshot'
+    entity: str
+    fiscal_year: int
+    fiscal_quarter: str
+    period_start: date
+    period_end: date
+    availability_cutoff: datetime
+    available_at: datetime | None = None
+    metrics: dict[str, str] = Field(default_factory=dict)
+    unavailable_metrics: dict[str, str] = Field(default_factory=dict)
+    filings: tuple[dict[str, str], ...] = ()
+
+
 class FundamentalEvidenceBundle(Record):
     ticker: str
     issuer: str = ''
@@ -58,6 +74,7 @@ class FundamentalEvidenceBundle(Record):
     as_of: datetime
     periods: tuple[date, ...] = ()
     frequency: str = 'annual'
+    snapshots: tuple[FundamentalSnapshot, ...] = ()
     facts: tuple[FinancialFact, ...] = ()
     calculations: tuple[MetricResult, ...] = ()
     warnings: tuple[str, ...] = ()

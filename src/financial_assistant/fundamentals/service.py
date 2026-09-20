@@ -23,14 +23,16 @@ class FundamentalsService:
     def __init__(self, provider: FundamentalsProvider):
         self.provider = provider
 
-    def get_statement_history(self, ticker, as_of, periods=5, frequency='annual'):
-        if not 1 <= periods <= 5:
-            raise ValueError('periods must be between 1 and 5')
+    def get_statement_history(self, ticker, as_of, periods=5, frequency='annual', *, _response=None):
+        if not 1 <= periods <= (8 if frequency == 'quarterly' else 5):
+            raise ValueError('periods must be between 1 and 8 for quarters, or 1 and 5 for years')
         if as_of.tzinfo is None or as_of.utcoffset() is None:
             raise ValueError('as_of must include timezone')
         if frequency not in ('annual', 'quarterly'):
             raise ValueError('frequency must be annual or quarterly')
-        response = self.provider.get_company_facts(ticker, as_of)
+        if frequency == 'quarterly':
+            return self.quarterly_metrics(ticker, as_of, periods=periods)
+        response = _response or self.provider.get_company_facts(ticker, as_of)
         facts, warnings = normalize(response, as_of, frequency)
         ends = sorted({f.period_end for f in facts if f.period_start}, reverse=True)[:periods]
         # Extra prior year supports averages and YoY. It is later pruned to
@@ -60,10 +62,12 @@ class FundamentalsService:
                 'operations': ['SEC fundamentals retrieval', 'point-in-time fact selection'],
                 'availability_rule': 'filing date end-of-day UTC <= investigation cutoff'})
 
-    def calculate_metrics(self, ticker, as_of, metrics=DEFAULT_METRICS, periods=5, frequency='annual', progress=None):
+    def calculate_metrics(self, ticker, as_of, metrics=DEFAULT_METRICS, periods=5, frequency='annual', progress=None, *, _response=None):
         if set(metrics) - REGISTRY.keys():
             raise ValueError('Unknown metric requested')
-        bundle = self.get_statement_history(ticker, as_of, periods, frequency)
+        bundle = self.get_statement_history(ticker, as_of, periods, frequency, _response=_response)
+        if frequency == 'quarterly':
+            return bundle
         if progress:
             progress('financial_metrics', 'Calculating financial metrics')
         calculations = calculate(bundle.facts, bundle.periods, ticker=ticker, frequency=frequency, metrics=metrics,
@@ -81,6 +85,37 @@ class FundamentalsService:
                 'fundamental_metrics_calculated': sum(c.status == 'available' for c in calculations)}})
 
 
+    def quarterly_metrics(self, ticker, as_of, progress=None, periods=8):
+        from .quarterly import quarterly
+        if not 1 <= periods <= 8 or as_of.tzinfo is None or as_of.utcoffset() is None:
+            raise ValueError('Quarterly history requires 1–8 periods and a timezone-aware cutoff')
+        # Preserve annual baseline calculations and their complete lineage.
+        response = self.provider.get_company_facts(ticker, as_of)
+        baseline = self.calculate_metrics(ticker, as_of, periods=3, progress=progress, _response=response)
+        if baseline.provider_execution_metadata['financial_institution']:
+            return baseline.model_copy(update={'frequency': 'quarterly', 'status': 'unavailable',
+                'facts': (), 'calculations': (), 'periods': (),
+                'warnings': ('Generic quarterly industrial accounting excluded for financial institutions.',)})
+        snapshots, facts, calculations, warnings = quarterly(response, as_of, limit=periods)
+        merged = {f.fact_id: f for f in (*baseline.facts, *facts)}
+        recent = response.submissions.get('filings', {}).get('recent', {})
+        accessions = {f.accession for f in merged.values()}
+        filing_metadata = {accession: {key: recent[key][i] for key in
+            ('filingDate', 'reportDate', 'form', 'primaryDocument', 'acceptanceDateTime')
+            if isinstance(recent.get(key), list) and i < len(recent[key])}
+            for i, accession in enumerate(recent.get('accessionNumber', [])) if accession in accessions}
+
+        return baseline.model_copy(update={'frequency': 'quarterly', 'snapshots': snapshots,
+            'periods': tuple(s.period_end for s in snapshots), 'facts': tuple(merged.values()),
+            'calculations': (*baseline.calculations, *calculations),
+            'status': 'available' if snapshots else 'unavailable',
+            'provider_execution_metadata': {**baseline.provider_execution_metadata,
+                'fundamental_facts_selected': len(merged),
+                'fundamental_metrics_calculated': sum(c.status == 'available' for c in (*baseline.calculations, *calculations)),
+                'quarterly_snapshots': len(snapshots), 'selected_filing_metadata': filing_metadata},
+            'warnings': (*warnings, *(('No reliable fiscal quarter contexts; annual context only.',) if not snapshots else ()))})
+
+
 def load_pair(tickers, as_of, *, service=None, progress=None):
     from .sec import SECProvider
     bundles = []
@@ -89,7 +124,7 @@ def load_pair(tickers, as_of, *, service=None, progress=None):
             if progress:
                 progress('fundamentals', 'Loading historical fundamentals')
             active = service or FundamentalsService(SECProvider())
-            bundles.append(active.calculate_metrics(ticker, as_of, periods=3, progress=progress))
+            bundles.append(active.quarterly_metrics(ticker, as_of, progress=progress))
         except (FundamentalsUnavailable, OSError, ValueError, KeyError, TypeError) as exc:
             # Exception bodies from transports are never sent to browsers/models.
             reason = str(exc) if isinstance(exc, FundamentalsUnavailable) else 'Fundamentals enrichment failed validation or retrieval'
@@ -105,15 +140,39 @@ def load_pair(tickers, as_of, *, service=None, progress=None):
 
 def model_context(bundles):
     import json
+    records = []
+    for b in bundles:
+        items = {f.fact_id: f for f in b.facts}
+        items.update({c.calculation_id: c for c in b.calculations})
+        snapshots = []
+        for s in b.snapshots:
+            snapshots.append({'id': s.snapshot_id, 'fiscal_year': s.fiscal_year,
+                'fiscal_quarter': s.fiscal_quarter, 'period_start': str(s.period_start),
+                'period_end': str(s.period_end), 'available_at': s.available_at.isoformat() if s.available_at else None,
+                'filings': s.filings,
+                'metric_columns': ['metric', 'kind', 'provenance_id', 'value', 'unit'],
+                'metrics': [[metric, 'observation' if identifier.startswith('SEC-') else 'calculation',
+                    identifier, items[identifier].value, items[identifier].unit]
+                    for metric, identifier in s.metrics.items()],
+                'unavailable_metrics': list(s.unavailable_metrics),
+                'unavailable_reason': 'No reliable eligible value or required calculation input; see graph for details'})
+        records.append({'ticker': b.ticker, 'as_of': b.as_of.isoformat(), 'status': b.status,
+            'warnings': b.warnings, 'quarterly_snapshots': snapshots,
+            'trends': [{k: v for k, v in c.model_dump(mode='json').items() if k in
+                        ('calculation_id', 'metric_id', 'value', 'unit', 'period_end', 'comparison_period',
+                         'available_at', 'status', 'unavailable_reason')} for c in b.calculations
+                       if c.frequency == 'quarterly' and b.periods and c.period_end == max(b.periods) and
+                       ('_qoq_' in c.metric_id or '_yoy_' in c.metric_id)],
+            'annual_baseline': [{'id': c.calculation_id, 'metric': c.metric_id, 'value': c.value,
+                'period_end': str(c.period_end), 'status': c.status} for c in b.calculations
+                if c.frequency == 'annual' and c.metric_id in DEFAULT_METRICS]})
     return ('Application-calculated financial evidence. Do not recompute metrics or invent values. '
-            'Changes are descriptive, not causal; seek neutral explanations and contradictory evidence. '
-            'Reference calculation IDs when using numerical evidence.\n' + json.dumps([
-                {'ticker': b.ticker, 'issuer': b.issuer, 'as_of': b.as_of.isoformat(), 'status': b.status,
-                 'warnings': b.warnings, 'calculations': [
-                     {'id': c.calculation_id, 'metric': c.metric_id, 'period_end': c.period_end.isoformat(),
-                      'value': c.value, 'unit': c.unit, 'status': c.status, 'reason': c.unavailable_reason}
-                     for c in b.calculations if c.metric_id in DEFAULT_METRICS or c.metric_id.endswith('_trend')]}
-                for b in bundles]))
+        'Changes are descriptive, not causal. Interpret quarterly snapshots and deterministic trends first; '
+        'annual_baseline is secondary context. Cite provenance IDs. Company differences do not establish an anomaly cause. '
+        'Use patterns to request documentary evidence: management explanation, price versus volume, segments, '
+        'inventory, receivables/payables, working capital, restructuring and guidance. '
+        'Cash flow resilience does not prove a working-capital cause. Distinguish model inference, '
+        'missing evidence and causal hypotheses from SEC observations and calculations.\n' + json.dumps(records, separators=(',', ':')))
 
 
 def domain_evidence(bundles):
@@ -135,6 +194,9 @@ def domain_evidence(bundles):
                 name=f'{fact.ticker} {fact.concept} period ending {fact.period_end}', value=fact.value, unit=fact.unit,
                 source_document_id=document_id, metadata={**fact.model_dump(mode='json'),
                     'selection_as_of': bundle.as_of.isoformat(),
+                    'historically_available': fact.available_at <= bundle.as_of,
+                    'amended': fact.form.endswith('/A'),
+                    'restatement_status': 'Selected latest eligible context; restatement not inferable from Company Facts alone',
                     'execution': 'SEC retrieval and deterministic point-in-time fact selection'}))
         fact_ids = {f.fact_id for f in bundle.facts}
         for result in bundle.calculations:

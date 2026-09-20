@@ -9,6 +9,10 @@ from .models import FinancialFact, ProviderResponse
 # scope (leases, restricted cash, net interest, etc.) are NOT interchangeable.
 CONCEPTS = {
     'revenue': ('RevenueFromContractWithCustomerExcludingAssessedTax', 'Revenues', 'SalesRevenueNet'),
+    'eps': ('EarningsPerShareDiluted',),
+    'shares_outstanding': ('CommonStockSharesOutstanding',),
+    'investing_cash_flow': ('NetCashProvidedByUsedInInvestingActivities',),
+    'financing_cash_flow': ('NetCashProvidedByUsedInFinancingActivities',),
     'gross_profit': ('GrossProfit',),
     'operating_income': ('OperatingIncomeLoss',),
     'pretax_income': ('IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest', 'IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments'),
@@ -35,7 +39,7 @@ CONCEPTS = {
     'diluted_shares': ('WeightedAverageNumberOfDilutedSharesOutstanding',),
     'basic_shares': ('WeightedAverageNumberOfSharesOutstandingBasic',),
 }
-INSTANT = set('cash accounts_receivable inventory current_assets total_assets accounts_payable current_liabilities short_term_debt current_long_term_debt long_term_debt total_debt finance_lease_current finance_lease_noncurrent shareholders_equity'.split())
+INSTANT = set('shares_outstanding cash accounts_receivable inventory current_assets total_assets accounts_payable current_liabilities short_term_debt current_long_term_debt long_term_debt total_debt finance_lease_current finance_lease_noncurrent shareholders_equity'.split())
 FORMS = {'10-K', '10-K/A', '10-Q', '10-Q/A'}
 
 
@@ -43,7 +47,7 @@ def stable_id(prefix, *parts):
     return prefix + '-' + sha256('|'.join(map(str, parts)).encode()).hexdigest()[:20]
 
 
-def normalize(response: ProviderResponse, as_of: datetime, frequency='annual'):
+def normalize(response: ProviderResponse, as_of: datetime, frequency='annual', *, cumulative=False, all_versions=False):
     if as_of.tzinfo is None or as_of.utcoffset() is None:
         raise ValueError('as_of must include timezone')
     if frequency not in ('annual', 'quarterly'):
@@ -54,7 +58,7 @@ def normalize(response: ProviderResponse, as_of: datetime, frequency='annual'):
     for concept, tags in CONCEPTS.items():
         candidates = {}
         for rank, tag in enumerate(tags):
-            unit = 'shares' if concept.endswith('_shares') else 'USD'
+            unit = 'shares' if (concept.endswith('_shares') or concept == 'shares_outstanding') else ('USD/shares' if concept == 'eps' else 'USD')
             for raw in data.get(tag, {}).get('units', {}).get(unit, []):
                 try:
                     if not re.fullmatch(r'\d{10}-\d{2}-\d{6}', raw['accn']) or not response.cik.isdigit():
@@ -76,7 +80,7 @@ def normalize(response: ProviderResponse, as_of: datetime, frequency='annual'):
                             continue
                         days = (end - start).days + 1
                         low, high = (350, 380) if frequency == 'annual' else (80, 100)
-                        if not low <= days <= high:
+                        if not (80 <= days <= 380 if cumulative else low <= days <= high):
                             continue  # YTD is never presented as a quarter.
                     fact = FinancialFact(
                         fact_id=stable_id('SEC', response.cik, concept, tag, start, end, raw['accn'], value, unit),
@@ -85,10 +89,13 @@ def normalize(response: ProviderResponse, as_of: datetime, frequency='annual'):
                         fiscal_year=raw.get('fy'), fiscal_period=raw.get('fp'), form=raw['form'],
                         filed_at=filed, available_at=available, accession=raw['accn'], frame=raw.get('frame'),
                         retrieved_at=response.retrieved_at)
-                    candidates.setdefault(end, []).append((rank, fact))
+                    candidates.setdefault((start, end) if cumulative else end, []).append((rank, fact))
                 except (KeyError, ValueError, TypeError):
                     warnings.append(f'{concept}: malformed fact omitted')
         for end, choices in candidates.items():
+            if all_versions:
+                selected.extend(f for _, f in choices)
+                continue
             # Prefer newest eligible filing, then explicit alias priority.
             newest = max(f.filed_at for _, f in choices)
             choices = [(r, f) for r, f in choices if f.filed_at == newest]

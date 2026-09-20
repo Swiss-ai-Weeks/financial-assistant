@@ -38,3 +38,30 @@ test('SEC filing index opens using the existing safe source link contract', () =
   assert.equal(sourceHref(url, ''), url);
   assert.equal(sourceHref('javascript:alert(1)', ''), null);
 });
+
+import { quarterlyView } from '../src/graphAdapter.js';
+import { temporalView } from '../src/temporalModel.js';
+
+test('quarterly disclosure retains hidden atomic evidence and reveals full quarter lineage', () => {
+  const graph = {nodes:[
+    {node_id:'company',kind:'context',data:{subtype:'fundamentals'}},
+    {node_id:'q1',kind:'context',data:{subtype:'fundamental_snapshot',entity:'AAA',period_end:'2025-03-31',older_quarter:true}},
+    {node_id:'q2',kind:'context',data:{subtype:'fundamental_snapshot',entity:'AAA',period_end:'2025-06-30'}},
+    {node_id:'obs',kind:'observation',data:{metadata:{provider:'SEC EDGAR'}}},
+    {node_id:'doc',kind:'document',data:{published_at:'2025-08-01T00:00:00Z',metadata:{provider:'SEC EDGAR'}}},
+    {node_id:'trend',kind:'calculation',data:{metadata:{metric_id:'revenue_qoq_growth',frequency:'quarterly',ticker:'AAA',period_end:'2025-06-30'}}},
+  ], edges:[
+    {source:'q2',target:'obs',kind:'derived_from'},
+    {source:'obs',target:'doc',kind:'extracted_from'},
+    {source:'trend',target:'obs',kind:'calculated_from'},
+  ]};
+  const initial = quarterlyView(graph);
+  assert.deepEqual(initial.nodes.map(n => n.node_id), ['company','q2','trend']);
+  assert.equal(graph.nodes.length, 6);
+  assert.ok(quarterlyView(graph,{showOlder:true}).nodes.some(n => n.node_id === 'q1'));
+  assert.ok(quarterlyView(graph,{expanded:['q2']}).nodes.some(n => n.node_id === 'obs'));
+  assert.ok(quarterlyView(graph,{expanded:['q2']}).nodes.some(n => n.node_id === 'doc'));
+  assert.equal(quarterlyView(graph,{showAtomic:true}).nodes.length,6);
+  assert.ok(!temporalView(graph,'2025-07-01T00:00:00Z').nodes.some(n => n.node_id === 'q2'));
+  assert.ok(temporalView(graph,'2025-08-02T00:00:00Z').nodes.some(n => n.node_id === 'q2'));
+});

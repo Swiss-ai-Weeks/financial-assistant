@@ -8,6 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class NodeKind(StrEnum):
+    CONTEXT = "context"
     ANOMALY = "anomaly"
 
     SOURCE = "source"
