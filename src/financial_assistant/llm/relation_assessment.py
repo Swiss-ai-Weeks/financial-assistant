@@ -199,9 +199,11 @@ def _assess_one_hypothesis(
     claims: tuple[EvidenceArgument, ...],
     hypothesis: Hypothesis,
     provider: StructuredLLM,
+    allow_missing: bool = False,
 ) -> tuple[
     ModelRun,
     tuple[RelationshipAssessment, ...],
+    tuple[EvidenceArgument, ...],
 ]:
     """
     Perform one independent relationship-assessment call.
@@ -289,49 +291,41 @@ def _assess_one_hypothesis(
         }
     )
 
-    expected_pairs = {
-        (
-            claim.source_id,
-            hypothesis.hypothesis_id,
-        )
-        for claim in claims
-    }
+    supplied = {claim.source_id for claim in claims}
 
-    returned_pairs = [
-        (
-            item.claim_id,
-            item.hypothesis_id,
-        )
-        for item in parsed.assessments
-    ]
+    # A decoder can be told how many assessments to produce and
+    # which ids exist, not that each id appears once. A small
+    # model (Apertus 8B did) sometimes judges one claim twice
+    # and skips another. The first judgement of a claim stands,
+    # a repeat is dropped, and what was skipped is asked again
+    # by the caller, one claim at a time.
+    unique: dict[str, _AssessmentCandidate] = {}
 
-    if len(returned_pairs) != len(
-        set(returned_pairs)
-    ):
-        raise ValueError(
-            "Relationship assessment returned "
-            "duplicate claim-hypothesis pairs for "
-            f"{hypothesis.hypothesis_id}."
-        )
+    for candidate in parsed.assessments:
+        unique.setdefault(candidate.claim_id, candidate)
 
-    if set(returned_pairs) != expected_pairs:
-        missing_pairs = sorted(
-            expected_pairs - set(returned_pairs)
-        )
+    unexpected = sorted(set(unique) - supplied)
+    missing = tuple(
+        claim for claim in claims if claim.source_id not in unique
+    )
 
-        unexpected_pairs = sorted(
-            set(returned_pairs) - expected_pairs
-        )
-
+    # An id that was never supplied is an invention, and an
+    # answer that skips claims it was not allowed to skip is a
+    # failure. Neither is repaired.
+    if unexpected or (missing and not allow_missing):
         raise ValueError(
             "Relationship assessment pairs do not "
             "match the supplied claims and hypothesis.\n"
             f"Hypothesis: {hypothesis.hypothesis_id}\n"
-            f"Expected: {len(expected_pairs)} pairs\n"
-            f"Returned: {len(returned_pairs)} pairs\n"
-            f"Missing: {missing_pairs}\n"
-            f"Unexpected: {unexpected_pairs}"
+            f"Expected: {len(supplied)} pairs\n"
+            f"Returned: {len(unique)} pairs\n"
+            f"Missing: {[claim.source_id for claim in missing]}\n"
+            f"Unexpected: {unexpected}"
         )
+
+    parsed = parsed.model_copy(
+        update={"assessments": tuple(unique.values())}
+    )
 
     created_at = datetime.now(
         timezone.utc
@@ -437,6 +431,7 @@ def _assess_one_hypothesis(
     return (
         run,
         tuple(assessments),
+        missing,
     )
 
 
@@ -554,13 +549,40 @@ def assess_relationships(
         )
 
     def assess(task):
+        """
+        One batch, then one request per claim the model skipped.
+        A single-claim request cannot skip or repeat anything
+        under a constraining decoder, so the second pass settles
+        it; a provider that still does not answer fails the run.
+        """
+
         hypothesis, batch = task
 
-        return _assess_one_hypothesis(
+        run, judged, missing = _assess_one_hypothesis(
             claims=batch,
             hypothesis=hypothesis,
             provider=provider,
+            allow_missing=True,
         )
+
+        task_runs, task_assessments = [run], list(judged)
+
+        for claim in missing:
+            again, settled, _ = _assess_one_hypothesis(
+                claims=(claim,),
+                hypothesis=hypothesis,
+                provider=provider,
+            )
+
+            task_runs.append(again)
+            task_assessments.extend(settled)
+
+        # Output follows the order the evidence was supplied in,
+        # however many passes it took.
+        order = {claim.source_id: n for n, claim in enumerate(batch)}
+        task_assessments.sort(key=lambda item: order[item.source_id])
+
+        return task_runs, task_assessments
 
     if (
         max_workers == 1
@@ -595,8 +617,8 @@ def assess_relationships(
         RelationshipAssessment
     ] = []
 
-    for run, batch in results:
-        runs.append(run)
+    for task_runs, batch in results:
+        runs.extend(task_runs)
         assessments.extend(batch)
 
     return (

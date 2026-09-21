@@ -540,3 +540,61 @@ def test_a_misspelt_claim_id_is_still_rejected():
 
     with pytest.raises(ValueError, match="do not match"):
         assess_relationships(CLAIMS, HYPOTHESES, Inventor())
+
+
+def test_a_claim_judged_twice_and_one_skipped_does_not_fail_the_run():
+    """
+    Apertus 8B answered a batch of four by judging one claim
+    twice and skipping another. The decoder can pin the number
+    of answers and the ids that exist, not that each appears
+    once. The repeat is dropped and the skipped claim is asked
+    again on its own.
+    """
+
+    import re
+
+    claims = tuple(
+        CLAIMS[0].model_copy(update={"claim_id": f"C-{n}"}) for n in range(1, 5)
+    )
+
+    class Stutterer:
+        provider_name = "fake"
+        model_name = "small-model"
+        supports_json_schema = True
+
+        def __init__(self):
+            self.calls = []
+
+        def complete_json(self, *, system, user, reasoning=False, schema=None):
+            ids = re.findall(r"CLAIM ID: (C-\d+)", user)
+            hypothesis_id = re.search(r"HYPOTHESIS ID: (\S+)", user).group(1)
+
+            self.calls.append(ids)
+
+            # In a full batch: C-1 twice (disagreeing), C-3 never.
+            answered = ["C-1", "C-1", "C-2", "C-4"] if len(ids) == 4 else ids
+
+            return {
+                "assessments": [
+                    {
+                        "claim_id": claim_id,
+                        "hypothesis_id": hypothesis_id,
+                        "relation": "supports" if index == 0 else "context_for",
+                        "strength": 0.5,
+                        "rationale": "r",
+                    }
+                    for index, claim_id in enumerate(answered)
+                ]
+            }
+
+    provider = Stutterer()
+    runs, assessments = assess_relationships(claims, HYPOTHESES[:1], provider)
+
+    # The batch, then the one skipped claim on its own.
+    assert provider.calls == [["C-1", "C-2", "C-3", "C-4"], ["C-3"]]
+    assert len(runs) == 2
+
+    # Every pair exactly once, in the order supplied; the FIRST
+    # judgement of the repeated claim is the one that stands.
+    assert [a.source_id for a in assessments] == ["C-1", "C-2", "C-3", "C-4"]
+    assert assessments[0].relation.value == "supports"

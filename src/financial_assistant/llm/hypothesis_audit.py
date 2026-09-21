@@ -197,50 +197,57 @@ def audit_hypotheses(
         ],
     }
 
-    raw = complete_structured(
-        provider,
-        system=SYSTEM_PROMPT,
-        user=(
-            "ANOMALY:\n"
-            f"{anomaly_json}\n\n"
-            "VALIDATED SOURCE CLAIMS:\n"
-            f"{claim_context}\n\n"
-            + (
-                "DETERMINISTIC FINANCIAL CONTEXT:\n"
-                f"{financial_context}\n\n"
-                if financial_context
-                else ""
-            )
-            + "HYPOTHESES TO AUDIT:\n"
-            f"{hypothesis_context}"
-        ),
-        response_model=_AuditResponse,
-        schema=schema,
-        reasoning=False,
-    )
-
-    parsed = _AuditResponse.model_validate(raw)
-
     expected_ids = {
         hypothesis.hypothesis_id
         for hypothesis in hypotheses
     }
 
-    returned_ids = [
-        audit.hypothesis_id
-        for audit in parsed.audits
-    ]
-
-    if len(returned_ids) != len(set(returned_ids)):
-        raise ValueError(
-            "Hypothesis audit returned duplicate hypothesis IDs."
+    # A decoder can pin how many audits come back and which ids
+    # exist, not that each id appears once: a small model
+    # sometimes audits one explanation twice and skips another.
+    # The first audit of an explanation stands. If one is still
+    # missing the request is made once more; a second miss is a
+    # real failure and is raised.
+    for attempt in range(2):
+        raw = complete_structured(
+            provider,
+            system=SYSTEM_PROMPT,
+            user=(
+                "ANOMALY:\n"
+                f"{anomaly_json}\n\n"
+                "VALIDATED SOURCE CLAIMS:\n"
+                f"{claim_context}\n\n"
+                + (
+                    "DETERMINISTIC FINANCIAL CONTEXT:\n"
+                    f"{financial_context}\n\n"
+                    if financial_context
+                    else ""
+                )
+                + "HYPOTHESES TO AUDIT:\n"
+                f"{hypothesis_context}"
+            ),
+            response_model=_AuditResponse,
+            schema=schema,
+            reasoning=False,
         )
 
-    if set(returned_ids) != expected_ids:
-        raise ValueError(
-            "Hypothesis audit IDs do not match the supplied "
-            "hypotheses."
-        )
+        parsed = _AuditResponse.model_validate(raw)
+
+        unique: dict[str, _AuditCandidate] = {}
+
+        for candidate in parsed.audits:
+            unique.setdefault(candidate.hypothesis_id, candidate)
+
+        if set(unique) == expected_ids:
+            break
+
+        if attempt == 1 or not set(unique) <= expected_ids:
+            raise ValueError(
+                "Hypothesis audit IDs do not match the supplied "
+                "hypotheses."
+            )
+
+    parsed = parsed.model_copy(update={"audits": tuple(unique.values())})
 
     created_at = datetime.now(timezone.utc)
 
