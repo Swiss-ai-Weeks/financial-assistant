@@ -20,7 +20,7 @@ export function SecuritySearch({onSelect}) {
   </div>;
 }
 
-export default function MarketDesk({mode, ticker, onTicker, asOf, onAsOf, portfolio, onInvestigate, active=true}) {
+export default function MarketDesk({mode, ticker, onTicker, asOf, onAsOf, portfolio, onInvestigate, active=true, discoveryCandidate=null}) {
   const [data,setData] = useState(null), [error,setError] = useState(''), [loading,setLoading] = useState(false);
   const [horizon,setHorizon] = useState('1w'), [tab,setTab] = useState('anomalies'), [day,setDay] = useState(null);
   const [selected,setSelected] = useState(null), [refresh,setRefresh] = useState(0);
@@ -77,6 +77,7 @@ export default function MarketDesk({mode, ticker, onTicker, asOf, onAsOf, portfo
       {reading?.status === 'available' ? <><div className="scope-metrics"><div>Return<strong>{percent(reading.return_pct)}</strong></div><div>Market<strong>{percent(reading.benchmark_return_pct)}</strong></div><div>Abnormal<strong>{percent(reading.abnormal_return_pct)}</strong></div><div>Deviation<strong>{reading.z_score.toFixed(2)}σ</strong></div></div><p>Volume {reading.volume_multiple.toFixed(2)}× its earlier baseline.</p></> : <p>{reading?.reason ?? 'Load market history to inspect measured context.'}</p>}
       <p>{current?.scope?.methodology}</p>{mode === 'past' && <section><h3>Portfolio impact</h3><p>20-session contribution: {percent(current?.book?.contributions_20?.[ticker] == null ? null : current.book.contributions_20[ticker]*100)}</p><p>{current?.book?.status === 'unavailable' ? current.book.reason : 'Calculated from the same saved portfolio weights and cutoff as Portfolio.'}</p></section>}<h3>What explains the move?</h3><p>Market measurements direct attention. ClaimGraph tests explanations against sources, calculations and counter-evidence.</p>
       <button className="primary-action" disabled={!activeDate} onClick={() => onInvestigate(holdingCandidate(ticker,activeDate))}>Investigate {ticker} →</button>
+      {discoveryCandidate && discoveryCandidate.requested_as_of === activeDate && [discoveryCandidate.ticker_a,discoveryCandidate.ticker_b].includes(ticker) && <section><h3>Discovery · {discoveryCandidate.pair}</h3><p>Inspect both securities and their news before investigating the relationship.</p><button onClick={() => choose(ticker === discoveryCandidate.ticker_a ? discoveryCandidate.ticker_b : discoveryCandidate.ticker_a)}>Inspect other security →</button><button className="primary-action" onClick={() => onInvestigate(discoveryCandidate)}>Investigate discovery →</button></section>}
       {selected && <section><h3>{selected.pair}</h3><p>Detected {selected.signal_date} · z {selected.z_score?.toFixed(2)}</p><button className="primary-action" onClick={() => onInvestigate(selected)}>Investigate anomaly →</button></section>}
       <details><summary>Market / membership provenance</summary><p>{current?.market?.source}</p><p>{current?.market?.universe_limitation ?? 'Current constituent snapshots only; not historical membership.'}</p><pre>{JSON.stringify(current?.market?.metrics,null,2)}</pre></details>
     </aside></div>

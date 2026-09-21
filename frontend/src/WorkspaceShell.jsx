@@ -5,6 +5,7 @@ import {DEMO_PORTFOLIO, initialState, workspaceReducer, validatePositions, holdi
 import {temporalView} from './temporalModel';
 import './WorkspaceShell.css';
 import MarketTape from './pythia/MarketTape.jsx';
+import DiscoveryView from './pythia/DiscoveryView.jsx';
 import MarketDesk, {SecuritySearch} from './pythia/MarketDesk.jsx';
 import {NAVIGATION} from './pythia/deskClient.js';
 import {ScopeIcon, PastIcon, ChartIcon, CloverIcon, GraphIcon} from './pythia/icons.jsx';
@@ -24,6 +25,7 @@ async function calculate(path, payload) {
 export default function WorkspaceShell() {
   const [state,dispatch] = useReducer(workspaceReducer, undefined, () => { try { return initialState(localStorage); } catch { return initialState(); } });
   const [ticker,setTicker] = useState('COHU');
+  const [discoveryCandidate,setDiscoveryCandidate] = useState(null);
   const [theme,setTheme] = useState(() => {try {return localStorage.getItem('pythia:theme') ?? 'light';} catch {return 'light';}});
   useEffect(() => {document.documentElement.dataset.theme=theme;try {localStorage.setItem('pythia:theme',theme);} catch { /* optional preference */ }},[theme]);
   const [storageError,setStorageError] = useState('');
@@ -69,7 +71,7 @@ export default function WorkspaceShell() {
     <div className="pythia-content">
     <nav className="browser-tabs" hidden={!state.route.startsWith('/investigate')} aria-label="Investigation workspaces">{state.workspaces.map(w => <span key={w.id}><button aria-pressed={state.route.endsWith(w.id)} onClick={() => navigate(`/investigate/${w.id}`)}>{w.label} investigation{w.model && ` · ${w.model.label ?? w.model.model}`}</button><button aria-label={`Close ${w.label}`} onClick={() => dispatch({type:'close',id:w.id})}>×</button></span>)}<button onClick={() => open()} aria-label="New investigation">New investigation +</button></nav>
     <section hidden={state.route !== '/now'}><MarketDesk active={state.route === '/now'} mode="now" ticker={ticker} onTicker={setTicker} asOf={state.selected_as_of} onAsOf={value => dispatch({type:'date',value})} portfolio={state.portfolio} onInvestigate={open}/></section>
-    <section hidden={state.route !== '/past'}><MarketDesk active={state.route === '/past'} mode="past" ticker={ticker} onTicker={setTicker} asOf={state.selected_as_of} onAsOf={value => dispatch({type:'date',value})} portfolio={state.portfolio} onInvestigate={open}/></section>
+    <section hidden={state.route !== '/past'}><MarketDesk discoveryCandidate={discoveryCandidate} active={state.route === '/past'} mode="past" ticker={ticker} onTicker={setTicker} asOf={state.selected_as_of} onAsOf={value => dispatch({type:'date',value})} portfolio={state.portfolio} onInvestigate={open}/></section>
     {state.route === '/investigate' && <section className="mode-page"><p className="eyebrow">CLAIMGRAPH / INVESTIGATIONS</p><h1>Follow the evidence.</h1><p>Open a saved example, or begin with a holding, security or anomaly. Inspect the graph, retrieve missing evidence, then prepare a report.</p><button onClick={() => open()}>New investigation +</button>{state.workspaces.map(w => <button key={w.id} onClick={() => navigate(`/investigate/${w.id}`)}>{w.label} investigation</button>)}</section>}
     {storageError && <p role="status">{storageError}</p>}
     <section hidden={state.route !== '/portfolio'} className="mode-page"><h1>{state.portfolio.name}</h1><p>{state.portfolio.positions.length} positions · As of {state.selected_as_of}</p>
@@ -91,7 +93,7 @@ export default function WorkspaceShell() {
       <h2>Watched candidates</h2>{state.watched.map(c => <button key={c.pair} onClick={() => {selectCandidate(c);navigate('/explore');}}>{c.pair} · {c.signal_date}</button>)}
       <p>{NOTICE}</p>
     </section>
-    <section hidden={state.route !== '/explore'} className="mode-page explore-page"><p className="eyebrow">DISCOVERY / THE INVESTMENT UNIVERSE</p><h1>Explore opportunities</h1><SecuritySearch onSelect={symbol => {setTicker(symbol);navigate('/past');}}/><p>Search the merged universe, examine a security, or scan relationships below. Membership labels describe current snapshots, not historical constituents.</p><p>{NOTICE}</p><DetectorPanel onSelectCandidate={selectCandidate} sharedAsOf={state.selected_as_of} onAsOf={value => dispatch({type:'date',value})}/>
+    <section hidden={state.route !== '/explore'} className="mode-page explore-page"><p className="eyebrow">DISCOVERY / THE INVESTMENT UNIVERSE</p><DiscoveryView asOf={state.selected_as_of} portfolio={state.portfolio} onInspect={(candidate,symbol) => {setDiscoveryCandidate(candidate);setTicker(symbol);navigate('/past');}}/><h2>Explore opportunities</h2><SecuritySearch onSelect={symbol => {setTicker(symbol);navigate('/past');}}/><p>Search the merged universe, examine a security, or scan relationships below. Membership labels describe current snapshots, not historical constituents.</p><p>{NOTICE}</p><DetectorPanel onSelectCandidate={selectCandidate} sharedAsOf={state.selected_as_of} onAsOf={value => dispatch({type:'date',value})}/>
       {state.candidate && <section className="candidate-detail"><h2>{state.candidate.pair}</h2><p>As of {state.candidate.requested_as_of ?? state.candidate.signal_date} · z {state.candidate.z_score ?? 'Unavailable'} · correlation {state.candidate.correlation ?? 'Unavailable'} · cointegration p {state.candidate.cointegration_p ?? 'Unavailable'}</p>
         <p>Formation history: {state.candidate.formation_start ?? 'Unavailable'} — {state.candidate.formation_end ?? 'Unavailable'}</p>
         {performance?.pair === state.candidate.pair && performance.as_of === state.selected_as_of && <MarketPerformance result={performance.result}/>}

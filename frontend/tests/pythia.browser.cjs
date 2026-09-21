@@ -20,6 +20,7 @@ const server=http.createServer((req,res)=>{
     if(url.pathname==='/api/replays') return send({replays:[]});
     if(url.pathname==='/api/bookreader/source-links') return send({base_url:''});
     if(url.pathname==='/api/health') return send({as_of:'2026-09-18',market_as_of:'2026-09-18'});
+    if(url.pathname==='/api/instruments/search' && ['COHU','PDFS'].includes(url.searchParams.get('q'))) return send({securities:[{ticker:url.searchParams.get('q'),identity:url.searchParams.get('q'),name:'Resolved security',universes:[]}]});
     if(url.pathname==='/api/instruments/search') return send({securities:[{identity:'CRWV',ticker:'CRWV',name:'CoreWeave',universes:[],catalogued:false,dynamically_resolved:true,coverage:{market_cache:false,precomputed_pairs:false}}],limitation:'Current snapshots only'});
     if(url.pathname.endsWith('/candles')) return send({source:'Synthetic browser test prices',last_session:'2026-09-18',candles:Array.from({length:30},(_,i)=>({date:`2026-08-${String(i+1).padStart(2,'0')}`,close:100+i+Math.sin(i)*4}))});
     if(url.pathname.startsWith('/api/microscope/')) return send({ticks:['1d','1w','1m','3m','1y'].map(horizon=>({horizon,status:'available',return_pct:2,benchmark_return_pct:1,abnormal_return_pct:1,z_score:1,volume_multiple:1,unusual:false})),peers:{}});
@@ -68,11 +69,34 @@ const server=http.createServer((req,res)=>{
   await page.getByRole('button',{name:/COHU\/PDFS/}).first().waitFor();
   await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Explore',exact:true}).click();
   await page.getByRole('heading',{name:'Explore opportunities'}).waitFor();
+  const beforeLucky=await page.evaluate(()=>JSON.stringify(JSON.parse(localStorage.getItem('claimgraph:workspace:v1')).workspaces));
+  const scanCount=counts['/api/anomalies/historical-scan']??0;
+  const lucky=page.getByRole('button',{name:'I’m Feeling Lucky',exact:true});
+  assert(await lucky.isVisible());
+  assert.equal(await lucky.evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(17, 17, 17)');
+  await lucky.click();
+  await page.getByRole('article',{name:'Discovery result'}).waitFor();
+  assert.equal(counts['/api/anomalies/historical-scan'],scanCount+1);
+  assert.equal(await page.evaluate(()=>JSON.stringify(JSON.parse(localStorage.getItem('claimgraph:workspace:v1')).workspaces)),beforeLucky);
+  await page.screenshot({path:'/tmp/pythia-lucky.png',fullPage:true});
+  await page.getByRole('button',{name:'Inspect COHU · Resolved security →'}).click();
+  await page.getByRole('heading',{name:'COHU What was knowable?'}).waitFor();
+  await page.getByRole('button',{name:'Inspect other security →'}).click();
+  await page.getByRole('heading',{name:'PDFS What was knowable?'}).waitFor();
+  await page.getByRole('button',{name:'Investigate discovery →'}).click();
+  const luckyState=await page.evaluate(()=>JSON.parse(localStorage.getItem('claimgraph:workspace:v1')));
+  assert(page.url().includes('/investigate/'));
+  assert.equal(luckyState.workspaces.at(-1).candidate.pair,'COHU/PDFS');
+  assert(!luckyState.workspaces.at(-1).graph);
+  await page.reload();
+  assert.equal((await page.evaluate(()=>JSON.parse(localStorage.getItem('claimgraph:workspace:v1')))).workspaces.at(-1).candidate.pair,'COHU/PDFS');
+  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Explore',exact:true}).click();
+
   await page.getByPlaceholder('Ticker or company name').filter({visible:true}).fill('CRWV');
   await page.getByRole('button',{name:/CRWV CoreWeave/}).click();
   await page.getByRole('heading',{name:'CRWV What was knowable?'}).waitFor();
   await page.getByRole('button',{name:'Investigate CRWV →'}).click();
-  assert((await page.evaluate(()=>JSON.parse(localStorage.getItem('claimgraph:workspace:v1')))).workspaces[0].candidate.mode==='security');
+  assert((await page.evaluate(()=>JSON.parse(localStorage.getItem('claimgraph:workspace:v1')))).workspaces.at(-1).candidate.mode==='security');
   // Install two completed canonical investigations to test model/tab/graph preservation without inference.
   await page.evaluate(({graph,models})=>{
     const state=JSON.parse(localStorage.getItem('claimgraph:workspace:v1'));
@@ -100,6 +124,12 @@ const server=http.createServer((req,res)=>{
   await page.locator('.investigation-page:not([hidden])').getByLabel('Model/provider for the next investigation').selectOption({label:'Analysis Alpha · local'});
   const isolated=await page.evaluate(()=>JSON.parse(localStorage.getItem('claimgraph:workspace:v1')));
   assert.equal(isolated.workspaces[0].model.id,'b');assert.equal(isolated.workspaces[1].model.id,'a');
+  const savedBeforeLucky=await page.evaluate(()=>JSON.stringify(JSON.parse(localStorage.getItem('claimgraph:workspace:v1')).workspaces));
+  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Explore',exact:true}).click();
+  await page.getByRole('button',{name:'I’m Feeling Lucky',exact:true}).click();
+  await page.getByRole('article',{name:'Discovery result'}).waitFor();
+  assert.equal(await page.evaluate(()=>JSON.stringify(JSON.parse(localStorage.getItem('claimgraph:workspace:v1')).workspaces)),savedBeforeLucky);
+  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Investigate',exact:true}).click();
   const beforeCommentary=await page.evaluate(()=>JSON.stringify(JSON.parse(localStorage.getItem('claimgraph:workspace:v1')).workspaces.map(w=>w.graph)));
   const panel=page.locator('.investigation-page:not([hidden]) .copilot-panel');
   await panel.locator('summary').first().click();
@@ -123,6 +153,6 @@ const server=http.createServer((req,res)=>{
   await page.screenshot({path:'/tmp/pythia-mobile.png',fullPage:true});
   assert.equal(counts['/api/investigations']??0,0);assert.equal(counts['/api/investigations/followup']??0,0);
   assert.deepEqual(errors,[]);
-  console.log('PASS: Now/Past/Explore/Portfolio/Investigate; security handoff; graph inspector; persistent tabs; isolated models; reload; HTML/Markdown/JSON exports; mobile rendering. No inference called.');
+  console.log('PASS: visible Lucky click, ranked discovery, inspect both securities, explicit persistent investigation, saved graph/model preservation; Now/Past/Explore/Portfolio/Investigate; security handoff; graph inspector; persistent tabs; isolated models; reload; HTML/Markdown/JSON exports; mobile rendering. No inference called.');
  } finally {await browser.close();server.close();}
 })().catch(e=>{console.error(e);server.close();process.exitCode=1;});
