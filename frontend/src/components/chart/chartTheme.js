@@ -18,7 +18,17 @@ export function chartOptions() {
     },
     crosshair: { mode: CrosshairMode.Normal },
     rightPriceScale: { borderColor: cssColor("--border") },
-    timeScale: { borderColor: cssColor("--border"), rightOffset: 4 },
+    // The latest session is the right edge of what exists, so
+    // it stays put: zooming with the wheel reveals more history
+    // on the LEFT instead of sliding the present away, and the
+    // chart cannot be dragged into an empty future or past.
+    timeScale: {
+      borderColor: cssColor("--border"),
+      rightOffset: 4,
+      rightBarStaysOnScroll: true,
+      fixRightEdge: true,
+      fixLeftEdge: true,
+    },
   };
 }
 

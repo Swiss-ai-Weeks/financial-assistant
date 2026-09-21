@@ -54,6 +54,9 @@ const RANGES = [
   { key: 90, label: "3M" },
   { key: 180, label: "6M" },
   { key: 365, label: "1Y" },
+  { key: 730, label: "2Y" },
+  // Everything the desk holds (HISTORY_DAYS, about 4.4 years).
+  { key: 2000, label: "ALL" },
 ];
 
 export default function App() {

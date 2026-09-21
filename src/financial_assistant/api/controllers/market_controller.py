@@ -46,7 +46,8 @@ def get_quote(
 @router.get("/market/{ticker}/candles", response_model=CandleSeries)
 def get_candles(
     ticker: str,
-    days: int = Query(default=180, ge=20, le=800),
+    # As far back as the desk keeps history (HISTORY_DAYS).
+    days: int = Query(default=180, ge=20, le=5000),
     service: MarketService = Depends(get_market_service),
 ):
     return service.candles(ticker, days=days)
