@@ -423,4 +423,5 @@ def get_discovery_service() -> DiscoveryService:
         llm_factory=build_llm,
         llm_available=lambda: get_investigation_service().llm_status().online,
         llm_workers=settings.llm_workers,
+        registry=get_model_registry(),
     )

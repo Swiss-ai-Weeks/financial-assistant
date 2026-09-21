@@ -42,7 +42,7 @@ function ModelPicker({ llm, models, modelId, onSelect }) {
         onChange={(event) => onSelect(event.target.value)}
       >
         {list.map((model) => (
-          <option key={model.id} value={model.id}>
+          <option key={model.id} value={model.id} disabled={!model.online}>
             {model.label.toUpperCase()}
             {model.online ? "" : " · OFFLINE"}
           </option>

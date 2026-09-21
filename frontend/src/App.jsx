@@ -393,7 +393,7 @@ export default function App() {
     setActionError(null);
 
     try {
-      const run = await explain(anomaly, chosenModel ?? modelId);
+      const run = await explain(anomaly, chosenModel ?? activeModel?.id);
 
       setInvestigationId(run.investigation_id);
     } catch (error) {
@@ -536,6 +536,8 @@ export default function App() {
 
   const llm = system.data?.llm;
 
+  const activeModel = pickModel(models.data, modelId);
+
   const anomalyRuns = useMemo(
     () =>
       (investigations.data ?? []).filter(
@@ -568,7 +570,7 @@ export default function App() {
         portfolio={portfolio.data}
         llm={llm}
         models={models.data}
-        modelId={modelId}
+        modelId={activeModel?.id}
         asOf={asOf}
         latestSession={new Date().toISOString().slice(0, 10)}
         theme={theme}
@@ -622,7 +624,11 @@ export default function App() {
 
       {visited.has("discovery") && (
         <main className="app__main app__main--full" hidden={view !== "discovery"}>
-          <DiscoveryView onReason={selectAnomaly} />
+          <DiscoveryView
+            modelId={activeModel?.id}
+            modelLabel={activeModel?.label}
+            onReason={selectAnomaly}
+          />
         </main>
       )}
 
@@ -877,7 +883,7 @@ export default function App() {
                   runs={anomalyRuns}
                   llm={llm}
                   models={models.data}
-                  modelId={modelId}
+                  modelId={activeModel?.id}
                   starting={starting}
                   error={actionError}
                   onSelectModel={setModelId}
@@ -899,6 +905,30 @@ export default function App() {
 
       <TickerTape quotes={tape.data ?? []} llm={llm} onSelect={selectTicker} />
     </div>
+  );
+}
+
+/*
+ * The model in use is always one that answers. A remembered
+ * choice that has gone offline (its server was stopped) gives
+ * way to the default, or to whichever model is up, and comes
+ * back by itself when its server does.
+ */
+function pickModel(list, chosenId) {
+  const readers = (list?.models ?? []).filter((model) =>
+    model.roles.includes("analysis")
+  );
+
+  const chosen = readers.find((model) => model.id === chosenId);
+
+  if (chosen?.online) return chosen;
+
+  return (
+    readers.find((model) => model.default && model.online) ??
+    readers.find((model) => model.online) ??
+    chosen ??
+    readers[0] ??
+    null
   );
 }
 

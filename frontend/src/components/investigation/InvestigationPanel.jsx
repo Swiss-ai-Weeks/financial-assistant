@@ -83,6 +83,7 @@ export default function InvestigationPanel({
               key={model.id}
               className={`reader ${model.id === reader?.id ? "is-active" : ""}`}
               title={`${model.model} · ${model.local ? "local" : "external"} · ${model.detail}`}
+              disabled={!model.online}
               onClick={() => onSelectModel(model.id)}
             >
               <span className={`dot ${model.online ? "dot--on" : "dot--off"}`} />

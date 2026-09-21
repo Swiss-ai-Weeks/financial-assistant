@@ -98,7 +98,12 @@ export const api = {
   microscope: (ticker, horizon) =>
     request(`/microscope/${encodeURIComponent(ticker)}${query({ horizon })}`),
   discovery: () => request("/discovery"),
-  startDiscovery: () => request("/discovery", { method: "POST" }),
+  // The candidates are read by the model chosen on the desk.
+  startDiscovery: (modelId) =>
+    request("/discovery", {
+      method: "POST",
+      body: JSON.stringify({ model_id: modelId ?? null }),
+    }),
 
   investigations: () => request("/investigations"),
   investigation: (id) => request(`/investigations/${encodeURIComponent(id)}`),

@@ -15,7 +15,12 @@ from financial_assistant.api.dependencies import (
     get_microscope_service,
     get_postmortem_service,
 )
-from financial_assistant.api.schemas import DiscoveryJob, Microscope, PostMortem
+from financial_assistant.api.schemas import (
+    DiscoveryJob,
+    Microscope,
+    PostMortem,
+    StartDiscoveryRequest,
+)
 from financial_assistant.api.services import (
     DiscoveryService,
     MicroscopeService,
@@ -44,9 +49,10 @@ def get_microscope(
 
 @router.post("/discovery", response_model=DiscoveryJob, status_code=202)
 def start_discovery(
+    body: StartDiscoveryRequest | None = None,
     service: DiscoveryService = Depends(get_discovery_service),
 ):
-    return service.start()
+    return service.start(body.model_id if body else None)
 
 
 @router.get("/discovery", response_model=DiscoveryJob)

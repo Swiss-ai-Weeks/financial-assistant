@@ -14,6 +14,7 @@
 #
 #   make llm     serve Nemotron on the two H100s (:8000)
 #   make apertus serve Apertus, the Swiss open model (:8001)
+#   make super49b  Nemotron Super 49B as a third model (NIM, :8000)
 #   make search  start SearXNG for wider web retrieval (:8888)
 
 PYTHON  ?= python3
@@ -23,7 +24,7 @@ API_PORT ?= 8080
 
 .DEFAULT_GOAL := help
 
-.PHONY: help setup dev api web build serve news universe warm runs forget-runs llm apertus search test lint reset
+.PHONY: help setup dev api web build serve news universe warm runs forget-runs llm apertus super49b search test lint reset
 
 help:
 	@awk '/^# /{sub(/^# ?/,"");print} /^$$/{exit}' Makefile
@@ -92,6 +93,9 @@ llm:
 
 apertus:
 	./scripts/serve_apertus.sh
+
+super49b:
+	./scripts/serve_nemotron_super.sh
 
 search:
 	docker compose -f infra/docker-compose.yml up -d searxng

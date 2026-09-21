@@ -276,7 +276,7 @@ class Settings:
             sec_user_agent=env("SEC_USER_AGENT") or None,
             max_documents=int(env("INVESTIGATION_MAX_DOCUMENTS", "6")),
             max_claims=int(env("INVESTIGATION_MAX_CLAIMS", "12")),
-            min_liquidity_musd=float(env("MIN_LIQUIDITY_MUSD", "50")),
+            min_liquidity_musd=float(env("MIN_LIQUIDITY_MUSD", "20")),
             cors_origins=tuple(
                 origin.strip()
                 for origin in env(

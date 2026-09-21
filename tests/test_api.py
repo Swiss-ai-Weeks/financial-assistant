@@ -881,7 +881,7 @@ def test_nemotron_drops_justified_repricings_in_the_open(client):
 
     assert stage["count"] == step(body, "liquid enough")["count"] - 1
     assert stage["detail"] == (
-        "Nemotron read 2: 1 lasting event dropped, 1 transient, 0 unexplained."
+        "The model read 2: 1 lasting event dropped, 1 transient, 0 unexplained."
     )
 
     triage = body["on_your_desk"][0]["triage"]

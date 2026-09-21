@@ -395,6 +395,11 @@ class Setup(BaseModel):
     score: float
     triage: TriageView | None = None
 
+    # What happened after comparable breaks in the walk-forward
+    # record: favourable | unfavourable | no_record. Evidence on
+    # the card, not a gate.
+    analogue_verdict: str = "no_record"
+
 
 class Discovery(BaseModel):
     as_of: date
@@ -414,6 +419,14 @@ class Discovery(BaseModel):
     repriced: list[Setup]
     analogue_breaks: int
     analogue_period: str
+
+    # Display name of the model that read the candidates.
+    reader: str = "The model"
+
+
+class StartDiscoveryRequest(BaseModel):
+    # The model that reads the candidates. Unset: the default.
+    model_id: str | None = None
 
 
 class DiscoveryJob(BaseModel):

@@ -983,29 +983,48 @@
 }
 
 .funnel li {
-  position: relative;
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  padding: 14px 0 18px;
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  column-gap: 18px;
+  align-items: start;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
   animation: funnel-in 0.4s both;
 }
 
+.funnel li:last-child {
+  border-bottom: 0;
+}
+
 .funnel__count {
-  width: 92px;
   text-align: right;
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.funnel__step {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
 }
 
 .funnel__label {
+  font-size: 13.5px;
+  line-height: 1.35;
   color: var(--text-muted);
 }
 
+.funnel__track {
+  display: block;
+  height: 3px;
+  background: var(--border);
+}
+
 .funnel__bar {
-  position: absolute;
-  left: 0;
-  bottom: 6px;
+  display: block;
   height: 3px;
   background: var(--accent);
 }
@@ -1115,9 +1134,8 @@
 
 .funnel__detail {
   display: block;
-  margin-top: 4px;
   font-size: 11.5px;
-  line-height: 1.4;
+  line-height: 1.45;
   color: var(--accent);
 }
 
@@ -1221,4 +1239,42 @@
 
 .matrix tbody tr.is-selected td:first-child {
   box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* ---------- discovery: reader and analogue verdict ---------- */
+
+.discovery__reader {
+  margin-top: 12px;
+  font-size: 12.5px;
+}
+
+.discovery__reader strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.setup__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.setup__analogue.is-favourable {
+  color: var(--up);
+  border-color: currentColor;
+}
+
+.setup__analogue.is-unfavourable {
+  color: var(--down);
+  border-color: currentColor;
+}
+
+.setup__analogue.is-unknown {
+  color: var(--text-muted);
+}
+
+.reader:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }

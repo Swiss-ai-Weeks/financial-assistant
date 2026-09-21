@@ -10,24 +10,38 @@ function Funnel({ steps }) {
   return (
     <ol className="funnel">
       {steps.map((step, index) => (
-        <li key={step.label} style={{ animationDelay: `${index * 140}ms` }}>
+        <li key={step.label} style={{ animationDelay: `${index * 90}ms` }}>
           <span className="funnel__count mono">{step.count.toLocaleString("en-US")}</span>
-          <span className="funnel__label">
-            {step.label}
+
+          <div className="funnel__step">
+            <span className="funnel__label">{step.label}</span>
+
+            <span className="funnel__track">
+              <span
+                className="funnel__bar"
+                style={{
+                  // Log scale: the funnel spans five orders of magnitude.
+                  width: `${Math.max(
+                    (Math.log10(step.count + 1) / Math.log10(largest + 1)) * 100,
+                    step.count > 0 ? 2 : 0
+                  )}%`,
+                }}
+              />
+            </span>
+
             {step.detail && <small className="funnel__detail">{step.detail}</small>}
-          </span>
-          <span
-            className="funnel__bar"
-            style={{
-              // Log scale: the funnel spans three orders of magnitude.
-              width: `${(Math.log10(step.count + 1) / Math.log10(largest + 1)) * 100}%`,
-            }}
-          />
+          </div>
         </li>
       ))}
     </ol>
   );
 }
+
+const ANALOGUES = {
+  favourable: ["Analogues favour convergence", "is-favourable"],
+  unfavourable: ["Analogues do not favour it", "is-unfavourable"],
+  no_record: ["No comparable record", "is-unknown"],
+};
 
 const VERDICTS = {
   lasting_event: "Lasting event",
@@ -36,18 +50,18 @@ const VERDICTS = {
 };
 
 /**
- * Nemotron's reading of the headlines behind the move, with
+ * The chosen model's reading of the headlines behind the move, with
  * the headline it rests on. Without a reading the card says
  * what it does know instead of pretending.
  */
-function WhyNow({ setup }) {
+function WhyNow({ setup, reader }) {
   const { triage } = setup;
 
   if (!triage) {
     return (
       <p className="muted">
         {setup.headlines} headlines named these companies before the evidence
-        cutoff. Nemotron has not read them: whether one justifies the gap is
+        cutoff. {reader} has not read them: whether one justifies the gap is
         what the reasoning view answers.
       </p>
     );
@@ -80,10 +94,15 @@ function WhyNow({ setup }) {
   );
 }
 
-function SetupCard({ setup, asOf, label, leading, onReason }) {
+function SetupCard({ setup, asOf, label, leading, reader, onReason }) {
+  const [verdict, tone] = ANALOGUES[setup.analogue_verdict] ?? ANALOGUES.no_record;
+
   return (
     <article className={`setup ${leading ? "is-leading" : ""}`}>
-      <span className="eyebrow">{label}</span>
+      <div className="setup__top">
+        <span className="eyebrow">{label}</span>
+        <span className={`chip setup__analogue ${tone}`}>{verdict}</span>
+      </div>
 
       <h2 className="mono">
         LONG {setup.long} / SHORT {setup.short}
@@ -110,7 +129,7 @@ function SetupCard({ setup, asOf, label, leading, onReason }) {
       <section>
         <span className="eyebrow">Why now</span>
         <p>{setup.anomaly.summary}.</p>
-        <WhyNow setup={setup} />
+        <WhyNow setup={setup} reader={reader} />
       </section>
 
       <section>
@@ -156,7 +175,7 @@ function SetupCard({ setup, asOf, label, leading, onReason }) {
  */
 const POLL_MS = 1500;
 
-export default function DiscoveryView({ onReason }) {
+export default function DiscoveryView({ modelId, modelLabel, onReason }) {
   const [job, setJob] = useState({ status: "idle" });
   const timer = useRef(null);
 
@@ -193,7 +212,7 @@ export default function DiscoveryView({ onReason }) {
     clearTimeout(timer.current);
 
     try {
-      setJob(await api.startDiscovery());
+      setJob(await api.startDiscovery(modelId));
     } catch (error) {
       setJob({ status: "failed", error: error.message });
       return;
@@ -233,6 +252,11 @@ export default function DiscoveryView({ onReason }) {
           {state.status === "running" ? "Scanning the universe…" : "I’m Feeling Lucky"}
         </button>
 
+        <p className="muted discovery__reader">
+          Candidates are read by <strong>{modelLabel ?? "the default model"}</strong>,
+          the model selected in the top bar.
+        </p>
+
         {state.status === "running" && (
           <p className="discovery__stage">
             <span className="spinner" /> {state.stage}
@@ -256,11 +280,11 @@ export default function DiscoveryView({ onReason }) {
           <main>
             {discovery.setups.length === 0 ? (
               <div className="setup">
-                <h2>Nothing new clears the bar today</h2>
+                <h2>Nothing new is stretched right now</h2>
                 <p className="muted">
-                  No relationship outside your book is unusual, liquid and
-                  favourable in the historical record. Saying so is part of
-                  the product.
+                  No liquid relationship outside your book is beyond its
+                  threshold, or was in the last few sessions, without a
+                  lasting event behind it. Saying so is part of the product.
                 </p>
               </div>
             ) : (
@@ -271,6 +295,7 @@ export default function DiscoveryView({ onReason }) {
                   asOf={discovery.as_of}
                   label={index === 0 ? "🍀 Today’s discovery" : "Also surfaced"}
                   leading={index === 0}
+                  reader={discovery.reader}
                   onReason={onReason}
                 />
               ))
@@ -279,7 +304,8 @@ export default function DiscoveryView({ onReason }) {
             {discovery.repriced.length > 0 && (
               <section className="discovery__known">
                 <span className="eyebrow">
-                  Dropped by Nemotron · the gap looks like a justified repricing
+                  Dropped by {discovery.reader} · the gap looks like a justified
+                  repricing
                 </span>
 
                 {discovery.repriced.map((setup) => (

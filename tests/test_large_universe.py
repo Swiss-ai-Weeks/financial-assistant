@@ -242,3 +242,22 @@ def test_no_page_view_downloads_the_universe():
 
         for call in re.finditer(r"get_available\((.*?)\n        \)", source, re.S):
             assert "refresh=" in call.group(1), f"{path.name}: unguarded get_available"
+
+
+def test_analogues_rank_the_ideas_instead_of_hiding_them():
+    """
+    The analogue record is one average over every past break of
+    similar size. As a gate it hid every idea of the day at once
+    whenever that average was negative; it now orders them and
+    each card says which way its analogues point.
+    """
+
+    from types import SimpleNamespace
+
+    from financial_assistant.api.services.discovery_service import DiscoveryService
+
+    verdict = DiscoveryService._analogue_verdict
+
+    assert verdict(None) == "no_record"
+    assert verdict(SimpleNamespace(expected_abnormal_return_pct=0.4)) == "favourable"
+    assert verdict(SimpleNamespace(expected_abnormal_return_pct=-0.2)) == "unfavourable"

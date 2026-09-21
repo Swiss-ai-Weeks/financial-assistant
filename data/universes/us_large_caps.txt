@@ -194,3 +194,72 @@ GDX
 SLV
 EWA
 EWC
+
+# Energy · oil and gas funds, integrateds abroad
+# Crude itself next to the companies that sell it: the
+# classic question is which one moved first.
+USO
+BNO
+XLE
+XOP
+OIH
+UNG
+TTE
+EQNR
+E
+PBR
+SU
+CNQ
+ENB
+
+# Cross-asset · metals and miners
+GDXJ
+SIL
+COPX
+FCX
+SCCO
+NEM
+AEM
+RIO
+BHP
+VALE
+PPLT
+
+# Cross-asset · agriculture and fertilisers
+DBA
+CORN
+WEAT
+ADM
+BG
+MOS
+NTR
+CF
+
+# Cross-asset · rates and credit
+TLT
+IEF
+SHY
+LQD
+HYG
+
+# Cross-asset · index, sector and country funds
+# Twins of the same asset (IAU for GLD, SOXX for SMH) are left
+# out on purpose: they are cointegrated by construction and
+# their "dislocations" are a few basis points of noise.
+QQQ
+IWM
+DIA
+XLF
+XLK
+SMH
+KRE
+XLU
+XLV
+XLI
+EEM
+EFA
+EWJ
+EWG
+EWU
+EWZ
+FXI

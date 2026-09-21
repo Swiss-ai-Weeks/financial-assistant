@@ -6,7 +6,7 @@ import time
 from collections import Counter
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from hashlib import sha1
 from pathlib import Path
 
@@ -67,6 +67,14 @@ BATCHED_ABOVE = 40
 # Candidates whose news is read and triaged per scan.
 MAX_CANDIDATES = 40
 
+# Ideas shown. The rest are there on the next scan.
+MAX_SETUPS = 6
+
+# A relationship that peaked this many days ago and is still
+# this fraction of the threshold away counts as unusual.
+RECENT_DAYS = 7
+STILL_STRETCHED = 0.75
+
 
 class DiscoveryService:
     """
@@ -98,6 +106,7 @@ class DiscoveryService:
         llm_factory: Callable[[], StructuredLLM] | None = None,
         llm_available: Callable[[], bool] = lambda: False,
         llm_workers: int = 8,
+        registry=None,
     ):
         self._anomalies = anomalies
         self._news = news
@@ -118,6 +127,11 @@ class DiscoveryService:
         self._llm_factory = llm_factory
         self._llm_available = llm_available
         self._llm_workers = llm_workers
+
+        # With a registry, the candidates are read by the model
+        # chosen on the desk rather than by one fixed model.
+        self._registry = registry
+        self._model_id: str | None = None
 
         self._lock = threading.Lock()
 
@@ -143,15 +157,18 @@ class DiscoveryService:
             if self._job.status != "running":
                 self._job = DiscoveryJob()
 
-    def start(self) -> DiscoveryJob:
+    def start(self, model_id: str | None = None) -> DiscoveryJob:
         """
         Start a scan unless one is already running, and return
         at once. Progress and the result are read with job().
+        `model_id` is the model that reads the candidates.
         """
 
         with self._job_lock:
             if self._job.status == "running":
                 return self._job.model_copy()
+
+            self._model_id = model_id
 
             self._job = DiscoveryJob(
                 status="running",
@@ -225,10 +242,25 @@ class DiscoveryService:
         )
         base = self._analogue_base(self._analogue_sample(prices, scan, holdings))
 
+        # Beyond the threshold today, or beyond it within the last
+        # few sessions and still most of the way out. A desk that
+        # is not opened every day would otherwise miss a
+        # dislocation because it peaked on Tuesday.
+        latest = scan.monitoring_end
+
+        def recently_stretched(anomaly) -> bool:
+            peak = anomaly.metrics.get("peak_date")
+
+            return (
+                peak is not None
+                and (latest - date.fromisoformat(str(peak))).days <= RECENT_DAYS
+                and abs(anomaly.z_score) >= STILL_STRETCHED * self._entry
+            )
+
         unusual = [
             anomaly
             for anomaly in scan.anomalies
-            if abs(anomaly.z_score) > self._entry
+            if abs(anomaly.z_score) > self._entry or recently_stretched(anomaly)
         ]
 
         liquidity = self._liquidity(prices)
@@ -323,7 +355,7 @@ class DiscoveryService:
         # Nemotron reads the headlines behind every candidate.
         # A lasting, company-specific event means the gap is a
         # repricing, not a dislocation, and the candidate goes.
-        self._stage(f"Nemotron is reading {len(liquid)} candidates")
+        self._stage(f"{self._reader_name()} is reading {len(liquid)} candidates")
         triage_detail = self._triage(liquid, admissible)
 
         self._stage("Ranking")
@@ -337,14 +369,24 @@ class DiscoveryService:
 
         dislocations = [s for s in liquid if s not in repriced]
 
-        favourable = [
-            s
-            for s in dislocations
-            if s.outcome is not None
-            and s.outcome.expected_abnormal_return_pct > 0
-        ]
+        # What happened after comparable breaks is evidence ABOUT
+        # a candidate, shown on its card. It used to be a gate:
+        # one average over every break of similar size, so on a
+        # day when that average was negative every idea of the
+        # day vanished at once. Candidates are now ranked by it,
+        # favourable ones first, and each says which it is.
+        for setup in dislocations:
+            setup.analogue_verdict = self._analogue_verdict(setup.outcome)
 
-        favourable.sort(key=lambda setup: setup.score, reverse=True)
+        rank = {"favourable": 0, "no_record": 1, "unfavourable": 2}
+
+        dislocations.sort(
+            key=lambda s: (rank[s.analogue_verdict], -abs(s.z_score))
+        )
+
+        favourable = [
+            s for s in dislocations if s.analogue_verdict == "favourable"
+        ]
 
         # Discovery means what the manager is NOT already
         # looking at. A relationship involving a holding was
@@ -356,7 +398,7 @@ class DiscoveryService:
                 holdings & {setup.anomaly.ticker, *setup.anomaly.related_tickers}
             )
 
-        new = [setup for setup in favourable if not held(setup)]
+        new = [setup for setup in dislocations if not held(setup)][:MAX_SETUPS]
 
         return Discovery(
             as_of=scan.monitoring_end,
@@ -394,7 +436,8 @@ class DiscoveryService:
                 FunnelStep(label="new to you", count=len(new)),
             ],
             setups=new,
-            on_your_desk=[setup for setup in favourable if held(setup)],
+            on_your_desk=[setup for setup in dislocations if held(setup)],
+            reader=self._reader_name(),
             repriced=repriced,
             analogue_breaks=len(base.breaks),
             analogue_period=(
@@ -405,6 +448,49 @@ class DiscoveryService:
         )
 
     # -------------------------------------------------
+
+    @staticmethod
+    def _analogue_verdict(outcome) -> str:
+        if outcome is None:
+            return "no_record"
+
+        return (
+            "favourable"
+            if outcome.expected_abnormal_return_pct > 0
+            else "unfavourable"
+        )
+
+    # -------------------------------------------------
+    # Which model reads the candidates
+    # -------------------------------------------------
+
+    def _reader(self):
+        """(name, is it answering, how to get a client)."""
+
+        if self._registry is None:
+            return (
+                "The model",
+                self._llm_available,
+                self._llm_factory,
+                "",
+            )
+
+        spec = self._registry.get(self._model_id)
+
+        return (
+            spec.display_name,
+            lambda: self._registry.health(spec.id).online,
+            lambda: self._registry.provider(spec.id),
+            # A reading belongs to the model that made it: another
+            # model reads the same candidate again.
+            "" if spec.id == self._registry.default_id else f"-{spec.id}",
+        )
+
+    def _reader_name(self) -> str:
+        try:
+            return self._reader()[0]
+        except Exception:
+            return "The model"
 
     @staticmethod
     def _score(z_score: float, outcome) -> float:
@@ -444,11 +530,16 @@ class DiscoveryService:
         if self._llm_factory is None or self._triage_store is None:
             return "Causal triage is not configured."
 
+        try:
+            reader, available, client, suffix = self._reader()
+        except Exception as error:
+            return f"No model could read the candidates: {error}"
+
         pending = []
 
         for setup in setups:
             offered = admissible[setup.anomaly.anomaly_id][:MAX_HEADLINES]
-            key = self._triage_key(setup.anomaly.anomaly_id, offered)
+            key = self._triage_key(setup.anomaly.anomaly_id, offered) + suffix
 
             stored = self._triage_store.get(key)
 
@@ -460,8 +551,8 @@ class DiscoveryService:
         rejected = 0
         unreachable = 0
 
-        if pending and self._llm_available():
-            llm = self._llm_factory()
+        if pending and available():
+            llm = client()
 
             with ThreadPoolExecutor(
                 max_workers=min(self._llm_workers, len(pending)),
@@ -483,13 +574,13 @@ class DiscoveryService:
         unread = len(setups) - len(read) - rejected - unreachable
 
         if not read and unread:
-            return "Nemotron is offline: no candidate was read, none dropped."
+            return f"{reader} is offline: no candidate was read, none dropped."
 
         verdicts = Counter(s.triage.verdict for s in read)
         lasting = verdicts[TriageVerdict.LASTING_EVENT.value]
 
         detail = (
-            f"Nemotron read {len(read)}: "
+            f"{reader} read {len(read)}: "
             f"{lasting} lasting event{'' if lasting == 1 else 's'} dropped, "
             f"{verdicts[TriageVerdict.TRANSIENT_EVENT.value]} transient, "
             f"{verdicts[TriageVerdict.NO_EVENT.value]} unexplained"
