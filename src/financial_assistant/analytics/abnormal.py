@@ -200,7 +200,9 @@ def read_peers(
     history = returns.iloc[-(ESTIMATION_SESSIONS + sessions):-sessions]
 
     correlations = (
-        history.corr()[ticker]
+        # Only the subject's row is needed. The full matrix of a
+        # universe of thousands is millions of pairs for nothing.
+        history.corrwith(history[ticker])
         .drop(ticker)
         .dropna()
         .sort_values(ascending=False)

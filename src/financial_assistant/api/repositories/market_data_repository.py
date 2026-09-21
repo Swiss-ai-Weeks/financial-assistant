@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import threading
 import time
 from datetime import date, timedelta
@@ -13,6 +14,11 @@ from financial_assistant.market_data import download_daily_prices
 
 
 COLUMNS = ["date", "ticker", "open", "high", "low", "close", "volume"]
+
+# Filling a large universe (see MarketDataRepository.download).
+RETRY_CHUNK = 10
+UNKNOWN_SHARE = 0.2
+UNKNOWN_DAYS = 7
 
 
 class MarketDataRepository:
@@ -146,33 +152,99 @@ class MarketDataRepository:
         """
         Fill the cache for a large universe, a chunk at a time,
         skipping what is already fresh. Returns how many
-        tickers now have history. One failed chunk is skipped:
-        the next run resumes where this one stopped.
+        tickers now have history.
+
+        Resumable and patient with Yahoo:
+          - a chunk that fails outright is skipped, and the next
+            run picks it up;
+          - tickers a chunk came back without are asked for once
+            more, in small groups: most such gaps are transient
+            (a throttled request, a locked cache), not missing
+            companies;
+          - what Yahoo still does not know after that (delisted
+            or renamed since the index snapshot) is remembered
+            for a week, so every later run does not pay for it
+            again.
         """
 
         wanted = tuple(dict.fromkeys(t.strip().upper() for t in tickers))
+        unknown = self._read_unknown()
 
         with self._lock:
-            stale = [t for t in wanted if self._load(t) is None]
+            stale = [
+                t
+                for t in wanted
+                if t not in unknown and self._load(t) is None
+            ]
+
+        def report(line: str) -> None:
+            if on_progress:
+                on_progress(line)
+
+        if unknown:
+            report(f"{len(unknown)} tickers Yahoo did not know last time are skipped")
 
         for start in range(0, len(stale), chunk):
             batch = tuple(stale[start:start + chunk])
 
-            try:
-                with self._lock:
-                    self._refresh(batch)
-            except UpstreamUnavailable as error:
-                if on_progress:
-                    on_progress(f"skipped {len(batch)} tickers: {error.message}")
-
+            if not self._try_refresh(batch, report):
                 continue
 
-            if on_progress:
-                on_progress(
-                    f"{min(start + chunk, len(stale))}/{len(stale)} downloaded"
-                )
+            missing = [t for t in batch if not self._path(t).is_file()]
+
+            for index in range(0, len(missing), RETRY_CHUNK):
+                self._try_refresh(tuple(missing[index:index + RETRY_CHUNK]), report)
+
+            still = [t for t in missing if not self._path(t).is_file()]
+
+            # A few names missing is the index snapshot ageing. A
+            # large share missing is Yahoo refusing us: nothing is
+            # written off on a bad day.
+            if still and len(still) <= len(batch) * UNKNOWN_SHARE:
+                unknown.update(dict.fromkeys(still, time.time()))
+                self._write_unknown(unknown)
+
+            report(
+                f"{min(start + chunk, len(stale))}/{len(stale)} requested"
+                + (f", {len(still)} without history: {' '.join(still[:8])}" if still else "")
+            )
 
         return len(self.cached_tickers() & set(wanted))
+
+    def _try_refresh(self, batch: tuple[str, ...], report) -> bool:
+        if not batch:
+            return True
+
+        try:
+            with self._lock:
+                self._refresh(batch)
+        except UpstreamUnavailable as error:
+            report(f"skipped {len(batch)} tickers: {error.message}")
+
+            return False
+
+        return True
+
+    def _unknown_path(self) -> Path:
+        return self._cache_dir / "_unknown.json"
+
+    def _read_unknown(self) -> dict[str, float]:
+        try:
+            recorded = json.loads(self._unknown_path().read_text())
+        except (OSError, ValueError):
+            return {}
+
+        horizon = time.time() - UNKNOWN_DAYS * 86400
+
+        return {
+            ticker: seen
+            for ticker, seen in recorded.items()
+            if isinstance(seen, (int, float)) and seen >= horizon
+        }
+
+    def _write_unknown(self, unknown: dict[str, float]) -> None:
+        self._cache_dir.mkdir(parents=True, exist_ok=True)
+        self._unknown_path().write_text(json.dumps(unknown, indent=1, sort_keys=True))
 
     def _visible(self, frame: pd.DataFrame) -> pd.DataFrame:
         """

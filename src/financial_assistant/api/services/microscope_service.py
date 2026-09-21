@@ -17,7 +17,10 @@ from financial_assistant.api.repositories import (
     PortfolioRepository,
 )
 from financial_assistant.api.schemas import HorizonTick, MatrixRow, Microscope
-from financial_assistant.api.services.anomaly_service import AnomalyService
+from financial_assistant.api.services.anomaly_service import (
+    LARGE_UNIVERSE,
+    AnomalyService,
+)
 
 
 def describe(
@@ -126,16 +129,34 @@ class MicroscopeService:
         if horizon not in HORIZONS:
             raise DeskError(f"horizon must be one of {sorted(HORIZONS)}")
 
-        comparable = tuple(
-            dict.fromkeys(
-                (*self._portfolios.load().tickers, *self._instruments.universe)
-            )
-        )
+        book = self._portfolios.load().tickers
+        universe = self._instruments.universe
+
+        # Peers are companies like this one. In a universe of
+        # thousands that means its own sector; comparing a bank
+        # with three thousand strangers only finds coincidences.
+        if len(universe) > LARGE_UNIVERSE:
+            sectors = self._instruments.sectors
+            sector = sectors.get(symbol)
+
+            if sector is not None:
+                universe = tuple(t for t in universe if sectors.get(t) == sector)
+
+        comparable = tuple(dict.fromkeys((*book, *universe)))
 
         # Raises NotFound for an unknown symbol.
         subject = self._market.get_prices((symbol, self._benchmark))
+
+        # Only the book is worth a download inside a request.
+        # The rest of a large universe is read as `make universe`
+        # left it: a page view must never fetch 3,000 tickers.
         others = self._market.get_available(
-            tuple(t for t in comparable if t not in (symbol, self._benchmark))
+            tuple(t for t in comparable if t not in (symbol, self._benchmark)),
+            refresh=(
+                None
+                if len(self._instruments.universe) <= LARGE_UNIVERSE
+                else book
+            ),
         )
 
         prices = pd.concat([subject, others], ignore_index=True)

@@ -17,6 +17,28 @@
 
 set -euo pipefail
 
+# vLLM is installed into the project's virtualenv by
+# setup_gpu_box.sh. Use that copy whether or not the venv is
+# activated; fall back to whatever is on PATH.
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+if [ -x "$ROOT/.venv/bin/vllm" ]; then
+  VLLM="$ROOT/.venv/bin/vllm"
+elif command -v vllm >/dev/null 2>&1; then
+  VLLM="vllm"
+else
+  echo "vllm not found. Install it with: $ROOT/.venv/bin/pip install -U vllm" >&2
+  exit 127
+fi
+
+# FlashInfer's sampler compiles a kernel the first time it is
+# used, which needs the CUDA toolkit (nvcc). A box with only the
+# driver, such as the hackathon instance, fails at warm-up with
+# "Could not find nvcc". vLLM's own sampler needs nothing.
+if ! command -v nvcc >/dev/null 2>&1 && [ ! -x "${CUDA_HOME:-/usr/local/cuda}/bin/nvcc" ]; then
+  export VLLM_USE_FLASHINFER_SAMPLER="${VLLM_USE_FLASHINFER_SAMPLER:-0}"
+fi
+
 MODEL="${LLM_MODEL:-nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16}"
 PORT="${LLM_PORT:-8000}"
 TOPOLOGY="${LLM_TOPOLOGY:-replicas}"
@@ -31,7 +53,7 @@ esac
 
 # Every stage shares a long system prompt across many requests,
 # which is exactly what prefix caching accelerates.
-exec vllm serve "$MODEL" \
+exec "$VLLM" serve "$MODEL" \
   --host 0.0.0.0 \
   --port "$PORT" \
   --trust-remote-code \
@@ -39,5 +61,5 @@ exec vllm serve "$MODEL" \
   --max-num-seqs 128 \
   --gpu-memory-utilization 0.90 \
   --enable-prefix-caching \
-  "${PARALLELISM[@]}" \
+  ${PARALLELISM[@]+"${PARALLELISM[@]}"} \
   ${VLLM_EXTRA_ARGS:-}

@@ -166,3 +166,79 @@ def test_the_shipped_catalogue_is_the_merged_universe():
 
     assert instruments.catalog_size > 3000
     assert len(instruments.universe) >= instruments.catalog_size
+
+
+def test_a_universe_download_retries_gaps_and_remembers_the_delisted(tmp_path):
+    from financial_assistant.api.repositories import MarketDataRepository
+
+    calls = []
+
+    def flaky(tickers, *, start, end):
+        calls.append(tuple(tickers))
+
+        # GONE never has history. LOCKED fails inside a big
+        # batch (the locked timezone cache) and works alone.
+        answered = [
+            t
+            for t in tickers
+            if t != "GONE" and not (t == "LOCKED" and len(tickers) > 10)
+        ]
+
+        rows = [
+            {
+                "date": pd.Timestamp("2026-03-20"),
+                "ticker": t,
+                "open": 1.0,
+                "high": 1.0,
+                "low": 1.0,
+                "close": 1.0,
+                "volume": 1.0,
+            }
+            for t in answered
+        ]
+
+        return pd.DataFrame(rows), None
+
+    market = MarketDataRepository(
+        tmp_path, history_days=30, cache_minutes=60, downloader=flaky
+    )
+
+    universe = tuple(f"T{n}" for n in range(18)) + ("LOCKED", "GONE")
+    lines = []
+
+    assert market.download(universe, chunk=20, on_progress=lines.append) == 19
+
+    # One big request, then the two gaps asked for again.
+    assert calls == [universe, ("LOCKED", "GONE")]
+    assert "GONE" in lines[-1]
+
+    # The next run neither re-downloads nor asks for GONE again.
+    calls.clear()
+
+    assert market.download(universe, chunk=20) == 19
+    assert calls == []
+    assert "GONE" not in market.cached_tickers()
+
+
+def test_no_page_view_downloads_the_universe():
+    """
+    Every service that reads the whole universe must name what
+    it is willing to download. Opening the Now view once asked
+    Yahoo for all 3,200 tickers inside one web request.
+    """
+
+    import re
+    from pathlib import Path
+
+    from financial_assistant.api.config import PROJECT_ROOT
+
+    services = PROJECT_ROOT / "src" / "financial_assistant" / "api" / "services"
+
+    for path in Path(services).glob("*.py"):
+        source = path.read_text()
+
+        if "instruments.universe" not in source:
+            continue
+
+        for call in re.finditer(r"get_available\((.*?)\n        \)", source, re.S):
+            assert "refresh=" in call.group(1), f"{path.name}: unguarded get_available"

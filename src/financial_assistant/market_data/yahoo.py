@@ -7,12 +7,40 @@ from datetime import (
     timezone,
 )
 
+import atexit
+import shutil
+import tempfile
+
 import pandas as pd
 import yfinance as yf
 
 from .models import (
     MarketDataManifest,
 )
+
+
+def _isolate_timezone_cache() -> None:
+    """
+    yfinance keeps exchange timezones in ONE SQLite file per
+    user (~/.cache/py-yfinance). Two processes downloading at
+    the same time, a desk and `make universe`, or two desks,
+    lock each other out of it, and every ticker caught in the
+    collision fails with "database is locked".
+
+    The cache saves one tiny request per ticker, so each
+    process simply gets its own.
+    """
+
+    try:
+        directory = tempfile.mkdtemp(prefix="pythia-yfinance-")
+        yf.set_tz_cache_location(directory)
+        atexit.register(shutil.rmtree, directory, ignore_errors=True)
+    except Exception:
+        # An optimisation of an optimisation: never fatal.
+        pass
+
+
+_isolate_timezone_cache()
 
 
 def _normalise_download(

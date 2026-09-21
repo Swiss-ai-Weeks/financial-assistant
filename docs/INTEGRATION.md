@@ -46,9 +46,15 @@ Nemotron:
 
 ### Apertus on the two H100s
 
-- **8B next to Nemotron** (default of `make apertus`): ~16 GB in BF16 on GPU 1.
-  Start Nemotron on one card (`LLM_TOPOLOGY=single CUDA_VISIBLE_DEVICES=0 make
-  llm`) or lower `APERTUS_GPU_MEMORY` if a Nemotron replica shares the card.
+- **8B next to Nemotron** (default): plain `make apertus`. The script puts it
+  on whichever GPU has the most free memory and takes a fixed ~24 GB (16k
+  tokens of context) rather than a share of the card, so it fits beside a model
+  that is already there. `CUDA_VISIBLE_DEVICES`, `APERTUS_GPU_MEMORY` (a
+  fraction of the card) and `APERTUS_MAX_MODEL_LEN` override that.
+- On a box with the NVIDIA driver but no CUDA toolkit (`nvcc`), both serve
+  scripts switch vLLM's FlashInfer sampler off, which would otherwise fail at
+  warm-up trying to compile a kernel. They also use `.venv/bin/vllm` whether or
+  not the virtualenv is activated.
 - **70B**: `APERTUS_SIZE=70b make apertus`. BF16 weights are ~140 GB, so it takes
   both cards (tensor parallel) and Nemotron cannot run at the same time.
   `APERTUS_QUANTIZATION=fp8` halves that. Then set
