@@ -3,6 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends
 
 from financial_assistant.api.config import Settings, get_settings
+from financial_assistant.api import warmup
 from financial_assistant.api.clock import DeskClock
 from financial_assistant.api.dependencies import (
     get_anomaly_service,
@@ -29,7 +30,8 @@ router = APIRouter(tags=["system"])
 
 @router.get("/health")
 def health():
-    return {"status": "ok"}
+    # `warm` says whether the start-up caches are filled yet.
+    return {"status": "ok", "warm": warmup.status()}
 
 
 @router.get("/system", response_model=SystemStatus)

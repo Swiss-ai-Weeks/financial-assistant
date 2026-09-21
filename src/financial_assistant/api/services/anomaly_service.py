@@ -148,6 +148,7 @@ class AnomalyService:
 
         self._lock = threading.Lock()
         self._cache: dict[tuple, tuple[float, object]] = {}
+        self._flights: dict[tuple, threading.Lock] = {}
         self._events: dict[str, AnomalyEvent] = {}
 
     # -------------------------------------------------
@@ -527,16 +528,36 @@ class AnomalyService:
         )
 
     def _cached(self, key: tuple, compute):
+        """
+        Memoise, and compute each key ONCE at a time.
+
+        The first paint of the desk asks four endpoints for the
+        book's anomalies at the same moment. Without the per-key
+        lock each of them ran the whole scan, in parallel,
+        fighting over the same data: 18 s instead of 5.
+        """
+
         with self._lock:
             hit = self._cache.get(key)
 
             if hit is not None and time.time() - hit[0] < CACHE_SECONDS:
                 return hit[1]
 
-        value = compute()
+            flight = self._flights.setdefault(key, threading.Lock())
 
-        with self._lock:
-            self._cache[key] = (time.time(), value)
+        with flight:
+            # Whoever waited finds the answer already there.
+            with self._lock:
+                hit = self._cache.get(key)
+
+                if hit is not None and time.time() - hit[0] < CACHE_SECONDS:
+                    return hit[1]
+
+            value = compute()
+
+            with self._lock:
+                self._cache[key] = (time.time(), value)
+                self._flights.pop(key, None)
 
         return value
 

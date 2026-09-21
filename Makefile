@@ -42,7 +42,7 @@ dev:
 	@API_PORT=$(API_PORT) ./scripts/dev.sh
 
 api:
-	$(BIN)/uvicorn financial_assistant.api.main:app --reload --port $(API_PORT)
+	$(BIN)/uvicorn financial_assistant.api.main:app --reload --port $(API_PORT) --timeout-graceful-shutdown 3
 
 web:
 	cd frontend && npm run dev
@@ -56,7 +56,7 @@ build:
 serve: build
 	@PORT=$$(./scripts/free_port.sh $(API_PORT)); \
 	echo; echo "  Pythia: http://localhost:$$PORT   (forward or open this one port)"; echo; \
-	$(BIN)/uvicorn financial_assistant.api.main:app --host 0.0.0.0 --port $$PORT
+	$(BIN)/uvicorn financial_assistant.api.main:app --host 0.0.0.0 --port $$PORT --timeout-graceful-shutdown 3
 
 # Resumable. Pass options with ARGS, e.g. ARGS="--universe".
 news:

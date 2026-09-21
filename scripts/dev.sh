@@ -25,7 +25,9 @@ fi
 
 trap 'kill 0' EXIT INT TERM
 
-.venv/bin/uvicorn financial_assistant.api.main:app --reload --port "$API_PORT" &
+# Ctrl-C must end the desk, not wait for a scan in flight.
+.venv/bin/uvicorn financial_assistant.api.main:app --reload --port "$API_PORT" \
+  --timeout-graceful-shutdown 3 &
 
 (cd frontend && VITE_API_PROXY="http://127.0.0.1:${API_PORT}" npm run dev) &
 

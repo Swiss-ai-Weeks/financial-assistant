@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import os
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -8,6 +11,21 @@ from fastapi.staticfiles import StaticFiles
 from financial_assistant.api.config import get_settings
 from financial_assistant.api.controllers import ROUTERS
 from financial_assistant.api.errors import DeskError
+from financial_assistant.api import warmup
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    """
+    Fill the slow caches while the server is starting to take
+    requests, so the first person to open the desk does not pay
+    for them. WARM_ON_START=0 switches it off.
+    """
+
+    if os.environ.get("WARM_ON_START", "1") != "0":
+        warmup.start_in_background()
+
+    yield
 
 
 def create_app() -> FastAPI:
@@ -19,7 +37,8 @@ def create_app() -> FastAPI:
             "Portfolio anomalies explained by the news that was "
             "public when they happened."
         ),
-        version="0.3.0",
+        version="0.4.0",
+        lifespan=lifespan,
     )
 
     app.add_middleware(
