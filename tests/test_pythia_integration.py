@@ -128,6 +128,8 @@ def test_readonly_desk_http_routes_and_missing_cache(monkeypatch):
     from unittest.mock import Mock
     sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
     # No sockets or provider calls: execute the actual handler directly.
+    monkeypatch.setattr('financial_assistant.instruments.yahoo_search', lambda *_: [])
+    monkeypatch.setattr('financial_assistant.newsflow.repository.get', lambda _: ([], {'yahoo-finance': 'unavailable'}))
     server=runpy.run_path(str(Path(__file__).resolve().parents[1]/'scripts/anomaly_api.py'))
     handler=object.__new__(server['Handler'])
     handler.send_json=Mock()

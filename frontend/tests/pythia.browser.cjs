@@ -20,11 +20,14 @@ const server=http.createServer((req,res)=>{
     if(url.pathname==='/api/replays') return send({replays:[]});
     if(url.pathname==='/api/bookreader/source-links') return send({base_url:''});
     if(url.pathname==='/api/health') return send({as_of:'2026-09-18',market_as_of:'2026-09-18'});
-    if(url.pathname==='/api/instruments/search') return send({securities:[{identity:'NVDA',ticker:'NVDA',name:'NVIDIA',universes:['pythia:us_large_caps']}],limitation:'Current snapshots only'});
+    if(url.pathname==='/api/instruments/search') return send({securities:[{identity:'CRWV',ticker:'CRWV',name:'CoreWeave',universes:[],catalogued:false,dynamically_resolved:true,coverage:{market_cache:false,precomputed_pairs:false}}],limitation:'Current snapshots only'});
     if(url.pathname.endsWith('/candles')) return send({source:'Synthetic browser test prices',last_session:'2026-09-18',candles:Array.from({length:30},(_,i)=>({date:`2026-08-${String(i+1).padStart(2,'0')}`,close:100+i+Math.sin(i)*4}))});
     if(url.pathname.startsWith('/api/microscope/')) return send({ticks:['1d','1w','1m','3m','1y'].map(horizon=>({horizon,status:'available',return_pct:2,benchmark_return_pct:1,abnormal_return_pct:1,z_score:1,volume_multiple:1,unusual:false})),peers:{}});
     if(url.pathname==='/api/market/tape') return send({as_of:'2026-09-18',quotes:[]});
-    if(url.pathname==='/api/news') return send({items:[]});
+    if(url.pathname==='/api/news') return send({cutoff:'2026-09-18T23:59:59+00:00',availability:{COHU:{'yahoo-finance':'unavailable'}},admissible:[
+      {news_id:'n1',title:'Company announces results',published_at:'2026-08-01T10:00:00+00:00',publisher:'Archive Wire',summary:'Revenue summary',source:'archive',url:'https://example.com/1',cutoff_availability:'published_by_cutoff'},
+      {news_id:'n2',title:'Company expands production',published_at:'2026-08-02T10:00:00+00:00',publisher:'Yahoo Wire',summary:'Expansion summary',source:'yahoo-finance',url:'https://example.com/2',cutoff_availability:'published_by_cutoff'}],
+      hindsight:[{news_id:'n3',title:'Later company update',published_at:'2026-09-19T10:00:00+00:00',source:'yahoo-finance',url:'https://example.com/3',cutoff_availability:'hindsight'}]});
     if(url.pathname.endsWith('/signals')) return send({signals:[],status:'available'});
     if(url.pathname==='/api/portfolio/analysis') return send({status:'unavailable',reason:'Synthetic browser test — no portfolio prices'});
     if(url.pathname==='/api/anomalies/scan' || url.pathname==='/api/anomalies/historical-scan') return send({as_of:'2026-03-20',cache:{price_securities:2},candidate_count:1,elapsed_ms:1,candidates:[{pair:'COHU/PDFS',ticker_a:'COHU',ticker_b:'PDFS',signal_date:'2026-03-20',z_score:2,correlation:.8,cointegration_p:.01}]});
@@ -49,6 +52,15 @@ const server=http.createServer((req,res)=>{
   await page.getByRole('tab',{name:'Monitors'}).click();
   await page.getByRole('tab',{name:'Peers',exact:true}).click();
   await page.getByRole('tab',{name:/^News/}).click();
+  await page.getByText('Company announces results',{exact:true}).waitFor();
+  await page.getByText('Later company update',{exact:true}).waitFor();
+  await page.getByText('Yahoo news unavailable for COHU;', {exact:false}).waitFor();
+  await page.locator('.market-desk:visible .price-history select').selectOption('2026-08-01');
+  assert.equal(await page.getByText('Company expands production',{exact:true}).count(),0);
+  assert.equal(await page.getByText('Later company update',{exact:true}).count(),0);
+  await page.getByText('Company announces results',{exact:true}).waitFor();
+  await page.getByRole('button',{name:/Clear session/}).click();
+  await page.getByText('Company expands production',{exact:true}).waitFor();
   await page.screenshot({path:'/tmp/pythia-now.png',fullPage:true});
   await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Past',exact:true}).click();
   await page.getByRole('heading',{name:'COHU What was knowable?'}).waitFor();
@@ -56,10 +68,10 @@ const server=http.createServer((req,res)=>{
   await page.getByRole('button',{name:/COHU\/PDFS/}).first().waitFor();
   await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Explore',exact:true}).click();
   await page.getByRole('heading',{name:'Explore opportunities'}).waitFor();
-  await page.getByPlaceholder('Ticker or company name').filter({visible:true}).fill('NVDA');
-  await page.getByRole('button',{name:/NVDA NVIDIA/}).click();
-  await page.getByRole('heading',{name:'NVDA What was knowable?'}).waitFor();
-  await page.getByRole('button',{name:'Investigate NVDA →'}).click();
+  await page.getByPlaceholder('Ticker or company name').filter({visible:true}).fill('CRWV');
+  await page.getByRole('button',{name:/CRWV CoreWeave/}).click();
+  await page.getByRole('heading',{name:'CRWV What was knowable?'}).waitFor();
+  await page.getByRole('button',{name:'Investigate CRWV →'}).click();
   assert((await page.evaluate(()=>JSON.parse(localStorage.getItem('claimgraph:workspace:v1')))).workspaces[0].candidate.mode==='security');
   // Install two completed canonical investigations to test model/tab/graph preservation without inference.
   await page.evaluate(({graph,models})=>{

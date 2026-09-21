@@ -1,6 +1,8 @@
 import {useEffect, useState} from 'react';
 import Tabs from './Tabs.jsx';
 import {deskRequest, holdingCandidate} from './deskClient.js';
+import NewsFeed from './NewsFeed.jsx';
+import {sessionNews} from './newsModel.js';
 import DetectorPanel from '../DetectorPanel.jsx';
 const percent = value => typeof value === 'number' ? `${value >= 0 ? '+' : ''}${value.toFixed(2)}%` : '—';
 const ranges = [['1d','1D'],['1w','1W'],['1m','1M'],['3m','3M'],['1y','1Y']];
@@ -14,7 +16,7 @@ export function SecuritySearch({onSelect}) {
     return () => {clearTimeout(timer);controller.abort();};
   },[query]);
   return <div className="security-search"><label>Find a security<input value={query} onChange={e => setQuery(e.target.value)} placeholder="Ticker or company name" /></label>{error && <p role="status">{error}</p>}
-    {query.trim() && result?.query === query && <div className="search-results">{result.securities.map(s => <button key={s.identity} onClick={() => {onSelect(s.ticker);setQuery('');}}><strong>{s.ticker}</strong> {s.name}<small>{s.universes.join(' · ')} · current membership</small></button>)}{!result.securities.length && <p>No matching security in the merged catalog.</p>}<small>{result.limitation}</small></div>}
+    {query.trim() && result?.query === query && <div className="search-results">{result.securities.map(s => <button key={s.identity} onClick={() => {onSelect(s.ticker);setQuery('');}}><strong>{s.ticker}</strong> {s.name}<small>{s.catalogued ? 'Catalogued' : 'Yahoo resolved'} · {s.universes.length ? s.universes.join(' · ') + ' (current membership)' : 'No configured universe membership'} · {s.coverage?.precomputed_pairs ? 'Precomputed pairs available' : 'No known precomputed pairs'}</small></button>)}{!result.securities.length && <p>No security resolved. Try another ticker or company name.</p>}{result.yahoo_status === 'unavailable' && <p role="status">Yahoo search unavailable; showing catalog matches.</p>}<small>{result.limitation}</small></div>}
   </div>;
 }
 
@@ -41,7 +43,7 @@ export default function MarketDesk({mode, ticker, onTicker, asOf, onAsOf, portfo
         const results=await Promise.allSettled([
           deskRequest(`/api/market/${encodeURIComponent(ticker)}/candles`,{as_of:date,days},controller.signal),
           deskRequest(`/api/microscope/${encodeURIComponent(ticker)}`,{as_of:date},controller.signal),
-          deskRequest('/api/news',{ticker,as_of:date},controller.signal),
+          deskRequest('/api/news',{ticker,as_of:date,days,limit:200},controller.signal),
           deskRequest(`/api/market/${encodeURIComponent(ticker)}/signals`,{as_of:date},controller.signal),
           fetch('/api/portfolio/analysis',{method:'POST',signal:controller.signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({portfolio:JSON.parse(bookKey),as_of:date})}).then(r => {if(!r.ok) throw new Error('Portfolio context unavailable');return r.json();}),
         ]);
@@ -56,7 +58,7 @@ export default function MarketDesk({mode, ticker, onTicker, asOf, onAsOf, portfo
   const current = data?.key === requestKey ? data : null;
   const reading=current?.scope?.ticks.find(t => t.horizon === horizon);
   const activeDate=current?.date ?? (mode === 'past' ? asOf : null);
-  const news=current?.news?.items.filter(n => !day || n.published_at.slice(0,10) === day) ?? [];
+  const news=sessionNews(current?.news?.admissible ?? current?.news?.items,day);
   const choose = symbol => {onTicker(symbol);setDay(null);setSelected(null);};
   return <div className="market-desk">
     <header className="desk-heading"><div><span className="eyebrow">{mode === 'now' ? 'NOW / SECURITY MICROSCOPE' : 'PAST / HISTORICAL REVIEW'}</span><h1>{ticker} <small>{mode === 'now' ? 'What is unusual?' : 'What was knowable?'}</small></h1></div><SecuritySearch onSelect={choose}/></header>
@@ -70,7 +72,7 @@ export default function MarketDesk({mode, ticker, onTicker, asOf, onAsOf, portfo
       {tab === 'signals' && <div className="desk-news"><p>VWAP / TWAP / trend · attention events, not causal findings</p>{current?.signals?.signals.map(signal => <article key={signal.anomaly_id}><span className="eyebrow">{signal.strategy} · {signal.observed_on}</span><h3>{signal.summary}</h3><p>Deviation {signal.z_score.toFixed(2)}σ</p><button onClick={() => onInvestigate({...holdingCandidate(ticker,signal.observed_on),event_context:signal})}>Investigate this event →</button></article>)}{!current?.signals?.signals.length && <p>{current?.signals?.reason ?? 'No monitor fired in the selected review window.'}</p>}</div>}
       {tab === 'peers' && <div className="desk-news"><p>Peers measured before the {horizon} horizon · descriptive co-movement</p>{current?.scope?.peers?.[horizon]?.map(peer => <article key={peer.ticker}><button onClick={() => choose(peer.ticker)}>{peer.ticker}</button><p>Correlation {peer.correlation.toFixed(2)} · abnormal {percent(peer.abnormal_return_pct)} · {peer.followed ? 'followed' : 'did not follow'}</p></article>)}{!current?.scope?.peers?.[horizon]?.length && <p>No eligible peer history at this cutoff.</p>}</div>}
       {tab === 'positions' && <div className="desk-positions">{portfolio.positions.map(p => <button key={p.ticker} onClick={() => choose(p.ticker)}>{p.ticker}<span>{(p.weight*100).toFixed(1)}% weight · 20-session contribution {percent(current?.book?.contributions_20?.[p.ticker] == null ? null : current.book.contributions_20[p.ticker]*100)}</span></button>)}</div>}
-      {tab === 'news' && <div className="desk-news"><p>Retrieval candidates · require evidence assessment. {day && <button onClick={() => setDay(null)}>Clear session {day} ×</button>}</p>{news.map(n => <article key={n.news_id}><span className="eyebrow">{n.publisher ?? n.source} · {n.published_at.slice(0,10)}</span><h3><a href={n.url} target="_blank" rel="noreferrer">{n.title}</a></h3><p>{n.summary}</p><small>{n.news_id} · {n.cutoff_availability}</small></article>)}{!news.length && <p>No archived candidates for this selection. Investigate to search BookReader, web and SEC sources.</p>}</div>}
+      {tab === 'news' && <NewsFeed ticker={ticker} feed={current?.news} day={day} onClearDay={() => setDay(null)}/>}
     </main><aside className="desk-context"><span className="eyebrow">{ticker} / {horizon.toUpperCase()}</span><h2>{reading?.status === 'available' ? reading.unusual ? 'Unusual at this horizon' : 'Within historical range' : 'Market context'}</h2>
       {reading?.status === 'available' ? <><div className="scope-metrics"><div>Return<strong>{percent(reading.return_pct)}</strong></div><div>Market<strong>{percent(reading.benchmark_return_pct)}</strong></div><div>Abnormal<strong>{percent(reading.abnormal_return_pct)}</strong></div><div>Deviation<strong>{reading.z_score.toFixed(2)}σ</strong></div></div><p>Volume {reading.volume_multiple.toFixed(2)}× its earlier baseline.</p></> : <p>{reading?.reason ?? 'Load market history to inspect measured context.'}</p>}
       <p>{current?.scope?.methodology}</p>{mode === 'past' && <section><h3>Portfolio impact</h3><p>20-session contribution: {percent(current?.book?.contributions_20?.[ticker] == null ? null : current.book.contributions_20[ticker]*100)}</p><p>{current?.book?.status === 'unavailable' ? current.book.reason : 'Calculated from the same saved portfolio weights and cutoff as Portfolio.'}</p></section>}<h3>What explains the move?</h3><p>Market measurements direct attention. ClaimGraph tests explanations against sources, calculations and counter-evidence.</p>

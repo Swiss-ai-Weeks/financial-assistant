@@ -360,16 +360,17 @@ class Handler(
         path = unquote(parsed.path)
         if path.startswith(('/api/instruments/', '/api/market/', '/api/microscope/', '/api/news')):
             try:
-                from financial_assistant.universe import search, LIMITATION
+                from financial_assistant.instruments import resolve
                 from financial_assistant.desk import market_view, microscope, signal_context
-                from financial_assistant.retrieval.archive import archive_items
+                from financial_assistant.newsflow import news_feed
                 as_of = query.get('as_of', [None])[0]
                 if not as_of:
                     if PRICES.empty and not path.startswith(('/api/instruments/', '/api/news')):
                         raise ValueError('Market cache unavailable')
                     as_of = str(PRICES.date.max().date()) if not PRICES.empty else pd.Timestamp.now(tz='UTC').date().isoformat()
                 if path == '/api/instruments/search':
-                    result = dict(securities=search(query.get('q', [''])[0][:100]), limitation=LIMITATION)
+                    result = resolve(query.get('q', [''])[0][:100], market_tickers=set(PRICES.ticker),
+                        fit_tickers={t for fit in ALL_FITS for t in (fit.ticker_a, fit.ticker_b)})
                 elif path == '/api/market/tape':
                     tickers = query.get('tickers', [''])[0].split(',')[:100]
                     from financial_assistant.portfolio.returns import security_returns
@@ -382,9 +383,11 @@ class Handler(
                 elif path.startswith('/api/microscope/'):
                     result = microscope(PRICES, path.split('/')[3], as_of)
                 elif path == '/api/news':
-                    items = archive_items(ticker=query.get('ticker', [None])[0], as_of=as_of)
-                    result = dict(items=items[:100], as_of=as_of, role='retrieval_candidates',
-                        source='Pythia local archive', notice='News requires ClaimGraph assessment before it is evidence. BookReader remains available through investigation retrieval.')
+                    tickers = query.get('ticker', query.get('tickers', ['']))[0].split(',')
+                    if not any(tickers) or len(tickers) > 30:
+                        raise ValueError('Provide ticker or up to 30 portfolio tickers')
+                    result = news_feed(tickers, as_of, limit=int(query.get('limit', ['200'])[0]),
+                                       days=int(query.get('days', ['180'])[0]))
                 else:
                     self.send_json(404, {'error': 'Unknown desk endpoint'})
                     return

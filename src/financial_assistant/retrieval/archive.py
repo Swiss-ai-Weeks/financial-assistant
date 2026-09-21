@@ -7,7 +7,7 @@ from pathlib import Path
 from .models import SearchHit
 
 
-def archive_items(directory=None, *, ticker=None, as_of=None):
+def archive_items(directory=None, *, ticker=None, as_of=None, include_hindsight=False):
     root = Path(directory or os.environ.get('PYTHIA_NEWS_ARCHIVE', 'data/archive/news'))
     if ticker and not re.fullmatch(r'[A-Za-z0-9.^=_-]{1,30}', ticker):
         raise ValueError('Invalid ticker')
@@ -29,15 +29,16 @@ def archive_items(directory=None, *, ticker=None, as_of=None):
                 date_only = len(raw) == 10 or item.get('published_date_only', False)
                 if date_only:
                     stamp = datetime.combine(stamp.date(), datetime.max.time(), timezone.utc)
-                if stamp.tzinfo is None or stamp > limit or not item.get('url', '').startswith(('http://', 'https://')):
+                if stamp.tzinfo is None or (stamp > limit and not include_hindsight) or not item.get('url', '').startswith(('http://', 'https://')):
                     continue
+                item['source'] = item.get('source') or item.get('provider') or 'pythia_archive'
                 item = {k: item.get(k) for k in ('news_id','ticker','title','summary','publisher','url','source')}
                 if not item['news_id'] or not item['title']:
                     continue
                 item.update(published_at=stamp.isoformat(), published_date_only=date_only,
-                    role='retrieval_candidate', cutoff_availability='published_by_cutoff', archive_source=path.name)
+                    role='retrieval_candidate', cutoff_availability='published_by_cutoff' if stamp <= limit else 'hindsight', archive_source=path.name)
                 key = (re.sub(r'[^a-z0-9]', '', item['title'].lower()), stamp.date())
-                unique.setdefault(key, item)
+                unique.setdefault((item['news_id'], stamp.isoformat()) if include_hindsight else key, item)
             except (ValueError, KeyError, TypeError):
                 continue
     return sorted(unique.values(), key=lambda i: i['published_at'], reverse=True)
