@@ -62,3 +62,36 @@ def complete_structured(
         user=user,
         reasoning=reasoning,
     )
+
+
+# ModelRun fields a provider may report about its last answer.
+COMPLETION_FIELDS = (
+    "chosen_model_id",
+    "route",
+    "locality",
+    "max_tokens",
+    "finish_reason",
+    "latency_ms",
+    "prompt_tokens",
+    "completion_tokens",
+    "total_tokens",
+)
+
+
+def completion_metadata(provider: StructuredLLM) -> dict[str, Any]:
+    """
+    What the provider recorded about the answer it just gave,
+    ready to be spread into a ModelRun.
+
+    Providers that record nothing (test doubles, other
+    clients) contribute nothing: execution metadata is
+    reported, never estimated.
+    """
+
+    recorded = getattr(provider, "last_completion", None) or {}
+
+    return {
+        key: recorded[key]
+        for key in COMPLETION_FIELDS
+        if recorded.get(key) is not None
+    }

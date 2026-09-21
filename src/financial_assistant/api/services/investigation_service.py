@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import re
 import time
 from collections import Counter
@@ -9,20 +8,32 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from hashlib import sha1
-from urllib.request import Request, urlopen
+from uuid import uuid4
 
-from financial_assistant.api.errors import NotFound, UpstreamUnavailable
+from financial_assistant.api.errors import (
+    Conflict,
+    NotFound,
+    UpstreamUnavailable,
+)
 from financial_assistant.api.models import (
     EvidenceClaim,
+    FollowUp,
+    FundamentalsSummary,
     HypothesisVerdict,
     Investigation,
     InvestigationStage,
     InvestigationStatus,
+    ModelUsage,
     NewsItem,
     StageStatus,
 )
 from financial_assistant.api.repositories import InvestigationRepository
-from financial_assistant.api.schemas import ServiceStatus
+from financial_assistant.api.schemas import ModelList, ModelView, ServiceStatus
+from financial_assistant.api.services.followup import (
+    FOLLOWUP_STAGES,
+    graph_cutoff,
+    run_followup,
+)
 from financial_assistant.api.services.anomaly_service import (
     AnomalyService,
     session_close,
@@ -39,6 +50,10 @@ from financial_assistant.domain import (
     RelationshipAssessment,
     SourceDocument,
 )
+from financial_assistant.fundamentals.service import (
+    domain_evidence,
+    model_context,
+)
 from financial_assistant.llm import (
     LLMTransportError,
     StructuredLLM,
@@ -46,6 +61,11 @@ from financial_assistant.llm import (
     audit_hypotheses,
     extract_claims,
     generate_hypotheses,
+)
+from financial_assistant.llm.model_registry import (
+    ModelRegistry,
+    ModelSpec,
+    RoutingError,
 )
 from financial_assistant.research.planner import plan_research
 from financial_assistant.retrieval import (
@@ -60,6 +80,7 @@ from financial_assistant.retrieval import (
 STAGES: tuple[tuple[str, str], ...] = (
     ("news", "Collect point-in-time news"),
     ("documents", "Read the articles"),
+    ("fundamentals", "Read SEC filings, point in time"),
     ("claims", "Extract source-grounded claims"),
     ("hypotheses", "Generate competing explanations"),
     ("audit", "Audit unsupported premises"),
@@ -79,7 +100,11 @@ RELATION_WEIGHTS = {
 }
 
 DEFAULT_STRENGTH = 0.5
-HEALTH_CACHE_SECONDS = 10
+
+# The quarterly record of two companies is thousands of
+# tokens. What the hypothesis stages read is bounded; the
+# graph keeps everything.
+FINANCIAL_CONTEXT_CHARS = 12000
 
 HEADLINE_WORD_CHARS = 5
 HEADLINE_WORDS_REQUIRED = 2
@@ -140,17 +165,34 @@ class InvestigationService:
         max_claims: int = 12,
         llm_workers: int = 8,
         run_inline: bool = False,
+        registry: ModelRegistry | None = None,
+        fundamentals_loader: Callable[
+            [tuple[str, ...], datetime], tuple
+        ] | None = None,
     ):
         self._investigations = investigations
         self._anomalies = anomalies
         self._news = news
 
+        # A desk wired to one model (the historical
+        # constructor, and every test) becomes a registry of
+        # one, served by the factory it was given.
+        self._registry = registry or ModelRegistry(
+            (
+                ModelSpec(
+                    id="default",
+                    provider=provider,
+                    model=model,
+                    base_url=llm_base_url,
+                    api_key_env="LLM_API_KEY",
+                ),
+            ),
+            environ={"LLM_API_KEY": llm_api_key or ""},
+            factories={"default": llm_factory},
+        )
+
         self._llm_factory = llm_factory
-        self._llm_base_url = llm_base_url
-        self._llm_api_key = llm_api_key
-        self._llm_is_local = llm_is_local
-        self._model = model
-        self._provider = provider
+        self._fundamentals = fundamentals_loader
 
         self._fetcher = document_fetcher
         self._search = search_provider
@@ -165,8 +207,6 @@ class InvestigationService:
             thread_name_prefix="investigation",
         )
 
-        self._health: tuple[float, ServiceStatus] | None = None
-
         self._recover_interrupted()
 
     def _recover_interrupted(self) -> None:
@@ -178,11 +218,20 @@ class InvestigationService:
         one, that anomaly could never be explained again.
         """
 
+        active = (InvestigationStatus.QUEUED, InvestigationStatus.RUNNING)
+
         for run in self._investigations.list():
-            if run.status not in (
-                InvestigationStatus.QUEUED,
-                InvestigationStatus.RUNNING,
-            ):
+            stalled = [f for f in run.followups if f.status in active]
+
+            for followup in stalled:
+                followup.status = InvestigationStatus.FAILED
+                followup.error = "Interrupted by a restart of the desk."
+                followup.finished_at = datetime.now(timezone.utc)
+
+            if stalled and run.status not in active:
+                self._investigations.save(run)
+
+            if run.status not in active:
                 continue
 
             run.status = InvestigationStatus.FAILED
@@ -210,91 +259,96 @@ class InvestigationService:
 
         return run
 
-    def llm_status(self) -> ServiceStatus:
-        if (
-            self._health is not None
-            and time.time() - self._health[0] < HEALTH_CACHE_SECONDS
-        ):
-            return self._health[1]
-
-        # A hosted gateway lists its models to anyone, so without
-        # this check it would look online and then answer every
-        # real request with 401.
-        if not self._llm_is_local and not self._llm_api_key:
-            return ServiceStatus(
-                name=self._provider,
-                online=False,
-                detail="LLM_API_KEY is not set for the hosted endpoint",
-            )
-
-        headers = {}
-
-        if self._llm_api_key:
-            headers["Authorization"] = f"Bearer {self._llm_api_key}"
-
+    def llm_status(self, model_id: str | None = None) -> ServiceStatus:
         try:
-            request = Request(f"{self._llm_base_url}/models", headers=headers)
+            spec = self._registry.get(model_id)
+        except RoutingError as error:
+            return ServiceStatus(name="llm", online=False, detail=str(error))
 
-            with urlopen(request, timeout=2.5) as response:
-                served = [
-                    model.get("id")
-                    for model in json.load(response).get("data", [])
-                ]
+        health = self._registry.health(spec.id)
 
-            status = ServiceStatus(
-                name=self._provider,
-                online=True,
-                detail=(
-                    f"serving {self._model}"
-                    if self._model in served or not served
-                    else f"serving {', '.join(map(str, served))}"
-                ),
+        return ServiceStatus(
+            name=spec.provider,
+            online=health.online,
+            detail=health.detail,
+        )
+
+    def models(self) -> ModelList:
+        """
+        Every configured model and whether it answers. Probed
+        concurrently: a list of five must not take five
+        timeouts to draw.
+        """
+
+        specs = self._registry.list()
+
+        with ThreadPoolExecutor(max_workers=max(1, len(specs))) as pool:
+            healths = list(
+                pool.map(lambda spec: self._registry.health(spec.id), specs)
             )
 
-        except Exception:
-            status = ServiceStatus(
-                name=self._provider,
-                online=False,
-                detail=f"{self._llm_base_url} is not reachable",
-            )
-
-        self._health = (time.time(), status)
-
-        return status
+        return ModelList(
+            default_id=self._registry.default_id,
+            egress_policy=self._registry.egress_policy,
+            models=[
+                ModelView(
+                    id=spec.id,
+                    label=spec.display_name,
+                    origin=spec.origin,
+                    provider=spec.provider,
+                    model=spec.model,
+                    local=spec.is_local,
+                    roles=list(spec.roles),
+                    default=spec.id == self._registry.default_id,
+                    online=health.online,
+                    detail=health.detail,
+                )
+                for spec, health in zip(specs, healths)
+            ],
+        )
 
     # -------------------------------------------------
     # Commands
     # -------------------------------------------------
 
-    def start(self, anomaly_id: str, *, ticker: str | None) -> Investigation:
+    def start(
+        self,
+        anomaly_id: str,
+        *,
+        ticker: str | None,
+        model_id: str | None = None,
+    ) -> Investigation:
         anomaly, event = self._anomalies.find(anomaly_id, ticker=ticker)
+        spec = self._spec(model_id)
 
+        # The same anomaly may be running on another model:
+        # that is a comparison, not a duplicate.
         for run in self._investigations.list():
             if (
                 run.anomaly.anomaly_id == anomaly_id
+                and (run.model_id or self._registry.default_id) == spec.id
                 and run.status
                 in (InvestigationStatus.QUEUED, InvestigationStatus.RUNNING)
             ):
                 return run
 
-        if not self._run_inline and not self.llm_status().online:
-            raise UpstreamUnavailable(
-                "The language model is offline. Start it with "
-                "`make llm` or point LLM_BASE_URL at a running "
-                "OpenAI-compatible endpoint."
-            )
+        self._require_online(spec)
 
         created_at = datetime.now(timezone.utc)
 
         run = Investigation(
             investigation_id=(
                 f"INV-{anomaly_id}-{created_at.strftime('%H%M%S')}"
+                f"-{uuid4().hex[:4]}"
             ),
             anomaly=anomaly,
             created_at=created_at,
             evidence_cutoff=session_close(anomaly.observed_on),
-            model=self._model,
-            provider=self._provider,
+            model=spec.model,
+            provider=spec.provider,
+            model_id=spec.id,
+            model_label=spec.display_name,
+            model_local=spec.is_local,
             stages=[
                 InvestigationStage(key=key, label=label)
                 for key, label in STAGES
@@ -309,6 +363,94 @@ class InvestigationService:
             self._executor.submit(self._run, run, event)
 
         return self.get(run.investigation_id)
+
+    def follow_up(
+        self,
+        investigation_id: str,
+        requirement_id: str,
+        *,
+        model_id: str | None = None,
+    ) -> Investigation:
+        """
+        Research one open question of a finished
+        investigation. One cycle per investigation at a time:
+        two would merge into the same graph.
+        """
+
+        run = self.get(investigation_id)
+
+        if run.graph is None:
+            raise Conflict("This investigation has no ClaimGraph yet.")
+
+        if any(
+            item.status
+            in (InvestigationStatus.QUEUED, InvestigationStatus.RUNNING)
+            for item in run.followups
+        ):
+            raise Conflict("A follow-up is already running on this graph.")
+
+        node = next(
+            (n for n in run.graph["nodes"] if n["node_id"] == requirement_id),
+            None,
+        )
+
+        if node is None or node["kind"] not in (
+            "missing_evidence",
+            "evidence_requirement",
+        ):
+            raise NotFound(
+                "Select a Missing Evidence or Evidence Requirement node."
+            )
+
+        spec = self._spec(model_id or run.model_id)
+        self._require_online(spec)
+
+        followup = FollowUp(
+            run_id=f"FU-{uuid4().hex[:10]}",
+            requirement_id=requirement_id,
+            question=node["label"],
+            created_at=datetime.now(timezone.utc),
+            model_id=spec.id,
+            model=spec.model,
+            stages=[
+                InvestigationStage(key=key, label=label)
+                for key, label in FOLLOWUP_STAGES
+            ],
+        )
+
+        run.followups.append(followup)
+        self._investigations.save(run)
+
+        if self._run_inline:
+            self._run_followup(run, followup, spec)
+        else:
+            self._executor.submit(self._run_followup, run, followup, spec)
+
+        return self.get(investigation_id)
+
+    def _spec(self, model_id: str | None) -> ModelSpec:
+        try:
+            spec = self._registry.get(model_id)
+        except RoutingError as error:
+            raise NotFound(str(error)) from error
+
+        if "analysis" not in spec.roles:
+            raise Conflict(f"{spec.display_name} is not an analysis model.")
+
+        return spec
+
+    def _require_online(self, spec: ModelSpec) -> None:
+        if self._run_inline:
+            return
+
+        health = self._registry.health(spec.id)
+
+        if not health.online:
+            raise UpstreamUnavailable(
+                f"{spec.display_name} is offline ({health.detail}). "
+                "Start it with `make llm` / `make apertus`, or point "
+                "its base URL at a running OpenAI-compatible endpoint."
+            )
 
     # -------------------------------------------------
     # Pipeline
@@ -334,8 +476,20 @@ class InvestigationService:
         self._investigations.save(run)
 
     def _pipeline(self, run: Investigation, event: AnomalyEvent) -> None:
-        llm = self._llm_factory()
+        llm = self._registry.provider(run.model_id)
+        workers = self._workers(run.model_id)
         cutoff = run.evidence_cutoff
+
+        # The graph records when the anomaly became observable,
+        # which is what every temporal view of it is cut at.
+        event = event.model_copy(
+            update={
+                "metadata": {
+                    **event.metadata,
+                    "observed_at": cutoff.isoformat(),
+                }
+            }
+        )
 
         with self._stage(run, "news") as stage:
             articles = self._news.around(run.anomaly).admissible
@@ -360,8 +514,35 @@ class InvestigationService:
             if not documents:
                 raise RuntimeError("No article could be read.")
 
+        with self._stage(run, "fundamentals") as stage:
+            bundles = self._load_fundamentals(run, cutoff)
+            run.fundamentals = [self._summary(bundle) for bundle in bundles]
+
+            stage.detail = (
+                "; ".join(
+                    f"{item.ticker}: {item.quarters} quarters, "
+                    f"{item.calculations} metrics"
+                    if item.status == "available"
+                    else f"{item.ticker}: unavailable"
+                    for item in run.fundamentals
+                )
+                or "SEC enrichment is not configured (set SEC_USER_AGENT)"
+            )
+
+        financial_documents, observations, calculations = domain_evidence(
+            bundles
+        )
+
+        financial_context = (
+            model_context(bundles)[:FINANCIAL_CONTEXT_CHARS]
+            if any(bundle.status == "available" for bundle in bundles)
+            else ""
+        )
+
         with self._stage(run, "claims") as stage:
-            claim_runs, claims, failures = self._extract_claims(documents, llm)
+            claim_runs, claims, failures = self._extract_claims(
+                documents, llm, workers=workers
+            )
 
             stage.detail = (
                 f"{len(claims)} claims, each with its source quote, from "
@@ -382,7 +563,10 @@ class InvestigationService:
 
         with self._stage(run, "hypotheses") as stage:
             hypothesis_run, hypotheses = generate_hypotheses(
-                event, claims, llm
+                event,
+                claims,
+                llm,
+                financial_context=financial_context,
             )
 
             # The dedicated audit stage owns assumptions.
@@ -400,32 +584,49 @@ class InvestigationService:
 
         with self._stage(run, "audit") as stage:
             audit_run, audits = audit_hypotheses(
-                event, claims, hypotheses, llm
+                event,
+                claims,
+                hypotheses,
+                llm,
+                financial_context=financial_context,
             )
 
             stage.detail = f"{len(audits)} explanations audited"
 
         with self._stage(run, "relations") as stage:
+            # SEC figures are judged like any other evidence:
+            # a calculation can support or weaken an
+            # explanation, it is never attached as context by
+            # default.
             relation_runs, assessments = assess_relationships(
                 claims,
                 hypotheses,
                 llm,
-                max_workers=self._llm_workers,
+                calculations=calculations,
+                observations=observations,
+                max_workers=workers,
             )
 
-            stage.detail = f"{len(assessments)} claim-to-explanation links"
+            stage.detail = (
+                f"{len(assessments)} evidence-to-explanation links"
+            )
+
+        model_runs = (
+            *claim_runs,
+            hypothesis_run,
+            audit_run,
+            *relation_runs,
+        )
 
         with self._stage(run, "graph") as stage:
             state = InvestigationState(
                 investigation_id=run.investigation_id,
                 anomaly=event,
-                documents=documents,
-                model_runs=(
-                    *claim_runs,
-                    hypothesis_run,
-                    audit_run,
-                    *relation_runs,
-                ),
+                documents=(*documents, *financial_documents),
+                fundamentals=bundles,
+                observations=observations,
+                calculations=calculations,
+                model_runs=model_runs,
                 claims=claims,
                 hypotheses=hypotheses,
                 hypothesis_audits=audits,
@@ -438,6 +639,8 @@ class InvestigationService:
             stage.detail = (
                 f"{len(graph.nodes)} nodes, {len(graph.edges)} edges"
             )
+
+        run.usage = self._usage(model_runs)
 
         audits_by_hypothesis = {
             audit.hypothesis_id: audit for audit in audits
@@ -454,6 +657,184 @@ class InvestigationService:
             ),
             key=lambda verdict: verdict.score,
             reverse=True,
+        )
+
+    def _run_followup(
+        self,
+        run: Investigation,
+        followup: FollowUp,
+        spec: ModelSpec,
+    ) -> None:
+        followup.status = InvestigationStatus.RUNNING
+        self._investigations.save(run)
+
+        @contextmanager
+        def stage(key: str):
+            current = next(s for s in followup.stages if s.key == key)
+            current.status = StageStatus.RUNNING
+            self._investigations.save(run)
+
+            started = time.perf_counter()
+
+            try:
+                yield current
+                current.status = StageStatus.DONE
+            except Exception as exc:
+                current.status = StageStatus.FAILED
+                current.detail = str(exc) or type(exc).__name__
+                raise
+            finally:
+                current.seconds = round(time.perf_counter() - started, 2)
+                self._investigations.save(run)
+
+        try:
+            llm = self._registry.provider(spec.id)
+            workers = self._workers(spec.id)
+            before = (len(run.graph["nodes"]), len(run.graph["edges"]))
+
+            graph, resolution = run_followup(
+                run.graph,
+                followup.requirement_id,
+                llm,
+                run_id=followup.run_id,
+                candidates=self._followup_candidates,
+                search=self._followup_search if self._search else None,
+                read=self._read_article,
+                extract=lambda documents, provider: self._extract_claims(
+                    documents, provider, workers=workers
+                ),
+                fundamentals=(
+                    (lambda tickers, cutoff: self._fundamentals(tickers, cutoff))
+                    if self._fundamentals
+                    else None
+                ),
+                stage=stage,
+                workers=workers,
+            )
+
+            run.graph = graph
+
+            followup.resolution = resolution.status
+            followup.summary = resolution.summary
+            followup.added_nodes = len(graph["nodes"]) - before[0]
+            followup.added_edges = len(graph["edges"]) - before[1]
+            followup.status = InvestigationStatus.COMPLETED
+
+        except Exception as exc:
+            followup.status = InvestigationStatus.FAILED
+            followup.error = str(exc) or type(exc).__name__
+
+            for item in followup.stages:
+                if item.status == StageStatus.PENDING:
+                    item.status = StageStatus.SKIPPED
+
+        followup.finished_at = datetime.now(timezone.utc)
+        self._investigations.save(run)
+
+    # -------------------------------------------------
+    # Models, fundamentals, follow-up retrieval
+    # -------------------------------------------------
+
+    def _workers(self, model_id: str | None) -> int:
+        """
+        Parallelism is a property of the endpoint: a hosted
+        free tier gets slower with every concurrent request,
+        our own GPUs get faster.
+        """
+
+        try:
+            spec = self._registry.get(model_id)
+        except RoutingError:
+            return self._llm_workers
+
+        if spec.id == "default":
+            return self._llm_workers
+
+        return spec.workers
+
+    def _load_fundamentals(self, run: Investigation, cutoff: datetime) -> tuple:
+        """
+        SEC figures that had been FILED by the cutoff, for each
+        leg. Never fatal: without them the investigation is the
+        news-only one it always was, and the graph records the
+        gap as missing evidence.
+        """
+
+        if self._fundamentals is None:
+            return ()
+
+        tickers = (run.anomaly.ticker, *run.anomaly.related_tickers)
+
+        try:
+            return tuple(self._fundamentals(tickers, cutoff))
+        except Exception:
+            return ()
+
+    @staticmethod
+    def _summary(bundle) -> FundamentalsSummary:
+        return FundamentalsSummary(
+            ticker=bundle.ticker,
+            status=bundle.status,
+            issuer=bundle.issuer or "",
+            quarters=len(bundle.snapshots),
+            facts=len(bundle.facts),
+            calculations=sum(
+                1 for c in bundle.calculations if c.status == "available"
+            ),
+            latest_period=max(bundle.periods) if bundle.periods else None,
+            warnings=tuple(bundle.warnings),
+        )
+
+    @staticmethod
+    def _usage(model_runs) -> ModelUsage:
+        def total(field: str) -> int:
+            return sum(getattr(run, field, None) or 0 for run in model_runs)
+
+        return ModelUsage(
+            calls=len(model_runs),
+            latency_ms=total("latency_ms"),
+            prompt_tokens=total("prompt_tokens"),
+            completion_tokens=total("completion_tokens"),
+        )
+
+    def _followup_candidates(
+        self,
+        tickers: tuple[str, ...],
+        cutoff: datetime,
+    ) -> list[NewsItem]:
+        """
+        Everything the news cache holds on the legs of the
+        anomaly that was public by the cutoff. The follow-up
+        ranks it against the open question.
+        """
+
+        unique: dict[str, NewsItem] = {}
+
+        for ticker in tickers:
+            for item in self._news.feed(ticker, limit=300):
+                if item.published_at <= cutoff:
+                    unique.setdefault(item.news_id, item)
+
+        return list(unique.values())
+
+    def _followup_search(self, query: str, task_id: str) -> tuple[NewsItem, ...]:
+        hits = self._search.search(query, task_id=task_id, limit=6)
+
+        return tuple(
+            NewsItem(
+                news_id="NEWS-" + sha1(str(hit.url).encode()).hexdigest()[:12],
+                ticker=task_id,
+                title=hit.title,
+                url=str(hit.url),
+                publisher=hit.publisher,
+                published_at=hit.published_at,
+                summary=hit.snippet or "",
+                provider=hit.provider,
+            )
+            for hit in hits
+            # An undated page cannot be shown to precede the
+            # anomaly, so it cannot be evidence about it.
+            if hit.published_at is not None and not hit.published_date_only
         )
 
     # -------------------------------------------------
@@ -590,6 +971,8 @@ class InvestigationService:
         self,
         documents: tuple[SourceDocument, ...],
         llm: StructuredLLM,
+        *,
+        workers: int | None = None,
     ):
         """
         Extraction is independent per document, so the
@@ -613,7 +996,9 @@ class InvestigationService:
                 return f"{type(error).__name__}"
 
         with ThreadPoolExecutor(
-            max_workers=min(self._llm_workers, len(documents)),
+            max_workers=max(
+                1, min(workers or self._llm_workers, len(documents))
+            ),
         ) as pool:
             results = list(pool.map(extract_one, documents))
 

@@ -33,7 +33,10 @@ from financial_assistant.api.schemas import (
     Setup,
     TriageView,
 )
-from financial_assistant.api.services.anomaly_service import AnomalyService
+from financial_assistant.api.services.anomaly_service import (
+    LARGE_UNIVERSE,
+    AnomalyService,
+)
 from financial_assistant.api.services.news_service import NewsService
 from financial_assistant.api.services.postmortem_service import relationship_of
 from financial_assistant.llm import (
@@ -52,6 +55,10 @@ LIQUIDITY_SESSIONS = 20
 # latest one it was built for: 14 to 28 calendar days.
 ANALOGUE_MIN_AGE_DAYS = 14
 ANALOGUE_MAX_AGE_DAYS = 45
+
+# Securities the walk-forward record is built from when the
+# universe is too large to replay whole.
+ANALOGUE_MAX_TICKERS = 160
 
 
 class DiscoveryService:
@@ -118,6 +125,17 @@ class DiscoveryService:
         with self._job_lock:
             return self._job.model_copy()
 
+    def reset(self) -> None:
+        """
+        Forget the last result: the desk moved in time, so it
+        describes a market that is no longer the visible one.
+        A scan still running keeps its slot and finishes.
+        """
+
+        with self._job_lock:
+            if self._job.status != "running":
+                self._job = DiscoveryJob()
+
     def start(self) -> DiscoveryJob:
         """
         Start a scan unless one is already running, and return
@@ -173,7 +191,17 @@ class DiscoveryService:
         universe = tuple(dict.fromkeys((*holdings, *self._instruments.universe)))
 
         self._stage(f"Loading prices for {len(universe)} securities")
-        prices = self._market.get_available(universe)
+
+        # A universe of thousands is read from disk as `make
+        # universe` left it; only the book is refreshed here.
+        prices = self._market.get_available(
+            universe,
+            refresh=(
+                None
+                if len(universe) <= LARGE_UNIVERSE
+                else tuple(holdings)
+            ),
+        )
         securities = int(prices["ticker"].nunique())
 
         self._stage(
@@ -185,7 +213,7 @@ class DiscoveryService:
             "Replaying history for analogues "
             "(minutes on the first scan, cached afterwards)"
         )
-        base = self._analogue_base(prices)
+        base = self._analogue_base(self._analogue_sample(prices, scan, holdings))
 
         self._stage("Reading the news behind every unusual relationship")
 
@@ -544,10 +572,18 @@ class DiscoveryService:
             .pivot_table(index="date", columns="ticker", values="close")
             .sort_index()
             .loc[str(scan.formation_start): str(scan.formation_end)]
-            .dropna(axis=1)
         )
 
-        correlations = np.log(closes).diff().corr()
+        if closes.shape[1] > LARGE_UNIVERSE:
+            # Exchanges with different holidays share no
+            # complete calendar: correlate pairwise instead.
+            closes = closes.where(closes > 0)
+            correlations = np.log(closes).diff().corr(
+                min_periods=int(len(closes) * 0.9)
+            )
+        else:
+            closes = closes.dropna(axis=1)
+            correlations = np.log(closes).diff().corr()
 
         # The same admission rule the scan applies: a looser
         # bar inside a sector, the strict one across sectors.
@@ -565,6 +601,31 @@ class DiscoveryService:
         upper = np.triu_indices_from(required, k=1)
 
         return int((correlations.to_numpy()[upper] >= required[upper]).sum())
+
+    @staticmethod
+    def _analogue_sample(prices: pd.DataFrame, scan, holdings: set[str]) -> pd.DataFrame:
+        """
+        The walk-forward record refits every relationship at
+        fifty past dates. Over thousands of names that is days
+        of compute, so for a large universe it is built from
+        the book and the securities that are related TODAY,
+        strongest relationships first: the analogues are then
+        breaks of the kind of relationship being ranked.
+        """
+
+        if prices["ticker"].nunique() <= LARGE_UNIVERSE:
+            return prices
+
+        sample: dict[str, None] = dict.fromkeys(sorted(holdings))
+
+        for fit in sorted(scan.fits, key=lambda f: f.pvalue):
+            if len(sample) >= ANALOGUE_MAX_TICKERS:
+                break
+
+            sample.setdefault(fit.ticker_a)
+            sample.setdefault(fit.ticker_b)
+
+        return prices.loc[prices["ticker"].isin(sample)]
 
     def _analogue_base(self, prices: pd.DataFrame) -> PairAnalogueBase:
         """

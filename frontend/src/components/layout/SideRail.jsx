@@ -1,4 +1,4 @@
-import { CloverIcon, GraphIcon, PastIcon, ScopeIcon } from "../icons";
+import { BookIcon, CloverIcon, GraphIcon, PastIcon, ScopeIcon } from "../icons";
 
 /*
  * The three stories are one loop, read as a timeline:
@@ -8,10 +8,11 @@ const VIEWS = [
   { key: "postmortem", label: "Past", title: "Post-mortem: what did I miss?", icon: PastIcon },
   { key: "copilot", label: "Now", title: "Copilot: what is happening to this stock?", icon: ScopeIcon },
   { key: "discovery", label: "Next", title: "Discovery: what should I look at?", icon: CloverIcon },
-  { key: "graph", label: "Why", title: "ClaimGraph: why are these connected?", icon: GraphIcon, divider: true },
+  { key: "portfolio", label: "Book", title: "Portfolio: returns, risk, research and simulation", icon: BookIcon, divider: true },
+  { key: "graph", label: "Why", title: "ClaimGraph: open investigations, side by side across models", icon: GraphIcon },
 ];
 
-export default function SideRail({ view, onChange }) {
+export default function SideRail({ view, onChange, badges = {} }) {
   return (
     <nav className="rail">
       {VIEWS.map(({ key, label, title, icon: Glyph, divider }) => (
@@ -26,6 +27,7 @@ export default function SideRail({ view, onChange }) {
         >
           <Glyph />
           <span>{label}</span>
+          {badges[key] > 0 && <em className="rail__badge mono">{badges[key]}</em>}
         </button>
       ))}
     </nav>

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import asdict
 from datetime import date, datetime, timedelta, timezone
 
+from financial_assistant.api.clock import DeskClock, as_clock
 from financial_assistant.api.models import Anomaly, NewsItem
 from financial_assistant.api.relevance import (
     company_aliases,
@@ -14,7 +16,11 @@ from financial_assistant.api.repositories import (
     NewsRepository,
     PortfolioRepository,
 )
-from financial_assistant.api.schemas import AnomalyNews, KeyDate
+from financial_assistant.api.schemas import (
+    AnomalyNews,
+    KeyDate,
+    NewsSourceStatus,
+)
 from financial_assistant.api.services.anomaly_service import session_close
 
 
@@ -40,13 +46,13 @@ class NewsService:
         instruments: InstrumentRepository,
         *,
         review_days: int,
-        as_of: date | None = None,
+        as_of: date | DeskClock | None = None,
     ):
         self._news = news
         self._portfolios = portfolios
         self._instruments = instruments
         self._review_days = review_days
-        self._as_of = as_of
+        self._clock = as_clock(as_of)
 
     @property
     def source_names(self) -> tuple[str, ...]:
@@ -63,9 +69,11 @@ class NewsService:
         hides later prices.
         """
 
+        as_of = self._clock.as_of
+
         last_close = (
-            session_close(self._as_of)
-            if self._as_of
+            session_close(as_of)
+            if as_of
             else datetime.now(timezone.utc)
         )
 
@@ -74,8 +82,23 @@ class NewsService:
             last_close + timedelta(days=HINDSIGHT_DAYS),
         )
 
+    def sources(self) -> list[NewsSourceStatus]:
+        return [
+            NewsSourceStatus(**asdict(status))
+            for status in self._news.status()
+        ]
+
     def feed(self, ticker: str, *, limit: int = 60) -> list[NewsItem]:
         return self._wire(ticker.strip().upper())[:limit]
+
+    def refresh(self, ticker: str, *, limit: int = 60) -> list[NewsItem]:
+        """
+        Ask every source again and wait for the answers.
+        The feed otherwise never waits: it is served from
+        the cache and refreshed behind the request.
+        """
+
+        return self._wire(ticker.strip().upper(), force=True)[:limit]
 
     def portfolio_feed(self, *, limit: int = 80) -> list[NewsItem]:
         tickers = self._portfolios.load().tickers
@@ -266,13 +289,17 @@ class NewsService:
 
         return session_close(anchor) - timedelta(days=LOOKBACK_DAYS)
 
-    def _wire(self, ticker: str) -> list[NewsItem]:
+    def _wire(self, ticker: str, *, force: bool = False) -> list[NewsItem]:
         start, end = self.window()
 
         return one_per_story(
             item
             for item in self._news.get(
-                ticker, self._company(ticker), start=start, end=end
+                ticker,
+                self._company(ticker),
+                start=start,
+                end=end,
+                force=force,
             )
             if start <= item.published_at <= end
         )

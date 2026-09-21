@@ -17,6 +17,7 @@ export default function InvestigationsTable({ investigations, onOpen }) {
           <th>Started (UTC)</th>
           <th>Market</th>
           <th>Monitor</th>
+          <th>Model</th>
           <th>Status</th>
           <th className="num">Articles</th>
           <th className="num">Claims</th>
@@ -35,6 +36,7 @@ export default function InvestigationsTable({ investigations, onOpen }) {
                 {STRATEGY_STYLE[run.anomaly.strategy].label}
               </span>
             </td>
+            <td className="mono">{run.model_label || run.model.split("/").pop()}</td>
             <td className={`mono status status--${run.status}`}>{run.status}</td>
             <td className="num mono">{run.documents_used}</td>
             <td className="num mono">{run.claims.length}</td>

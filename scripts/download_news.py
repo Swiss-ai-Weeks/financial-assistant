@@ -5,11 +5,13 @@ Download historical news into the local archive.
     make news ARGS="--universe"       also the peer universe (pair partners)
     make news ARGS="--as-of 2026-02-27"
 
-Providers: Finnhub when FINNHUB_API_KEY is set, and GDELT. The
-desk never calls them itself. It reads this archive, so the
-download can take as long as a rate limit demands (GDELT: one
-request every five seconds) and can be interrupted and resumed:
-finished slices are not requested again.
+Providers: every one with a key in .env (Finnhub, EODHD,
+Marketaux, GNews, NewsAPI, Alpha Vantage), then GDELT, which
+needs none. The download can take as long as a rate limit
+demands (GDELT: one request every five seconds) and can be
+interrupted and resumed: finished slices are not requested
+again. A provider whose daily quota runs out stops; the next
+one still runs, and tomorrow's run continues where it stopped.
 """
 
 from __future__ import annotations
@@ -27,6 +29,9 @@ from financial_assistant.api.config import get_settings
 from financial_assistant.api.repositories.gdelt import (
     GdeltRateLimited,
     GdeltRejected,
+)
+from financial_assistant.api.repositories.news_provider import (
+    NewsProviderError,
 )
 from financial_assistant.api.services.news_service import NewsService
 
@@ -94,7 +99,13 @@ def main() -> None:
                     end=end,
                     on_progress=lambda line: print("  " + line, flush=True),
                 )
-            except (GdeltRateLimited, GdeltRejected, OSError, ValueError) as error:
+            except (
+                NewsProviderError,
+                GdeltRateLimited,
+                GdeltRejected,
+                OSError,
+                ValueError,
+            ) as error:
                 # Everything downloaded so far is kept. One
                 # provider failing must not stop the next.
                 print(f"  {ticker}: {error}")

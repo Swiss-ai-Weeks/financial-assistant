@@ -1,0 +1,674 @@
+/*
+ * Portfolio page: the book as an object of analysis.
+ * Tokens only, so the dark theme is the same stylesheet.
+ */
+
+.portfolio {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 44px 40px 80px;
+}
+
+/* ---------- header ---------- */
+
+.portfolio__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--text);
+}
+
+.portfolio__title {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.portfolio__title h1 {
+  font-size: 38px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.portfolio__title p {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  font-size: 13px;
+}
+
+.portfolio__replay {
+  margin-left: 8px;
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  letter-spacing: 0.1em;
+}
+
+.portfolio__figures {
+  display: flex;
+  flex: none;
+}
+
+.portfolio__figure {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 2px 24px;
+  border-left: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.portfolio__figure:last-child {
+  padding-right: 0;
+}
+
+.portfolio__figure .mono {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+/* ---------- sections ---------- */
+
+.portfolio__section {
+  margin-top: 44px;
+}
+
+.portfolio__section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.portfolio__section-head h2 {
+  margin-top: 6px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.portfolio__aside {
+  font-size: 12.5px;
+}
+
+.portfolio .error-banner {
+  margin: 12px 0;
+}
+
+.portfolio .empty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 0;
+}
+
+/* An unavailable figure is a sentence, never a zero. */
+.portfolio-na {
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+  white-space: normal;
+}
+
+.portfolio__unavailable {
+  padding: 18px 20px;
+  border: 1px dashed var(--border-strong);
+  font-size: 13px;
+}
+
+.portfolio__provenance {
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- metric tiles ---------- */
+
+.portfolio-tiles {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border: 1px solid var(--border-strong);
+  background: var(--surface-raised);
+}
+
+.portfolio-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 18px 18px 16px;
+  border-right: 1px solid var(--border);
+}
+
+.portfolio-tile:last-child {
+  border-right: 0;
+}
+
+.portfolio-tile .eyebrow {
+  min-height: 2.6em;
+  line-height: 1.3;
+}
+
+.portfolio-tile__value {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.portfolio-tile__value .portfolio-na {
+  display: block;
+}
+
+.portfolio-tile__caption {
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+/* ---------- contributors ---------- */
+
+.portfolio-contributors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.portfolio-contributors__side {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+}
+
+.portfolio-contributors__side + .portfolio-contributors__side {
+  border-left: 1px solid var(--border);
+}
+
+.portfolio-contributors__side .eyebrow {
+  margin-bottom: 8px;
+}
+
+.portfolio-contributors__side p {
+  font-size: 13px;
+}
+
+.portfolio-bar {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) 76px;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 0;
+  font-size: 13px;
+  text-align: left;
+}
+
+.portfolio-bar:hover .strong {
+  color: var(--accent);
+}
+
+.portfolio-bar .strong {
+  font-weight: 700;
+}
+
+.portfolio-bar > :last-child {
+  text-align: right;
+}
+
+.portfolio-bar__track {
+  height: 6px;
+  background: var(--border);
+}
+
+.portfolio-bar__fill {
+  display: block;
+  height: 100%;
+  border-radius: 0 3px 3px 0;
+}
+
+.portfolio-bar__fill.is-up {
+  background: var(--up);
+}
+
+.portfolio-bar__fill.is-down {
+  background: var(--down);
+}
+
+/* ---------- holdings ---------- */
+
+.portfolio__scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+}
+
+/* Rows are not a target here: the actions are. */
+.portfolio-holdings tbody tr,
+.portfolio-sim__table tbody tr,
+.portfolio-sim__legs tbody tr {
+  cursor: default;
+}
+
+.portfolio-holdings tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Twelve columns: tighter gutters keep the actions on screen. */
+.portfolio-holdings th,
+.portfolio-holdings td {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.portfolio-holdings th:first-child,
+.portfolio-holdings td:first-child {
+  padding-left: 16px;
+}
+
+.portfolio-holdings__name {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.portfolio-holdings__anomalies {
+  min-width: 26px;
+  padding: 2px 7px;
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.portfolio-holdings__anomalies:hover {
+  background: var(--accent);
+  color: var(--on-ink);
+}
+
+.portfolio-holdings__actions .btn + .btn {
+  margin-left: 6px;
+}
+
+.portfolio-research {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.portfolio-research::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.portfolio-research.is-running::before {
+  display: none;
+}
+
+.portfolio-research .spinner {
+  width: 10px;
+  height: 10px;
+}
+
+.portfolio-research.is-open_questions,
+.portfolio-research.is-running {
+  color: var(--accent);
+}
+
+.portfolio-research.is-explained {
+  color: var(--up);
+}
+
+.portfolio-research.is-followup {
+  color: var(--text);
+}
+
+.portfolio-research.is-none {
+  color: var(--text-faint);
+  font-weight: 400;
+}
+
+/* ---------- fields ---------- */
+
+.portfolio-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.portfolio-field input,
+.portfolio-field textarea {
+  width: 100%;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  background: var(--surface-raised);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  outline: 0;
+}
+
+.portfolio-field input {
+  height: 40px;
+}
+
+.portfolio-field textarea {
+  padding: 10px 12px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.portfolio-field input.mono,
+.portfolio-field textarea.mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.portfolio-field input:focus,
+.portfolio-field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.portfolio-field input::placeholder {
+  color: var(--text-faint);
+}
+
+.portfolio-field--narrow {
+  width: 150px;
+  flex: none;
+}
+
+/* ---------- weights editor ---------- */
+
+.portfolio-editor {
+  margin-top: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.portfolio-editor[open] {
+  border-color: var(--border-strong);
+}
+
+.portfolio-editor > summary {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 14px 20px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 13px;
+}
+
+.portfolio-editor > summary::-webkit-details-marker {
+  display: none;
+}
+
+.portfolio-editor > summary::before {
+  content: "+";
+  width: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.portfolio-editor[open] > summary::before {
+  content: "−";
+}
+
+.portfolio-editor[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.portfolio-editor__title {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.portfolio-editor__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 28px;
+  padding: 22px 20px 6px;
+}
+
+.portfolio-editor__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.portfolio-editor__hint {
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.portfolio-editor__total {
+  font-size: 11.5px;
+}
+
+.portfolio-editor .error-banner {
+  margin: 12px 20px 0;
+}
+
+.portfolio-editor__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px 20px 20px;
+  font-size: 13px;
+}
+
+/* ---------- overlay simulation ---------- */
+
+.portfolio-notice {
+  padding: 14px 18px;
+  border: 1px solid var(--accent);
+  border-left-width: 3px;
+  background: var(--accent-soft);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.portfolio-sim {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.portfolio-sim__picks {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.portfolio-sim__picks .eyebrow {
+  margin-right: 6px;
+}
+
+.portfolio-sim__pick {
+  height: 26px;
+  color: var(--pairs);
+  border-color: currentColor;
+}
+
+.portfolio-sim__pick span {
+  color: var(--text-muted);
+  /* σ must not become Σ under the chip's uppercase. */
+  text-transform: none;
+}
+
+.portfolio-sim__pick:hover,
+.portfolio-sim__pick.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+}
+
+.portfolio-sim__pick:hover span,
+.portfolio-sim__pick.is-active span {
+  color: inherit;
+}
+
+.portfolio-sim__form {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+}
+
+.portfolio-sim__form .portfolio-field:not(.portfolio-field--narrow) {
+  flex: 1;
+  max-width: 200px;
+}
+
+.portfolio-sim__form .btn {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.portfolio-sim__form .spinner {
+  border-color: var(--text-muted);
+  border-top-color: var(--on-ink);
+}
+
+.portfolio-sim__versus {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.portfolio-sim__overlap {
+  margin-top: -6px;
+  font-size: 12.5px;
+}
+
+.portfolio-sim__result {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 26px 28px 28px;
+  border: 1px solid var(--text);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.portfolio-sim__result h3 {
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+
+.portfolio-sim__result header p {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.portfolio-sim__result section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.portfolio-sim__table,
+.portfolio-sim__legs {
+  border: 1px solid var(--border);
+}
+
+.portfolio-sim__table tbody tr:last-child td,
+.portfolio-sim__legs tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* The row the question is about. */
+.portfolio-sim__table tbody tr:last-child td {
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+
+.portfolio-sim__legs {
+  max-width: 560px;
+}
+
+.portfolio-sim__correlation {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.portfolio-sim__correlation .strong {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.portfolio-sim__unknown {
+  padding: 14px 16px;
+  border: 1px dashed var(--border-strong);
+}
+
+.portfolio-provenance > summary {
+  cursor: pointer;
+}
+
+.portfolio-provenance > summary:hover {
+  color: var(--text);
+}
+
+.portfolio-provenance dl {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 8px 16px;
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px;
+}
+
+.portfolio-provenance dt {
+  color: var(--text-muted);
+}
+
+.portfolio-provenance dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.portfolio-provenance__hash {
+  overflow-wrap: anywhere;
+}
+
+.portfolio-provenance ul {
+  margin: 0;
+  padding-left: 16px;
+}

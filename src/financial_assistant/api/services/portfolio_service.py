@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from typing import Any
 
-from financial_assistant.api.errors import Conflict, NotFound
+import pandas as pd
+
+from financial_assistant.api.errors import Conflict, DeskError, NotFound
 from financial_assistant.api.models import Portfolio, Position
 from financial_assistant.api.repositories import (
     InstrumentRepository,
@@ -19,6 +22,32 @@ from financial_assistant.api.services.market_service import (
     return_since,
     review_window,
 )
+from financial_assistant.portfolio.returns import (
+    analyze_portfolio,
+    simulate_overlay,
+)
+from financial_assistant.portfolio.service import market_context
+
+
+# Every input price of every holding is part of a result's
+# provenance. It is hashed and counted for the browser, not
+# shipped: a 22-name book is 25,000 observations.
+def _compact(result: dict[str, Any]) -> dict[str, Any]:
+    provenance = result.get("provenance")
+
+    if isinstance(provenance, dict) and "inputs" in provenance:
+        result = {
+            **result,
+            "provenance": {
+                **{k: v for k, v in provenance.items() if k != "inputs"},
+                "observations": {
+                    ticker: len(rows)
+                    for ticker, rows in provenance["inputs"].items()
+                },
+            },
+        }
+
+    return result
 
 
 class PortfolioService:
@@ -105,6 +134,146 @@ class PortfolioService:
         self._anomalies.invalidate()
 
         return self._view(portfolio)
+
+    def set_weights(
+        self,
+        positions: list[tuple[str, float]],
+        *,
+        notional: float,
+        name: str | None = None,
+    ) -> PortfolioView:
+        """
+        Replace the book with one stated as weights.
+
+        Weights must sum to one. Each becomes a share count at
+        the latest visible close, so on a replay date the book
+        is sized with the prices of that day.
+        """
+
+        tickers = [ticker.strip().upper() for ticker, _ in positions]
+
+        if len(set(tickers)) != len(tickers):
+            raise DeskError("Tickers must be unique.")
+
+        total = sum(weight for _, weight in positions)
+
+        if abs(total - 1.0) > 0.001:
+            raise DeskError(
+                f"Weights must sum to 1 (they sum to {total:.4f})."
+            )
+
+        # Raises NotFound for an unknown symbol before anything
+        # is persisted.
+        prices = self._market.get_prices(tuple(tickers))
+
+        last = (
+            prices.sort_values("date")
+            .groupby("ticker")["close"]
+            .last()
+        )
+
+        now = datetime.now(timezone.utc)
+        current = self._portfolios.load()
+
+        book = tuple(
+            Position(
+                ticker=ticker,
+                name=self._instruments.describe(ticker).name,
+                shares=notional * weight / total / float(last[ticker]),
+                added_at=now,
+            )
+            for ticker, (_, weight) in zip(tickers, positions)
+            if weight > 0
+        )
+
+        portfolio = self._portfolios.save(
+            current.model_copy(
+                update={"positions": book, "name": name or current.name}
+            )
+        )
+
+        self._anomalies.invalidate()
+
+        return self._view(portfolio)
+
+    # -------------------------------------------------
+    # Analysis workspace
+    # -------------------------------------------------
+
+    def weights(self) -> dict[str, Any]:
+        """
+        The book as the analytical portfolio: market-value
+        weights at the latest visible close.
+        """
+
+        view = self.view()
+
+        return {
+            "id": "book",
+            "name": view.name,
+            "as_of": view.window.end.isoformat(),
+            "positions": [
+                {"ticker": p.ticker, "weight": p.weight_pct / 100}
+                for p in view.positions
+            ],
+        }
+
+    def analysis(self) -> dict[str, Any]:
+        portfolio = self.weights()
+
+        if not portfolio["positions"]:
+            return {"status": "unavailable", "reason": "The book is empty."}
+
+        tickers = tuple(p["ticker"] for p in portfolio["positions"])
+
+        return _compact(
+            analyze_portfolio(
+                self._prices(tickers),
+                portfolio,
+                portfolio["as_of"],
+            )
+        )
+
+    def simulate(
+        self,
+        ticker_a: str,
+        ticker_b: str,
+        *,
+        gross_overlay: float,
+        lookback: int,
+    ) -> dict[str, Any]:
+        """
+        What the book would have looked like with a small
+        A-relative-to-B overlay. Descriptive, never a forecast.
+        """
+
+        portfolio = self.weights()
+
+        if not portfolio["positions"]:
+            return {"status": "unavailable", "reason": "The book is empty."}
+
+        a, b = ticker_a.strip().upper(), ticker_b.strip().upper()
+        tickers = (*(p["ticker"] for p in portfolio["positions"]), a, b)
+
+        return _compact(
+            simulate_overlay(
+                self._prices(tickers),
+                portfolio,
+                {"ticker_a": a, "ticker_b": b},
+                portfolio["as_of"],
+                gross_overlay,
+                lookback,
+            )
+        )
+
+    def market(self, tickers: list[str]) -> dict[str, Any]:
+        symbols = tuple(t.strip().upper() for t in tickers)
+        as_of = self.view().window.end.isoformat()
+
+        return market_context(symbols, as_of, self._prices(symbols))
+
+    def _prices(self, tickers: tuple[str, ...]) -> pd.DataFrame:
+        return self._market.get_available(tuple(dict.fromkeys(tickers)))
 
     # -------------------------------------------------
 

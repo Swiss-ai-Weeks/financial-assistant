@@ -7,6 +7,7 @@ fetching and the language model. Controllers, services
 and the ClaimGraph pipeline run for real.
 """
 
+import json
 import re
 from datetime import date, datetime, timedelta, timezone
 
@@ -211,6 +212,17 @@ class FakeLLM:
                 ]
             }
 
+        if system.lstrip().startswith("Decide whether an open evidence"):
+            supplied = json.loads(user)["evidence"]
+
+            return {
+                "status": "partially_answered" if supplied else "unresolved",
+                "summary": "The new article bears on BBB's bond book.",
+                "supporting_item_ids": [item["id"] for item in supplied[:1]],
+                "contradicting_item_ids": [],
+                "remaining_question": "How large is BBB's exposure?",
+            }
+
         if system.lstrip().startswith("Generate competing"):
             return {
                 "hypotheses": [
@@ -265,10 +277,22 @@ def client(tmp_path):
         '[{"ticker": "AAA", "name": "Bank AAA", "shares": 100}]}'
     )
 
+    from financial_assistant.api.clock import DeskClock
+    from financial_assistant.copilot import CopilotService
+    from financial_assistant.llm.model_registry import (
+        ModelHealth,
+        ModelRegistry,
+        ModelSpec,
+    )
+
+    # One clock, shared by everything that could leak the future.
+    clock = DeskClock(LAST_SESSION.date())
+
     market = MarketDataRepository(
         tmp_path / "market",
         history_days=800,
         cache_minutes=60,
+        as_of=clock,
         downloader=fake_download,
     )
 
@@ -286,7 +310,7 @@ def client(tmp_path):
         portfolios,
         instruments,
         review_days=30,
-        as_of=LAST_SESSION.date(),
+        as_of=clock,
     )
 
     anomalies = AnomalyService(
@@ -357,6 +381,23 @@ def client(tmp_path):
             deps.get_instrument_repository: lambda: instruments,
             deps.get_portfolio_repository: lambda: portfolios,
             deps.get_investigation_service: lambda: investigations,
+            deps.get_clock: lambda: clock,
+            # Never the configured endpoint: tests do not leave
+            # the machine.
+            deps.get_copilot_service: lambda: CopilotService(
+                ModelRegistry(
+                    (
+                        ModelSpec(
+                            id="default",
+                            provider="fake",
+                            model="fake-model",
+                            base_url="http://llm.invalid/v1",
+                        ),
+                    ),
+                    factories={"default": FakeLLM},
+                    prober=lambda spec, key: ModelHealth(online=True),
+                )
+            ),
             deps.get_portfolio_service: lambda: PortfolioService(
                 portfolios,
                 instruments,
@@ -547,7 +588,9 @@ def test_investigation_explains_an_anomaly_from_admissible_news(client):
     run = response.json()
 
     assert run["status"] == "completed", run["error"]
-    assert [stage["status"] for stage in run["stages"]] == ["done"] * 7
+    # news, documents, fundamentals, claims, hypotheses, audit,
+    # relations, graph.
+    assert [stage["status"] for stage in run["stages"]] == ["done"] * 8
 
     # Only the two pre-cutoff articles may become evidence.
     assert run["documents_considered"] == 2
@@ -1162,3 +1205,177 @@ def test_a_single_session_signal_has_one_key_date():
     assert [k.label for k in NewsService.key_dates(same_day)] == [
         "onset / peak / latest"
     ]
+
+
+# -----------------------------------------------------
+# Models, follow-ups, time travel, portfolio workspace
+# -----------------------------------------------------
+
+
+def test_the_same_anomaly_can_be_explained_by_each_configured_model(client):
+    models = client.get("/api/investigations/models").json()
+
+    assert models["default_id"] == "default"
+    assert [m["id"] for m in models["models"]] == ["default"]
+    # Never a URL or a key: the list is drawn in the browser.
+    assert "base_url" not in models["models"][0]
+
+    anomaly = client.get("/api/anomalies?strategy=pairs").json()[0]
+
+    run = client.post(
+        "/api/investigations",
+        json={"anomaly_id": anomaly["anomaly_id"], "model_id": "default"},
+    ).json()
+
+    assert run["model_id"] == "default"
+    assert run["usage"]["calls"] > 0
+
+    unknown = client.post(
+        "/api/investigations",
+        json={"anomaly_id": anomaly["anomaly_id"], "model_id": "gpt-99"},
+    )
+
+    assert unknown.status_code == 404
+
+
+def test_a_follow_up_researches_one_open_question_once(client):
+    anomaly = client.get("/api/anomalies?strategy=pairs").json()[0]
+
+    run = client.post(
+        "/api/investigations", json={"anomaly_id": anomaly["anomaly_id"]}
+    ).json()
+
+    gap = next(
+        node
+        for node in run["graph"]["nodes"]
+        if node["kind"] in ("missing_evidence", "evidence_requirement")
+    )
+
+    response = client.post(
+        f"/api/investigations/{run['investigation_id']}/followups",
+        json={"requirement_id": gap["node_id"]},
+    )
+
+    assert response.status_code == 202
+
+    after = response.json()
+    followup = after["followups"][0]
+
+    assert followup["status"] == "completed", followup["error"]
+    assert followup["question"] == gap["label"]
+    assert [stage["status"] for stage in followup["stages"]] == ["done"] * 7
+
+    # The cycle is recorded in the graph as execution, apart
+    # from the evidence, and the question keeps its history.
+    kinds = {node["kind"] for node in after["graph"]["nodes"]}
+
+    assert {"agent_action", "research_task", "tool_call"} <= kinds
+    assert after["graph"]["followups"][0]["requirement_id"] == gap["node_id"]
+
+    resolved = next(
+        n for n in after["graph"]["nodes"] if n["node_id"] == gap["node_id"]
+    )
+
+    assert resolved["data"]["followup_history"]
+
+    # Something that is not an open question cannot be researched.
+    claim = next(n for n in run["graph"]["nodes"] if n["kind"] == "claim")
+
+    refused = client.post(
+        f"/api/investigations/{run['investigation_id']}/followups",
+        json={"requirement_id": claim["node_id"]},
+    )
+
+    assert refused.status_code == 404
+
+
+def test_the_desk_travels_in_time_without_a_restart(client):
+    live = client.get("/api/market/AAA/candles?days=30").json()["candles"]
+    past = live[-10]["time"]
+
+    moved = client.put("/api/system/as-of", json={"as_of": past})
+
+    assert moved.status_code == 200
+    assert moved.json()["as_of"] == past
+
+    replayed = client.get("/api/market/AAA/candles?days=30").json()["candles"]
+
+    # Later sessions no longer exist for anything on the desk.
+    assert replayed[-1]["time"] == past
+
+    assert client.put("/api/system/as-of", json={"as_of": "2999-01-01"}).status_code == 400
+
+    client.put("/api/system/as-of", json={"as_of": None})
+
+    assert (
+        client.get("/api/market/AAA/candles?days=30").json()["candles"][-1]["time"]
+        == live[-1]["time"]
+    )
+
+
+def test_the_book_can_be_stated_as_weights_and_analysed(client):
+    rejected = client.put(
+        "/api/portfolio/weights",
+        json={"positions": [{"ticker": "AAA", "weight": 0.5}]},
+    )
+
+    assert rejected.status_code == 400
+
+    book = client.put(
+        "/api/portfolio/weights",
+        json={
+            "name": "Two banks",
+            "notional": 1_000_000,
+            "positions": [
+                {"ticker": "AAA", "weight": 0.6},
+                {"ticker": "BBB", "weight": 0.4},
+            ],
+        },
+    ).json()
+
+    assert book["name"] == "Two banks"
+    assert round(book["market_value"]) == 1_000_000
+
+    weights = {p["ticker"]: round(p["weight_pct"]) for p in book["positions"]}
+
+    assert weights == {"AAA": 60, "BBB": 40}
+
+    analysis = client.get("/api/portfolio/analysis").json()
+
+    assert analysis["status"] == "available", analysis
+    assert analysis["return_20"]["formula_version"]
+    assert set(analysis["securities"]) == {"AAA", "BBB"}
+    # Provenance is hashed and counted, not shipped.
+    assert "inputs" not in analysis["provenance"]
+    assert analysis["provenance"]["input_sha256"]
+
+    simulation = client.post(
+        "/api/portfolio/simulate",
+        json={"ticker_a": "AAA", "ticker_b": "CCC", "gross_overlay": 0.02},
+    ).json()
+
+    assert simulation["status"] == "available", simulation
+    assert "NOT an expected return forecast" in simulation["interpretation"]
+
+
+def test_copilot_may_move_the_view_but_never_the_graph(client):
+    context = {
+        "nodes": [{"id": "hypothesis:H-1", "kind": "hypothesis", "label": "A"}],
+        "graph_summary": {"counts": {"hypothesis": 1}},
+    }
+
+    # The shared fake answers with assessments, which is not a
+    # Copilot reply: it is refused, not passed on.
+    response = client.post(
+        "/api/copilot",
+        json={"question": "What am I looking at?", "context": context},
+    )
+
+    assert response.status_code == 400
+
+    too_long = client.post(
+        "/api/copilot",
+        json={"question": "x" * 2001, "context": context},
+    )
+
+    assert too_long.status_code == 400

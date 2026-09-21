@@ -5,6 +5,7 @@
 #   make serve   one port, built UI: for a machine opened in a browser
 #
 #   make news    download historical news into the local archive
+#   make universe  download prices for the 3,200-security universe
 #   make warm    pre-build the slow caches before a demo
 #   make runs    which model produced each saved explanation
 #   make forget-runs   drop them (before recording on the H100s)
@@ -12,6 +13,7 @@
 # On the GPU box, additionally:
 #
 #   make llm     serve Nemotron on the two H100s (:8000)
+#   make apertus serve Apertus, the Swiss open model (:8001)
 #   make search  start SearXNG for wider web retrieval (:8888)
 
 PYTHON  ?= python3
@@ -21,7 +23,7 @@ API_PORT ?= 8080
 
 .DEFAULT_GOAL := help
 
-.PHONY: help setup dev api web build serve news warm runs forget-runs llm search test lint reset
+.PHONY: help setup dev api web build serve news universe warm runs forget-runs llm apertus search test lint reset
 
 help:
 	@awk '/^# /{sub(/^# ?/,"");print} /^$$/{exit}' Makefile
@@ -60,6 +62,13 @@ serve: build
 news:
 	$(BIN)/python scripts/download_news.py $(ARGS)
 
+# Prices for every security of the catalogue (Russell 2500 +
+# STOXX 600). Pair scans and discovery read this cache; they
+# never download thousands of tickers inside a request.
+# Resumable: fresh files are skipped.
+universe:
+	$(BIN)/python scripts/download_universe.py $(ARGS)
+
 # Prices for the whole universe and the walk-forward analogue
 # record (minutes for ~140 names). Both are cached on disk, so
 # the first "I'm Feeling Lucky" of the demo is instant.
@@ -81,12 +90,15 @@ forget-runs:
 llm:
 	./scripts/serve_llm.sh
 
+apertus:
+	./scripts/serve_apertus.sh
+
 search:
 	docker compose -f infra/docker-compose.yml up -d searxng
 
 test:
 	$(BIN)/python -m pytest -q
-	cd frontend && npm run lint
+	cd frontend && npm test && npm run lint
 
 lint:
 	cd frontend && npm run lint

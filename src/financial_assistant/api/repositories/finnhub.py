@@ -1,5 +1,5 @@
 """
-Finnhub company news as a provider for the news archive.
+Finnhub company news, live and for the news archive.
 
 Compared with GDELT it is built for equities: articles are
 tagged to a ticker by the provider rather than matched on text,
@@ -10,56 +10,33 @@ history at 60 requests per minute and needs an API key.
 
 from __future__ import annotations
 
-import json
-import threading
-import time
-from collections.abc import Callable
-from datetime import datetime, timezone
-from hashlib import sha1
 from urllib.parse import urlencode
-from urllib.request import Request, urlopen
 
-from financial_assistant.api.models import NewsItem
+from .news_provider import KeyedNewsProvider
 
 
 ENDPOINT = "https://finnhub.io/api/v1/company-news"
 MIN_INTERVAL_SECONDS = 1.1
 
 
-def _http_get(url: str) -> str:
-    request = Request(url, headers={"User-Agent": "ClaimGraph/0.3"})
-
-    with urlopen(request, timeout=30) as response:
-        return response.read().decode("utf-8", errors="replace")
-
-
-class FinnhubDownloader:
+class FinnhubProvider(KeyedNewsProvider):
     name = "finnhub"
+    key_variable = "FINNHUB_API_KEY"
 
-    def __init__(
-        self,
-        api_key: str,
-        *,
-        http_get: Callable[[str], str] = _http_get,
-        sleep: Callable[[float], None] = time.sleep,
-        clock: Callable[[], float] = time.monotonic,
-    ):
-        if not api_key:
-            raise ValueError("FINNHUB_API_KEY is not configured")
+    min_interval_seconds = MIN_INTERVAL_SECONDS
 
-        self._api_key = api_key
-        self._http_get = http_get
-        self._sleep = sleep
-        self._clock = clock
+    # 60 requests a minute and no daily cap: the generous
+    # one, so it is the provider refreshed most often.
+    min_refresh_minutes = 30
+    daily_budget = None
 
-        self._lock = threading.Lock()
-        self._last_request: float | None = None
+    def covers(self, ticker: str) -> bool:
+        # Company news exists for US listings only. A suffixed
+        # symbol (NESN.SW) is answered with an empty list or an
+        # error, so it is not asked.
+        return "." not in ticker
 
-    def signature(self, ticker: str, company: str) -> str:
-        # Queried by symbol only, so there is nothing to vary.
-        return "v1"
-
-    def fetch(self, ticker, company, *, start, end) -> list[NewsItem]:
+    def _request(self, ticker, company, start, end):
         params = urlencode(
             {
                 "symbol": ticker,
@@ -69,31 +46,26 @@ class FinnhubDownloader:
             }
         )
 
-        with self._lock:
-            if self._last_request is not None:
-                remaining = MIN_INTERVAL_SECONDS - (
-                    self._clock() - self._last_request
-                )
+        return f"{ENDPOINT}?{params}", {}
 
-                if remaining > 0:
-                    self._sleep(remaining)
-
-            self._last_request = self._clock()
-            rows = json.loads(self._http_get(f"{ENDPOINT}?{params}"))
+    def _parse(self, payload):
+        if isinstance(payload, dict):
+            raise self._refused(
+                payload.get("error") or "unexpected response",
+                rate_limited="limit" in str(payload.get("error", "")).lower(),
+            )
 
         return [
-            NewsItem(
-                news_id="NEWS-" + sha1(row["url"].encode()).hexdigest()[:12],
-                ticker=ticker,
-                title=" ".join(row["headline"].split()),
-                url=row["url"],
-                publisher=row.get("source"),
-                published_at=datetime.fromtimestamp(
-                    row["datetime"], tz=timezone.utc
-                ),
-                summary=(row.get("summary") or "").strip(),
-                provider=self.name,
-            )
-            for row in rows
-            if row.get("url") and row.get("headline") and row.get("datetime")
+            {
+                "title": row.get("headline"),
+                "url": row.get("url"),
+                "published_at": row.get("datetime"),
+                "publisher": row.get("source"),
+                "summary": row.get("summary"),
+            }
+            for row in payload
         ]
+
+
+# The name it had when it only filled the archive.
+FinnhubDownloader = FinnhubProvider

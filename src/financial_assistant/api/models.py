@@ -133,6 +133,62 @@ class EvidenceClaim(BaseModel):
     published_at: datetime | None = None
 
 
+class FundamentalsSummary(BaseModel):
+    """
+    What the SEC enrichment found for one company, for the
+    desk. The figures themselves live in the graph, each with
+    its filing.
+    """
+
+    ticker: str
+    status: str
+    issuer: str = ""
+    quarters: int = 0
+    facts: int = 0
+    calculations: int = 0
+    latest_period: date | None = None
+    warnings: tuple[str, ...] = ()
+
+
+class ModelUsage(BaseModel):
+    """
+    What one run cost. Summed from what the endpoint reported;
+    a server that reports no token counts leaves them at zero
+    rather than having them estimated.
+    """
+
+    calls: int = 0
+    latency_ms: int = 0
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+
+
+class FollowUp(BaseModel):
+    """
+    One human-triggered research cycle on one open question.
+    Bounded: it never schedules another.
+    """
+
+    run_id: str
+    requirement_id: str
+    question: str
+    status: InvestigationStatus = InvestigationStatus.QUEUED
+
+    created_at: datetime
+    finished_at: datetime | None = None
+    error: str | None = None
+
+    model_id: str | None = None
+    model: str = ""
+
+    stages: list[InvestigationStage] = Field(default_factory=list)
+
+    resolution: str | None = None
+    summary: str | None = None
+    added_nodes: int = 0
+    added_edges: int = 0
+
+
 class Investigation(BaseModel):
     investigation_id: str
     anomaly: Anomaly
@@ -149,6 +205,13 @@ class Investigation(BaseModel):
     model: str
     provider: str
 
+    # Which registry entry explained it. The same anomaly run
+    # through two models gives two investigations to compare.
+    model_id: str | None = None
+    model_label: str = ""
+    model_local: bool | None = None
+    usage: ModelUsage = Field(default_factory=ModelUsage)
+
     stages: list[InvestigationStage] = Field(default_factory=list)
 
     hypotheses: list[HypothesisVerdict] = Field(default_factory=list)
@@ -156,6 +219,9 @@ class Investigation(BaseModel):
 
     documents_considered: int = 0
     documents_used: int = 0
+
+    fundamentals: list[FundamentalsSummary] = Field(default_factory=list)
+    followups: list[FollowUp] = Field(default_factory=list)
 
     # ClaimGraph v0.2 payload rendered by the frontend.
     graph: dict[str, Any] | None = None

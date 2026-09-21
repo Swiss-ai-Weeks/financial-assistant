@@ -6,7 +6,7 @@ from concurrent.futures import (
 from datetime import datetime, timezone
 from hashlib import sha1
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 from financial_assistant.domain import (
     ArgumentNodeKind,
@@ -18,10 +18,19 @@ from financial_assistant.domain import (
     RelationshipAssessment,
 )
 
-from .provider import StructuredLLM, complete_structured
+from .evidence_arguments import (
+    EvidenceArgument,
+    evidence_argument,
+    select_arguments,
+)
+from .provider import (
+    StructuredLLM,
+    complete_structured,
+    completion_metadata,
+)
 
 
-PROMPT_VERSION = "relation-assessment-v4"
+PROMPT_VERSION = "relation-assessment-v5-typed"
 
 # Claims judged per request. Asked for twelve assessments in
 # one answer, the real model returned one and the whole
@@ -37,7 +46,13 @@ class _AssessmentCandidate(BaseModel):
         extra="forbid",
     )
 
-    claim_id: str
+    # Identifies the evidence judged. The wire name predates
+    # typed evidence: it may be a claim, an observation, a
+    # calculation or an inference, and `source_id` is accepted
+    # as a synonym.
+    claim_id: str = Field(
+        validation_alias=AliasChoices("claim_id", "source_id"),
+    )
     hypothesis_id: str
 
     relation: RelationKind
@@ -72,6 +87,18 @@ class _AssessmentResponse(BaseModel):
 SYSTEM_PROMPT = """
 Assess the epistemic relationship between validated source
 claims and candidate explanatory hypotheses.
+
+Evidence may also be typed, and its kind limits what it can
+show:
+- claim: a statement grounded in a quoted source. It may be a
+  forecast or an interpretation, not a fact.
+- observation: a recorded value, such as a figure from an SEC
+  filing.
+- calculation: deterministic arithmetic over observations,
+  computed by the application. Never recompute it.
+- inference: derived by a model. NOT a direct observation; its
+  assumptions limit what it can support.
+Wherever these rules say "claim" they mean any such item.
 
 You are NOT deciding whether a hypothesis is true.
 
@@ -129,11 +156,23 @@ Important rules:
 
 7. Do not invent facts.
 
-8. Preserve claim_id and hypothesis_id exactly.
+8. Preserve claim_id and hypothesis_id exactly. claim_id is
+   the CLAIM ID or EVIDENCE ID of the item, whatever its kind.
 
 9. Return exactly one assessment for every supplied
    claim-hypothesis pair.
-10. rationale is REQUIRED in every assessment: one sentence,
+
+10. A company's financial figures describe the company. They
+    are context for "the price moved because of X" unless the
+    evidence also bears on investor reaction, expectations or
+    timing. Behaviour of peers is analogy, never causal proof.
+
+11. Do not classify evidence as context_for merely because it
+    fails to prove the whole causal story: if it makes the
+    EXACT hypothesis more plausible it supports, and the
+    missing premises go in assumptions.
+
+12. rationale is REQUIRED in every assessment: one sentence,
     at most 30 words, saying why this relation was chosen.
     Never omit it and never leave it empty.
 
@@ -157,7 +196,7 @@ Return JSON only:
 
 def _assess_one_hypothesis(
     *,
-    claims: tuple[ExtractedClaim, ...],
+    claims: tuple[EvidenceArgument, ...],
     hypothesis: Hypothesis,
     provider: StructuredLLM,
 ) -> tuple[
@@ -167,20 +206,20 @@ def _assess_one_hypothesis(
     """
     Perform one independent relationship-assessment call.
 
-    `claims` is one batch. Keeping the unit aligned to one
+    `claims` is one batch of typed evidence. Keeping the unit aligned to one
     request preserves execution provenance: one inference
     request produces one ModelRun.
     """
 
     claim_context = "\n\n".join(
-        (
-            f"CLAIM ID: {claim.claim_id}\n"
-            f"TYPE: {claim.claim_type.value}\n"
-            f"TEXT: {claim.text}\n"
-            f"SOURCE QUOTE: {claim.source_quote}"
-        )
+        _describe(claim)
         for claim in claims
     )
+
+    kinds = {
+        claim.source_id: claim.source_kind
+        for claim in claims
+    }
 
     # The decoder is told how many assessments the answer
     # must hold, not only what each one looks like.
@@ -199,7 +238,7 @@ def _assess_one_hypothesis(
 
     candidate["claim_id"] = {
         "type": "string",
-        "enum": [claim.claim_id for claim in claims],
+        "enum": [claim.source_id for claim in claims],
     }
 
     candidate["hypothesis_id"] = {
@@ -252,7 +291,7 @@ def _assess_one_hypothesis(
 
     expected_pairs = {
         (
-            claim.claim_id,
+            claim.source_id,
             hypothesis.hypothesis_id,
         )
         for claim in claims
@@ -309,6 +348,7 @@ def _assess_one_hypothesis(
     ).hexdigest()[:12]
 
     run = ModelRun(
+        **completion_metadata(provider),
         run_id=f"MR-REL-{run_digest}",
         provider=provider.provider_name,
         model=provider.model_name,
@@ -325,8 +365,12 @@ def _assess_one_hypothesis(
     ] = []
 
     for candidate in parsed.assessments:
+        # The execution id is part of the identity: the same
+        # pair judged again, by another model or in a follow-up,
+        # is a different assessment.
         digest = sha1(
             (
+                f"{run.run_id}|"
                 f"{candidate.claim_id}|"
                 f"{candidate.hypothesis_id}|"
                 f"{candidate.relation.value}"
@@ -339,9 +383,9 @@ def _assess_one_hypothesis(
                     f"RA-{digest}"
                 ),
 
-                source_kind=(
-                    ArgumentNodeKind.CLAIM
-                ),
+                source_kind=kinds[
+                    candidate.claim_id
+                ],
                 source_id=(
                     candidate.claim_id
                 ),
@@ -396,12 +440,48 @@ def _assess_one_hypothesis(
     )
 
 
+def _describe(argument: EvidenceArgument) -> str:
+    """
+    One item as the model reads it. Claims keep the layout the
+    stage has always used; other kinds say what they are and
+    where their value came from.
+    """
+
+    summary = argument.provenance_summary
+
+    if argument.source_kind == ArgumentNodeKind.CLAIM:
+        return (
+            f"CLAIM ID: {argument.source_id}\n"
+            f"TYPE: {summary.get('claim_type')}\n"
+            f"TEXT: {argument.text}\n"
+            f"SOURCE QUOTE: {summary.get('source_quote')}"
+        )
+
+    provenance = "; ".join(
+        f"{key}={value}"
+        for key, value in summary.items()
+        if value not in (None, "", (), [])
+        and key not in ("input_observation_ids", "input_calculation_ids")
+    )
+
+    return (
+        f"EVIDENCE ID: {argument.source_id}\n"
+        f"KIND: {argument.source_kind.value}\n"
+        f"TEXT: {argument.text}\n"
+        f"PROVENANCE: {provenance}"
+    )
+
+
 def assess_relationships(
     claims: tuple[ExtractedClaim, ...],
     hypotheses: tuple[Hypothesis, ...],
     provider: StructuredLLM,
     *,
+    observations: tuple = (),
+    calculations: tuple = (),
+    inferences: tuple = (),
     max_workers: int = 1,
+    max_arguments: int = 16,
 ) -> tuple[
     tuple[ModelRun, ...],
     tuple[RelationshipAssessment, ...],
@@ -419,7 +499,14 @@ def assess_relationships(
     a different order.
     """
 
-    if not claims:
+    items = (
+        *claims,
+        *calculations,
+        *observations,
+        *inferences,
+    )
+
+    if not items:
         raise ValueError(
             "At least one claim is required."
         )
@@ -437,18 +524,34 @@ def assess_relationships(
     # One task per (hypothesis, batch of claims), in a fixed
     # order, so that results are deterministic however the
     # requests happen to finish.
-    tasks = [
-        (
-            hypothesis,
-            claims[start:start + BATCH_SIZE],
+    #
+    # SEC filings produce far more figures than an article
+    # produces claims. Each hypothesis is therefore judged
+    # against a bounded selection (see select_arguments), so
+    # the volume of one kind cannot crowd out the others.
+    # Claims alone, the historical case, are all kept.
+    typed = bool(calculations or observations or inferences)
+
+    tasks = []
+
+    for hypothesis in hypotheses:
+        selected = (
+            select_arguments(items, hypothesis, limit=max_arguments)
+            if typed
+            else tuple(evidence_argument(item) for item in items)
         )
-        for hypothesis in hypotheses
-        for start in range(
-            0,
-            len(claims),
-            BATCH_SIZE,
+
+        tasks.extend(
+            (
+                hypothesis,
+                selected[start:start + BATCH_SIZE],
+            )
+            for start in range(
+                0,
+                len(selected),
+                BATCH_SIZE,
+            )
         )
-    ]
 
     def assess(task):
         hypothesis, batch = task

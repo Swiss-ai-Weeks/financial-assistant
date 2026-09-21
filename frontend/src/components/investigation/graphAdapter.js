@@ -14,6 +14,7 @@ const LANES = [
   ["assumption"],
   ["evidence_requirement", "missing_evidence"],
   ["inference"],
+  ["context"],
   ["calculation"],
   ["observation"],
   ["document"],
@@ -33,11 +34,18 @@ const KIND_LABELS = {
   calculation: "Calculation",
   inference: "Inference",
   model_run: "Model run",
+  context: "Context",
+  agent_action: "Follow-up",
+  research_task: "Research task",
+  tool_call: "Tool call",
 };
+
+export const kindLabel = (kind) =>
+  KIND_LABELS[kind] ?? String(kind ?? "").replaceAll("_", " ");
 
 const COLUMNS = 4;
 const COLUMN_WIDTH = 300;
-const ROW_HEIGHT = 130;
+const ROW_HEIGHT = 176;
 const LANE_GAP = 70;
 
 // Execution provenance gets its own lane on the right.
@@ -122,4 +130,89 @@ export function toReactFlowEdges(graphEdges) {
       },
     };
   });
+}
+
+
+/*
+ * SEC filings put hundreds of figures into a graph: every
+ * XBRL fact, its filing, and every metric computed from them.
+ * Shown all at once they bury the argument. By default only
+ * the latest quarter's headline trends stay on the canvas;
+ * a clicked quarter reveals its own lineage, and two toggles
+ * bring back the atomic evidence and the older quarters.
+ *
+ * This changes presentation only: the inspector, the report
+ * and the review keep working on the full graph.
+ */
+const LINEAGE = ["derived_from", "calculated_from", "extracted_from", "published_by"];
+
+const HEADLINE_METRIC =
+  /^(revenue|operating_margin|operating_cash_flow|free_cash_flow_margin|cash|net_debt|shares_outstanding)_(qoq|yoy)_(growth|change)$/;
+
+export function quarterlyView(
+  graph,
+  { showAtomic = false, showOlder = false, expanded = [] } = {}
+) {
+  const hasSnapshots = graph.nodes.some(
+    (node) => node.data?.subtype === "fundamental_snapshot"
+  );
+
+  if (!hasSnapshots) return graph;
+
+  const revealed = new Set();
+
+  const reveal = (id) => {
+    if (revealed.has(id)) return;
+
+    revealed.add(id);
+
+    graph.edges
+      .filter((edge) => edge.source === id && LINEAGE.includes(edge.kind))
+      .forEach((edge) => reveal(edge.target));
+  };
+
+  expanded.forEach(reveal);
+
+  const latest = new Map();
+
+  graph.nodes.forEach((node) => {
+    const data = node.data;
+
+    if (data?.subtype !== "fundamental_snapshot") return;
+
+    if (!latest.has(data.entity) || latest.get(data.entity) < data.period_end) {
+      latest.set(data.entity, data.period_end);
+    }
+  });
+
+  const nodes = graph.nodes.filter((node) => {
+    if (showAtomic || revealed.has(node.node_id)) return true;
+
+    const data = node.data ?? {};
+    const meta = data.metadata ?? {};
+    const fromSec = meta.provider === "SEC EDGAR";
+
+    if (data.older_quarter && !showOlder) return false;
+    if (["observation", "document"].includes(node.kind) && fromSec) return false;
+    if (node.kind === "source" && /SEC EDGAR/.test(node.label)) return false;
+
+    if (node.kind === "calculation" && meta.metric_id) {
+      return (
+        meta.frequency === "quarterly" &&
+        meta.period_end === latest.get(meta.ticker) &&
+        HEADLINE_METRIC.test(meta.metric_id) &&
+        (meta.metric_id.includes("margin") || meta.metric_id.endsWith("growth"))
+      );
+    }
+
+    return true;
+  });
+
+  const ids = new Set(nodes.map((node) => node.node_id));
+
+  return {
+    ...graph,
+    nodes,
+    edges: graph.edges.filter((edge) => ids.has(edge.source) && ids.has(edge.target)),
+  };
 }

@@ -31,19 +31,39 @@ make dev       # API on :8080, UI on http://localhost:5173
 That is the whole desk: live prices, the four strategy monitors, pair scans and
 the news wire need **no API key and no GPU**.
 
+News comes from eight interchangeable providers. Two need no key: Yahoo Finance
+(the latest weeks) and [GDELT](https://www.gdeltproject.org/) (back to 2017,
+heavily rate limited, archive only). Six are switched on by putting their key in
+`.env`: [Finnhub](https://finnhub.io/) (ticker-tagged, with summaries, one year
+back, US symbols), [EODHD](https://eodhd.com/) (also non-US listings),
+[Marketaux](https://www.marketaux.com/), [GNews](https://gnews.io/),
+[NewsAPI](https://newsapi.org/) and [Alpha Vantage](https://www.alphavantage.co/).
+A SearXNG instance (`SEARXNG_URL`) is read as one more source.
+
+The desk never waits for them. Everything a provider returns is accumulated in
+`data/cache/news/<TICKER>.json`; a ticker with anything cached is answered from
+disk at once and refreshed behind the request, and only a ticker seen for the
+first time waits for its first fetch. Providers are asked concurrently and fail
+independently. Because free tiers are counted in requests per day, each provider
+has a refresh interval per ticker and a daily request budget, recorded in
+`data/cache/news/_meta.json` so that restarting the desk does not spend the quota
+again. `GET /api/news/sources` shows, per provider, whether it is configured, its
+last success or error and what it has spent today; `POST /api/news/{ticker}/refresh`
+asks every provider again, now.
+
 Historical news is downloaded once into a local archive and replayed from disk,
-so a recorded demo is reproducible. Providers are interchangeable:
-[Finnhub](https://finnhub.io/) when `FINNHUB_API_KEY` is set (ticker-tagged, with
-summaries, one year back) and [GDELT](https://www.gdeltproject.org/) (no key,
-back to 2017, heavily rate limited). Yahoo Finance fills in the latest weeks.
+so a recorded demo is reproducible. `make news` uses every configured provider,
+then GDELT.
 
 ```bash
 make news                        # the book, current review window (resumable)
 make news ARGS="--universe"      # also pair partners from the peer universe
 ```
 
-To replay a past month, set `AS_OF=2026-02-27` in `.env`, run `make news`, and
-restart. Later prices and later news then do not exist for the desk.
+To replay a past month, pick the date in the top bar (**LIVE / REPLAY**): later
+prices and later news stop existing for the whole desk until you press TODAY.
+`AS_OF=2026-02-27` in `.env` starts the desk on that date; run `make news` for
+the window you replay.
 
 The **Explain** button needs a language model. On the GPU box:
 
@@ -52,6 +72,18 @@ pip install vllm
 make llm       # Nemotron 3.5 Lightning 30B-A3B, one replica per H100, :8000
 make search    # optional: SearXNG for wider web retrieval, then set SEARXNG_URL
 ```
+
+Compare models on the same anomaly: **Apertus**, the Swiss AI Initiative's fully
+open model, is offered next to Nemotron. `make apertus` serves it on the GPU
+box (port 8001), or set `APERTUS_API_KEY` to use a hosted gateway. More models go
+in `PYTHIA_MODELS`. See [docs/INTEGRATION.md](docs/INTEGRATION.md).
+
+```bash
+make universe  # once: prices for the 3,200-security universe (Russell 2500 + STOXX 600)
+```
+
+Set `SEC_USER_AGENT="Pythia research you@example.com"` and every investigation
+also reads the quarterly SEC figures that had been filed by the evidence cutoff.
 
 No GPUs at hand? Put an NVIDIA API key in `.env` (see `.env.example`) to use the
 same model hosted. Other targets: `make test`, `make serve` (UI and API as one
@@ -79,6 +111,16 @@ from that run, and every "what usually happens next" shows its sample size and
 says *historical frequencies, not a forecast*. When nothing clears the bar, the
 desk says so.
 
+Two more views sit below the three stories in the rail:
+
+| | Question | What the desk shows |
+|---|---|---|
+| **Book** · portfolio | *What did the book do, and what is researched?* | Returns, realised volatility, drawdown, concentration and 20-session contributors, each with its formula and input hash; research status per holding; the book edited as weights; a historical pair-overlay simulation (descriptive, never a forecast). |
+| **Why** · ClaimGraph | *Why are these connected, and do the models agree?* | Every investigation opens as a **tab** that stays alive while you work elsewhere. Inside a tab: evidence filters, **time travel** through the evidence, a human **review** (accept / challenge / request evidence), **follow-up research** on any open question, a deterministic **report** (HTML/PDF, Markdown, JSON) and an advisory **Copilot** that can move the view but never the graph. **Compare models** lays the same anomaly side by side as read by Nemotron, Apertus or any configured model. |
+
+Nothing reloads when you move between views: feeds, scans and graphs are
+remembered (and survive a page refresh), then refreshed behind the scenes.
+
 ## The demo in five minutes
 
 1. **Past.** The desk opens on *What you missed*: the book is −3.7% against SPY
@@ -95,8 +137,11 @@ desk says so.
    post-mortem already reported them.
 5. **Add a name.** Search a company in the top bar and press *Add*: the desk
    immediately tests it for cointegrated partners.
-6. **The hardware story.** The **NEMOTRON** pill in the top bar is green when the
-   model is reachable, and every Explain shows measured latency per stage. Why
+6. **Two readers.** In Explain, pick **Apertus** and explain the same anomaly
+   again (or *Explain with every model*). **Why → Compare models** shows where
+   the Swiss open model and Nemotron agree, and where a person should look.
+7. **The hardware story.** The model pill in the top bar is green when the
+   selected model is reachable, and every Explain shows measured latency per stage. Why
    this model, on this hardware: [docs/MODEL.md](docs/MODEL.md).
 
 ## Documentation
@@ -105,6 +150,8 @@ desk says so.
   the strategy monitors; temporal provenance.
 - [Model choice](docs/MODEL.md): why Nemotron 3.5 Lightning 30B-A3B, and how it
   is served on two H100s.
+- [ClaimGraph integration](docs/INTEGRATION.md): models and Apertus, SEC
+  fundamentals, follow-ups, Copilot, portfolio, universe, news cache, time travel.
 - [EventKG integration](docs/eventkg-integration.md)
 - API reference: <http://localhost:8080/docs> while the API runs.
 

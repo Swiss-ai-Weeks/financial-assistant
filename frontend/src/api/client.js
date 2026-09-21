@@ -29,6 +29,13 @@ function query(params) {
 export const api = {
   system: () => request("/system"),
 
+  // Move the whole desk to a past session; null returns to today.
+  timeTravel: (asOf) =>
+    request("/system/as-of", {
+      method: "PUT",
+      body: JSON.stringify({ as_of: asOf }),
+    }),
+
   portfolio: () => request("/portfolio"),
   addPosition: (ticker, shares) =>
     request("/portfolio/positions", {
@@ -40,6 +47,29 @@ export const api = {
       method: "DELETE",
     }),
   resetPortfolio: () => request("/portfolio/reset", { method: "POST" }),
+
+  // The book stated as weights, and the calculations on it.
+  setWeights: (positions, { name, notional } = {}) =>
+    request("/portfolio/weights", {
+      method: "PUT",
+      body: JSON.stringify({ positions, name, notional }),
+    }),
+  portfolioAnalysis: () => request("/portfolio/analysis"),
+  simulateOverlay: (tickerA, tickerB, grossOverlay = 0.02, lookback = 252) =>
+    request("/portfolio/simulate", {
+      method: "POST",
+      body: JSON.stringify({
+        ticker_a: tickerA,
+        ticker_b: tickerB,
+        gross_overlay: grossOverlay,
+        lookback,
+      }),
+    }),
+  marketContext: (tickers) =>
+    request("/portfolio/market", {
+      method: "POST",
+      body: JSON.stringify({ tickers }),
+    }),
 
   searchInstruments: (q) => request(`/instruments/search${query({ q })}`),
   tape: () => request("/market/tape"),
@@ -58,6 +88,11 @@ export const api = {
     request(`/news/${encodeURIComponent(ticker)}${query({ limit: 200 })}`),
   anomalyNews: (anomalyId, ticker) =>
     request(`/news/anomaly/${encodeURIComponent(anomalyId)}${query({ ticker })}`),
+  newsSources: () => request("/news/sources"),
+  refreshNews: (ticker) =>
+    request(`/news/${encodeURIComponent(ticker)}/refresh${query({ limit: 200 })}`, {
+      method: "POST",
+    }),
 
   postmortem: () => request("/postmortem"),
   microscope: (ticker, horizon) =>
@@ -67,9 +102,23 @@ export const api = {
 
   investigations: () => request("/investigations"),
   investigation: (id) => request(`/investigations/${encodeURIComponent(id)}`),
-  startInvestigation: (anomalyId, ticker) =>
+  startInvestigation: (anomalyId, ticker, modelId) =>
     request("/investigations", {
       method: "POST",
-      body: JSON.stringify({ anomaly_id: anomalyId, ticker }),
+      body: JSON.stringify({ anomaly_id: anomalyId, ticker, model_id: modelId }),
     }),
+
+  // Every configured model (Nemotron, Apertus, ...) and whether it answers.
+  models: () => request("/investigations/models"),
+
+  // One bounded research cycle on one open question of a graph.
+  startFollowUp: (investigationId, requirementId, modelId) =>
+    request(`/investigations/${encodeURIComponent(investigationId)}/followups`, {
+      method: "POST",
+      body: JSON.stringify({ requirement_id: requirementId, model_id: modelId }),
+    }),
+
+  // Commentary on a ClaimGraph view, plus at most one UI action.
+  copilot: (payload, signal) =>
+    request("/copilot", { method: "POST", body: JSON.stringify(payload), signal }),
 };

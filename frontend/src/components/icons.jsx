@@ -25,6 +25,27 @@ export const ChartIcon = (props) => (
   </Icon>
 );
 
+export const BookIcon = (props) => (
+  <Icon {...props}>
+    <path d="M5 4.5h11a3 3 0 0 1 3 3v12H8a3 3 0 0 1-3-3z" />
+    <path d="M5 16.5a3 3 0 0 1 3-3h11M9 8.5h6" />
+  </Icon>
+);
+
+export const ClockIcon = (props) => (
+  <Icon {...props}>
+    <circle cx="12" cy="12" r="8" />
+    <path d="M12 7.5V12l3 2" />
+  </Icon>
+);
+
+export const RefreshIcon = (props) => (
+  <Icon {...props}>
+    <path d="M19.5 12a7.5 7.5 0 1 1-2.3-5.4" />
+    <path d="M19.5 4.5v4h-4" />
+  </Icon>
+);
+
 export const PastIcon = (props) => (
   <Icon {...props}>
     <path d="M4 12a8 8 0 1 0 2.6-5.9" />

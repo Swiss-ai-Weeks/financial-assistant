@@ -13,7 +13,11 @@ from financial_assistant.domain import (
     ModelRun,
 )
 
-from .provider import StructuredLLM, complete_structured
+from .provider import (
+    StructuredLLM,
+    complete_structured,
+    completion_metadata,
+)
 
 
 PROMPT_VERSION = "causal-triage-v2"
@@ -260,6 +264,7 @@ def triage_anomaly(
     ).hexdigest()[:12]
 
     run = ModelRun(
+        **completion_metadata(provider),
         run_id=f"MR-TRIAGE-{run_digest}",
         provider=provider.provider_name,
         model=provider.model_name,

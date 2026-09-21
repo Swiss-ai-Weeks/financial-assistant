@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from financial_assistant.api.clock import DeskClock, as_clock
 from financial_assistant.api.errors import NotFound, UpstreamUnavailable
 from financial_assistant.market_data import download_daily_prices
 
@@ -30,13 +31,13 @@ class MarketDataRepository:
         *,
         history_days: int,
         cache_minutes: int,
-        as_of: date | None = None,
+        as_of: date | DeskClock | None = None,
         downloader=download_daily_prices,
     ):
         self._cache_dir = cache_dir
         self._history_days = history_days
         self._cache_seconds = cache_minutes * 60
-        self._as_of = as_of
+        self._clock = as_clock(as_of)
         self._download = downloader
 
         self._lock = threading.Lock()
@@ -72,17 +73,38 @@ class MarketDataRepository:
 
         return self._visible(pd.concat(frames, ignore_index=True))
 
-    def get_available(self, tickers: tuple[str, ...]) -> pd.DataFrame:
+    def get_available(
+        self,
+        tickers: tuple[str, ...],
+        *,
+        refresh: tuple[str, ...] | None = None,
+    ) -> pd.DataFrame:
         """
         Like get_prices, but silently drops tickers with
         no history. Used for peer universes, where one
         delisted symbol must not break the scan.
+
+        `refresh` names the only tickers worth a download. A
+        universe of thousands is filled ahead of time (`make
+        universe`) and read from disk as it is: an interactive
+        request must never start a 3,000-ticker download.
         """
 
         wanted = tuple(dict.fromkeys(t.strip().upper() for t in tickers))
 
+        allowed = (
+            None
+            if refresh is None
+            else {t.strip().upper() for t in refresh}
+        )
+
         with self._lock:
-            stale = [t for t in wanted if self._load(t) is None]
+            stale = [
+                t
+                for t in wanted
+                if (allowed is None or t in allowed)
+                and self._load(t) is None
+            ]
 
             if stale:
                 try:
@@ -104,6 +126,54 @@ class MarketDataRepository:
 
     # -------------------------------------------------
 
+    def cached_tickers(self) -> frozenset[str]:
+        """Tickers with history on disk, fresh or not."""
+
+        if not self._cache_dir.is_dir():
+            return frozenset()
+
+        return frozenset(
+            path.stem.upper() for path in self._cache_dir.glob("*.csv")
+        )
+
+    def download(
+        self,
+        tickers: tuple[str, ...],
+        *,
+        chunk: int = 100,
+        on_progress=None,
+    ) -> int:
+        """
+        Fill the cache for a large universe, a chunk at a time,
+        skipping what is already fresh. Returns how many
+        tickers now have history. One failed chunk is skipped:
+        the next run resumes where this one stopped.
+        """
+
+        wanted = tuple(dict.fromkeys(t.strip().upper() for t in tickers))
+
+        with self._lock:
+            stale = [t for t in wanted if self._load(t) is None]
+
+        for start in range(0, len(stale), chunk):
+            batch = tuple(stale[start:start + chunk])
+
+            try:
+                with self._lock:
+                    self._refresh(batch)
+            except UpstreamUnavailable as error:
+                if on_progress:
+                    on_progress(f"skipped {len(batch)} tickers: {error.message}")
+
+                continue
+
+            if on_progress:
+                on_progress(
+                    f"{min(start + chunk, len(stale))}/{len(stale)} downloaded"
+                )
+
+        return len(self.cached_tickers() & set(wanted))
+
     def _visible(self, frame: pd.DataFrame) -> pd.DataFrame:
         """
         Replay boundary. Every detector downstream is
@@ -112,10 +182,12 @@ class MarketDataRepository:
         replay the whole desk on a past date.
         """
 
-        if self._as_of is None:
+        as_of = self._clock.as_of
+
+        if as_of is None:
             return frame
 
-        return frame.loc[frame["date"] <= pd.Timestamp(self._as_of)]
+        return frame.loc[frame["date"] <= pd.Timestamp(as_of)]
 
     def _path(self, ticker: str) -> Path:
         return self._cache_dir / f"{ticker.replace('/', '_')}.csv"

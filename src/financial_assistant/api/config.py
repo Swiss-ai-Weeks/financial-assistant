@@ -70,6 +70,11 @@ def load_env_file(path: Path) -> None:
 class Settings:
     data_dir: Path
     universe_file: Path
+
+    # The canonical catalogue (Russell 2500 + STOXX 600, about
+    # 3,200 securities) that pair scans and discovery search.
+    # None keeps the desk on the small hand-written list.
+    universe_catalog: Path | None
     seed_portfolio_file: Path
     frontend_dist: Path
 
@@ -103,6 +108,15 @@ class Settings:
     searxng_url: str | None
     newsapi_key: str | None
     finnhub_api_key: str | None
+    alphavantage_api_key: str | None
+    eodhd_api_key: str | None
+    gnews_api_key: str | None
+    marketaux_api_key: str | None
+
+    # SEC EDGAR asks every client to say who it is. With no
+    # contact set, investigations run on news alone and the
+    # graph records the fundamentals as missing evidence.
+    sec_user_agent: str | None
 
     max_documents: int
     max_claims: int
@@ -154,6 +168,22 @@ class Settings:
         return self.data_dir / "archive" / "news"
 
     @property
+    def fundamentals_cache_dir(self) -> Path:
+        return self.data_dir / "cache" / "fundamentals"
+
+    @property
+    def llm_model_id(self) -> str:
+        """Short id of the LLM_PROFILE model in the registry."""
+
+        name = self.llm_model.lower()
+
+        for family in ("nemotron", "apertus", "llama", "qwen", "mistral"):
+            if family in name:
+                return family
+
+        return "default"
+
+    @property
     def state_dir(self) -> Path:
         return self.data_dir / "state"
 
@@ -178,6 +208,16 @@ class Settings:
             data_dir=data_dir,
             universe_file=Path(
                 env("UNIVERSE_FILE", data_dir / "universes" / "us_large_caps.txt")
+            ),
+            universe_catalog=(
+                None
+                if env("UNIVERSE_CATALOG", "").strip().lower() == "off"
+                else Path(
+                    env(
+                        "UNIVERSE_CATALOG",
+                        data_dir / "universe" / "securities.json",
+                    )
+                )
             ),
             seed_portfolio_file=Path(
                 env("SEED_PORTFOLIO_FILE", data_dir / "seed" / "portfolio.json")
@@ -211,6 +251,15 @@ class Settings:
             searxng_url=env("SEARXNG_URL") or None,
             newsapi_key=env("NEWS_API_KEY") or None,
             finnhub_api_key=env("FINNHUB_API_KEY") or None,
+            alphavantage_api_key=(
+                env("ALPHAVANTAGE_API_KEY")
+                or env("ALPHA_VANTAGE_API_KEY")
+                or None
+            ),
+            eodhd_api_key=env("EODHD_API_KEY") or None,
+            gnews_api_key=env("GNEWS_API_KEY") or None,
+            marketaux_api_key=env("MARKETAUX_API_KEY") or None,
+            sec_user_agent=env("SEC_USER_AGENT") or None,
             max_documents=int(env("INVESTIGATION_MAX_DOCUMENTS", "6")),
             max_claims=int(env("INVESTIGATION_MAX_CLAIMS", "12")),
             min_liquidity_musd=float(env("MIN_LIQUIDITY_MUSD", "50")),

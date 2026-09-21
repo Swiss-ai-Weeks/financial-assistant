@@ -16,6 +16,7 @@ from financial_assistant.anomaly_detection import (
     pair_anomaly_to_event,
     signal_anomaly_to_event,
 )
+from financial_assistant.anomaly_detection.scalable import fit_large_universe
 from financial_assistant.api.errors import NotFound
 from financial_assistant.api.models import Anomaly
 from financial_assistant.api.repositories import (
@@ -40,6 +41,13 @@ from financial_assistant.domain import AnomalyEvent
 SESSION_CLOSE_UTC = clock(21, 0)
 
 CACHE_SECONDS = 600
+
+# Above this many securities the exhaustive fitter is no longer
+# an option (3,000 names are 4.5 million pairs), and the scan
+# switches to the bounded one. See anomaly_detection.scalable.
+LARGE_UNIVERSE = 400
+PEERS_PER_FOCUS_TICKER = 8
+PEERS_PER_UNIVERSE_TICKER = 5
 
 
 STRATEGIES: tuple[dict[str, str], ...] = (
@@ -331,7 +339,24 @@ class AnomalyService:
         focus: frozenset[str],
         universe: tuple[str, ...],
     ) -> PairScan:
-        prices = self._market.get_available(universe)
+        large = len(universe) > LARGE_UNIVERSE
+        whole = len(focus) > LARGE_UNIVERSE
+
+        # Only what the manager is looking at is worth a
+        # download inside a request. The rest of a large
+        # universe is read as `make universe` left it.
+        prices = self._market.get_available(
+            universe,
+            refresh=(
+                None
+                if not large
+                else (
+                    *(() if whole else tuple(focus)),
+                    *self._portfolios.load().tickers,
+                    self._benchmark,
+                )
+            ),
+        )
 
         # The benchmark defines the trading calendar, so a
         # newly listed peer cannot shorten the window.
@@ -339,19 +364,52 @@ class AnomalyService:
         window = review_window(calendar, self._review_days)
         formation = self._formation_dates(calendar, window.start)
 
-        fits = fit_pairs(
-            prices,
-            start=formation[0],
-            end=formation[-1],
-            corr_min=self._corr_min,
-            alpha=self._alpha,
-            focus=focus,
-            sectors=self._instruments.sectors,
-            corr_min_same_sector=self._corr_min_same_sector,
-        )
+        if prices["ticker"].nunique() > LARGE_UNIVERSE:
+            # Years of history nobody fits on would only slow
+            # the pivot down. A calendar margin covers markets
+            # whose holidays differ from the benchmark's.
+            recent = prices.loc[
+                pd.to_datetime(prices["date"])
+                >= pd.Timestamp(formation[0]) - pd.Timedelta(days=45)
+            ]
+
+            fits = fit_large_universe(
+                recent,
+                start=pd.Timestamp(formation[0]) - pd.Timedelta(days=45),
+                end=formation[-1],
+                corr_min=self._corr_min,
+                alpha=self._alpha,
+                focus=None if whole else focus,
+                sectors=self._instruments.sectors,
+                corr_min_same_sector=self._corr_min_same_sector,
+                groups=self._instruments.groups,
+                formation_observations=self._formation_observations,
+                max_peers_per_ticker=(
+                    PEERS_PER_UNIVERSE_TICKER
+                    if whole
+                    else PEERS_PER_FOCUS_TICKER
+                ),
+            )
+
+            legs = {t for fit in fits for t in (fit.ticker_a, fit.ticker_b)}
+            monitored = recent.loc[recent["ticker"].isin(legs)]
+
+        else:
+            fits = fit_pairs(
+                prices,
+                start=formation[0],
+                end=formation[-1],
+                corr_min=self._corr_min,
+                alpha=self._alpha,
+                focus=focus,
+                sectors=self._instruments.sectors,
+                corr_min_same_sector=self._corr_min_same_sector,
+            )
+
+            monitored = prices
 
         zscores, detected = monitor_pairs(
-            prices,
+            monitored,
             fits,
             start=window.start,
             end=window.end,

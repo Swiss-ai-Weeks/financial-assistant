@@ -23,6 +23,7 @@ from financial_assistant.domain import (
 from .provider import (
     StructuredLLM,
     complete_structured,
+    completion_metadata,
 )
 
 
@@ -217,6 +218,7 @@ def extract_claims(
     ).hexdigest()[:12]
 
     run = ModelRun(
+        **completion_metadata(provider),
         run_id=(
             f"MR-CLAIMS-{run_digest}"
         ),

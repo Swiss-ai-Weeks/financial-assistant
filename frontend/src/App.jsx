@@ -1,11 +1,11 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { api } from "./api/client";
 import AnomalyTable from "./components/anomalies/AnomalyTable";
 import StrategyMarketplace from "./components/anomalies/StrategyMarketplace";
 import PriceChart from "./components/chart/PriceChart";
 import SpreadChart from "./components/chart/SpreadChart";
-import GraphView from "./components/investigation/GraphView";
+import InvestigateView from "./components/investigation/InvestigateView";
 import InvestigationPanel from "./components/investigation/InvestigationPanel";
 import InvestigationsTable from "./components/investigation/InvestigationsTable";
 import SideRail from "./components/layout/SideRail";
@@ -15,15 +15,18 @@ import TopBar from "./components/layout/TopBar";
 import NewsFeed from "./components/news/NewsFeed";
 import NewsTable from "./components/news/NewsTable";
 import PerformanceStrip from "./components/portfolio/PerformanceStrip";
+import PortfolioPage from "./components/portfolio/PortfolioPage";
 import PositionsTable from "./components/portfolio/PositionsTable";
 import DiscoveryView from "./components/stories/DiscoveryView";
 import FindingsPanel from "./components/stories/FindingsPanel";
 import CopilotStrip from "./components/stories/CopilotStrip";
 import HorizonMatrix from "./components/stories/HorizonMatrix";
 import MicroscopePanel from "./components/stories/MicroscopePanel";
-import { useInvestigation } from "./hooks/useInvestigation";
+import { isActive, useInvestigation } from "./hooks/useInvestigation";
+import { usePersistentState } from "./hooks/usePersistentState";
 import { useResource } from "./hooks/useResource";
 import { useTheme } from "./hooks/useTheme";
+import { resourceCache } from "./lib/resourceCache";
 
 // Chart depth that makes each horizon legible.
 const HORIZON_DAYS = { "1d": 45, "1w": 90, "1m": 180, "3m": 365, "1y": 730 };
@@ -32,6 +35,18 @@ const HORIZON_DAYS = { "1d": 45, "1w": 90, "1m": 180, "3m": 365, "1y": 730 };
 //   /?mode=copilot&ticker=NVDA
 const LINK = new URLSearchParams(window.location.search);
 const MODES = ["postmortem", "copilot", "discovery"];
+const VIEWS = [...MODES, "portfolio", "graph"];
+
+// How long an answer is shown without asking again. News is
+// served from the desk's own cache and refreshed behind the
+// scenes, so re-entering a feed should never wait.
+const MINUTES = 60_000;
+const NEWS_AGE = 10 * MINUTES;
+const MARKET_AGE = 2 * MINUTES;
+const SCAN_AGE = 5 * MINUTES;
+
+const tabLabel = (run) =>
+  [run.anomaly.ticker, ...run.anomaly.related_tickers].join("/");
 const LINKED = LINK.get("ticker")?.trim() || null;
 
 const RANGES = [
@@ -44,35 +59,113 @@ const RANGES = [
 export default function App() {
   const [theme, toggleTheme] = useTheme();
 
-  const [view, setView] = useState(
-    MODES.includes(LINK.get("mode")) ? LINK.get("mode") : "postmortem"
+  // Where the manager was is part of the work: it survives a
+  // reload, and a deep link from the extension overrides it.
+  const [view, setView] = usePersistentState(
+    "view",
+    "postmortem",
+    (value) => VIEWS.includes(value),
+    // /?mode=portfolio and /?mode=graph are links too.
+    VIEWS.includes(LINK.get("mode")) ? LINK.get("mode") : undefined
   );
-  const [horizon, setHorizon] = useState("1w");
-  const [chosenTicker, setTicker] = useState(null);
-  const [days, setDays] = useState(180);
-  const [centerTab, setCenterTab] = useState("chart");
-  const [sideTab, setSideTab] = useState("findings");
-  const [bottomTab, setBottomTab] = useState(
+
+  const [horizon, setHorizon] = usePersistentState("horizon", "1w", (value) =>
+    Object.hasOwn(HORIZON_DAYS, value)
+  );
+  const [chosenTicker, setTicker] = usePersistentState(
+    "ticker",
+    null,
+    undefined,
+    // A ticker sent by the extension wins over the remembered one.
+    LINKED != null ? null : undefined
+  );
+  const [days, setDays] = usePersistentState("days", 180);
+  const [centerTab, setCenterTab] = usePersistentState("centerTab", "chart");
+  const [sideTab, setSideTab] = usePersistentState("sideTab", "findings");
+  const [bottomTab, setBottomTab] = usePersistentState(
+    "bottomTab",
     LINK.get("mode") === "copilot" ? "peers" : "anomalies"
   );
 
-  const [strategy, setStrategy] = useState(null);
-  const [anomaly, setAnomaly] = useState(null);
+  const [strategy, setStrategy] = usePersistentState("strategy", null);
+  const [anomaly, setAnomaly] = usePersistentState("anomaly", null);
   const [newsDay, setNewsDay] = useState(null);
   const [pair, setPair] = useState(null);
   const [pairScan, setPairScan] = useState(null);
 
-  const [investigationId, setInvestigationId] = useState(null);
+  const [investigationId, setInvestigationId] = usePersistentState("investigation", null);
   const [starting, setStarting] = useState(false);
   const [actionError, setActionError] = useState(null);
+
+  // Which model reads the next anomaly, and which ClaimGraphs
+  // are open as tabs in the Why view.
+  const [modelId, setModelId] = usePersistentState("model", null);
+  const [tabs, setTabs] = usePersistentState("tabs", [], Array.isArray);
+  const [activeTab, setActiveTab] = usePersistentState("activeTab", "compare");
+  const [examples, setExamples] = useState({});
+  const [focusAnomalyId, setFocusAnomalyId] = useState(null);
+
+  // /?mode=graph&open=INV-... opens that ClaimGraph as a tab:
+  // a graph can be sent to a colleague as a link.
+  useEffect(() => {
+    const linked = LINK.get("open");
+
+    if (!linked) return undefined;
+
+    let cancelled = false;
+
+    api
+      .investigation(linked)
+      .then((run) => {
+        if (cancelled) return;
+
+        setTabs((current) =>
+          current.some((tab) => tab.id === run.investigation_id)
+            ? current
+            : [
+                ...current,
+                {
+                  id: run.investigation_id,
+                  label: tabLabel(run),
+                  model: run.model_label || run.model.split("/").pop(),
+                  title: run.anomaly.summary,
+                },
+              ]
+        );
+        setActiveTab(run.investigation_id);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, [setTabs, setActiveTab]);
+
+  // A view is mounted the first time it is shown, then kept.
+  const [visited, setVisited] = useState(() => new Set([view]));
+
+  if (!visited.has(view)) setVisited(new Set([...visited, view]));
 
   // ---------------------------------------------------
   // Data
   // ---------------------------------------------------
 
-  const system = useResource(api.system, "system");
-  const portfolio = useResource(api.portfolio, "portfolio");
-  const investigations = useResource(api.investigations, "investigations");
+  const system = useResource(api.system, "system", { maxAge: 15_000 });
+  const asOf = system.data?.as_of ?? null;
+
+  // Everything computed from the market is keyed by the date
+  // the desk believes it is: travelling in time is a different
+  // set of answers, not a stale one.
+  const era = asOf ?? "live";
+
+  const portfolio = useResource(api.portfolio, `portfolio:${era}`, {
+    maxAge: MARKET_AGE,
+    persist: true,
+  });
+  const investigations = useResource(api.investigations, "investigations", {
+    maxAge: 20_000,
+  });
+  const models = useResource(api.models, "models", { maxAge: 15_000 });
 
   // The extension sends whatever was highlighted, which may be
   // "NVDA" or "Nvidia". Symbol search turns both into a ticker.
@@ -104,55 +197,74 @@ export default function App() {
   const hasBook = book != null;
   const hasTicker = ticker != null;
 
-  const tape = useResource(api.tape, `tape:${book}`, { enabled: hasBook });
-  const bookAnomalies = useResource(() => api.anomalies(), `anomalies:${book}`, {
+  const tape = useResource(api.tape, `tape:${book}:${era}`, {
     enabled: hasBook,
+    maxAge: MARKET_AGE,
   });
-  const bookNews = useResource(api.portfolioNews, `news:${book}`, {
+  const bookAnomalies = useResource(() => api.anomalies(), `anomalies:${book}:${era}`, {
+    enabled: hasBook,
+    maxAge: SCAN_AGE,
+    persist: true,
+  });
+  const bookNews = useResource(api.portfolioNews, `news:book:${book}:${era}`, {
     enabled: hasBook && bottomTab === "news",
+    maxAge: NEWS_AGE,
+    persist: true,
   });
 
-  const quote = useResource(() => api.quote(ticker), `quote:${ticker}`, {
+  const quote = useResource(() => api.quote(ticker), `quote:${ticker}:${era}`, {
     enabled: hasTicker,
+    maxAge: MARKET_AGE,
   });
   const copilot = view === "copilot";
   const chartDays = copilot ? HORIZON_DAYS[horizon] : days;
 
   const candles = useResource(
     () => api.candles(ticker, chartDays),
-    `candles:${ticker}:${chartDays}`,
-    { enabled: hasTicker }
+    `candles:${ticker}:${chartDays}:${era}`,
+    { enabled: hasTicker, maxAge: MARKET_AGE }
   );
-  const postmortem = useResource(api.postmortem, `postmortem:${book}`, {
+  const postmortem = useResource(api.postmortem, `postmortem:${book}:${era}`, {
     enabled: hasBook,
+    maxAge: SCAN_AGE,
+    persist: true,
   });
   const microscope = useResource(
     () => api.microscope(ticker, horizon),
-    `microscope:${ticker}:${horizon}`,
-    { enabled: hasTicker && copilot }
+    `microscope:${ticker}:${horizon}:${era}`,
+    { enabled: hasTicker && copilot, maxAge: SCAN_AGE }
   );
   const tickerAnomalies = useResource(
     () => api.anomalies(ticker),
-    `anomalies:${ticker}:${book}`,
-    { enabled: hasTicker && hasBook }
+    `anomalies:${ticker}:${book}:${era}`,
+    { enabled: hasTicker && hasBook, maxAge: SCAN_AGE }
   );
   const strategies = useResource(
     () => api.strategies(ticker),
-    `strategies:${ticker}:${book}`,
-    { enabled: hasTicker && hasBook }
+    `strategies:${ticker}:${book}:${era}`,
+    { enabled: hasTicker && hasBook, maxAge: SCAN_AGE }
   );
   const tickerScan = useResource(
     () => api.pairScan(ticker),
-    `pairs:${ticker}:${book}`,
-    { enabled: hasTicker && hasBook }
+    `pairs:${ticker}:${book}:${era}`,
+    { enabled: hasTicker && hasBook, maxAge: SCAN_AGE }
   );
-  const tickerNews = useResource(() => api.tickerNews(ticker), `news:${ticker}`, {
+
+  // The wire is remembered across views and reloads: opening
+  // the News tab again shows it at once and refreshes behind.
+  const tickerNews = useResource(() => api.tickerNews(ticker), `news:${ticker}:${era}`, {
     enabled: hasTicker,
+    maxAge: NEWS_AGE,
+    persist: true,
+  });
+  const newsSources = useResource(api.newsSources, "news-sources", {
+    enabled: sideTab === "news",
+    maxAge: MINUTES,
   });
   const anomalyNews = useResource(
     () => api.anomalyNews(anomaly.anomaly_id, anomaly.ticker),
-    `anomaly-news:${anomaly?.anomaly_id}`,
-    { enabled: anomaly != null }
+    `anomaly-news:${anomaly?.anomaly_id}:${era}`,
+    { enabled: anomaly != null, maxAge: NEWS_AGE, persist: true }
   );
 
   // Without an explicit choice the spread tab shows the
@@ -166,10 +278,27 @@ export default function App() {
     { enabled: shownPair != null && centerTab === "spread" }
   );
 
-  const investigation = useInvestigation(investigationId, () => {
-    investigations.reload();
-    postmortem.reload();
-  });
+  const reloadInvestigations = investigations.reload;
+  const reloadPostmortem = postmortem.reload;
+
+  const onSettled = useCallback(() => {
+    reloadInvestigations();
+    reloadPostmortem();
+  }, [reloadInvestigations, reloadPostmortem]);
+
+  const [investigation] = useInvestigation(investigationId, onSettled);
+
+  // While anything is being read, the list is what shows its
+  // progress in the comparison and in the blotter.
+  const anyActive = (investigations.data ?? []).some(isActive);
+
+  useEffect(() => {
+    if (!anyActive) return undefined;
+
+    const timer = setInterval(reloadInvestigations, 2500);
+
+    return () => clearInterval(timer);
+  }, [anyActive, reloadInvestigations]);
 
   // ---------------------------------------------------
   // Actions
@@ -184,7 +313,7 @@ export default function App() {
     setInvestigationId(null);
     setCenterTab("chart");
     setView((current) => (MODES.includes(current) && current !== "discovery" ? current : "postmortem"));
-  }, []);
+  }, [setTicker, setAnomaly, setInvestigationId, setCenterTab, setView]);
 
   const selectAnomaly = useCallback((selected) => {
     setAnomaly(selected);
@@ -203,12 +332,12 @@ export default function App() {
       setPair(null);
       setCenterTab("chart");
     }
-  }, []);
+  }, [setAnomaly, setInvestigationId, setSideTab, setView, setTicker, setCenterTab]);
 
   const selectDay = useCallback((day) => {
     setNewsDay(day);
     setSideTab("news");
-  }, []);
+  }, [setSideTab]);
 
   const addTicker = async (symbol) => {
     setActionError(null);
@@ -241,12 +370,27 @@ export default function App() {
     }
   };
 
-  const startInvestigation = async () => {
+  const explain = useCallback(
+    async (target, chosenModel) => {
+      const run = await api.startInvestigation(
+        target.anomaly_id,
+        target.ticker,
+        chosenModel ?? undefined
+      );
+
+      reloadInvestigations();
+
+      return run;
+    },
+    [reloadInvestigations]
+  );
+
+  const startInvestigation = async (chosenModel) => {
     setStarting(true);
     setActionError(null);
 
     try {
-      const run = await api.startInvestigation(anomaly.anomaly_id, anomaly.ticker);
+      const run = await explain(anomaly, chosenModel ?? modelId);
 
       setInvestigationId(run.investigation_id);
     } catch (error) {
@@ -256,11 +400,115 @@ export default function App() {
     }
   };
 
+  // One investigation per online model, from the same
+  // admissible evidence, then straight to the comparison.
+  const startWithEveryModel = async () => {
+    setStarting(true);
+    setActionError(null);
+
+    const readers = (models.data?.models ?? []).filter(
+      (model) => model.online && model.roles.includes("analysis")
+    );
+
+    try {
+      const runs = await Promise.all(
+        readers.map((model) => explain(anomaly, model.id))
+      );
+
+      setInvestigationId(runs[0]?.investigation_id ?? null);
+      setFocusAnomalyId(anomaly.anomaly_id);
+      setActiveTab("compare");
+      setView("graph");
+    } catch (error) {
+      setActionError(error.message);
+    } finally {
+      setStarting(false);
+    }
+  };
+
+  const openTab = useCallback(
+    (run) => {
+      setTabs((current) =>
+        current.some((tab) => tab.id === run.investigation_id)
+          ? current
+          : [
+              ...current,
+              {
+                id: run.investigation_id,
+                label: tabLabel(run),
+                model: run.model_label || run.model.split("/").pop(),
+                title: run.anomaly.summary,
+              },
+            ]
+      );
+
+      setActiveTab(run.investigation_id);
+      setView("graph");
+    },
+    [setTabs, setActiveTab, setView]
+  );
+
+  const closeTab = (id) => {
+    setTabs((current) => current.filter((tab) => tab.id !== id));
+    setExamples((current) =>
+      Object.fromEntries(Object.entries(current).filter(([key]) => key !== id))
+    );
+
+    if (activeTab === id) setActiveTab("compare");
+  };
+
+  const openExample = (run, label) => {
+    setExamples((current) => ({ ...current, [run.investigation_id]: run }));
+
+    setTabs((current) =>
+      current.some((tab) => tab.id === run.investigation_id)
+        ? current
+        : [
+            ...current,
+            { id: run.investigation_id, label: "EXAMPLE", model: label, title: label, example: true },
+          ]
+    );
+
+    setActiveTab(run.investigation_id);
+  };
+
   const openInvestigation = (run) => {
     setAnomaly(run.anomaly);
     setInvestigationId(run.investigation_id);
     setSideTab("explain");
-    setView(run.graph ? "graph" : "postmortem");
+
+    if (run.graph) openTab(run);
+    else setView("postmortem");
+  };
+
+  const timeTravel = async (date) => {
+    setActionError(null);
+
+    try {
+      await api.timeTravel(date);
+
+      // Another date is another market: nothing selected on
+      // the old one can be assumed to exist on the new one.
+      setAnomaly(null);
+      setNewsDay(null);
+      setPair(null);
+      setPairScan(null);
+      system.reload();
+    } catch (error) {
+      setActionError(error.message);
+    }
+  };
+
+  const refreshNews = async () => {
+    try {
+      await api.refreshNews(ticker);
+    } catch (error) {
+      setActionError(error.message);
+    }
+
+    resourceCache.forget(`news:${ticker}`);
+    tickerNews.reload();
+    newsSources.reload();
   };
 
   // ---------------------------------------------------
@@ -285,6 +533,24 @@ export default function App() {
 
   const llm = system.data?.llm;
 
+  const anomalyRuns = useMemo(
+    () =>
+      (investigations.data ?? []).filter(
+        (run) => run.anomaly.anomaly_id === anomaly?.anomaly_id
+      ),
+    [investigations.data, anomaly]
+  );
+
+  // Example tabs live in memory only: after a reload they are gone.
+  const openTabs = tabs
+    .filter((tab) => !tab.example || examples[tab.id])
+    .map((tab) => (tab.example ? { ...tab, run: examples[tab.id] } : tab));
+
+  const shownTab =
+    activeTab === "compare" || openTabs.some((tab) => tab.id === activeTab)
+      ? activeTab
+      : "compare";
+
   const finding = postmortem.data?.findings.find(
     (item) => item.anomaly.anomaly_id === anomaly?.anomaly_id
   );
@@ -298,7 +564,13 @@ export default function App() {
         quote={quote.data}
         portfolio={portfolio.data}
         llm={llm}
+        models={models.data}
+        modelId={modelId}
+        asOf={asOf}
+        latestSession={new Date().toISOString().slice(0, 10)}
         theme={theme}
+        onSelectModel={setModelId}
+        onTimeTravel={timeTravel}
         onToggleTheme={toggleTheme}
         onSelectTicker={selectTicker}
         onAddTicker={addTicker}
@@ -307,23 +579,62 @@ export default function App() {
 
       <SideRail
         view={view}
+        badges={{ graph: openTabs.length }}
         onChange={(next) => {
+          // Moving between Past and Now changes what the side
+          // panels mean; coming back from another view does not
+          // touch them, so the desk is as it was left.
+          if (MODES.includes(next) && MODES.includes(view) && next !== view) {
+            setSideTab("findings");
+            setBottomTab(next === "copilot" ? "peers" : "anomalies");
+            setCenterTab("chart");
+          }
+
           setView(next);
-          setSideTab("findings");
-          setBottomTab(next === "copilot" ? "peers" : "anomalies");
-          setCenterTab("chart");
         }}
       />
 
-      {view === "graph" && (
-        <main className="app__main app__main--full">
-          <GraphView investigation={investigation} theme={theme} />
+      {/* Views stay mounted once visited and are hidden, not
+          removed: a ClaimGraph, a feed or a discovery scan is
+          still there when the manager comes back to it. */}
+      {visited.has("graph") && (
+        <main className="app__main app__main--full" hidden={view !== "graph"}>
+          <InvestigateView
+            tabs={openTabs}
+            active={shownTab}
+            visible={view === "graph"}
+            theme={theme}
+            investigations={investigations.data}
+            models={models.data}
+            focusAnomalyId={focusAnomalyId}
+            onActivate={setActiveTab}
+            onClose={closeTab}
+            onOpen={openTab}
+            onOpenExample={openExample}
+            onExplain={explain}
+            onSettled={onSettled}
+          />
         </main>
       )}
 
-      {view === "discovery" && (
-        <main className="app__main app__main--full">
+      {visited.has("discovery") && (
+        <main className="app__main app__main--full" hidden={view !== "discovery"}>
           <DiscoveryView onReason={selectAnomaly} />
+        </main>
+      )}
+
+      {visited.has("portfolio") && (
+        <main className="app__main app__main--full" hidden={view !== "portfolio"}>
+          <PortfolioPage
+            portfolio={portfolio.data}
+            investigations={investigations.data}
+            anomalies={bookAnomalies.data}
+            asOf={asOf}
+            onSelectTicker={selectTicker}
+            onSelectAnomaly={selectAnomaly}
+            onOpenInvestigation={openInvestigation}
+            onPortfolioChanged={portfolio.reload}
+          />
         </main>
       )}
 
@@ -545,9 +856,12 @@ export default function App() {
                   ticker={ticker}
                   news={tickerNews.data}
                   loading={tickerNews.loading}
+                  refreshing={tickerNews.refreshing}
                   error={tickerNews.error}
                   day={newsDay}
+                  sources={newsSources.data}
                   onClearDay={() => setNewsDay(null)}
+                  onRefresh={refreshNews}
                 />
               )}
 
@@ -557,11 +871,22 @@ export default function App() {
                   finding={finding}
                   anomalyNews={anomalyNews}
                   investigation={investigation}
+                  runs={anomalyRuns}
                   llm={llm}
+                  models={models.data}
+                  modelId={modelId}
                   starting={starting}
                   error={actionError}
+                  onSelectModel={setModelId}
                   onStart={startInvestigation}
-                  onOpenGraph={() => setView("graph")}
+                  onStartAll={startWithEveryModel}
+                  onOpenRun={(run) => setInvestigationId(run.investigation_id)}
+                  onCompare={() => {
+                    setFocusAnomalyId(anomaly.anomaly_id);
+                    setActiveTab("compare");
+                    setView("graph");
+                  }}
+                  onOpenGraph={() => openTab(investigation)}
                 />
               )}
             </div>

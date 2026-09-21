@@ -7,7 +7,7 @@ from financial_assistant.api.dependencies import (
     get_news_service,
 )
 from financial_assistant.api.models import NewsItem
-from financial_assistant.api.schemas import AnomalyNews
+from financial_assistant.api.schemas import AnomalyNews, NewsSourceStatus
 from financial_assistant.api.services import AnomalyService, NewsService
 
 
@@ -20,6 +20,13 @@ def get_portfolio_news(
     service: NewsService = Depends(get_news_service),
 ):
     return service.portfolio_feed(limit=limit)
+
+
+# Declared before /{ticker}, which would otherwise read
+# "sources" as a ticker.
+@router.get("/sources", response_model=list[NewsSourceStatus])
+def get_news_sources(service: NewsService = Depends(get_news_service)):
+    return service.sources()
 
 
 @router.get("/anomaly/{anomaly_id}", response_model=AnomalyNews)
@@ -41,3 +48,12 @@ def get_ticker_news(
     service: NewsService = Depends(get_news_service),
 ):
     return service.feed(ticker, limit=limit)
+
+
+@router.post("/{ticker}/refresh", response_model=list[NewsItem])
+def refresh_ticker_news(
+    ticker: str,
+    limit: int = Query(default=60, ge=1, le=300),
+    service: NewsService = Depends(get_news_service),
+):
+    return service.refresh(ticker, limit=limit)

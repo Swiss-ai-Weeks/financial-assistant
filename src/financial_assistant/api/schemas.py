@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 
 from pydantic import BaseModel, Field
 
@@ -87,6 +87,34 @@ class AddPositionRequest(BaseModel):
     shares: float = Field(default=100, gt=0)
 
 
+class WeightedPosition(BaseModel):
+    ticker: str = Field(min_length=1, max_length=12)
+    weight: float = Field(ge=0.0, le=1.0)
+
+
+class SetWeightsRequest(BaseModel):
+    """
+    The book stated as target weights. They are turned into
+    share counts at the latest visible close, because every
+    money figure on the desk (impact, hedges) is in shares.
+    """
+
+    name: str | None = None
+    notional: float = Field(default=1_000_000, gt=0)
+    positions: list[WeightedPosition] = Field(min_length=1, max_length=100)
+
+
+class SimulateOverlayRequest(BaseModel):
+    ticker_a: str = Field(min_length=1, max_length=12)
+    ticker_b: str = Field(min_length=1, max_length=12)
+    gross_overlay: float = Field(default=0.02, ge=0.0, le=1.0)
+    lookback: int = Field(default=252, ge=20, le=252)
+
+
+class MarketContextRequest(BaseModel):
+    tickers: list[str] = Field(min_length=1, max_length=4)
+
+
 class PairFitView(BaseModel):
     ticker_a: str
     ticker_b: str
@@ -162,15 +190,73 @@ class AnomalyNews(BaseModel):
     hindsight: list[NewsItem]
 
 
+class NewsSourceStatus(BaseModel):
+    """
+    One news source as the desk sees it. A source without a
+    key is listed too, as not configured, so the UI can say
+    what is missing. Errors are messages only: no URL, no key.
+    """
+
+    name: str
+    configured: bool
+    local: bool = False
+
+    last_attempt: datetime | None = None
+    last_success: datetime | None = None
+    last_error: str | None = None
+
+    # Free tiers are counted per day. None: no daily cap.
+    requests_today: int = 0
+    daily_budget: int | None = None
+    min_refresh_minutes: int | None = None
+
+    # Articles this source was the first to bring in.
+    articles: int = 0
+
+
 class StartInvestigationRequest(BaseModel):
     anomaly_id: str = Field(min_length=1)
     ticker: str | None = None
+
+    # Which configured model explains it. Unset: the default.
+    model_id: str | None = None
+
+
+class StartFollowUpRequest(BaseModel):
+    requirement_id: str = Field(min_length=1)
+    model_id: str | None = None
+
+
+class ModelView(BaseModel):
+    """One configured model as the browser may see it: no URL, no key."""
+
+    id: str
+    label: str
+    origin: str = ""
+    provider: str
+    model: str
+    local: bool
+    roles: list[str]
+    default: bool = False
+    online: bool = False
+    detail: str = ""
+
+
+class ModelList(BaseModel):
+    default_id: str
+    egress_policy: str
+    models: list[ModelView]
 
 
 class ServiceStatus(BaseModel):
     name: str
     online: bool
     detail: str = ""
+
+
+class TimeTravelRequest(BaseModel):
+    # None returns the desk to the present.
+    as_of: date | None = None
 
 
 class SystemStatus(BaseModel):

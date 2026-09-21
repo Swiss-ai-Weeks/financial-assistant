@@ -19,23 +19,44 @@ export default function InvestigationPanel({
   finding,
   anomalyNews,
   investigation,
+  runs = [],
   llm,
+  models,
+  modelId,
   starting,
   error,
+  onSelectModel,
   onStart,
+  onStartAll,
+  onOpenRun,
+  onCompare,
   onOpenGraph,
 }) {
   if (!anomaly) {
     return (
       <div className="empty">
         Select an anomaly in the blotter or on the chart. The desk will line up
-        the news that was public when it happened and ask Nemotron to explain it.
+        the news and SEC filings that were public when it happened and ask a
+        model to explain it.
       </div>
     );
   }
 
   const running = ["queued", "running"].includes(investigation?.status);
   const news = anomalyNews.data;
+
+  const readers = (models?.models ?? []).filter((model) =>
+    model.roles.includes("analysis")
+  );
+
+  const reader = readers.find((model) => model.id === modelId) ?? readers[0];
+  const readerName = reader?.label ?? "the model";
+  const online = reader ? reader.online : llm?.online;
+
+  // A second reading of the same anomaly is a comparison.
+  const others = readers.filter(
+    (model) => model.online && !runs.some((run) => run.model_id === model.id)
+  );
 
   return (
     <div className="explain">
@@ -53,24 +74,93 @@ export default function InvestigationPanel({
 
       <FindingFacts finding={finding} />
 
+      {readers.length > 1 && (
+        <div className="explain__readers">
+          <span className="eyebrow">Read by</span>
+
+          {readers.map((model) => (
+            <button
+              key={model.id}
+              className={`reader ${model.id === reader?.id ? "is-active" : ""}`}
+              title={`${model.model} · ${model.local ? "local" : "external"} · ${model.detail}`}
+              onClick={() => onSelectModel(model.id)}
+            >
+              <span className={`dot ${model.online ? "dot--on" : "dot--off"}`} />
+              {model.label}
+              <small>{model.local ? "local" : "external"}</small>
+            </button>
+          ))}
+        </div>
+      )}
+
       <button
         className="btn btn--block"
-        disabled={running || starting || !llm?.online || !news?.admissible.length}
-        onClick={onStart}
+        disabled={running || starting || !online || !news?.admissible.length}
+        onClick={() => onStart(reader?.id)}
       >
         <BoltIcon size={16} />
         {running || starting
-          ? "Nemotron is reading…"
-          : investigation
-            ? "Explain again"
-            : "Explain with Nemotron"}
+          ? `${readerName} is reading…`
+          : runs.some((run) => run.model_id === reader?.id)
+            ? `Explain again with ${readerName}`
+            : `Explain with ${readerName}`}
       </button>
 
-      {!llm?.online && (
+      {others.length > 0 && readers.length > 1 && runs.length === 0 && (
+        <button
+          className="btn btn--ghost btn--block"
+          disabled={running || starting || !news?.admissible.length}
+          title="One investigation per online model, from the same admissible evidence"
+          onClick={onStartAll}
+        >
+          Explain with every model and compare
+        </button>
+      )}
+
+      {!online && (
         <p className="explain__note">
-          The model is offline ({llm?.detail}). Start it with{" "}
-          <code>make llm</code>, or set <code>LLM_BASE_URL</code> in <code>.env</code>.
+          {readerName} is offline ({reader?.detail ?? llm?.detail}). Start it with{" "}
+          <code>make llm</code> or <code>make apertus</code>, or pick another
+          model above.
         </p>
+      )}
+
+      {runs.length > 0 && (
+        <section className="explain__section">
+          <div className="explain__section-head">
+            <span className="eyebrow">Readings of this anomaly · {runs.length}</span>
+            {runs.length > 1 && (
+              <button className="btn btn--ghost btn--small" onClick={onCompare}>
+                Compare
+              </button>
+            )}
+          </div>
+
+          <div className="readings">
+            {runs.map((run) => (
+              <button
+                key={run.investigation_id}
+                className={`readings__row ${
+                  run.investigation_id === investigation?.investigation_id ? "is-active" : ""
+                }`}
+                onClick={() => onOpenRun(run)}
+              >
+                <strong>{run.model_label || run.model.split("/").pop()}</strong>
+                <span className={`mono status status--${run.status}`}>{run.status}</span>
+                <span className="muted readings__best">
+                  {run.hypotheses[0]?.text ?? run.error ?? "…"}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {others.length > 0 && runs.length > 0 && (
+            <p className="explain__note">
+              Not read yet by {others.map((model) => model.label).join(", ")}: pick it
+              above and explain again to compare.
+            </p>
+          )}
+        </section>
       )}
 
       {error && <div className="error-banner">{error}</div>}
@@ -78,7 +168,9 @@ export default function InvestigationPanel({
       {investigation && (
         <section className="explain__section">
           <div className="explain__section-head">
-            <span className="eyebrow">Investigation · {investigation.model.split("/").pop()}</span>
+            <span className="eyebrow">
+              Investigation · {investigation.model_label || investigation.model.split("/").pop()}
+            </span>
             {investigation.graph && (
               <button className="btn btn--ghost btn--small" onClick={onOpenGraph}>
                 <GraphIcon size={14} /> Open ClaimGraph
@@ -98,6 +190,27 @@ export default function InvestigationPanel({
         <section className="explain__section">
           <span className="eyebrow">Why it happened</span>
           <Verdicts hypotheses={investigation.hypotheses} />
+        </section>
+      )}
+
+      {investigation?.fundamentals?.length > 0 && (
+        <section className="explain__section">
+          <span className="eyebrow">SEC fundamentals · as filed by the cutoff</span>
+          <div className="fundamentals">
+            {investigation.fundamentals.map((item) => (
+              <div key={item.ticker} className="fundamentals__row">
+                <strong className="mono">{item.ticker}</strong>
+                {item.status === "available" ? (
+                  <span className="mono">
+                    {item.quarters} quarters · {item.calculations} metrics
+                    {item.latest_period && ` · to ${shortDate(item.latest_period)}`}
+                  </span>
+                ) : (
+                  <span className="muted">{item.warnings[0] ?? "unavailable"}</span>
+                )}
+              </div>
+            ))}
+          </div>
         </section>
       )}
 

@@ -15,7 +15,11 @@ from financial_assistant.domain import (
     ModelRun,
 )
 
-from .provider import StructuredLLM, complete_structured
+from .provider import (
+    StructuredLLM,
+    complete_structured,
+    completion_metadata,
+)
 
 
 PROMPT_VERSION = "hypothesis-audit-v2"
@@ -133,6 +137,8 @@ def audit_hypotheses(
     claims: tuple[ExtractedClaim, ...],
     hypotheses: tuple[Hypothesis, ...],
     provider: StructuredLLM,
+    *,
+    financial_context: str = "",
 ) -> tuple[
     ModelRun,
     tuple[HypothesisAudit, ...],
@@ -199,7 +205,13 @@ def audit_hypotheses(
             f"{anomaly_json}\n\n"
             "VALIDATED SOURCE CLAIMS:\n"
             f"{claim_context}\n\n"
-            "HYPOTHESES TO AUDIT:\n"
+            + (
+                "DETERMINISTIC FINANCIAL CONTEXT:\n"
+                f"{financial_context}\n\n"
+                if financial_context
+                else ""
+            )
+            + "HYPOTHESES TO AUDIT:\n"
             f"{hypothesis_context}"
         ),
         response_model=_AuditResponse,
@@ -243,6 +255,7 @@ def audit_hypotheses(
     ).hexdigest()[:12]
 
     run = ModelRun(
+        **completion_metadata(provider),
         run_id=f"MR-HYP-AUDIT-{run_digest}",
         provider=provider.provider_name,
         model=provider.model_name,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import threading
 import time
 
 from typing import Any
@@ -60,6 +61,7 @@ def read_completion(response) -> dict[str, Any]:
 
     content: list[str] = []
     finish_reason = None
+    usage = None
     line = first
 
     while line:
@@ -74,7 +76,12 @@ def read_completion(response) -> dict[str, Any]:
         if data == "[DONE]":
             break
 
-        choices = json.loads(data).get("choices") or []
+        chunk = json.loads(data)
+
+        # With include_usage the token counts arrive in a final
+        # chunk that has no choices.
+        usage = chunk.get("usage") or usage
+        choices = chunk.get("choices") or []
 
         if not choices:
             continue
@@ -92,7 +99,8 @@ def read_completion(response) -> dict[str, Any]:
                 "message": {"content": "".join(content)},
                 "finish_reason": finish_reason,
             }
-        ]
+        ],
+        "usage": usage,
     }
 
 
@@ -156,6 +164,10 @@ class OpenAICompatibleProvider:
           Nemotron 3 / 3.5: enable_thinking passed as a
           chat-template kwarg.
 
+      "none"
+          Models without a reasoning mode, such as Apertus:
+          nothing is sent, so nothing can be refused.
+
     JSON syntax is requested from the server, but
     semantic validation remains ClaimGraph's job.
     """
@@ -167,6 +179,7 @@ class OpenAICompatibleProvider:
     THINKING_CONTROLS = (
         "system_prompt",
         "chat_template",
+        "none",
     )
 
     def __init__(
@@ -180,6 +193,9 @@ class OpenAICompatibleProvider:
         temperature: float = 0.0,
         api_key: str | None = None,
         thinking_control: str = "system_prompt",
+        model_id: str | None = None,
+        locality: str | None = None,
+        extra_headers: dict[str, str] | None = None,
     ):
         if (
             thinking_control
@@ -199,6 +215,27 @@ class OpenAICompatibleProvider:
         self.timeout_seconds = timeout_seconds
         self.max_tokens = max_tokens
         self.temperature = temperature
+
+        # Which registry entry this is, and whether prompts
+        # stay on our hardware. Both end up on every ModelRun.
+        self.model_id = model_id
+        self.locality = locality
+        self.extra_headers = dict(extra_headers or {})
+
+        # One provider serves many threads at once (claims are
+        # extracted concurrently), so what the LAST call cost is
+        # kept per thread.
+        self._completion = threading.local()
+
+    @property
+    def last_completion(self) -> dict[str, Any]:
+        """
+        Execution metadata of this thread's latest answer:
+        latency, finish reason and, where the server reports
+        them, token counts. Usage is never estimated.
+        """
+
+        return dict(getattr(self._completion, "metadata", {}))
 
     def complete_json(
         self,
@@ -258,6 +295,12 @@ class OpenAICompatibleProvider:
             # See read_completion: makes the timeout an
             # idle timeout.
             "stream": True,
+
+            # Token counts for the execution record. The first
+            # thing given up if a server refuses it.
+            "stream_options": {
+                "include_usage": True,
+            },
         }
 
         if self.thinking_control == "chat_template":
@@ -268,7 +311,11 @@ class OpenAICompatibleProvider:
         headers = {
             "Content-Type":
                 "application/json",
+            **self.extra_headers,
         }
+
+        self._completion.metadata = {}
+        started = time.monotonic()
 
         if self.api_key:
             headers["Authorization"] = (
@@ -315,6 +362,12 @@ class OpenAICompatibleProvider:
             if finish_reason != "length":
                 break
 
+        self._completion.metadata = self._execution(
+            result,
+            finish_reason,
+            started,
+        )
+
         if finish_reason != "stop":
             raise ValueError(
                 "Model did not complete cleanly: "
@@ -325,6 +378,40 @@ class OpenAICompatibleProvider:
             content
         )
 
+    def _execution(
+        self,
+        result: dict[str, Any],
+        finish_reason: str | None,
+        started: float,
+    ) -> dict[str, Any]:
+        metadata: dict[str, Any] = {
+            "chosen_model_id": self.model_id,
+            "locality": self.locality,
+            "max_tokens": self.max_tokens,
+            "finish_reason": finish_reason,
+            "latency_ms": round(
+                (time.monotonic() - started) * 1000
+            ),
+        }
+
+        usage = result.get("usage") or {}
+
+        for key in (
+            "prompt_tokens",
+            "completion_tokens",
+            "total_tokens",
+        ):
+            value = usage.get(key)
+
+            if isinstance(value, int) and not isinstance(value, bool):
+                metadata[key] = value
+
+        return {
+            key: value
+            for key, value in metadata.items()
+            if value is not None
+        }
+
     @staticmethod
     def _give_something_up(
         payload: dict[str, Any],
@@ -332,12 +419,24 @@ class OpenAICompatibleProvider:
         """
         A server refused the request. Relax it one step, from
         the least to the most valuable thing we ask for:
-        thinking control, then the schema (falling back to
-        plain JSON mode), then JSON mode itself.
+        usage reporting and thinking control, then the schema
+        (falling back to plain JSON mode), then JSON mode
+        itself.
         """
 
-        if "chat_template_kwargs" in payload:
-            del payload["chat_template_kwargs"]
+        # Both are conveniences, and a refusal does not say which
+        # field caused it: dropping them together costs one
+        # round trip instead of two.
+        optional = [
+            key
+            for key in ("stream_options", "chat_template_kwargs")
+            if key in payload
+        ]
+
+        if optional:
+            for key in optional:
+                del payload[key]
+
             return True
 
         response_format = payload.get(

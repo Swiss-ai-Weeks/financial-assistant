@@ -14,7 +14,11 @@ from financial_assistant.domain import (
     ModelRun,
 )
 
-from .provider import StructuredLLM, complete_structured
+from .provider import (
+    StructuredLLM,
+    complete_structured,
+    completion_metadata,
+)
 
 
 PROMPT_VERSION = "hypothesis-generation-v2"
@@ -146,6 +150,8 @@ def generate_hypotheses(
     anomaly: AnomalyEvent,
     claims: tuple[ExtractedClaim, ...],
     provider: StructuredLLM,
+    *,
+    financial_context: str = "",
 ) -> tuple[
     ModelRun,
     tuple[Hypothesis, ...],
@@ -179,6 +185,14 @@ def generate_hypotheses(
         "VALIDATED SOURCE CLAIMS:\n"
         f"{claim_context}"
     )
+
+    # Figures the application computed from SEC filings. They
+    # describe the companies; they do not explain the move.
+    if financial_context:
+        request += (
+            "\n\nDETERMINISTIC FINANCIAL CONTEXT:\n"
+            f"{financial_context}"
+        )
 
     unique_texts: list[str] = []
 
@@ -258,6 +272,7 @@ def generate_hypotheses(
     ).hexdigest()[:12]
 
     run = ModelRun(
+        **completion_metadata(provider),
         run_id=f"MR-HYP-{run_digest}",
         provider=provider.provider_name,
         model=provider.model_name,
