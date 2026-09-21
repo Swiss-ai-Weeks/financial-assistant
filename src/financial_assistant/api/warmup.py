@@ -16,6 +16,7 @@ an empty price cache, must still start.
 from __future__ import annotations
 
 import logging
+import os
 import threading
 import time
 from collections.abc import Callable
@@ -50,6 +51,28 @@ def _steps() -> list[tuple[str, Callable[[], object]]]:
             ),
         )
 
+    def refresh_universe():
+        # Requests never download the universe, so without this
+        # its prices would stay at the day `make universe` last
+        # ran while the book moved on. Fresh files are skipped,
+        # which makes a restart cheap; the network calls do not
+        # hold the price lock, so the desk stays responsive.
+        if os.environ.get("UNIVERSE_REFRESH_ON_START", "1") == "0":
+            return None
+
+        if len(universe) <= LARGE_UNIVERSE:
+            return None
+
+        market = deps.get_market_repository()
+
+        market.download(
+            tuple(dict.fromkeys((settings.benchmark, *book, *universe))),
+            on_progress=lambda line: log.info("universe prices: %s", line),
+        )
+
+        # What was scanned before the refresh saw older prices.
+        deps.get_anomaly_service().invalidate()
+
     return [
         ("prices of the universe", load_universe),
         ("book and tape", lambda: deps.get_portfolio_service().view()),
@@ -57,6 +80,8 @@ def _steps() -> list[tuple[str, Callable[[], object]]]:
         ("post-mortem", lambda: deps.get_postmortem_service().review()),
         ("news on the book", lambda: deps.get_news_service().portfolio_feed()),
         ("models", lambda: deps.get_investigation_service().models()),
+        # Last, and long: everything above is already usable.
+        ("refresh of stale universe prices", refresh_universe),
     ]
 
 

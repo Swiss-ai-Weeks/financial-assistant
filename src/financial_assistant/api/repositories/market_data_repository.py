@@ -215,9 +215,15 @@ class MarketDataRepository:
         if not batch:
             return True
 
+        # The network call runs WITHOUT the lock: a background
+        # refresh of thousands of tickers must not make every
+        # request of the desk wait for Yahoo. Only writing the
+        # result is serialised.
         try:
+            frame = self._fetch(batch)
+
             with self._lock:
-                self._refresh(batch)
+                self._store(batch, frame)
         except UpstreamUnavailable as error:
             report(f"skipped {len(batch)} tickers: {error.message}")
 
@@ -294,6 +300,9 @@ class MarketDataRepository:
         return frame
 
     def _refresh(self, tickers: tuple[str, ...]) -> None:
+        self._store(tickers, self._fetch(tickers))
+
+    def _fetch(self, tickers: tuple[str, ...]) -> pd.DataFrame | None:
         end = date.today()
         start = end - timedelta(days=self._history_days)
 
@@ -302,11 +311,17 @@ class MarketDataRepository:
         except Exception as exc:
             # Stale data is better than no desk at all.
             if all(self._path(t).is_file() for t in tickers):
-                return
+                return None
 
             raise UpstreamUnavailable(
                 f"Market data download failed: {exc}"
             ) from exc
+
+        return frame
+
+    def _store(self, tickers: tuple[str, ...], frame: pd.DataFrame | None) -> None:
+        if frame is None:
+            return
 
         self._cache_dir.mkdir(parents=True, exist_ok=True)
 
