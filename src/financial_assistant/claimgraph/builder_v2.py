@@ -182,6 +182,42 @@ def build_investigation_graph(
         )
     )
 
+    for bundle in state.fundamentals:
+        if bundle.status == "unavailable":
+            missing_id = _node_id("missing_evidence", f"fundamentals-{bundle.ticker}")
+            nodes.append(GraphNode(node_id=missing_id, kind=NodeKind.MISSING_EVIDENCE,
+                label=f"{bundle.ticker}: fundamentals unavailable",
+                data={"ticker": bundle.ticker, "provider": "SEC EDGAR", "warnings": list(bundle.warnings),
+                      "as_of": bundle.as_of.isoformat(), "execution": bundle.provider_execution_metadata}))
+            edges.append(GraphEdge(edge_id=_edge_id(anomaly_node_id, EdgeKind.REQUIRES, missing_id),
+                                   source=anomaly_node_id, target=missing_id, kind=EdgeKind.REQUIRES))
+
+    for bundle in state.fundamentals:
+        if not bundle.snapshots:
+            continue
+        company_id = _node_id("context", f"fundamentals-{bundle.ticker}")
+        nodes.append(GraphNode(node_id=company_id, kind=NodeKind.CONTEXT,
+            label=f"{bundle.ticker} fundamentals", data={"subtype": "fundamentals", "entity": bundle.ticker}))
+        edges.append(GraphEdge(edge_id=_edge_id(company_id, EdgeKind.CONTEXT_FOR, anomaly_node_id),
+            source=company_id, target=anomaly_node_id, kind=EdgeKind.CONTEXT_FOR))
+        for index, snapshot in enumerate(bundle.snapshots):
+            identifier = _node_id("context", snapshot.snapshot_id)
+            nodes.append(GraphNode(node_id=identifier, kind=NodeKind.CONTEXT,
+                label=f"{bundle.ticker} {snapshot.fiscal_year}-{snapshot.fiscal_quarter}",
+                data={**snapshot.model_dump(mode="json"), "older_quarter": index < len(bundle.snapshots)-4}))
+            edges.append(GraphEdge(edge_id=_edge_id(identifier, EdgeKind.CONTEXT_FOR, company_id),
+                source=identifier, target=company_id, kind=EdgeKind.CONTEXT_FOR))
+            for metric_id in snapshot.metrics.values():
+                target = _node_id("observation" if metric_id in observations else "calculation", metric_id)
+                edges.append(GraphEdge(edge_id=_edge_id(identifier, EdgeKind.DERIVED_FROM, target),
+                    source=identifier, target=target, kind=EdgeKind.DERIVED_FROM,
+                    data={"role": "snapshot membership; grouping only, not arithmetic"}))
+            for calculation in bundle.calculations:
+                if calculation.frequency == 'quarterly' and calculation.period_end == snapshot.period_end and calculation.status == 'available':
+                    target = _node_id('calculation', calculation.calculation_id)
+                    edges.append(GraphEdge(edge_id=_edge_id(identifier, EdgeKind.CONTEXT_FOR, target),
+                        source=identifier, target=target, kind=EdgeKind.CONTEXT_FOR))
+
     # -------------------------------------------------
     # Sources and retrieved documents
     # -------------------------------------------------
@@ -229,6 +265,10 @@ def build_investigation_graph(
             )
         )
 
+        document_data["observed_at"] = state.anomaly.metadata.get(
+            "observed_at", state.anomaly.detected_at.isoformat()
+        )
+
         nodes.append(
             GraphNode(
                 node_id=document_node_id,
@@ -255,7 +295,14 @@ def build_investigation_graph(
     # Execution provenance
     # -------------------------------------------------
 
+    from financial_assistant.llm.evidence_arguments import relationship_diagnostics
     for run in state.model_runs:
+        run_data = run.model_dump(mode="json", exclude_none=True)
+        if run.operation.value == 'relation_assessment':
+            assessed = tuple(a for a in state.relationship_assessments if a.model_run_id == run.run_id)
+            run_data['relationship_diagnostics'] = relationship_diagnostics(assessed)
+            # Includes unrelated judgments without inventing epistemic graph edges.
+            run_data['assessments'] = [a.model_dump(mode='json') for a in assessed]
         nodes.append(
             GraphNode(
                 node_id=_node_id(
@@ -268,9 +315,7 @@ def build_investigation_graph(
                     f"{run.model}: "
                     f"{run.operation.value}"
                 ),
-                data=run.model_dump(
-                    mode="json"
-                ),
+                data=run_data,
             )
         )
 
@@ -875,6 +920,22 @@ def build_investigation_graph(
                 )
             )
 
+    # Calculations can depend on deterministic intermediate calculations.
+    def check_calculation(identifier, path):
+        if identifier in path:
+            raise ValueError("Calculation dependency cycle")
+        if identifier not in calculations:
+            raise ValueError(f"Unknown input calculation: {identifier}")
+        for dependency in calculations[identifier].input_calculation_ids:
+            check_calculation(dependency, path | {identifier})
+
+    for calculation in state.calculations:
+        check_calculation(calculation.calculation_id, set())
+        source = _node_id("calculation", calculation.calculation_id)
+        for identifier in calculation.input_calculation_ids:
+            target = _node_id("calculation", identifier)
+            edges.append(GraphEdge(edge_id=_edge_id(source, EdgeKind.CALCULATED_FROM, target),
+                                   source=source, target=target, kind=EdgeKind.CALCULATED_FROM))
     # -------------------------------------------------
     # Inferences
     # -------------------------------------------------
@@ -1003,6 +1064,7 @@ def build_investigation_graph(
         )
 
     return InvestigationGraph(
+        fundamentals=state.fundamentals,
         investigation_id=(
             state.investigation_id
         ),

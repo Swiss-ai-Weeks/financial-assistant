@@ -520,3 +520,7 @@ summary { cursor: pointer; padding: 12px; font-size: 13px; }
 .graph-navigation { display: flex; align-items: end; gap: 12px; margin-top: 12px; }
 .graph-navigation > label { flex: 1; min-width: 0; }
 .graph-navigation > button { font-size: 11px; white-space: nowrap; }
+
+.hindsight-outcomes { border: 2px dashed #b88439; padding: 1rem; margin: 1rem; background: #251f16; }
+.hindsight-outcomes summary { cursor: pointer; font-weight: bold; color: #efbc70; }
+.hindsight-outcomes td, .hindsight-outcomes th { padding: .4rem 1.5rem; text-align: left; }

@@ -399,3 +399,22 @@
   margin: 8px 0 16px;
   padding: 10px 16px;
 }
+
+.temporal-review { margin: 16px 0; padding: 18px; border: 1px solid #8293a5; border-radius: 6px; background: #142333; color: #e3eaf1; }
+.temporal-review p { font-size: 13px; line-height: 1.6; }
+.temporal-review button[aria-pressed="true"] { border-color: #91c9ef; background: #29465c; }
+.hindsight-outcomes { border-left: 4px solid #d9ac62; padding-left: 16px; }
+
+.investigation-progress { margin: 1rem 0; padding: 1rem; border: 1px solid #536273; border-radius: 8px; }
+.investigation-progress p { margin: .4rem 0; font-size: .85rem; }
+.investigation-progress ol { list-style: none; padding: 0; margin: .75rem 0; }
+.investigation-progress li { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr) auto; gap: .5rem; padding: .25rem; min-height: 1.5rem; }
+.investigation-progress .current { background: #233b50; color: #fff; border-radius: 4px; }
+.investigation-progress .pending { opacity: .6; }
+.investigation-progress .failed { color: #e87979; }
+.investigation-progress .completed > :first-child { color: #55bba0; }
+
+.copilot-panel { position: fixed; bottom: 18px; left: 18px; z-index: 15; width: min(390px, 90vw); max-height: 65vh; overflow: auto; padding: 12px; background: #152431; color: #eef5fa; border: 1px solid #58788b; border-radius: 10px; box-shadow: 0 4px 24px #0007; }
+.copilot-panel label { display: block; margin: 8px 0; }
+.copilot-panel pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.copilot-panel small { display: block; }

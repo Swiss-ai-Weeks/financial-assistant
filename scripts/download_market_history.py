@@ -29,7 +29,7 @@ def main() -> None:
     parser.add_argument(
         "--tickers-file",
         type=Path,
-        required=True,
+        help="Optional explicit subset; defaults to the canonical merged catalog",
     )
 
     parser.add_argument(
@@ -50,9 +50,8 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    tickers = read_tickers(
-        args.tickers_file
-    )
+    from financial_assistant.universe import catalog
+    tickers = read_tickers(args.tickers_file) if args.tickers_file else tuple(s['ticker'] for s in catalog())
 
     prices, manifest = (
         download_daily_prices(

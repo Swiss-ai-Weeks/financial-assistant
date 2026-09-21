@@ -1,4 +1,5 @@
 from __future__ import annotations
+from financial_assistant.retrieval.archive import ArchiveSearchProvider
 
 import argparse
 
@@ -35,7 +36,6 @@ from financial_assistant.domain import (
 )
 
 from financial_assistant.llm import (
-    OpenAICompatibleProvider,
     assess_relationships,
     audit_hypotheses,
     extract_claims,
@@ -232,6 +232,9 @@ def select_historical_documents(
                         .published_at
                         .date()
                         < plan.as_of.date()
+                        or (document.published_at.date() == plan.as_of.date()
+                            and plan.as_of.hour == 23 and plan.as_of.minute == 59
+                            and plan.as_of.second == 59 and plan.as_of.microsecond == 999999)
                     )
                 )
                 or (
@@ -247,19 +250,8 @@ def select_historical_documents(
 
     
 
-	    # Canonical entity names already discovered during
-    # query expansion. This avoids hard-coded ticker
-    # mappings while giving document selection a simple
-    # entity-specific relevance signal.
-    entity_terms = {
-        query.text.strip().lower()
-        for expansion in bundle.query_expansions
-        for query in expansion.queries
-        if (
-            query.proximity.value == "direct"
-            and query.relation == "entity"
-        )
-    }
+    # Prefer the application's canonical issuer aliases, not an LLM's guess.
+    entity_terms = {entity.casefold() for task in plan.tasks for entity in task.entities}
 
     def entity_match_score(document):
         """
@@ -441,12 +433,8 @@ def main() -> None:
     prices = pd.read_csv(args.prices)
     signal = find_signal(prices, as_of=args.as_of,
                          ticker_a=args.ticker_a, ticker_b=args.ticker_b)
-    provider = OpenAICompatibleProvider(
-        provider_name="nvidia-nim",
-        model_name="nvidia/llama-3.3-nemotron-super-49b-v1.5",
-        base_url="http://127.0.0.1:8000/v1",
-        max_tokens=2048,
-    )
+    from financial_assistant.llm.model_registry import registry, make_provider
+    provider = make_provider(next(m for m in registry() if 'analysis' in m.roles))
     graph, bundle = investigate_signal(
         signal, observed_at=parse_aware_datetime(args.observed_at),
         provider=provider, per_task_limit=args.per_task_limit,
@@ -457,8 +445,14 @@ def main() -> None:
 
 
 def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
-                       max_documents=4, claims_per_document=2, max_claims=8):
+                       max_documents=4, claims_per_document=2, max_claims=8, progress=None,
+                       fundamentals_service=None, event_override=None, research_context=None, market_performance=None):
     """Shared retrieval/reasoning pipeline; callers supply the observed signal and provider."""
+    def report(stage, message, **metrics):
+        if progress is not None:
+            progress(stage, message, metrics)
+
+    report("preparing", "Preparing investigation")
     if observed_at.tzinfo is None or observed_at.utcoffset() is None:
         raise ValueError("observed_at must include a timezone offset")
     anomaly = signal.anomaly
@@ -480,50 +474,32 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
         observed_at.isoformat(),
     )
 
-    print(
-        "Z SCORE:",
-        f"{anomaly.z_score:+.3f}",
-    )
-
-    print(
-        "CORRELATION:",
-        f"{fit.correlation:.3f}",
-    )
-
-    print(
-        "COINTEGRATION P:",
-        f"{fit.pvalue:.5f}",
-    )
-
-    print(
-        "BETA:",
-        f"{fit.beta:.3f}",
-    )
-
-    print(
-        "FORMATION:",
-        fit.formation_start,
-        "→",
-        fit.formation_end,
-    )
-
-    # -------------------------------------------------
-    # 2. Convert quant observation into ClaimGraph's
-    #    neutral attention-event contract.
-    # -------------------------------------------------
-
-    event = pair_anomaly_to_event(
-        anomaly,
-        observed_at=observed_at,
-    )
+    event = event_override or pair_anomaly_to_event(anomaly, observed_at=observed_at)
 
     # -------------------------------------------------
     # 3. Deterministic historical research plan.
     # -------------------------------------------------
 
+    from financial_assistant.fundamentals.service import load_pair, model_context, domain_evidence
+    fundamentals = load_pair(tuple(dict.fromkeys((fit.ticker_a, fit.ticker_b))), observed_at,
+                             service=fundamentals_service, progress=report)
+    import json
+    from financial_assistant.portfolio.service import market_context
+    performance = market_performance if market_performance is not None else market_context((fit.ticker_a, fit.ticker_b), observed_at)
+    financial_context = model_context(fundamentals) + '\nDeterministic market context:\n' + json.dumps(performance)
+    if research_context:
+        financial_context += '\nHuman research/prioritisation context, NOT admitted evidence:\n' + json.dumps(research_context)
+
+    financial_documents, financial_observations, financial_calculations = domain_evidence(fundamentals)
+
     plan = plan_research(
         event
     )
+    from financial_assistant.research.identity import resolve_entities
+    plan = plan.model_copy(update={"tasks": tuple(
+        task.model_copy(update={"entities": resolve_entities(task.entities)}) for task in plan.tasks
+    )})
+    report("research_plan", "Research plan created", research_tasks=len(plan.tasks))
     # The caller selects the provider used for query expansion and reasoning.
 
     def query_expander(
@@ -543,6 +519,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
                 provider,
                 task,
                 as_of=as_of,
+                financial_context=financial_context,
             )	
             
             
@@ -588,10 +565,12 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
 
         # Then augment with open-web discovery.
         SearxngSearchProvider(),
+        ArchiveSearchProvider(),
     ))
 
     document_fetcher = DispatchingDocumentFetcher(
             fetchers={
+                "pythia_archive": TrafilaturaDocumentFetcher(),
                 "bookreader": (
                     CorpusDocumentFetcher()
                     ),
@@ -617,6 +596,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
 	)
 	
 
+    report("retrieval", "Searching BookReader and the web")
     bundle = timed(
         "retrieval",
         lambda: execute_research_plan(
@@ -643,6 +623,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             ),
         ),
     )
+    report("retrieval_complete", "Retrieval complete", search_hits=len(bundle.hits), retrieval_records=len(bundle.records), query_expansions=len(bundle.query_expansions))
 
 
 	
@@ -708,6 +689,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             ),
         )
     )
+    report("evidence_selection", "Historical evidence selected", documents_selected=len(documents))
 
     print()
     print(
@@ -755,6 +737,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     # 6. Source-grounded claim extraction. re-use nvidia nim provider created earlier.
     # -------------------------------------------------
 
+    report("claim_extraction", "Extracting grounded claims", documents=len(documents))
     extraction_results = timed(
         "claim_extraction",
         lambda: extract_document_claims(
@@ -880,14 +863,18 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     # 8. Competing explanations.
     # -------------------------------------------------
 
+    report("claim_extraction_complete", "Grounded claims extracted", claims=len(claims))
+    report("hypothesis_generation", "Generating competing hypotheses")
     hypothesis_run, hypotheses = timed(
         "hypothesis_generation",
         lambda: generate_hypotheses(
             event,
             claims,
             provider,
+            financial_context=financial_context,
         ),
     )
+    report("hypothesis_generation_complete", "Competing hypotheses generated", hypotheses=len(hypotheses))
 
     # The dedicated audit stage owns assumptions.
     hypotheses = tuple(
@@ -917,6 +904,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     # 9. Premise / evidence-gap audit.
     # -------------------------------------------------
 
+    report("hypothesis_audit", "Auditing assumptions and evidence gaps")
     audit_run, audits = timed(
         "hypothesis_audit",
         lambda: audit_hypotheses(
@@ -924,8 +912,10 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             claims,
             hypotheses,
             provider,
+            financial_context=financial_context,
         ),
     )
+    report("hypothesis_audit_complete", "Hypotheses audited", audits=len(audits))
 
     print(
         "HYPOTHESIS AUDITS:",
@@ -936,6 +926,7 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     # 10. Claim ↔ hypothesis assessments.
     # -------------------------------------------------
 
+    report("relationship_assessment", "Assessing claim-hypothesis relationships")
     relation_runs, assessments = timed(
         "relationship_assessment",
         lambda: assess_relationships(
@@ -943,8 +934,11 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
             hypotheses,
             provider,
             max_workers=4,
+            observations=financial_observations,
+            calculations=financial_calculations,
         ),
     )
+    report("relationship_assessment_complete", "Relationships assessed", relationships=len(assessments), model_runs=len(relation_runs))
 
     print(
         "RELATIONSHIP RUNS:",
@@ -969,8 +963,9 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
         ),
 
         anomaly=event,
+        fundamentals=fundamentals,
 
-        documents=documents,
+        documents=(*documents, *financial_documents),
 
         model_runs=(
             *claim_runs,
@@ -990,8 +985,8 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
         ),
 
         evidence_requirements=(),
-        observations=(),
-        calculations=(),
+        observations=financial_observations,
+        calculations=financial_calculations,
         inferences=(),
     )
 
@@ -999,12 +994,14 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
     # 12. ClaimGraph.
     # -------------------------------------------------
 
+    report("graph_build", "Building ClaimGraph")
     graph = timed(
         "graph_build",
         lambda: build_investigation_graph(
             state
         ),
     )
+    report("graph_complete", "ClaimGraph built", nodes=len(graph.nodes), edges=len(graph.edges))
 
     print()
     print(

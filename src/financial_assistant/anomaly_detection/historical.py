@@ -10,16 +10,17 @@ from pydantic import (
 )
 
 from .cointegration import (
-    fit_pairs,
     monitor_pairs,
 )
+from .scalable import fit_universe_pairs
+
 from .models import (
     PairAnomaly,
     PairFit,
 )
 
 
-DETECTOR_VERSION = "historical-pair-v1"
+DETECTOR_VERSION = "historical-pair-v2"
 
 
 class HistoricalPairSignal(BaseModel):
@@ -69,6 +70,11 @@ def scan_pairs_as_of(
     prices: pd.DataFrame,
     *,
     as_of: str | date,
+    universe: pd.DataFrame | None = None,
+    corr_floor: float = 0.50,
+    alpha_ceiling: float = 0.10,
+    max_peers_per_ticker: int = 5,
+    diagnostics: dict | None = None,
     formation_observations: int = 252,
     metric: str = "close",
     corr_min: float = 0.70,
@@ -86,8 +92,8 @@ def scan_pairs_as_of(
     Prices after `as_of` are removed before any
     fitting or monitoring operation.
 
-    Formation uses the final N distinct observations
-    strictly BEFORE `as_of`.
+    Formation uses each pair's final N aligned observations
+    strictly BEFORE `as_of`, within a 450-calendar-day envelope.
 
     Monitoring is performed ONLY on `as_of`.
 
@@ -175,41 +181,31 @@ def scan_pairs_as_of(
             f"{len(formation_dates)}."
         )
 
-    selected_dates = (
-        formation_dates
-        .iloc[
-            -formation_observations:
-        ]
+    # Standalone callers without a mapped universe explicitly operate on one
+    # supplied basket. The API always supplies the mapped global universe.
+    if universe is None:
+        universe = pd.DataFrame({
+            "yahoo_ticker": available["ticker"].dropna().unique(),
+            "universe": "supplied", "currency": None, "mapping_status": "mapped",
+        })
+    broad_fits, groups = fit_universe_pairs(
+        available, universe, as_of=as_of_date, metric=metric,
+        formation_observations=formation_observations,
+        corr_floor=corr_floor, alpha_ceiling=alpha_ceiling,
+        max_peers_per_ticker=max_peers_per_ticker,
     )
-
-    formation_start = (
-        selected_dates
-        .iloc[0]
-        .date()
-    )
-
-    formation_end = (
-        selected_dates
-        .iloc[-1]
-        .date()
-    )
-
-    # -------------------------------------------------
-    # Fit relationships using only information
-    # strictly before the time-travel date.
-    # -------------------------------------------------
-
-    fits = fit_pairs(
-        available,
-        start=formation_start,
-        end=formation_end,
-        metric=metric,
-        corr_min=corr_min,
-        alpha=alpha,
-    )
-
-    if not fits:
-        return ()
+    # One relationship may occur in several current membership groups.
+    unique_fits = {(fit.ticker_a, fit.ticker_b): fit for fit in broad_fits}
+    fits = tuple(fit for fit in unique_fits.values()
+                 if fit.correlation >= corr_min and fit.pvalue < alpha)
+    if diagnostics is not None:
+        diagnostics.update(
+            price_securities=int(available["ticker"].nunique()),
+            groups_processed=len(groups), raw_fit_count=len(broad_fits),
+            eligible_fit_count=len(fits), formation_observations=formation_observations,
+            corr_floor=corr_floor, alpha_ceiling=alpha_ceiling,
+            max_peers_per_ticker=max_peers_per_ticker, compute_backend="cpu",
+        )
 
     # -------------------------------------------------
     # Observe each frozen relationship exactly on D.

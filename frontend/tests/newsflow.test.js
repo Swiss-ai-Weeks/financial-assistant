@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {sessionNews} from '../src/pythia/newsModel.js';
+import {holdingCandidate} from '../src/pythia/deskClient.js';
+const stories = [{news_id:'a',published_at:'2026-09-18T10:00:00+00:00'}, {news_id:'b',published_at:'2026-09-19T10:00:00+00:00'}];
+assert.deepEqual(sessionNews(stories,'2026-09-18').map(i => i.news_id),['a']);
+assert.equal(sessionNews(stories,null).length,2);
+assert.equal(sessionNews(stories,'2026-09-20').length,0);
+assert.deepEqual(sessionNews(undefined,null),[]);
+const handoff=holdingCandidate('CRWV','2026-09-18');
+assert.equal(handoff.ticker_a,'CRWV');
+assert(!('news' in handoff));
+assert(!('edges' in handoff));

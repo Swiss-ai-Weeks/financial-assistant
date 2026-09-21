@@ -11,6 +11,7 @@ const ROWS = {
   missing_evidence: 900,
 
   inference: 1120,
+  context: 1250,
   calculation: 1320,
   observation: 1520,
 
@@ -20,6 +21,7 @@ const ROWS = {
 
 
 const KIND_LABELS = {
+  context: "Context",
   anomaly: "Anomaly",
   source: "Source",
   document: "Document",
@@ -149,4 +151,41 @@ export function toReactFlowEdges(
       },
     };
   });
+}
+
+// Filtering changes presentation only; inspector and replay retain the full graph.
+export function quarterlyView(graph, { showAtomic = false, showOlder = false, expanded = [] } = {}) {
+  if (!graph.nodes.some(n => n.data?.subtype === 'fundamental_snapshot') && !graph.fundamentals?.some(b => b.frequency === 'quarterly')) return graph;
+  const revealed = new Set();
+  const visit = id => {
+    if (revealed.has(id)) return;
+    revealed.add(id);
+    for (const e of graph.edges) {
+      if (e.source === id && ['derived_from', 'calculated_from', 'extracted_from', 'published_by'].includes(e.kind)) visit(e.target);
+    }
+  };
+  expanded.forEach(visit);
+  const latest = new Map();
+  for (const n of graph.nodes) {
+    if (n.data?.subtype === 'fundamental_snapshot') {
+      const d = n.data;
+      if (!latest.has(d.entity) || latest.get(d.entity) < d.period_end) latest.set(d.entity, d.period_end);
+    }
+  }
+  const nodes = graph.nodes.filter(n => {
+    if (showAtomic || revealed.has(n.node_id)) return true;
+    const d = n.data ?? {}, m = d.metadata ?? {};
+    if (d.older_quarter && !showOlder) return false;
+    if (n.kind === 'observation' && m.provider === 'SEC EDGAR') return false;
+    if (n.kind === 'document' && m.provider === 'SEC EDGAR') return false;
+    if (n.kind === 'source' && /SEC EDGAR/.test(n.label)) return false;
+    if (n.kind === 'calculation' && m.metric_id) {
+      return m.frequency === 'quarterly' && m.period_end === latest.get(m.ticker) &&
+        /^(revenue|operating_margin|operating_cash_flow|free_cash_flow_margin|cash|net_debt|shares_outstanding)_(qoq|yoy)_(growth|change)$/.test(m.metric_id) &&
+        (m.metric_id.includes('margin') || m.metric_id.endsWith('growth'));
+    }
+    return true;
+  });
+  const ids = new Set(nodes.map(n => n.node_id));
+  return { ...graph, nodes, edges: graph.edges.filter(e => ids.has(e.source) && ids.has(e.target)) };
 }

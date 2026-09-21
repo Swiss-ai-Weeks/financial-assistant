@@ -2,8 +2,11 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl
+
+from financial_assistant.fundamentals.models import FundamentalEvidenceBundle
 
 
 class ClaimType(StrEnum):
@@ -30,6 +33,7 @@ class ArgumentNodeKind(StrEnum):
 
 
 class ModelOperation(StrEnum):
+    COPILOT = "copilot"
     CLAIM_EXTRACTION = "claim_extraction"
     HYPOTHESIS_GENERATION = "hypothesis_generation"
     HYPOTHESIS_AUDIT = "hypothesis_audit"
@@ -95,6 +99,7 @@ class SourceDocument(BaseModel):
     publisher: str | None = None
     url: HttpUrl
 
+    event_at: datetime | None = None
     published_at: datetime | None = None
 
     # True when the source exposed only a calendar
@@ -110,6 +115,7 @@ class SourceDocument(BaseModel):
 
     # Syndicated copies can share one information lineage.
     lineage_id: str | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class ModelRun(BaseModel):
@@ -131,6 +137,18 @@ class ModelRun(BaseModel):
     prompt_version: str = Field(min_length=1)
 
     created_at: datetime
+    requested_interaction: str | None = None
+    route: str | None = None
+    chosen_model_id: str | None = None
+    locality: str | None = None
+    max_tokens: int | None = None
+    finish_reason: str | None = None
+    latency_ms: int | None = None
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    total_tokens: int | None = None
+    target_workspace: str | None = None
+    target_node: str | None = None
 
 
 class ExtractedClaim(BaseModel):
@@ -282,6 +300,7 @@ class Observation(BaseModel):
     unit: str | None = None
 
     source_document_id: str = Field(min_length=1)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class Calculation(BaseModel):
@@ -300,6 +319,8 @@ class Calculation(BaseModel):
     expression: str = Field(min_length=1)
 
     input_observation_ids: tuple[str, ...]
+    input_calculation_ids: tuple[str, ...] = ()
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
     value: float
     unit: str | None = None
@@ -342,6 +363,8 @@ class InvestigationState(BaseModel):
     investigation_id: str = Field(
         min_length=1
     )
+
+    fundamentals: tuple[FundamentalEvidenceBundle, ...] = ()
 
     anomaly: AnomalyEvent
 

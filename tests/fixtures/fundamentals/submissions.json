@@ -1,0 +1,21 @@
+{
+  "cik": "0000000001",
+  "name": "Fixture Industries",
+  "sic": "3674",
+  "filings": {
+    "recent": {
+      "accessionNumber": [
+        "0000000001-25-000001"
+      ],
+      "filingDate": [
+        "2025-02-20"
+      ],
+      "form": [
+        "10-K"
+      ],
+      "primaryDocument": [
+        "annual.htm"
+      ]
+    }
+  }
+}

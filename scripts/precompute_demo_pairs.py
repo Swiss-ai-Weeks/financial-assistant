@@ -7,7 +7,7 @@ from pathlib import Path
 import pandas as pd
 
 from financial_assistant.anomaly_detection.scalable import (
-    fit_bounded_pairs,
+    fit_universe_pairs,
 )
 
 
@@ -26,7 +26,7 @@ def main() -> None:
         "--universe",
         default=(
             "data/universe/"
-            "global_equities.csv"
+            "securities.json"
         ),
     )
 
@@ -79,9 +79,8 @@ def main() -> None:
         )
     )
 
-    universe = pd.read_csv(
-        args.universe
-    )
+    from financial_assistant.universe import universe_rows
+    universe = pd.DataFrame(universe_rows(json.loads(Path(args.universe).read_text())['securities'])) if args.universe.endswith('.json') else pd.read_csv(args.universe)
 
     universe = universe.loc[
         universe[
@@ -94,134 +93,28 @@ def main() -> None:
         args.as_of
     ).normalize()
 
-    # Provide more calendar history than necessary;
-    # fit_bounded_pairs takes the final exact N
-    # pairwise observations itself.
-    formation_start = (
-        as_of
-        - pd.Timedelta(
-            days=450
-        )
+    fits, summaries = fit_universe_pairs(
+        prices, universe, as_of=as_of,
+        formation_observations=args.formation_observations,
+        corr_floor=args.corr_floor, alpha_ceiling=args.alpha_ceiling,
+        max_peers_per_ticker=args.max_peers,
     )
-
-    formation_end = (
-        as_of
-        - pd.Timedelta(
-            days=1
-        )
-    )
-
     all_fits = []
-    summaries = []
+    offset = 0
+    for summary in summaries:
+        for fit in fits[offset:offset + summary["fits"]]:
+            all_fits.append({**fit.model_dump(mode="json"),
+                             "universe_group": summary["group"]})
+        offset += summary["fits"]
 
-    # Keep US and Europe separate.
-    #
-    # Within Europe also keep currencies separate.
-    # This avoids turning FX movements into hidden
-    # pair-spread confounders in the MVP.
-    groups = universe.groupby(
-        [
-            "universe",
-            "currency",
-        ],
-        dropna=False,
-    )
-
-    for (
-        universe_name,
-        currency,
-    ), group in groups:
-
-        tickers = set(
-            group[
-                "yahoo_ticker"
-            ]
-            .dropna()
-            .astype(str)
-        )
-
-        subset = prices.loc[
-            prices[
-                "ticker"
-            ].isin(
-                tickers
-            )
-        ].copy()
-
-        available = (
-            subset["ticker"]
-            .nunique()
-        )
-
-        if available < 2:
-            continue
-
-        label = (
-            f"{universe_name}/"
-            f"{currency}"
-        )
-
-        print()
-        print(
-            "GROUP:",
-            label,
-        )
-
-        print(
-            "TICKERS:",
-            available,
-        )
-
-        fits = fit_bounded_pairs(
-            subset,
-            start=(
-                formation_start.date()
-            ),
-            end=(
-                formation_end.date()
-            ),
-            formation_observations=(
-                args
-                .formation_observations
-            ),
-            corr_floor=(
-                args.corr_floor
-            ),
-            alpha_ceiling=(
-                args.alpha_ceiling
-            ),
-            max_peers_per_ticker=(
-                args.max_peers
-            ),
-        )
-
-        print(
-            "FITS:",
-            len(fits),
-        )
-
-        summaries.append(
-            {
-                "group": label,
-                "tickers":
-                    available,
-                "fits":
-                    len(fits),
-            }
-        )
-
-        for fit in fits:
-            record = fit.model_dump(
-                mode="json"
-            )
-
-            record[
-                "universe_group"
-            ] = label
-
-            all_fits.append(
-                record
-            )
+    unique = {}
+    for record in all_fits:
+        key = (record['ticker_a'], record['ticker_b'])
+        if key not in unique:
+            unique[key] = {**record, 'universe_groups': [record['universe_group']]}
+        elif record['universe_group'] not in unique[key]['universe_groups']:
+            unique[key]['universe_groups'].append(record['universe_group'])
+    all_fits = list(unique.values())
 
     payload = {
         "schema_version":

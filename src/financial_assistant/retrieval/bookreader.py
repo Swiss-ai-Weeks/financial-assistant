@@ -22,7 +22,8 @@ from urllib.parse import (
 
 from urllib.request import (
     Request,
-    urlopen,
+    build_opener,
+    HTTPRedirectHandler,
 )
 
 from financial_assistant.domain import (
@@ -58,6 +59,15 @@ def _title(
         f"{issue_date} — "
         f"page {page_number}"
     )
+
+
+class _NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise ValueError("BookReader redirects are not allowed")
+
+
+def urlopen(request, *, timeout):
+    return build_opener(_NoRedirect()).open(request, timeout=timeout)
 
 
 class _BookReaderClient:
@@ -101,6 +111,12 @@ class _BookReaderClient:
         self,
         url: str,
     ) -> dict:
+        parsed, base = urlparse(url), urlparse(self.base_url)
+        if (base.scheme not in ("http", "https") or base.username or base.password
+                or parsed.scheme != base.scheme or parsed.netloc != base.netloc
+                or not parsed.path.startswith(base.path.rstrip("/") + "/")
+                or ".." in unquote(parsed.path).split("/")):
+            raise ValueError("BookReader URL must use the configured origin and path")
         request = Request(
             url,
             headers={

@@ -207,6 +207,7 @@ def extract_claims(
     ).hexdigest()[:12]
 
     run = ModelRun(
+        **getattr(provider, 'last_completion', {}),
         run_id=(
             f"MR-CLAIMS-{run_digest}"
         ),
