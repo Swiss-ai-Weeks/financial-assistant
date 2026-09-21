@@ -1,0 +1,116 @@
+{
+  "name": "US Core Long-Only",
+  "manager": "Demo PM",
+  "positions": [
+    {
+      "ticker": "BAC",
+      "name": "Bank of America Corporation",
+      "shares": 3900
+    },
+    {
+      "ticker": "AXP",
+      "name": "American Express Company",
+      "shares": 720
+    },
+    {
+      "ticker": "GS",
+      "name": "The Goldman Sachs Group, Inc.",
+      "shares": 240
+    },
+    {
+      "ticker": "V",
+      "name": "Visa Inc.",
+      "shares": 610
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "shares": 1010
+    },
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom Inc.",
+      "shares": 630
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft Corporation",
+      "shares": 460
+    },
+    {
+      "ticker": "AAPL",
+      "name": "Apple Inc.",
+      "shares": 670
+    },
+    {
+      "ticker": "ADBE",
+      "name": "Adobe Inc.",
+      "shares": 900
+    },
+    {
+      "ticker": "HPE",
+      "name": "Hewlett Packard Enterprise Company",
+      "shares": 3700
+    },
+    {
+      "ticker": "NVO",
+      "name": "Novo Nordisk A/S",
+      "shares": 5200
+    },
+    {
+      "ticker": "LLY",
+      "name": "Eli Lilly and Company",
+      "shares": 200
+    },
+    {
+      "ticker": "UNH",
+      "name": "UnitedHealth Group Incorporated",
+      "shares": 600
+    },
+    {
+      "ticker": "HD",
+      "name": "The Home Depot, Inc.",
+      "shares": 750
+    },
+    {
+      "ticker": "LOW",
+      "name": "Lowe's Companies, Inc.",
+      "shares": 1170
+    },
+    {
+      "ticker": "PEP",
+      "name": "PepsiCo, Inc.",
+      "shares": 1730
+    },
+    {
+      "ticker": "KO",
+      "name": "The Coca-Cola Company",
+      "shares": 2550
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon.com, Inc.",
+      "shares": 890
+    },
+    {
+      "ticker": "CVX",
+      "name": "Chevron Corporation",
+      "shares": 1070
+    },
+    {
+      "ticker": "CAT",
+      "name": "Caterpillar Inc.",
+      "shares": 280
+    },
+    {
+      "ticker": "FDX",
+      "name": "FedEx Corporation",
+      "shares": 740
+    },
+    {
+      "ticker": "DAL",
+      "name": "Delta Air Lines, Inc.",
+      "shares": 2830
+    }
+  ]
+}

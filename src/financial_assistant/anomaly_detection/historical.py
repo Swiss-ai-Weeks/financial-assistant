@@ -76,6 +76,7 @@ def scan_pairs_as_of(
     entry: float = 2.0,
     sectors: dict[str, str] | None = None,
     corr_min_same_sector: float | None = None,
+    batched: bool = False,
 ) -> tuple[
     HistoricalPairSignal,
     ...
@@ -201,25 +202,45 @@ def scan_pairs_as_of(
     # strictly before the time-travel date.
     # -------------------------------------------------
 
-    fits = fit_pairs(
-        available,
-        start=formation_start,
-        end=formation_end,
-        metric=metric,
-        corr_min=corr_min,
-        alpha=alpha,
-        # Only named when used, so the default call is
-        # unchanged for callers that know nothing of it.
-        **(
-            {
-                "sectors": sectors,
-                "corr_min_same_sector":
-                    corr_min_same_sector,
-            }
-            if sectors is not None
-            else {}
-        ),
-    )
+    if batched:
+        # A walk-forward replay refits every relationship at
+        # dozens of past dates. The batched engine tests them
+        # together, with the same statistics; `max_peers` as
+        # large as the universe means no candidate is dropped.
+        from .scalable import fit_large_universe
+
+        fits = fit_large_universe(
+            available,
+            start=formation_start,
+            end=formation_end,
+            metric=metric,
+            corr_min=corr_min,
+            alpha=alpha,
+            sectors=sectors,
+            corr_min_same_sector=corr_min_same_sector,
+            formation_observations=formation_observations,
+            max_peers_per_ticker=int(available["ticker"].nunique()),
+        )
+
+    else:
+        fits = fit_pairs(
+            available,
+            start=formation_start,
+            end=formation_end,
+            metric=metric,
+            corr_min=corr_min,
+            alpha=alpha,
+            # Only named when used, so the default call is
+            # unchanged for callers that know nothing of it.
+            **(
+                {
+                    "sectors": sectors,
+                    "corr_min_same_sector": corr_min_same_sector,
+                }
+                if sectors is not None
+                else {}
+            ),
+        )
 
     if not fits:
         return ()

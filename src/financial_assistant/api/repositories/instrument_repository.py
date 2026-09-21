@@ -44,6 +44,37 @@ def read_universe(path: Path) -> dict[str, str | None]:
     return universe
 
 
+# Index providers and data vendors name the same sectors
+# differently; a book of "Technology" names should still pull
+# in the catalogue's "Information Technology".
+SECTOR_FAMILIES = {
+    "technology": "technology",
+    "information technology": "technology",
+    "communication": "communication",
+    "communication services": "communication",
+    "telecommunications": "communication",
+    "consumer discretionary": "consumer discretionary",
+    "consumer cyclical": "consumer discretionary",
+    "consumer staples": "consumer staples",
+    "consumer defensive": "consumer staples",
+    "health care": "health care",
+    "healthcare": "health care",
+    "financials": "financials",
+    "financial services": "financials",
+    "materials": "materials",
+    "basic materials": "materials",
+}
+
+
+def sector_family(sector: str | None) -> str | None:
+    if not sector:
+        return None
+
+    name = sector.strip().lower()
+
+    return SECTOR_FAMILIES.get(name, name)
+
+
 def read_catalog(path: Path | None) -> dict[str, dict]:
     """
     The canonical security catalogue: one record per Yahoo
@@ -86,8 +117,14 @@ class InstrumentRepository:
         *,
         searcher=None,
         catalog_file: Path | None = None,
+        max_size: int | None = None,
+        priority_sectors: tuple[str, ...] = (),
     ):
         self._catalog = read_catalog(catalog_file)
+        self._max_size = max_size or None
+        self._priority_sectors = frozenset(
+            sector_family(sector) for sector in priority_sectors
+        )
 
         # The catalogue's GICS sector wins over a header of the
         # hand-written list.
@@ -103,13 +140,40 @@ class InstrumentRepository:
         for ticker in self._catalog:
             self._sectors.setdefault(ticker, None)
 
-        self._universe = tuple(self._sectors)
+        self._universe = self._select(tuple(read_universe(universe_file)))
         self._search = searcher or self._yahoo_search
         self._described: dict[str, Instrument] = {}
 
     @property
     def catalog_size(self) -> int:
         return len(self._catalog)
+
+    def _select(self, handwritten: tuple[str, ...]) -> tuple[str, ...]:
+        """
+        The securities that are scanned, at most `max_size`.
+
+        Everything stays searchable; this bounds what pair scans
+        and discovery compare, because their cost grows with it.
+        Kept in this order until the limit is reached:
+
+          1. the hand-written list of large caps;
+          2. catalogued securities in the sectors of the book,
+             where a holding's partners are most likely found;
+          3. the rest of the catalogue.
+
+        Within a group the order is the catalogue's, so the
+        selection is the same on every start.
+        """
+
+        in_sector = [
+            ticker
+            for ticker in self._catalog
+            if sector_family(self._sectors.get(ticker)) in self._priority_sectors
+        ]
+
+        ordered = tuple(dict.fromkeys((*handwritten, *in_sector, *self._catalog)))
+
+        return ordered[: self._max_size] if self._max_size else ordered
 
     @property
     def groups(self) -> dict[str, str]:

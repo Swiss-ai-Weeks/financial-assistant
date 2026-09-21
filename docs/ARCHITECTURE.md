@@ -102,8 +102,10 @@ Each strategy rests on one assumption. A monitor fires when it stops holding.
 | Pairs | the spread reverts to its mean | Engle-Granger cointegrated pairs with spread beyond 2σ |
 
 All detectors are strictly point-in-time: baselines use only sessions *before*
-the one being scored, and pair relationships are fitted on the 252 sessions
-before the review window and never re-estimated inside it.
+the one being scored, and pair relationships are fitted on the 504 sessions (24 months)
+before the review window and never re-estimated inside it. Only the yardstick,
+the mean and standard deviation of the spread, is refreshed every 21 sessions,
+from sessions before the one judged.
 
 ## Temporal provenance
 

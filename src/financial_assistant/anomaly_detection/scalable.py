@@ -5,6 +5,7 @@ from datetime import date, timedelta
 import numpy as np
 import pandas as pd
 
+from .batched import engle_granger_batch, integrated_of_order_one
 from .cointegration import (
     _prepare_prices,
     engle_granger,
@@ -469,6 +470,12 @@ def fit_large_universe(
     Thresholds mean what they mean in fit_pairs: same-sector
     pairs are admitted at `corr_min_same_sector`, all others
     at `corr_min`, and both orderings of a pair are tested.
+
+    The tests themselves, tens of thousands of ADF regressions
+    with lag selection, are where the time goes. They run as a
+    handful of batched matrix operations (see batched.py): on
+    the GPU through cuBLAS when PyTorch sees one, in NumPy
+    otherwise, with statsmodels' numbers either way.
     """
 
     if formation_observations <= 2:
@@ -554,89 +561,108 @@ def fit_large_universe(
             pair = tuple(sorted((str(subject), str(peer))))
             candidates[pair] = max(candidates.get(pair, -1.0), float(value))
 
-    i1: dict[str, bool] = {}
+    values = log_px.to_numpy()
+    column = {ticker: n for n, ticker in enumerate(log_px.columns)}
+    sessions = log_px.index
 
-    def integrated(ticker: str) -> bool:
-        if ticker not in i1:
-            series = log_px[ticker].dropna().tail(formation_observations)
+    def tail(*tickers: str):
+        """Row numbers of the last N sessions all of them traded."""
 
-            try:
-                i1[ticker] = len(series) >= formation_observations and is_i1(series)
-            except (ValueError, np.linalg.LinAlgError):
-                i1[ticker] = False
+        present = ~np.isnan(values[:, [column[t] for t in tickers]]).any(axis=1)
+        rows = np.flatnonzero(present)[-formation_observations:]
 
-        return i1[ticker]
+        return rows if len(rows) == formation_observations else None
 
-    fits: list[PairFit] = []
+    # I(1) is a property of a security, checked once each.
+    involved = sorted({ticker for pair in candidates for ticker in pair})
+    own_rows = {ticker: tail(ticker) for ticker in involved}
+    testable = [t for t in involved if own_rows[t] is not None]
+
+    integrated = dict(
+        zip(
+            testable,
+            integrated_of_order_one(
+                np.array([values[own_rows[t], column[t]] for t in testable])
+            )
+            if testable
+            else (),
+        )
+    )
+
+    admitted = []
 
     for first, second in candidates:
-        if not (integrated(first) and integrated(second)):
+        if not (integrated.get(first) and integrated.get(second)):
             continue
 
-        aligned = log_px[[first, second]].dropna().tail(formation_observations)
+        rows = tail(first, second)
 
-        if len(aligned) < formation_observations:
+        if rows is None:
             continue
 
-        exact = float(aligned.diff().dropna().corr().iloc[0, 1])
+        a, b = values[rows, column[first]], values[rows, column[second]]
+
+        # Correlation on exactly the observations that are fitted.
+        exact = float(np.corrcoef(np.diff(a), np.diff(b))[0, 1])
 
         if not np.isfinite(exact) or exact < required(first, second):
             continue
 
-        orderings = []
+        admitted.append((first, second, exact, rows, a, b))
 
-        for dependent, regressor in ((first, second), (second, first)):
-            try:
-                outcome = engle_granger(
-                    aligned[dependent],
-                    aligned[regressor],
-                    check_i1=False,
-                    alpha=alpha,
+    fits: list[PairFit] = []
+
+    if admitted:
+        left = np.array([item[4] for item in admitted])
+        right = np.array([item[5] for item in admitted])
+
+        # Engle-Granger is not symmetric: both orderings are
+        # tested and the stronger relationship is kept, with
+        # ticker_a as its dependent leg.
+        forward = engle_granger_batch(left, right)
+        backward = engle_granger_batch(right, left)
+
+        for index, (first, second, exact, rows, _, _) in enumerate(admitted):
+            options = [
+                (result.pvalue[index], dependent, regressor, result)
+                for dependent, regressor, result in (
+                    (first, second, forward),
+                    (second, first, backward),
                 )
-            except (ValueError, np.linalg.LinAlgError):
+                if result.pvalue[index] < alpha
+            ]
+
+            if not options:
                 continue
 
-            if outcome is not None and outcome["cointegrated"]:
-                orderings.append((dependent, regressor, outcome))
+            _, ticker_a, ticker_b, result = min(options, key=lambda item: item[0])
 
-        if not orderings:
-            continue
+            spread_std = float(result.spread_std[index])
 
-        ticker_a, ticker_b, result = min(
-            orderings,
-            key=lambda item: item[2]["pvalue"],
-        )
+            if not np.isfinite(spread_std) or spread_std <= 0:
+                continue
 
-        spread = result["spread"]
-        spread_std = float(spread.std())
+            hl = float(result.half_life[index])
 
-        if not np.isfinite(spread_std) or spread_std <= 0:
-            continue
-
-        try:
-            hl = half_life(spread)
-        except (ValueError, np.linalg.LinAlgError):
-            hl = float("inf")
-
-        fits.append(
-            PairFit(
-                ticker_a=ticker_a,
-                ticker_b=ticker_b,
-                metric=metric,
-                formation_start=aligned.index.min().date(),
-                formation_end=aligned.index.max().date(),
-                correlation=exact,
-                const=result["const"],
-                beta=result["beta"],
-                adf_stat=result["adf_stat"],
-                pvalue=result["pvalue"],
-                adf_lags=result["lags"],
-                nobs=result["nobs"],
-                half_life_days=None if not np.isfinite(hl) else float(hl),
-                spread_mean=float(spread.mean()),
-                spread_std=spread_std,
+            fits.append(
+                PairFit(
+                    ticker_a=ticker_a,
+                    ticker_b=ticker_b,
+                    metric=metric,
+                    formation_start=sessions[rows[0]].date(),
+                    formation_end=sessions[rows[-1]].date(),
+                    correlation=exact,
+                    const=float(result.const[index]),
+                    beta=float(result.beta[index]),
+                    adf_stat=float(result.statistic[index]),
+                    pvalue=float(result.pvalue[index]),
+                    adf_lags=int(result.lags[index]),
+                    nobs=int(result.observations[index]),
+                    half_life_days=None if not np.isfinite(hl) else hl,
+                    spread_mean=float(result.spread_mean[index]),
+                    spread_std=spread_std,
+                )
             )
-        )
 
     return tuple(
         sorted(

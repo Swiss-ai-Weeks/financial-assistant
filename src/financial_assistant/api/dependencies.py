@@ -89,9 +89,26 @@ def get_market_repository() -> MarketDataRepository:
 def get_instrument_repository() -> InstrumentRepository:
     settings = get_settings()
 
+    # Which sectors come first when the universe is capped: the
+    # book's own. Read once: a very different book needs a
+    # restart to re-prioritise, which is a fair price for a
+    # universe that does not change under a running scan.
+    catalogue = InstrumentRepository(
+        settings.universe_file,
+        catalog_file=settings.universe_catalog,
+    )
+
+    book = get_portfolio_repository().load().tickers
+
     return InstrumentRepository(
         settings.universe_file,
         catalog_file=settings.universe_catalog,
+        max_size=settings.universe_max,
+        priority_sectors=tuple(
+            sector
+            for ticker in book
+            if (sector := catalogue.sectors.get(ticker)) is not None
+        ),
     )
 
 
@@ -226,6 +243,8 @@ def get_anomaly_service() -> AnomalyService:
         corr_min_same_sector=settings.pairs_corr_min_same_sector,
         alpha=settings.pairs_alpha,
         entry=settings.pairs_entry,
+        recalibrate_every=settings.pairs_recalibrate_sessions or None,
+        recalibration_window=settings.pairs_recalibration_window or None,
     )
 
 

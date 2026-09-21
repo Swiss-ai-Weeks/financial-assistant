@@ -191,3 +191,70 @@ def test_monitor_uses_frozen_fit_parameters():
 
     assert shifted_anomalies == ()
 
+
+
+def test_the_yardstick_is_recalibrated_without_looking_ahead():
+    """
+    beta and const stay frozen; the mean and standard deviation
+    a deviation is measured with are re-estimated every K
+    sessions, from sessions strictly before the one judged.
+    """
+
+    import numpy as np
+    import pandas as pd
+
+    from financial_assistant.anomaly_detection import monitor_pairs
+    from financial_assistant.anomaly_detection.models import PairFit
+
+    rng = np.random.default_rng(5)
+    days = pd.bdate_range("2024-01-01", periods=400)
+
+    log_b = 4.0 + np.cumsum(rng.normal(0, 0.01, len(days)))
+
+    # Calm for 300 sessions, then the spread becomes 5x noisier.
+    noise = rng.normal(0, 0.01, len(days))
+    noise[300:] *= 5
+
+    prices = pd.concat(
+        [
+            pd.DataFrame({"date": days, "ticker": "A", "close": np.exp(log_b + noise)}),
+            pd.DataFrame({"date": days, "ticker": "B", "close": np.exp(log_b)}),
+        ]
+    )
+
+    fit = PairFit(
+        ticker_a="A", ticker_b="B", metric="close",
+        formation_start=days[0].date(), formation_end=days[251].date(),
+        correlation=0.9, const=0.0, beta=1.0, adf_stat=-5.0, pvalue=0.001,
+        adf_lags=0, nobs=251, half_life_days=2.0,
+        spread_mean=float(noise[:252].mean()), spread_std=float(noise[:252].std(ddof=1)),
+    )
+
+    window = dict(start=days[252].date(), end=days[-1].date(), entry=2.0)
+
+    frozen, _ = monitor_pairs(prices, (fit,), **window)
+    moving, _ = monitor_pairs(
+        prices, (fit,), **window, recalibrate_every=21, recalibration_window=63
+    )
+
+    frozen, moving = frozen["A/B"], moving["A/B"]
+
+    # Until the first recalibration the formation statistics apply.
+    assert np.allclose(frozen.iloc[:21], moving.iloc[:21])
+
+    # Once the noisier regime is what the yardstick was built
+    # from, the same moves stop looking extreme.
+    late = slice(days[380], days[-1])
+
+    assert (frozen[late].abs() > 2).mean() > 0.5
+    assert (moving[late].abs() > 2).mean() < 0.2
+
+    # No look-ahead: changing the FUTURE leaves every earlier z-score as it was.
+    altered = prices.copy()
+    altered.loc[(altered["ticker"] == "A") & (altered["date"] > days[350]), "close"] *= 1.5
+
+    again, _ = monitor_pairs(
+        altered, (fit,), **window, recalibrate_every=21, recalibration_window=63
+    )
+
+    assert np.allclose(moving[: days[350]], again["A/B"][: days[350]])

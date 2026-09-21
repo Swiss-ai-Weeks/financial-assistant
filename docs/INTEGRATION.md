@@ -129,10 +129,26 @@ the hand-written list.
   universe` fills the price cache in resumable chunks; interactive scans refresh
   only the book, the benchmark and the ticker on screen. **Until `make universe`
   has run, scans cover whatever is already cached** (the old ~140 names).
+- `UNIVERSE_MAX` (default 1,000) bounds what is scanned: the hand-written
+  large caps, then catalogued names in the sectors of the book, then the rest.
+  All 3,200 stay searchable.
 - Above 400 securities, scans switch from the exhaustive fitter to
   `fit_large_universe`: pairwise-complete correlations (different exchange
   holidays), at most *K* peers per security before any Engle-Granger test, pairs
   kept inside one universe and currency, both orderings tested.
+- The tests run **batched** (`anomaly_detection/batched.py`): every ADF and
+  Engle-Granger regression of a scan is a few stacked matrix products and
+  solves, on the GPU through PyTorch/cuBLAS when a card is visible
+  (`PAIRS_DEVICE`), in NumPy otherwise. Lag selection, samples, statistics and
+  MacKinnon p-values follow statsmodels step by step and are tested against it
+  pair by pair. Measured on a synthetic 3,200-name cache, CPU only: 158 s with
+  the per-pair loop, 17 s batched; 10 s for 1,000 names.
+- Relationships are fitted on **24 months** (`PAIRS_FORMATION=504`). beta and
+  const never change; the mean and standard deviation a spread is judged with
+  are re-estimated every 21 sessions from the trailing 252, from data strictly
+  before the session judged (`PAIRS_RECALIBRATE_SESSIONS`, `..._WINDOW`).
+- The anomaly cache computes each scan once at a time (four endpoints ask for
+  the book's scan on first paint), and the desk warms its caches on start.
 - Discovery's walk-forward analogue record is built from the book and the
   securities that are related today (at most 160), not from the whole universe.
 - Index memberships are current snapshots. A replayed desk inherits today's

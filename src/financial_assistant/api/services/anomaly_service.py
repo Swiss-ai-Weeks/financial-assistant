@@ -99,8 +99,8 @@ STRATEGIES: tuple[dict[str, str], ...] = (
         ),
         "assumption": "The spread always reverts to its mean.",
         "detects": (
-            "Cointegration spreads beyond 2 sigma versus a frozen "
-            "252-session fit."
+            "Cointegration spreads beyond 2 sigma versus a relationship "
+            "fitted on 24 months, its yardstick refreshed monthly."
         ),
     },
 )
@@ -133,6 +133,8 @@ class AnomalyService:
         alpha: float,
         entry: float,
         corr_min_same_sector: float | None = None,
+        recalibrate_every: int | None = None,
+        recalibration_window: int | None = None,
     ):
         self._portfolios = portfolios
         self._market = market
@@ -145,6 +147,10 @@ class AnomalyService:
         self._corr_min_same_sector = corr_min_same_sector
         self._alpha = alpha
         self._entry = entry
+        self._recalibration = {
+            "recalibrate_every": recalibrate_every,
+            "recalibration_window": recalibration_window,
+        }
 
         self._lock = threading.Lock()
         self._cache: dict[tuple, tuple[float, object]] = {}
@@ -296,6 +302,7 @@ class AnomalyService:
             start=formation[0],
             end=window.end,
             entry=self._entry,
+            **self._recalibration,
         )
 
         series = zscores.iloc[:, 0].dropna()
@@ -415,6 +422,7 @@ class AnomalyService:
             start=window.start,
             end=window.end,
             entry=self._entry,
+            **self._recalibration,
         )
 
         flagged = {(a.ticker_a, a.ticker_b) for a in detected}

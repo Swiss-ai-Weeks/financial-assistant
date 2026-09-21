@@ -60,6 +60,13 @@ ANALOGUE_MAX_AGE_DAYS = 45
 # universe is too large to replay whole.
 ANALOGUE_MAX_TICKERS = 160
 
+# Above this many securities the analogue replay uses the
+# batched cointegration engine.
+BATCHED_ABOVE = 40
+
+# Candidates whose news is read and triaged per scan.
+MAX_CANDIDATES = 40
+
 
 class DiscoveryService:
     """
@@ -204,8 +211,11 @@ class DiscoveryService:
         )
         securities = int(prices["ticker"].nunique())
 
+        # Of the millions of possible pairs only each security's
+        # closest co-movers are tested: say what is being done.
         self._stage(
-            f"Testing {securities * (securities - 1) // 2:,} possible relationships"
+            f"Finding co-movers among {securities:,} securities and "
+            "testing them for cointegration"
         )
         scan = self._anomalies.pair_scan(focus=universe)
 
@@ -215,8 +225,6 @@ class DiscoveryService:
         )
         base = self._analogue_base(self._analogue_sample(prices, scan, holdings))
 
-        self._stage("Reading the news behind every unusual relationship")
-
         unusual = [
             anomaly
             for anomaly in scan.anomalies
@@ -225,10 +233,37 @@ class DiscoveryService:
 
         liquidity = self._liquidity(prices)
 
+        def tradable(anomaly) -> float:
+            legs = (anomaly.ticker, anomaly.related_tickers[0])
+
+            return min(liquidity.get(leg, 0.0) for leg in legs)
+
+        # Reading the news and asking the model costs seconds
+        # per candidate, and a universe of a thousand names has
+        # hundreds of stretched pairs on any day. Liquidity is
+        # free, so it is applied first, and only the most
+        # stretched of what is tradable are read in depth.
+        tradable_now = [
+            anomaly
+            for anomaly in unusual
+            if tradable(anomaly) >= self._min_liquidity_musd
+        ]
+
+        shortlist = sorted(
+            tradable_now,
+            key=lambda anomaly: abs(anomaly.z_score),
+            reverse=True,
+        )[:MAX_CANDIDATES]
+
+        self._stage(
+            f"Reading the news behind the {len(shortlist)} most stretched "
+            f"of {len(unusual)} unusual relationships"
+        )
+
         setups = []
         admissible: dict[str, list[NewsItem]] = {}
 
-        for anomaly in unusual:
+        for anomaly in shortlist:
             a, b = anomaly.ticker, anomaly.related_tickers[0]
             relationship = relationship_of(scan, a, b)
 
@@ -336,8 +371,17 @@ class DiscoveryService:
                     count=self._co_moving(prices, scan),
                 ),
                 FunnelStep(label="cointegrated", count=len(scan.fits)),
-                FunnelStep(label="unusual today", count=len(setups)),
-                FunnelStep(label="liquid enough", count=len(liquid)),
+                FunnelStep(label="unusual today", count=len(unusual)),
+                FunnelStep(label="liquid enough", count=len(tradable_now)),
+                FunnelStep(
+                    label="most stretched, read in depth",
+                    count=len(liquid),
+                    detail=(
+                        f"the {MAX_CANDIDATES} largest deviations"
+                        if len(tradable_now) > MAX_CANDIDATES
+                        else None
+                    ),
+                ),
                 FunnelStep(
                     label="dislocation, not a justified repricing",
                     count=len(dislocations),
@@ -671,6 +715,13 @@ class DiscoveryService:
                 entry=self._entry,
                 sectors=self._instruments.sectors,
                 corr_min_same_sector=self._corr_min_same_sector,
+                # Fifty refits of a hundred-odd names: the
+                # batched engine turns minutes into seconds.
+                **(
+                    {"batched": True}
+                    if prices["ticker"].nunique() > BATCHED_ABOVE
+                    else {}
+                ),
             )
 
             self._cache_dir.mkdir(parents=True, exist_ok=True)

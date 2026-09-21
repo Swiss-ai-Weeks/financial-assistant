@@ -75,6 +75,10 @@ class Settings:
     # 3,200 securities) that pair scans and discovery search.
     # None keeps the desk on the small hand-written list.
     universe_catalog: Path | None
+
+    # How many of them are scanned (0: all). Scan cost grows
+    # with this; everything stays searchable either way.
+    universe_max: int
     seed_portfolio_file: Path
     frontend_dist: Path
 
@@ -90,7 +94,14 @@ class Settings:
     market_cache_minutes: int
     news_cache_minutes: int
 
+    # Relationships are fitted on 24 months of sessions. The
+    # mean and standard deviation a spread is judged with are
+    # re-estimated every `pairs_recalibrate_sessions` sessions
+    # from the trailing `pairs_recalibration_window` (0 keeps
+    # the formation statistics for good).
     pairs_formation_observations: int
+    pairs_recalibrate_sessions: int
+    pairs_recalibration_window: int
     pairs_corr_min: float
     pairs_corr_min_same_sector: float
     pairs_alpha: float
@@ -219,6 +230,7 @@ class Settings:
                     )
                 )
             ),
+            universe_max=int(env("UNIVERSE_MAX", "1000")),
             seed_portfolio_file=Path(
                 env("SEED_PORTFOLIO_FILE", data_dir / "seed" / "portfolio.json")
             ),
@@ -231,7 +243,9 @@ class Settings:
             as_of=date.fromisoformat(env("AS_OF")) if env("AS_OF") else None,
             market_cache_minutes=int(env("MARKET_CACHE_MINUTES", "360")),
             news_cache_minutes=int(env("NEWS_CACHE_MINUTES", "30")),
-            pairs_formation_observations=int(env("PAIRS_FORMATION", "252")),
+            pairs_formation_observations=int(env("PAIRS_FORMATION", "504")),
+            pairs_recalibrate_sessions=int(env("PAIRS_RECALIBRATE_SESSIONS", "21")),
+            pairs_recalibration_window=int(env("PAIRS_RECALIBRATION_WINDOW", "252")),
             pairs_corr_min=float(env("PAIRS_CORR_MIN", "0.70")),
             pairs_corr_min_same_sector=float(
                 env("PAIRS_CORR_MIN_SAME_SECTOR", "0.50")

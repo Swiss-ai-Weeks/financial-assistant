@@ -476,6 +476,61 @@ def fit_pairs(
     )
 
 
+def _yardstick(
+    fit: PairFit,
+    history: pd.DataFrame,
+    sessions: pd.DatetimeIndex,
+    every: int | None,
+    window: int | None,
+):
+    """
+    Mean and standard deviation of the spread that apply to
+    each monitored session (see monitor_pairs).
+    """
+
+    if not every or every <= 0:
+        return fit.spread_mean, fit.spread_std
+
+    pair = history[[fit.ticker_a, fit.ticker_b]].dropna()
+    pair = pair[(pair > 0).all(axis=1)]
+
+    full = (
+        np.log(pair[fit.ticker_a])
+        - fit.const
+        - fit.beta * np.log(pair[fit.ticker_b])
+    )
+
+    formation_end = pd.Timestamp(fit.formation_end)
+    anchor = int(full.index.searchsorted(formation_end, side="right")) - 1
+
+    if anchor < 0:
+        return fit.spread_mean, fit.spread_std
+
+    length = window or max(anchor + 1, 2)
+
+    centre = pd.Series(fit.spread_mean, index=sessions, dtype=float)
+    scale = pd.Series(fit.spread_std, index=sessions, dtype=float)
+
+    # Sessions elapsed since the formation window, and from
+    # that the latest recalibration session strictly before.
+    elapsed = full.index.searchsorted(sessions, side="left") - anchor
+    steps = np.where(elapsed > 0, ((elapsed - 1) // every) * every, 0)
+
+    for step in np.unique(steps[steps > 0]):
+        upto = anchor + int(step)
+        sample = full.iloc[max(0, upto - length + 1):upto + 1]
+
+        deviation = float(sample.std())
+
+        if len(sample) < 2 or not np.isfinite(deviation) or deviation <= 0:
+            continue
+
+        centre[steps == step] = float(sample.mean())
+        scale[steps == step] = deviation
+
+    return centre, scale
+
+
 def monitor_pairs(
     prices: pd.DataFrame,
     fits: tuple[PairFit, ...],
@@ -483,6 +538,8 @@ def monitor_pairs(
     start: str | date,
     end: str | date,
     entry: float = 2.0,
+    recalibrate_every: int | None = None,
+    recalibration_window: int | None = None,
 ) -> tuple[
     pd.DataFrame,
     tuple[PairAnomaly, ...],
@@ -492,11 +549,21 @@ def monitor_pairs(
 
     CRITICAL POINT-IN-TIME RULE:
 
-    beta, const, spread_mean and spread_std all come
-    from PairFit and therefore from the formation
-    window only.
+    The relationship itself, beta and const, comes from the
+    PairFit and therefore from the formation window only. It
+    is never re-estimated.
 
-    Nothing is re-estimated from monitoring data.
+    The YARDSTICK a deviation is measured with may be kept
+    current. With `recalibrate_every` = K, the mean and the
+    standard deviation of the spread are re-estimated every K
+    sessions after the formation window, from the
+    `recalibration_window` sessions up to and including that
+    recalibration session. A session is only ever judged with
+    statistics from sessions BEFORE it, so nothing looks
+    ahead; until the first recalibration the formation
+    statistics apply. A spread that has become more volatile
+    is then not flagged forever by a standard deviation that
+    is two years old. None keeps the yardstick frozen too.
     """
 
     if entry <= 0:
@@ -525,6 +592,8 @@ def monitor_pairs(
         live = metric_wide.loc[
             start:end
         ]
+
+        history = metric_wide
 
         if (
             fit.ticker_a
@@ -561,9 +630,17 @@ def monitor_pairs(
             - fit.beta * log_b
         )
 
+        centre, scale = _yardstick(
+            fit,
+            history,
+            spread.index,
+            recalibrate_every,
+            recalibration_window,
+        )
+
         z = (
-            spread - fit.spread_mean
-        ) / fit.spread_std
+            spread - centre
+        ) / scale
 
         pair_name = (
             f"{fit.ticker_a}/"
