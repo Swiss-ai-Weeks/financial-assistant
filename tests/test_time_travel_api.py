@@ -175,6 +175,10 @@ def test_http_historical_route_passes_loaded_mapping_and_cache_policy(monkeypatc
         reads.append(str(path))
         return universe.copy() if str(path).endswith('global_equities.csv') else prices.copy()
     monkeypatch.setattr(pd, 'read_csv', read_csv)
+    from financial_assistant import universe as catalog_module
+    mapped_rows = Mock(return_value=universe.to_dict('records'))
+    monkeypatch.setattr(catalog_module, 'universe_rows', mapped_rows)
+    monkeypatch.setattr(Path, 'exists', lambda *args: True)
     monkeypatch.setattr(Path, 'read_text', lambda *args, **kwargs: json.dumps(cache))
     scanner = Mock(return_value={'candidate_count': 0})
     monkeypatch.setattr(historical_api, 'historical_scan', scanner)
@@ -188,7 +192,8 @@ def test_http_historical_route_passes_loaded_mapping_and_cache_policy(monkeypatc
     for _ in range(2):
         handler.rfile = io.BytesIO(raw)
         handler.do_POST()
-    assert reads.count('data/universe/global_equities.csv') == 1
+    mapped_rows.assert_called_once_with()
+    assert reads.count('data/cache/market/global_demo_daily.csv') == 1
     args, kwargs = scanner.call_args
     assert args[0] == request
     assert kwargs['universe'].yahoo_ticker.tolist() == ['AAA']

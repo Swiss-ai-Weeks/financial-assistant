@@ -1,3 +1,9 @@
+# PYTHIA · powered by ClaimGraph
+
+Investment workspace with Now, Past, Portfolio, Explore and persistent Investigate tabs. ClaimGraph remains the authoritative evidence, calculation and provenance engine.
+
+See [integration architecture, limitations and acceptance commands](docs/pythia-claimgraph-integration.md).
+
 # Financial Assistant
 
 Evidence-backed causal attribution for financial-news anomalies.

@@ -4,9 +4,9 @@ import {
 
 
 export default function DetectorPanel({
-  onSelectCandidate, sharedAsOf, onAsOf,
+  onSelectCandidate, sharedAsOf, onAsOf, initialMode="live", lockMode=false,
 }) {
-  const [mode, setMode] = useState("live");
+  const [mode, setMode] = useState(initialMode);
   const [asOf, setAsOf] = useState("2026-08-28");
   const [entry, setEntry] =
     useState(1.5);
@@ -81,7 +81,7 @@ export default function DetectorPanel({
       </div>
 
       <h2>Anomaly detector</h2>
-      <label>Mode<select value={mode} disabled={running} onChange={e => {setMode(e.target.value); setResult(null); onSelectCandidate?.(null);}}>
+      <label>Mode<select value={mode} disabled={running || lockMode} onChange={e => {setMode(e.target.value); setResult(null); onSelectCandidate?.(null);}}>
         <option value="live">Live</option><option value="historical">Time Travel</option>
       </select></label>
       {mode === 'historical' && <label>Time Travel · As-of date<input type="date" value={sharedAsOf ?? asOf} disabled={running}

@@ -194,7 +194,9 @@ def scan_pairs_as_of(
         corr_floor=corr_floor, alpha_ceiling=alpha_ceiling,
         max_peers_per_ticker=max_peers_per_ticker,
     )
-    fits = tuple(fit for fit in broad_fits
+    # One relationship may occur in several current membership groups.
+    unique_fits = {(fit.ticker_a, fit.ticker_b): fit for fit in broad_fits}
+    fits = tuple(fit for fit in unique_fits.values()
                  if fit.correlation >= corr_min and fit.pvalue < alpha)
     if diagnostics is not None:
         diagnostics.update(

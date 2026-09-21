@@ -1,5 +1,5 @@
 """One human-triggered, bounded research cycle. No scheduling or recursion."""
-import csv
+from financial_assistant.retrieval.archive import ArchiveSearchProvider
 import json
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -26,8 +26,8 @@ FOLLOWUP_LOCK = Lock()
 
 def peer_context(tickers, cutoff, rows=None):
     if rows is None:
-        with (Path(__file__).resolve().parents[1] / 'data/universe/global_equities.csv').open() as stream:
-            rows = list(csv.DictReader(stream))
+        from financial_assistant.universe import universe_rows
+        rows = universe_rows()
     # Undated current membership must not masquerade as historical peer identity.
     eligible = [r for r in rows if r.get('mapping_status') == 'mapped'
                 and r.get('valid_from') and r['valid_from'] <= cutoff.date().isoformat()
@@ -164,8 +164,8 @@ def run_followup(graph, requirement_id, provider, run_id, report, *, fundamental
                 text=f'{anomaly.ticker} {question}'[:120], proximity='direct', relation='evidence_requirement',
                 reason='Deterministic fallback after expansion failure'),))
     search = CompositeSearchProvider(tuple(RecordedSearch(p, tool_records) for p in
-        (search_providers if search_providers is not None else (LazyAdapter('bookreader', lambda: CorpusSearchProvider(lookback_days=45)), LazyAdapter('searxng', SearxngSearchProvider)))))
-    fetcher = fetcher or DispatchingDocumentFetcher({'bookreader': LazyAdapter('bookreader', CorpusDocumentFetcher), 'searxng': LazyAdapter('searxng', TrafilaturaDocumentFetcher)})
+        (search_providers if search_providers is not None else (LazyAdapter('bookreader', lambda: CorpusSearchProvider(lookback_days=45)), LazyAdapter('searxng', SearxngSearchProvider), ArchiveSearchProvider()))))
+    fetcher = fetcher or DispatchingDocumentFetcher({'pythia_archive': LazyAdapter('pythia_archive', TrafilaturaDocumentFetcher), 'bookreader': LazyAdapter('bookreader', CorpusDocumentFetcher), 'searxng': LazyAdapter('searxng', TrafilaturaDocumentFetcher)})
     report('retrieval')
     bundle = execute_research_plan(plan, search_provider=search, document_fetcher=fetcher,
         retrieved_at=datetime.now(timezone.utc), per_task_limit=2, query_expander=expand)

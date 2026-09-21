@@ -26,7 +26,7 @@ def main() -> None:
         "--universe",
         default=(
             "data/universe/"
-            "global_equities.csv"
+            "securities.json"
         ),
     )
 
@@ -79,9 +79,8 @@ def main() -> None:
         )
     )
 
-    universe = pd.read_csv(
-        args.universe
-    )
+    from financial_assistant.universe import universe_rows
+    universe = pd.DataFrame(universe_rows(json.loads(Path(args.universe).read_text())['securities'])) if args.universe.endswith('.json') else pd.read_csv(args.universe)
 
     universe = universe.loc[
         universe[
@@ -107,6 +106,15 @@ def main() -> None:
             all_fits.append({**fit.model_dump(mode="json"),
                              "universe_group": summary["group"]})
         offset += summary["fits"]
+
+    unique = {}
+    for record in all_fits:
+        key = (record['ticker_a'], record['ticker_b'])
+        if key not in unique:
+            unique[key] = {**record, 'universe_groups': [record['universe_group']]}
+        elif record['universe_group'] not in unique[key]['universe_groups']:
+            unique[key]['universe_groups'].append(record['universe_group'])
+    all_fits = list(unique.values())
 
     payload = {
         "schema_version":

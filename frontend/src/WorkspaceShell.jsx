@@ -4,6 +4,13 @@ import DetectorPanel from './DetectorPanel';
 import {DEMO_PORTFOLIO, initialState, workspaceReducer, validatePositions, holdingResearch} from './workspaceStore';
 import {temporalView} from './temporalModel';
 import './WorkspaceShell.css';
+import MarketTape from './pythia/MarketTape.jsx';
+import MarketDesk, {SecuritySearch} from './pythia/MarketDesk.jsx';
+import {NAVIGATION} from './pythia/deskClient.js';
+import {ScopeIcon, PastIcon, ChartIcon, CloverIcon, GraphIcon} from './pythia/icons.jsx';
+import './pythia/tokens.css';
+import './pythia/shell.css';
+const ICONS = [ScopeIcon, PastIcon, ChartIcon, CloverIcon, GraphIcon];
 const AppContext = createContext(null);
 const NOTICE = 'Historical simulation is descriptive evidence about the selected historical sample. It is NOT an expected return forecast and NOT an investment recommendation.';
 const pct = value => typeof value === 'number' ? `${(value*100).toFixed(2)}%` : 'Unavailable';
@@ -16,6 +23,9 @@ async function calculate(path, payload) {
 }
 export default function WorkspaceShell() {
   const [state,dispatch] = useReducer(workspaceReducer, undefined, () => { try { return initialState(localStorage); } catch { return initialState(); } });
+  const [ticker,setTicker] = useState('COHU');
+  const [theme,setTheme] = useState(() => {try {return localStorage.getItem('pythia:theme') ?? 'light';} catch {return 'light';}});
+  useEffect(() => {document.documentElement.dataset.theme=theme;try {localStorage.setItem('pythia:theme',theme);} catch { /* optional preference */ }},[theme]);
   const [storageError,setStorageError] = useState('');
   const [analysis,setAnalysis] = useState(null), [simulation,setSimulation] = useState(null);
   const [performance,setPerformance] = useState(null);
@@ -31,7 +41,7 @@ export default function WorkspaceShell() {
   function open(candidate=null, simulationContext=null) {
     const id = crypto.randomUUID();
     dispatch({type:'open',workspace:{id,label:candidate?.pair ?? candidate?.ticker_a ?? 'Research',candidate,
-      portfolio:state.portfolio, as_of:state.selected_as_of, simulation:simulationContext}});
+      portfolio:{...state.portfolio,as_of:candidate?.requested_as_of ?? candidate?.signal_date ?? state.selected_as_of}, as_of:candidate?.requested_as_of ?? candidate?.signal_date ?? state.selected_as_of, simulation:simulationContext}});
   }
   async function selectCandidate(candidate) {
     dispatch({type:'candidate',candidate}); setSimulation(null); setPerformance(null);
@@ -54,9 +64,13 @@ export default function WorkspaceShell() {
   const currentAnalysis = analysis?.as_of === state.selected_as_of && JSON.stringify(analysis?.portfolio) === JSON.stringify(state.portfolio) ? analysis : analysis?.status === 'unavailable' ? analysis : null;
   const currentSimulation = simulation?.status === 'unavailable' || (simulation?.as_of === state.selected_as_of && JSON.stringify(simulation?.portfolio) === JSON.stringify(state.portfolio) && simulation?.gross_overlay === gross && simulation?.candidate?.ticker_a === state.candidate?.ticker_a && simulation?.candidate?.ticker_b === state.candidate?.ticker_b) ? simulation : null;
   return <AppContext.Provider value={{state,dispatch}}><div className="research-shell">
-    <header className="site-nav"><strong>ClaimGraph</strong>{[['/portfolio','Portfolio'],['/investigate','Investigate'],['/explore','Explore']].map(([path,label]) => <button key={path} aria-current={state.route.startsWith(path) ? 'page' : undefined} onClick={() => path === '/investigate' ? state.workspaces.length ? navigate(`/investigate/${state.workspaces.at(-1).id}`) : open() : navigate(path)}>{label}</button>)}
-      <label>As of <input type="date" value={state.selected_as_of} onChange={e => {dispatch({type:'date',value:e.target.value});setSimulation(null);}} /></label></header>
-    <nav className="browser-tabs" aria-label="Investigation workspaces">{state.workspaces.map(w => <span key={w.id}><button aria-pressed={state.route.endsWith(w.id)} onClick={() => navigate(`/investigate/${w.id}`)}>{w.label}{w.model && ` · ${w.model.model}`}</button><button aria-label={`Close ${w.label}`} onClick={() => dispatch({type:'close',id:w.id})}>×</button></span>)}<button onClick={() => open()} aria-label="New investigation">+</button></nav>
+    <header className="pythia-topbar"><div className="pythia-brand">PYTHIA<span>INVESTMENT INTELLIGENCE</span></div><div className="topbar-context">{ticker}<small>Evidence-led investment workspace</small></div><label>Research as of <input type="date" value={state.selected_as_of} onChange={e => {dispatch({type:'date',value:e.target.value});setSimulation(null);}} /></label><button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} aria-label="Toggle colour theme">{theme === 'light' ? 'Dark' : 'Light'}</button></header>
+    <nav className="pythia-rail" aria-label="Main navigation">{NAVIGATION.map(([path,label],i) => {const Glyph=ICONS[i];return <button key={path} aria-current={state.route.startsWith(path) ? 'page' : undefined} onClick={() => navigate(path)}><Glyph/><span>{label}</span></button>;})}</nav>
+    <div className="pythia-content">
+    <nav className="browser-tabs" hidden={!state.route.startsWith('/investigate')} aria-label="Investigation workspaces">{state.workspaces.map(w => <span key={w.id}><button aria-pressed={state.route.endsWith(w.id)} onClick={() => navigate(`/investigate/${w.id}`)}>{w.label} investigation{w.model && ` · ${w.model.label ?? w.model.model}`}</button><button aria-label={`Close ${w.label}`} onClick={() => dispatch({type:'close',id:w.id})}>×</button></span>)}<button onClick={() => open()} aria-label="New investigation">New investigation +</button></nav>
+    <section hidden={state.route !== '/now'}><MarketDesk active={state.route === '/now'} mode="now" ticker={ticker} onTicker={setTicker} asOf={state.selected_as_of} onAsOf={value => dispatch({type:'date',value})} portfolio={state.portfolio} onInvestigate={open}/></section>
+    <section hidden={state.route !== '/past'}><MarketDesk active={state.route === '/past'} mode="past" ticker={ticker} onTicker={setTicker} asOf={state.selected_as_of} onAsOf={value => dispatch({type:'date',value})} portfolio={state.portfolio} onInvestigate={open}/></section>
+    {state.route === '/investigate' && <section className="mode-page"><p className="eyebrow">CLAIMGRAPH / INVESTIGATIONS</p><h1>Follow the evidence.</h1><p>Open a saved example, or begin with a holding, security or anomaly. Inspect the graph, retrieve missing evidence, then prepare a report.</p><button onClick={() => open()}>New investigation +</button>{state.workspaces.map(w => <button key={w.id} onClick={() => navigate(`/investigate/${w.id}`)}>{w.label} investigation</button>)}</section>}
     {storageError && <p role="status">{storageError}</p>}
     <section hidden={state.route !== '/portfolio'} className="mode-page"><h1>{state.portfolio.name}</h1><p>{state.portfolio.positions.length} positions · As of {state.selected_as_of}</p>
       <PortfolioEditor portfolio={state.portfolio} onSave={portfolio => {dispatch({type:'portfolio',portfolio});setAnalysis(null);setSimulation(null);}} />
@@ -67,7 +81,7 @@ export default function WorkspaceShell() {
       <div className="table-scroll"><table><thead><tr>{['Holding','Weight','1d','5d','20d','63d','20d volatility','20d contribution','Research',''].map(t => <th key={t}>{t}</th>)}</tr></thead><tbody>{state.portfolio.positions.map(p => {
         const research = holdingResearch(state.workspaces,p.ticker,state.selected_as_of), sec = currentAnalysis?.securities?.[p.ticker];
         const gaps = research.some(w => w.graph.nodes.some(n => ['missing_evidence','evidence_requirement'].includes(n.kind) && n.data?.resolution_status !== 'answered'));
-        return <tr key={p.ticker}><td>{p.ticker}</td><td>{pct(p.weight)}</td>{[1,5,20,63].map(n => <td key={n}><Value metric={sec?.[`return_${n}`] ?? (sec?.status === 'unavailable' ? sec : null)}/></td>)}<td><Value metric={sec?.volatility_20}/></td><td>{pct(currentAnalysis?.contributions_20?.[p.ticker])}</td><td>{gaps ? 'Missing evidence unresolved · Follow-up available' : research.some(w => w.graph.followups?.length) ? 'Recent evidence added' : research.length ? 'Research available' : 'No recent investigation'}</td><td><button onClick={() => open({mode:'holding',ticker_a:p.ticker,pair:p.ticker,signal_date:state.selected_as_of,requested_as_of:state.selected_as_of})}>Investigate</button></td></tr>;
+        return <tr key={p.ticker}><td>{p.ticker}</td><td>{pct(p.weight)}</td>{[1,5,20,63].map(n => <td key={n}><Value metric={sec?.[`return_${n}`] ?? (sec?.status === 'unavailable' ? sec : null)}/></td>)}<td><Value metric={sec?.volatility_20}/></td><td>{pct(currentAnalysis?.contributions_20?.[p.ticker])}</td><td>{gaps ? 'Missing evidence unresolved · Follow-up available' : research.some(w => w.graph.followups?.length) ? 'Recent evidence added' : research.length ? 'Research available' : 'No recent investigation'}</td><td><button onClick={() => {setTicker(p.ticker);navigate('/past');}}>Market context</button><button onClick={() => open({mode:'holding',ticker_a:p.ticker,pair:p.ticker,signal_date:state.selected_as_of,requested_as_of:state.selected_as_of})}>Investigate</button></td></tr>;
       })}</tbody></table></div>
       <h2>Risk / questions and latest admitted research</h2><p>Existing holding-related evidence only. Investigate explicitly to retrieve BookReader, web and SEC information.</p>
       {state.portfolio.positions.map(p => <section key={p.ticker}><h3>{p.ticker}</h3>{holdingResearch(state.workspaces,p.ticker,state.selected_as_of).map(w => {
@@ -77,7 +91,7 @@ export default function WorkspaceShell() {
       <h2>Watched candidates</h2>{state.watched.map(c => <button key={c.pair} onClick={() => {selectCandidate(c);navigate('/explore');}}>{c.pair} · {c.signal_date}</button>)}
       <p>{NOTICE}</p>
     </section>
-    <section hidden={state.route !== '/explore'} className="mode-page explore-page"><h1>Explore · opportunity lab</h1><p>{NOTICE}</p><DetectorPanel onSelectCandidate={selectCandidate} sharedAsOf={state.selected_as_of} onAsOf={value => dispatch({type:'date',value})}/>
+    <section hidden={state.route !== '/explore'} className="mode-page explore-page"><p className="eyebrow">DISCOVERY / THE INVESTMENT UNIVERSE</p><h1>Explore opportunities</h1><SecuritySearch onSelect={symbol => {setTicker(symbol);navigate('/past');}}/><p>Search the merged universe, examine a security, or scan relationships below. Membership labels describe current snapshots, not historical constituents.</p><p>{NOTICE}</p><DetectorPanel onSelectCandidate={selectCandidate} sharedAsOf={state.selected_as_of} onAsOf={value => dispatch({type:'date',value})}/>
       {state.candidate && <section className="candidate-detail"><h2>{state.candidate.pair}</h2><p>As of {state.candidate.requested_as_of ?? state.candidate.signal_date} · z {state.candidate.z_score ?? 'Unavailable'} · correlation {state.candidate.correlation ?? 'Unavailable'} · cointegration p {state.candidate.cointegration_p ?? 'Unavailable'}</p>
         <p>Formation history: {state.candidate.formation_start ?? 'Unavailable'} — {state.candidate.formation_end ?? 'Unavailable'}</p>
         {performance?.pair === state.candidate.pair && performance.as_of === state.selected_as_of && <MarketPerformance result={performance.result}/>}
@@ -93,6 +107,7 @@ export default function WorkspaceShell() {
         <p>Missing evidence: {currentSimulation.remaining_question}</p><button onClick={() => open(state.candidate,{gross_overlay:gross})}>Investigate persistence and confounders</button><details><summary>Calculation / price provenance</summary><pre>{JSON.stringify(currentSimulation,null,2)}</pre></details></section>}
     </section>
     {state.workspaces.map(w => <section key={w.id} hidden={state.route !== `/investigate/${w.id}`} className="investigation-page"><Investigation workspace={w} onSnapshot={snapshot} onSimulate={(candidate,asOf) => simulate(candidate,asOf)}/></section>)}
+    </div><MarketTape portfolio={state.portfolio} asOf={state.route === '/now' ? null : state.selected_as_of} onSelect={symbol => {setTicker(symbol);navigate('/now');}}/>
   </div></AppContext.Provider>;
 }
 function Metric({label,metric}) { return <div>{label}<strong><Value metric={metric}/></strong></div>; }

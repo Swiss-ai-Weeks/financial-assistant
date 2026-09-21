@@ -41,7 +41,7 @@ def historical_scan(request, prices, formation_observations=252, *, universe=Non
                     formation_start=formation_start.isoformat(), formation_end=formation_end.isoformat(),
                     price_observations_through=session.isoformat(), fits_recomputed=True,
                     operation='historical_market_reconstruction', **diagnostics,
-                    universe_limitation='Available cache universe; survivorship and historical data revisions are not reconstructed.',
+                    universe_limitation='Current constituent snapshots only; historical membership, survivorship and historical data revisions are not reconstructed.',
                     elapsed_ms=round((perf_counter()-started)*1000, 1))
     with _LOCK:
         _SCANS[scan_id] = (metadata, signals)

@@ -5,6 +5,7 @@ import time
 from historical_api import historical_scan
 from bookreader_viewer import document_page, source_links
 import re
+from urllib.parse import urlparse, parse_qs, unquote
 
 from investigation_api import investigate, public_models, investigate_missing_evidence
 from investigation_progress import progress_registry
@@ -45,9 +46,7 @@ FIT_PATH = Path(
 
 print("Loading market cache...")
 
-PRICES = pd.read_csv(
-    PRICE_PATH
-)
+PRICES = pd.read_csv(PRICE_PATH) if PRICE_PATH.exists() else pd.DataFrame(columns=['date', 'ticker', 'close', 'volume'])
 
 PRICES["date"] = pd.to_datetime(
     PRICES["date"]
@@ -56,14 +55,11 @@ PRICES["date"] = pd.to_datetime(
 
 print("Loading pair-fit cache...")
 
-FIT_PAYLOAD = json.loads(
-    FIT_PATH.read_text(
-        encoding="utf-8"
-    )
-)
+FIT_PAYLOAD = json.loads(FIT_PATH.read_text(encoding='utf-8')) if FIT_PATH.exists() else dict(fits=[], as_of='1970-01-01', corr_floor=.5, alpha_ceiling=.1, max_peers_per_ticker=5, formation_observations=252)
 
 
-UNIVERSE = pd.read_csv("data/universe/global_equities.csv")
+from financial_assistant.universe import universe_rows
+UNIVERSE = pd.DataFrame(universe_rows())
 UNIVERSE = UNIVERSE.loc[UNIVERSE["mapping_status"] == "mapped"].copy()
 
 
@@ -144,6 +140,8 @@ def scan(
         )
 
 
+    if PRICES.empty or not FIT_PATH.exists():
+        raise ValueError('Market / pair-fit cache unavailable; populate the existing cache to scan')
     started = time.perf_counter()
 
 
@@ -357,6 +355,43 @@ class Handler(
 
 
     def do_GET(self) -> None:
+        parsed = urlparse(self.path)
+        query = parse_qs(parsed.query)
+        path = unquote(parsed.path)
+        if path.startswith(('/api/instruments/', '/api/market/', '/api/microscope/', '/api/news')):
+            try:
+                from financial_assistant.universe import search, LIMITATION
+                from financial_assistant.desk import market_view, microscope, signal_context
+                from financial_assistant.retrieval.archive import archive_items
+                as_of = query.get('as_of', [None])[0]
+                if not as_of:
+                    if PRICES.empty and not path.startswith(('/api/instruments/', '/api/news')):
+                        raise ValueError('Market cache unavailable')
+                    as_of = str(PRICES.date.max().date()) if not PRICES.empty else pd.Timestamp.now(tz='UTC').date().isoformat()
+                if path == '/api/instruments/search':
+                    result = dict(securities=search(query.get('q', [''])[0][:100]), limitation=LIMITATION)
+                elif path == '/api/market/tape':
+                    tickers = query.get('tickers', [''])[0].split(',')[:100]
+                    from financial_assistant.portfolio.returns import security_returns
+                    result = dict(as_of=as_of)
+                    result['quotes'] = [dict(security_returns(PRICES,t,as_of), ticker=t) for t in tickers if t]
+                elif path.startswith('/api/market/') and path.endswith('/candles'):
+                    result = market_view(PRICES, path.split('/')[3], as_of, int(query.get('days', ['180'])[0]))
+                elif path.startswith('/api/market/') and path.endswith('/signals'):
+                    result = signal_context(PRICES, path.split('/')[3], as_of)
+                elif path.startswith('/api/microscope/'):
+                    result = microscope(PRICES, path.split('/')[3], as_of)
+                elif path == '/api/news':
+                    items = archive_items(ticker=query.get('ticker', [None])[0], as_of=as_of)
+                    result = dict(items=items[:100], as_of=as_of, role='retrieval_candidates',
+                        source='Pythia local archive', notice='News requires ClaimGraph assessment before it is evidence. BookReader remains available through investigation retrieval.')
+                else:
+                    self.send_json(404, {'error': 'Unknown desk endpoint'})
+                    return
+                self.send_json(200, result)
+            except (ValueError, KeyError, IndexError) as exc:
+                self.send_json(400, {'error': str(exc)})
+            return
         if self.path.startswith("/api/bookreader/documents/"):
             try:
                 body = document_page(self.path.removeprefix("/api/bookreader/documents/"))
@@ -414,7 +449,9 @@ class Handler(
                     "status": "ok",
 
                     "as_of":
-                        AS_OF.isoformat(),
+                        AS_OF.isoformat() if FIT_PATH.exists() else None,
+                    "market_as_of": str(PRICES.date.max().date()) if not PRICES.empty else None,
+                    "cache_available": not PRICES.empty and FIT_PATH.exists(),
 
                     "securities":
                         int(

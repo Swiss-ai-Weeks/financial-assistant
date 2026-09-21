@@ -425,3 +425,16 @@ def test_groups_and_broad_policy_then_interactive_filters(monkeypatch):
     assert set(seen) == {('AAA', 'BBB'), ('CCC', 'DDD'), ('EEE', 'FFF')}
     assert diagnostics['raw_fit_count'] == 3
     assert diagnostics['eligible_fit_count'] == 1
+
+
+def test_overlapping_memberships_monitor_each_pair_once(monkeypatch):
+    fit = make_fit()
+    monkeypatch.setattr(historical, 'fit_universe_pairs', lambda *a, **k: ((fit, fit), [{'group':'a'},{'group':'b'}]))
+    monitored = []
+    def monitor(prices, fits, **kwargs):
+        monitored.extend(fits)
+        return (), ()
+    monkeypatch.setattr(historical, 'monitor_pairs', monitor)
+    historical.scan_pairs_as_of(make_prices(include_future=True), as_of=AS_OF,
+                               formation_observations=5, corr_min=.5, alpha=.1)
+    assert monitored == [fit]

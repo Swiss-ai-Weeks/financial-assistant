@@ -1,4 +1,5 @@
 from __future__ import annotations
+from financial_assistant.retrieval.archive import ArchiveSearchProvider
 
 import argparse
 
@@ -564,10 +565,12 @@ def investigate_signal(signal, *, observed_at, provider, per_task_limit=2,
 
         # Then augment with open-web discovery.
         SearxngSearchProvider(),
+        ArchiveSearchProvider(),
     ))
 
     document_fetcher = DispatchingDocumentFetcher(
             fetchers={
+                "pythia_archive": TrafilaturaDocumentFetcher(),
                 "bookreader": (
                     CorpusDocumentFetcher()
                     ),

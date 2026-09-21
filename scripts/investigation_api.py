@@ -60,21 +60,36 @@ def _investigate(request, *, prices, fits, as_of, formation_observations, report
         raise ValueError("Select a configured model/provider")
     historical = request.get("mode") == "historical"
     event_override = None
-    if request.get('mode') in ('holding', 'research_pair'):
+    if request.get('mode') in ('holding', 'security', 'research_pair'):
         from types import SimpleNamespace
         from financial_assistant.domain import AnomalyEvent
         from financial_assistant.portfolio.returns import validate_portfolio
         weights = validate_portfolio(request['portfolio'])
-        ticker = request['ticker_a']
+        ticker = str(request['ticker_a']).strip().upper()
+        if request.get('mode') == 'security':
+            from financial_assistant.universe import catalog
+            if ticker not in {s['ticker'] for s in catalog()}:
+                raise ValueError('Security is not in the canonical universe')
         peer = request.get('ticker_b') if request.get('mode') == 'research_pair' else None
         if request.get('mode') == 'holding' and ticker not in weights:
             raise ValueError('Holding is not in the supplied portfolio')
         observed_at = datetime.combine(date.fromisoformat(request['as_of']), time.max, timezone.utc)
         event_override = AnomalyEvent(anomaly_id=f'HOLDING-{uuid4()}', ticker=ticker,
             related_entities=(peer,) if peer else (), detected_at=observed_at, anomaly_type='human_research_request',
-            summary=f'Human-requested research of {ticker}' + (f' / {peer}' if peer else ' portfolio holding'),
-            metadata={'observed_at': observed_at.isoformat(), 'portfolio_weight': weights.get(ticker),
+            summary=f'Human-requested research of {ticker}' + (f' / {peer}' if peer else ' portfolio holding' if request.get('mode') == 'holding' else ' security'),
+            metadata={'observed_at': observed_at.isoformat(), **({'portfolio_weight': weights[ticker]} if ticker in weights else {}),
                       'interpretation': 'Prioritisation context; no anomaly or causal assertion'})
+        if request.get('event_id'):
+            from financial_assistant.desk import signal_context
+            events = signal_context(prices, ticker, request['as_of'])['signals']
+            event = next((e for e in events if e['anomaly_id'] == request['event_id']), None)
+            if event is None or event['observed_on'] != request['as_of']:
+                raise ValueError('Market event no longer matches this security and cutoff')
+            event_override = event_override.model_copy(update={
+                'anomaly_id': event['anomaly_id'], 'anomaly_type': event['kind'], 'summary': event['summary'],
+                'metadata': {**event_override.metadata, 'market_event_id': event['anomaly_id'], 'strategy': event['strategy'],
+                             'z_score': event['z_score'], 'detector_version': event['detector_version'], **event['metrics'],
+                             'interpretation': 'Recomputed attention event; not a causal assertion'}})
         signal = SimpleNamespace(as_of=observed_at.date(), anomaly=None,
                                  fit=SimpleNamespace(ticker_a=ticker, ticker_b=peer or ticker))
     elif historical:

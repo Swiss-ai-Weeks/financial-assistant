@@ -1,3 +1,4 @@
+import InvestigationReport from './InvestigationReport.jsx';
 import CopilotPanel from './CopilotPanel';
 import { buildCopilotViewContext, applyCopilotAction } from './copilotContext.js';
 import { useEffect, useReducer, useRef, useState } from 'react';
@@ -64,7 +65,7 @@ export default function App({workspace, onSnapshot, onSimulate}) {
     savedRequest.current?.abort();
     dispatch({type:'start'});
     try {
-      const payload = ['holding','research_pair'].includes(selectedCandidate?.mode) ? {...selection,mode:selectedCandidate.mode,ticker_b:selectedCandidate.ticker_b,ticker_a:selectedCandidate.ticker_a,as_of:workspace.as_of,portfolio:workspace.portfolio,simulation:workspace.simulation} : {...candidatePayload(selectedCandidate, selection, observedAt),portfolio:workspace?.portfolio,simulation:workspace?.simulation};
+      const payload = ['holding','security','research_pair'].includes(selectedCandidate?.mode) ? {...selection,mode:selectedCandidate.mode,event_id:selectedCandidate.event_context?.anomaly_id,ticker_b:selectedCandidate.ticker_b,ticker_a:selectedCandidate.ticker_a,as_of:workspace.as_of,portfolio:workspace.portfolio,simulation:workspace.simulation} : {...candidatePayload(selectedCandidate, selection, observedAt),portfolio:workspace?.portfolio,simulation:workspace?.simulation};
       setExecutionContext(payload);
       const execution = startInvestigation(payload, setProgress);
       progressStop.current = execution.stop;
@@ -72,7 +73,7 @@ export default function App({workspace, onSnapshot, onSimulate}) {
       setProgress(previous => ({...previous, state:"complete", stage:"complete", updated_at:new Date().toISOString(),
         completed:previous.completed}));
       dispatch({type:'success', graph, key:crypto.randomUUID()});
-      if (graph.replay_id) setReplays(previous => [{id:graph.replay_id, label:`${selectedCandidate.pair} · ${graph.historical.as_of} · saved historical run`}, ...previous]);
+      if (graph.replay_id) setReplays(previous => [{id:graph.replay_id, label:`${selectedCandidate.pair} · ${graph.historical?.as_of ?? workspace?.as_of} · saved investigation`}, ...previous]);
       setFile('');
     } catch (err) {
       setProgress(previous => previous ? {...previous, state:'failed', updated_at:new Date().toISOString()} : null);
@@ -135,12 +136,12 @@ export default function App({workspace, onSnapshot, onSimulate}) {
     </details>
     {progress && executionContext && <details className="progress-drawer" open={running}><summary>Execution · {progress.state}</summary><InvestigationProgress status={progress} context={executionContext} /></details>}
     {error && <p className="review-error" role="alert">{error}</p>}
-    {loaded ? <InvestigationWorkspace key={loaded.key} graph={loaded.graph} fresh={loaded.fresh} model={selection} onInvestigate={investigateQuestion} followupDisabled={running || !selection} workspaceId={workspace?.id} onSimulate={onSimulate} /> : <p className="loading" role="status">Loading investigation…</p>}
+    {loaded ? <InvestigationWorkspace key={loaded.key} graph={loaded.graph} fresh={loaded.fresh} reportBusy={running} model={selection} onInvestigate={investigateQuestion} followupDisabled={running || !selection} workspaceId={workspace?.id} onSimulate={onSimulate} /> : <p className="loading" role="status">Loading investigation…</p>}
 
   </div>;
 }
 
-function InvestigationWorkspace({graph, model, fresh, onInvestigate, followupDisabled, workspaceId, onSimulate}) {
+function InvestigationWorkspace({graph, model, fresh, reportBusy, onInvestigate, followupDisabled, workspaceId, onSimulate}) {
   const [initial] = useState(() => {
     if (fresh) return {review:createReview(graph), reason:'New investigation · new institutional review'};
     try {
@@ -153,6 +154,7 @@ function InvestigationWorkspace({graph, model, fresh, onInvestigate, followupDis
   const [persistence, setPersistence] = useState(initial.reason);
   const [selectedNode, setSelectedNode] = useState(null);
   const [view, setView] = useState('graph');
+  const [showReport, setShowReport] = useState(false);
   const [turn,setTurn] = useState(null);
   const [onlyNew,setOnlyNew] = useState(false);
   const [filters,setFilters] = useState(['hypothesis','claim','calculation','inference','missing_evidence','evidence_requirement','anomaly']);
@@ -198,7 +200,7 @@ function InvestigationWorkspace({graph, model, fresh, onInvestigate, followupDis
     </details>}
     <TemporalReview graph={graph} cutoff={cutoff} onChange={setCutoff} onSelect={onSelect} />
     </details>
-    <div className="turn-controls"><button onClick={() => setView(view === 'graph' ? 'summary' : 'graph')}>{view === 'graph' ? 'Review summary' : 'Back to graph'}</button><label>Investigation turn <select value={activeTurn ?? ''} onChange={e => {setTurn(e.target.value);setOnlyNew(false);}}><option value="">Current graph</option><option value="initial">Initial investigation</option>{graph.followups?.map((f,i) => <option key={f.run_id} value={f.run_id}>Follow-up {i+1}</option>)}</select></label>
+    <div className="turn-controls"><button disabled={reportBusy} onClick={() => setShowReport(true)}>Prepare report</button><button onClick={() => setView(view === 'graph' ? 'summary' : 'graph')}>{view === 'graph' ? 'Review summary' : 'Back to graph'}</button><label>Investigation turn <select value={activeTurn ?? ''} onChange={e => {setTurn(e.target.value);setOnlyNew(false);}}><option value="">Current graph</option><option value="initial">Initial investigation</option>{graph.followups?.map((f,i) => <option key={f.run_id} value={f.run_id}>Follow-up {i+1}</option>)}</select></label>
       {onSimulate && <button onClick={() => {const d = anomaly?.data; const a = d?.ticker ?? graph.ticker, b = d?.related_entities?.[0]; if (b) onSimulate({mode:'research_pair',ticker_a:a,ticker_b:b,pair:`${a}/${b}`,signal_date:originalCutoff(graph)?.slice(0,10)},originalCutoff(graph)?.slice(0,10));}} disabled={!anomaly?.data?.related_entities?.length}>Simulate against portfolio</button>}
     </div>
     {delta && <aside className="followup-result"><strong>{activeTurn === 'initial' ? 'INITIAL INVESTIGATION' : 'FOLLOW-UP COMPLETE'}</strong><p>{delta.question}</p><p>New: {delta.added_node_ids.length} nodes · {delta.added_edge_ids.length} relationships</p>
@@ -216,6 +218,7 @@ function InvestigationWorkspace({graph, model, fresh, onInvestigate, followupDis
     </section>{selectedNode && <div className="inspector-drawer"><button className="close-inspector" onClick={() => setSelectedNode(null)}>Close inspector ×</button><NodeInspector key={selectedNode ? itemKey(selectedNode) : 'empty'} node={graph.nodes.find(n => n.node_id === selectedNode?.node_id) ?? selectedNode} graph={graph} onInvestigate={onInvestigate} followupDisabled={followupDisabled} cutoff={cutoff} onSelect={onSelect} onAction={onAction}
       reviewState={selectedNode ? review.item_reviews[itemKey(selectedNode)] : null} /></div>}
     </main>
+    {showReport && <InvestigationReport graph={graph} cutoff={cutoff} workspaceId={workspaceId} onClose={() => setShowReport(false)} onSelect={onSelect} />}
     <CopilotPanel context={buildCopilotViewContext({graph, workspaceId, model, selected:selectedNode, cutoff, filters, onlyNew})}
       model={model} graph={graph} disabled={followupDisabled} onInvestigate={onInvestigate}
       onAction={action => applyCopilotAction(action, inspectionGraph, {select:onSelect,

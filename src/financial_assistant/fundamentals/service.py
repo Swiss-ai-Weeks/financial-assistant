@@ -1,5 +1,4 @@
 """Bounded enrichment orchestration and projection into existing domain objects."""
-import csv
 from datetime import datetime, timezone
 from pathlib import Path
 import re
@@ -10,13 +9,8 @@ from .provider import FundamentalsUnavailable, FundamentalsProvider
 
 
 def sector_for(ticker):
-    path = Path(__file__).resolve().parents[3] / 'data/universe/global_equities.csv'
-    if path.exists():
-        with path.open() as stream:
-            sectors = {r['sector'] for r in csv.DictReader(stream) if r['yahoo_ticker'] == ticker and r['mapping_status'] == 'mapped'}
-        if len(sectors) == 1:
-            return sectors.pop()
-    return None
+    from financial_assistant.universe import catalog
+    return next((s.get('sector') for s in catalog() if s['ticker'] == ticker), None)
 
 
 class FundamentalsService:
