@@ -1278,3 +1278,452 @@
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+/* ---------- Wire: the news graph ---------- */
+
+.wire {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 48px 40px 72px;
+}
+
+.wire__hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.wire__hero h1 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 6px 0 10px;
+}
+
+.wire__hero p {
+  max-width: 640px;
+  line-height: 1.5;
+}
+
+.wire__counts {
+  display: flex;
+  gap: 28px;
+  flex: none;
+  margin: 0;
+}
+
+.wire__counts div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wire__counts dd {
+  margin: 0;
+  font-size: 18px;
+}
+
+.wire__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.wire__controls {
+  display: flex;
+  gap: 16px;
+}
+
+.wire__empty {
+  padding: 18px 20px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 2px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.wire__empty code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text);
+}
+
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.seg--wrap {
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.seg__item {
+  padding: 6px 12px;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  border-right: 1px solid var(--border);
+}
+
+.seg__item:last-child {
+  border-right: 0;
+}
+
+.seg__item:hover {
+  color: var(--text);
+}
+
+.seg__item.is-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* feed */
+
+.events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+
+.event {
+  border-bottom: 1px solid var(--border);
+}
+
+.event__row {
+  display: grid;
+  grid-template-columns: 110px 1fr auto auto auto auto 70px;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+  padding: 12px 6px;
+  text-align: left;
+}
+
+.event__row:hover {
+  background: var(--surface);
+}
+
+.event__type {
+  display: inline-block;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--event, var(--text-muted));
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  padding: 2px 6px;
+  justify-self: start;
+  white-space: nowrap;
+}
+
+.event__label {
+  font-size: 14px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event__tickers {
+  display: flex;
+  gap: 4px;
+}
+
+.event__ticker {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.event__ticker:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.event__direction {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.event__direction--positive {
+  color: var(--up);
+}
+
+.event__direction--negative {
+  color: var(--down);
+}
+
+.event__surprise {
+  font-size: 11px;
+  color: var(--accent);
+}
+
+.event--unexpected .event__surprise {
+  color: var(--down);
+}
+
+.event__count,
+.event__when {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.event__when {
+  text-align: right;
+}
+
+.event__articles {
+  list-style: none;
+  margin: 0;
+  padding: 4px 6px 14px 132px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event__articles li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+}
+
+.event__articles a {
+  color: var(--text);
+}
+
+.event__articles .mono {
+  font-size: 11px;
+}
+
+/* graph */
+
+.wiregraph {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 28px;
+}
+
+.wiregraph__canvas {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.wiregraph__ring {
+  fill: none;
+  stroke: var(--border);
+  stroke-dasharray: 2 4;
+}
+
+.wiregraph__edge {
+  stroke-linecap: round;
+}
+
+.wiregraph__edge--predicted {
+  stroke: var(--down);
+  stroke-width: 1.6;
+  stroke-dasharray: 6 5;
+}
+
+.wiregraph__node {
+  cursor: pointer;
+}
+
+.wiregraph__dot {
+  fill: var(--text);
+  stroke: var(--surface);
+  stroke-width: 1.5;
+}
+
+.wiregraph__dot--security {
+  fill: var(--accent);
+}
+
+.wiregraph__dot--event {
+  fill: var(--text);
+}
+
+.wiregraph__dot--entity {
+  fill: var(--text-muted);
+}
+
+.wiregraph__node.is-picked .wiregraph__dot {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.wiregraph__label {
+  font-size: 9.5px;
+  fill: var(--text-muted);
+  pointer-events: none;
+}
+
+.wiregraph__label.is-centre {
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--on-ink);
+}
+
+.wiregraph__pick h3 {
+  font-size: 16px;
+  margin: 4px 0 10px;
+}
+
+.wiregraph__articles {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.wiregraph__articles li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12.5px;
+}
+
+.wiregraph__articles a {
+  color: var(--text);
+}
+
+.wiregraph__articles .mono {
+  font-size: 10.5px;
+}
+
+.legend {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend__line,
+.legend__bar,
+.legend__tick {
+  display: inline-block;
+  width: 22px;
+  height: 0;
+  border-top: 2px solid var(--text);
+}
+
+.legend__line--predicted {
+  border-top: 2px dashed var(--down);
+}
+
+.legend__line--drift {
+  border-top: 2px solid var(--vwap);
+}
+
+.legend__bar {
+  height: 10px;
+  border: 0;
+  background: var(--accent);
+}
+
+.legend__tick {
+  width: 2px;
+  height: 8px;
+  border: 0;
+  background: var(--text);
+}
+
+.legend__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+/* signals */
+
+.signals__chart {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.signals__grid {
+  stroke: var(--border);
+}
+
+.signals__axis {
+  font-size: 9px;
+  fill: var(--text-muted);
+}
+
+.signals__bar {
+  fill: var(--accent);
+  opacity: 0.55;
+}
+
+.signals__bar.is-high {
+  fill: var(--down);
+  opacity: 0.8;
+}
+
+.signals__max {
+  stroke: var(--text);
+  stroke-width: 2;
+}
+
+.signals__drift {
+  fill: none;
+  stroke: var(--vwap);
+  stroke-width: 1.4;
+}
+
+.signals section {
+  margin-top: 20px;
+}
+
+.signals .table {
+  margin-top: 8px;
+  max-width: 560px;
+}
+
+.feed__filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.feed__toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}

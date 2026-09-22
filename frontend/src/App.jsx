@@ -18,6 +18,7 @@ import PerformanceStrip from "./components/portfolio/PerformanceStrip";
 import PortfolioPage from "./components/portfolio/PortfolioPage";
 import PositionsTable from "./components/portfolio/PositionsTable";
 import DiscoveryView from "./components/stories/DiscoveryView";
+import WireView from "./components/wire/WireView";
 import FindingsPanel from "./components/stories/FindingsPanel";
 import CopilotStrip from "./components/stories/CopilotStrip";
 import HorizonMatrix from "./components/stories/HorizonMatrix";
@@ -641,6 +642,21 @@ export default function App() {
             modelId={activeModel?.id}
             modelLabel={activeModel?.label}
             onReason={selectAnomaly}
+          />
+        </main>
+      )}
+
+      {visited.has("wire") && (
+        <main className="app__main app__main--full" hidden={view !== "wire"}>
+          <WireView
+            ticker={ticker}
+            holdings={portfolio.data?.positions}
+            era={era}
+            // Stay on the Wire: only the security in focus changes.
+            onSelectTicker={(symbol) => {
+              setTicker(symbol);
+              setNewsDay(null);
+            }}
           />
         </main>
       )}

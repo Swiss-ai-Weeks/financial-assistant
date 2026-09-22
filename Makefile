@@ -24,7 +24,7 @@ API_PORT ?= 8080
 
 .DEFAULT_GOAL := help
 
-.PHONY: help setup dev api web build serve news universe warm runs forget-runs llm apertus super49b search test lint reset
+.PHONY: help setup dev api web build serve news universe warm runs forget-runs llm apertus super49b search test lint reset wire wire-ingest wire-train wire-score wire-evaluate
 
 help:
 	@awk '/^# /{sub(/^# ?/,"");print} /^$$/{exit}' Makefile
@@ -67,6 +67,23 @@ news:
 # STOXX 600). Pair scans and discovery read this cache; they
 # never download thousands of tickers inside a request.
 # Resumable: fresh files are skipped.
+# The news graph of the book and its temporal graph network
+# (scripts/wire.py). Reading articles needs the local model.
+wire-ingest:
+	$(BIN)/python scripts/wire.py ingest $(ARGS)
+
+wire-train:
+	$(BIN)/python scripts/wire.py train $(ARGS)
+
+wire-score:
+	$(BIN)/python scripts/wire.py score $(ARGS)
+
+wire-evaluate:
+	$(BIN)/python scripts/wire.py evaluate $(ARGS)
+
+wire:
+	$(BIN)/python scripts/wire.py watch $(ARGS)
+
 universe:
 	$(BIN)/python scripts/download_universe.py $(ARGS)
 

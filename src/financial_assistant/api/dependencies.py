@@ -49,6 +49,8 @@ from financial_assistant.fundamentals.service import (
     FundamentalsService,
     load_pair,
 )
+from financial_assistant.api.services.wire_service import WireService
+from financial_assistant.news_graph import NewsGraphStore
 from financial_assistant.llm import OpenAICompatibleProvider
 from financial_assistant.llm.model_registry import (
     ModelRegistry,
@@ -276,6 +278,24 @@ def get_news_service() -> NewsService:
         get_instrument_repository(),
         review_days=settings.review_days,
         as_of=get_clock(),
+    )
+
+
+@lru_cache(maxsize=1)
+def get_news_graph_store() -> NewsGraphStore:
+    """The temporal news graph of the book, one SQLite file."""
+
+    return NewsGraphStore(get_settings().state_dir / "news_graph.sqlite")
+
+
+@lru_cache(maxsize=1)
+def get_wire_service() -> WireService:
+    settings = get_settings()
+
+    return WireService(
+        get_news_graph_store(),
+        get_clock(),
+        checkpoint_exists=lambda: (settings.state_dir / "tgn" / "model.pt").is_file(),
     )
 
 

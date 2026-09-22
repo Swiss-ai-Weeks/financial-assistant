@@ -17,7 +17,7 @@ one still runs, and tomorrow's run continues where it stopped.
 from __future__ import annotations
 
 import argparse
-from datetime import date
+from datetime import date, datetime, time, timezone
 
 from financial_assistant.api.dependencies import (
     get_news_archive,
@@ -58,6 +58,18 @@ def main() -> None:
         action="store_true",
         help="also download the peer universe",
     )
+    parser.add_argument(
+        "--since",
+        type=date.fromisoformat,
+        default=None,
+        help="download from this date instead of the review window's start (a year of history: --since 2025-09-22)",
+    )
+    parser.add_argument(
+        "--providers",
+        nargs="*",
+        default=None,
+        help="only these providers (e.g. finnhub), skipping slow ones such as gdelt",
+    )
 
     args = parser.parse_args()
 
@@ -79,9 +91,15 @@ def main() -> None:
         as_of=args.as_of,
     ).window()
 
+    if args.since is not None:
+        start = datetime.combine(args.since, time.min, timezone.utc)
+
     archive = get_news_archive()
 
     for downloader in get_news_downloaders():
+        if args.providers and downloader.name not in args.providers:
+            continue
+
         print(
             f"{downloader.name}: {start:%Y-%m-%d} -> {end:%Y-%m-%d}, "
             f"{len(tickers)} tickers"

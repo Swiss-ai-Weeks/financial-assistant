@@ -89,6 +89,10 @@ export const api = {
   anomalyNews: (anomalyId, ticker) =>
     request(`/news/anomaly/${encodeURIComponent(anomalyId)}${query({ ticker })}`),
   newsSources: () => request("/news/sources"),
+  wireStatus: () => request("/wire/status"),
+  wireFeed: ({ days, ticker }) => request(`/wire/feed${query({ days, ticker })}`),
+  wireGraph: (ticker, days) => request(`/wire/graph/${encodeURIComponent(ticker)}${query({ days })}`),
+  wireSignals: (ticker) => request(`/wire/signals/${encodeURIComponent(ticker)}`),
   refreshNews: (ticker) =>
     request(`/news/${encodeURIComponent(ticker)}/refresh${query({ limit: 200 })}`, {
       method: "POST",

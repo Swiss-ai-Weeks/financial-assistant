@@ -20,6 +20,8 @@ from financial_assistant.analytics import PairAnalogueBase, PairBreak
 from financial_assistant.api import dependencies as deps
 from financial_assistant.api.main import create_app
 from financial_assistant.api.models import Instrument, NewsItem
+from financial_assistant.api.services.wire_service import WireService
+from financial_assistant.news_graph import NewsGraphStore
 from financial_assistant.api.repositories import (
     InstrumentRepository,
     InvestigationRepository,
@@ -358,6 +360,8 @@ def client(tmp_path):
     llm_available=lambda: TRIAGE["online"],
 )
 
+    wire = WireService(NewsGraphStore(tmp_path / "graph.sqlite"), clock, checkpoint_exists=lambda: False)
+
     app = create_app()
 
     app.dependency_overrides.update(
@@ -382,6 +386,7 @@ def client(tmp_path):
             deps.get_portfolio_repository: lambda: portfolios,
             deps.get_investigation_service: lambda: investigations,
             deps.get_clock: lambda: clock,
+            deps.get_wire_service: lambda: wire,
             # Never the configured endpoint: tests do not leave
             # the machine.
             deps.get_copilot_service: lambda: CopilotService(
@@ -1490,3 +1495,12 @@ def test_a_clicked_session_fetches_the_weeks_around_it(client, tmp_path):
     late = client.get(f"/api/news/AAA?day={LAST_SESSION.date() + timedelta(days=30)}").json()
     limit = (LAST_SESSION + timedelta(days=3)).date().isoformat()
     assert all(item["published_at"][:10] <= limit for item in late)
+
+
+def test_the_wire_reports_an_empty_graph_until_it_is_built(client):
+    status = client.get("/api/wire/status").json()
+
+    assert status["edges"] == 0 and status["model_trained"] is False
+    assert client.get("/api/wire/feed").json() == []
+    assert client.get("/api/wire/graph/AAA").json()["edges"] == []
+    assert client.get("/api/wire/signals/AAA").json() == []

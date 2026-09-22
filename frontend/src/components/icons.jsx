@@ -78,6 +78,17 @@ export const GraphIcon = (props) => (
   </Icon>
 );
 
+export const WireIcon = (props) => (
+  <Icon {...props}>
+    <circle cx="12" cy="12" r="2.4" />
+    <circle cx="4.5" cy="7" r="1.6" />
+    <circle cx="19.5" cy="7" r="1.6" />
+    <circle cx="6" cy="18" r="1.6" />
+    <circle cx="18" cy="18" r="1.6" />
+    <path d="M6 7.8l4.2 2.8M18 7.8l-4.2 2.8M7.3 16.8l3-2.6M16.7 16.8l-3-2.6" />
+  </Icon>
+);
+
 export const SunIcon = (props) => (
   <Icon {...props}>
     <circle cx="12" cy="12" r="3.6" />

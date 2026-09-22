@@ -51,6 +51,7 @@ else
 fi
 
 .venv/bin/pip install -q vllm
+.venv/bin/pip install -q torch_geometric   # the news graph's TGN (make wire-train)
 
 cat <<DONE
 

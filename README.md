@@ -111,12 +111,13 @@ from that run, and every "what usually happens next" shows its sample size and
 says *historical frequencies, not a forecast*. When nothing clears the bar, the
 desk says so.
 
-Two more views sit below the three stories in the rail:
+Three more views sit below the three stories in the rail:
 
 | | Question | What the desk shows |
 |---|---|---|
 | **Book** · portfolio | *What did the book do, and what is researched?* | Returns, realised volatility, drawdown, concentration and 20-session contributors, each with its formula and input hash; research status per holding; the book edited as weights; a historical pair-overlay simulation (descriptive, never a forecast). |
 | **Why** · ClaimGraph | *Why are these connected, and do the models agree?* | Every investigation opens as a **tab** that stays alive while you work elsewhere. Inside a tab: evidence filters, **time travel** through the evidence, a human **review** (accept / challenge / request evidence), **follow-up research** on any open question, a deterministic **report** (HTML/PDF, Markdown, JSON) and an advisory **Copilot** that can move the view but never the graph. **Compare models** lays the same anomaly side by side as read by Nemotron, Apertus or any configured model. |
+| **Wire** · news graph | *What is being said about the book, and what did the model not expect?* | Every article read once into a temporal graph (securities, entities, typed events); a temporal graph network learns what normally comes next. A feed of canonical events, the graph of a security with the edges the model expects next, and per-day surprise and drift. See [Wire](#wire-the-news-graph-and-its-temporal-graph-network). |
 
 Nothing reloads when you move between views: feeds, scans and graphs are
 remembered (and survive a page refresh), then refreshed behind the scenes.
@@ -308,6 +309,64 @@ data/state/                       edited book, investigations, triage (ignored)
 ```
 
 `make reset` forgets the state and keeps the caches.
+
+## Wire: the news graph and its temporal graph network
+
+The sixth icon of the rail. Every article the wire brings about the book is
+read once by Nemotron (title and summary, one short call) and becomes
+timestamped edges: `security → entity` (who it was named with), `security →
+event` (a canonical, typed event: earnings, guidance, M&A, regulation,
+litigation, supply chain, customer, product, management, capital, analyst,
+macro) and `security → event type`. The graph is one SQLite file
+(`data/state/news_graph.sqlite`); an edge list with timestamps is a graph, and
+what the desk needs most is time, which is an indexed range scan there.
+
+A **temporal graph network** (Rossi et al. 2020; the PyTorch Geometric
+implementation, the twitter-research data format) learns on that stream: every
+node keeps a memory updated by its events, an attention layer over recent
+neighbours gives an embedding at time *t*, and the model is trained to tell
+real future edges from sampled ones, on a chronological split (70/15/15, never
+shuffled, AP/AUC reported). Trained, it is replayed from the start and every
+edge is scored *before* the model sees it. Per security and day that gives:
+
+- **surprise**: one minus the probability the model gave the day's edges. High
+  when a security is linked to something the graph never saw it with (a
+  regulator, a new customer, a competitor). Not volume: structure.
+- **drift**: how far the security's memory vector moved from its own trailing
+  average. A narrative changing.
+- **expected next**: the edges the model gives the highest probability for the
+  coming week, drawn dashed red in the Graph tab. An expected edge that never
+  comes is information too.
+
+The page has three tabs: **Feed** (one row per canonical event, not per
+article; commentary and recaps left out; filter by type or by "only what the
+model did not expect"), **Graph** (the security at the centre, event types on
+the inner ring, events and entities on the outer ring with time running
+clockwise, solid edges lighter the more expected they were, predicted edges
+dashed; click a node for the articles behind it) and **Signals** (surprise per
+day, the day's largest surprise, drift). Everything is as of the desk's date.
+
+The model ranks; it never explains. Its top items are candidates for Explain
+and the ClaimGraph, which do the quoting. `make wire-evaluate` reports the lift:
+how often a price shock (|daily log return| beyond 2σ of the trailing 60
+sessions) follows a top-decile surprise day against any day, per security,
+with sample sizes. Historical frequencies, not a forecast.
+
+On the GPU box (reading articles is one Nemotron call each, minutes per call
+on a hosted gateway, about a second on the local vLLM):
+
+```bash
+make news ARGS="--since 2025-09-22 --providers finnhub"   # a year of the book: ~15 min
+make wire-ingest        # read every unread article into the graph: 1–3 h for a year
+make wire-train         # the TGN, chronological split: minutes on one H100
+make wire-score         # surprise, drift and expected edges into the store
+make wire-evaluate      # lift against price shocks
+make wire               # keep it current: refresh news, ingest, score, every 15 min
+```
+
+`make wire-ingest ARGS="--limit 200"` for a first look; `--as-of 2026-06-30`
+on train and score for a point-in-time replay. `pip install -e ".[tgn]"` on a
+machine without vLLM.
 
 ## Model and serving
 

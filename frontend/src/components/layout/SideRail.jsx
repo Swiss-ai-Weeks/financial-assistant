@@ -1,4 +1,4 @@
-import { BookIcon, CloverIcon, GraphIcon, PastIcon, ScopeIcon } from "../icons";
+import { BookIcon, CloverIcon, GraphIcon, PastIcon, ScopeIcon, WireIcon } from "../icons";
 
 /*
  * The three stories are one loop, read as a timeline:
@@ -10,6 +10,7 @@ const VIEWS = [
   { key: "discovery", label: "Next", title: "Discovery: what should I look at?", icon: CloverIcon },
   { key: "portfolio", label: "Book", title: "Portfolio: returns, risk, research and simulation", icon: BookIcon, divider: true },
   { key: "graph", label: "Why", title: "ClaimGraph: open investigations, side by side across models", icon: GraphIcon },
+  { key: "wire", label: "Wire", title: "Wire: the news graph of the book and what the model did not expect", icon: WireIcon },
 ];
 
 export default function SideRail({ view, onChange, badges = {} }) {
