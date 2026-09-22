@@ -1379,3 +1379,70 @@ def test_copilot_may_move_the_view_but_never_the_graph(client):
     )
 
     assert too_long.status_code == 400
+
+
+class HistoryNewsSource(FakeNewsSource):
+    """A provider that keeps history: one story a day over any window."""
+
+    name = "history-wire"
+
+    def __init__(self):
+        self.windows = []
+
+    def fetch(self, ticker, company, *, start=None, end=None):
+        self.windows.append((start, end))
+
+        items, day = [], start.replace(hour=12)
+
+        while day <= end:
+            items.append(
+                NewsItem(
+                    news_id=f"NEWS-{ticker}-{day:%Y%m%d}",
+                    ticker=ticker,
+                    title=f"{ticker} on {day:%b %d}",
+                    url=f"https://news.example.com/{ticker}/{day:%Y%m%d}",
+                    publisher="Example Wire",
+                    published_at=day,
+                    summary=ARTICLE,
+                    provider=self.name,
+                )
+            )
+            day += timedelta(days=1)
+
+        return tuple(items)
+
+
+def test_a_clicked_session_fetches_the_weeks_around_it(client, tmp_path):
+    """
+    The wire covers the review window. A session further back
+    asks the providers that keep history for the weeks around
+    that day, once per week however many of its days are
+    clicked, and never past the desk's window.
+    """
+
+    service = client.app.dependency_overrides[deps.get_news_service]()
+    source = HistoryNewsSource()
+    service._news = NewsRepository(tmp_path / "history", (source,), cache_minutes=60)
+
+    day = (LAST_SESSION - timedelta(days=120)).date()
+    wednesday = day - timedelta(days=day.weekday()) + timedelta(days=2)
+
+    wire = client.get("/api/news/AAA").json()
+    assert wire and all(item["published_at"][:10] > (day + timedelta(days=14)).isoformat() for item in wire)
+
+    around = client.get(f"/api/news/AAA?day={wednesday}").json()
+    days = {item["published_at"][:10] for item in around}
+
+    assert wednesday.isoformat() in days
+    assert (wednesday - timedelta(days=9)).isoformat() in days      # the week before
+    assert (wednesday + timedelta(days=4)).isoformat() in days      # the Sunday
+    assert (wednesday + timedelta(days=5)).isoformat() not in days  # the next week
+
+    # The next day of the same week is served from the cache.
+    client.get(f"/api/news/AAA?day={wednesday + timedelta(days=1)}").json()
+    assert len(source.windows) == 2  # the wire, one week slice
+
+    # Nothing after the desk's window, even when asked for.
+    late = client.get(f"/api/news/AAA?day={LAST_SESSION.date() + timedelta(days=30)}").json()
+    limit = (LAST_SESSION + timedelta(days=3)).date().isoformat()
+    assert all(item["published_at"][:10] <= limit for item in late)

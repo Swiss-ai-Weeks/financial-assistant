@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import date
+
 from fastapi import APIRouter, Depends, Query
 
 from financial_assistant.api.dependencies import (
@@ -45,9 +47,10 @@ def get_anomaly_news(
 def get_ticker_news(
     ticker: str,
     limit: int = Query(default=60, ge=1, le=300),
+    day: date | None = Query(default=None, description="a session: news of the weeks around it"),
     service: NewsService = Depends(get_news_service),
 ):
-    return service.feed(ticker, limit=limit)
+    return service.feed(ticker, limit=limit, day=day)
 
 
 @router.post("/{ticker}/refresh", response_model=list[NewsItem])

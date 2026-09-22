@@ -269,22 +269,32 @@ class NewsRepository:
         start: datetime | None = None,
         end: datetime | None = None,
         force: bool = False,
+        slice: str | None = None,
     ) -> tuple[NewsItem, ...]:
         """
         `force` asks every remote source again, now, and
         waits for the answers. It overrides the refresh
         interval but not the daily budget: a quota that is
         spent stays spent however hard the button is pressed.
+
+        `slice` names a period of the past (a week the
+        manager clicked on the chart). The sources are asked
+        for that window, paced and budgeted apart from the
+        rolling feed, and the request waits for the answers:
+        the cache has nothing for a period nobody asked
+        about before, so there is nothing to serve meanwhile.
         """
 
         symbol = ticker.strip().upper()
         known = self._read(self._path(symbol))
 
-        if force or self._due(symbol, force=False):
-            if known and self._background and not force:
+        subject = symbol if slice is None else f"{symbol}@{slice}"
+
+        if force or self._due(subject, force=False):
+            if known and self._background and not force and slice is None:
                 self._refresh_later(symbol, company, start, end)
             else:
-                known = self._refresh(symbol, company, start, end, force)
+                known = self._refresh(symbol, company, start, end, force, subject)
 
         for source in self._sources:
             if source.local:
@@ -384,56 +394,103 @@ class NewsRepository:
             with self._state_lock:
                 self._refreshing.discard(symbol)
 
-    def _refresh(self, symbol, company, start, end, force) -> dict[str, NewsItem]:
-        path = self._path(symbol)
-
+    def _refresh(
+        self, symbol, company, start, end, force, subject=None
+    ) -> dict[str, NewsItem]:
         # One refresh per ticker at a time. Whoever waited
         # here finds nothing due any more and reads what the
         # first one wrote.
         with self._ticker_lock(symbol):
-            sources = self._reserve(symbol, force=force)
+            sources = self._reserve(subject or symbol, force=force)
 
             if not sources:
-                return self._read(path)
+                return self._read(self._path(symbol))
 
-            def fetch(source):
-                try:
-                    return list(
-                        source.fetch(symbol, company, start=start, end=end)
-                    )
-                except Exception as error:
-                    # One dead source must not blank the feed.
-                    return error
+            # A request for a period of the past waits for
+            # its answers, but not for a source that declares
+            # itself slow (GDELT: seconds per request, and a
+            # queue behind the book's own refresh). That one
+            # fills in behind the request.
+            deferred = [
+                source
+                for source in sources
+                if subject != symbol and not force and getattr(source, "slow", False)
+            ]
 
-            if len(sources) == 1:
-                results = [fetch(sources[0])]
-            else:
-                results = list(self._fetchers().map(fetch, sources))
+            known = self._collect(
+                symbol, company, start, end,
+                [source for source in sources if source not in deferred],
+            )
 
-            known = self._read(path)
-            outcomes = []
+        if deferred:
+            self._collect_later(symbol, company, start, end, deferred)
 
-            # Merged in source order, not in order of arrival,
-            # so which copy of a story is kept does not depend
-            # on which provider was quicker today.
-            for source, result in zip(sources, results):
-                if isinstance(result, Exception):
-                    outcomes.append((source, result, 0))
-                    continue
+        return known
 
-                new = 0
+    def _collect(self, symbol, company, start, end, sources) -> dict[str, NewsItem]:
+        """Ask `sources`, merge what they return into the ticker's file."""
 
-                for item in result:
-                    if item.news_id not in known:
-                        known[item.news_id] = item
-                        new += 1
+        path = self._path(symbol)
 
-                outcomes.append((source, None, new))
+        if not sources:
+            return self._read(path)
 
-            self._write(path, known)
-            self._record(outcomes)
+        def fetch(source):
+            try:
+                return list(
+                    source.fetch(symbol, company, start=start, end=end)
+                )
+            except Exception as error:
+                # One dead source must not blank the feed.
+                return error
 
-            return known
+        if len(sources) == 1:
+            results = [fetch(sources[0])]
+        else:
+            results = list(self._fetchers().map(fetch, sources))
+
+        known = self._read(path)
+        outcomes = []
+
+        # Merged in source order, not in order of arrival,
+        # so which copy of a story is kept does not depend
+        # on which provider was quicker today.
+        for source, result in zip(sources, results):
+            if isinstance(result, Exception):
+                outcomes.append((source, result, 0))
+                continue
+
+            new = 0
+
+            for item in result:
+                if item.news_id not in known:
+                    known[item.news_id] = item
+                    new += 1
+
+            outcomes.append((source, None, new))
+
+        self._write(path, known)
+        self._record(outcomes)
+
+        return known
+
+    def _collect_later(self, symbol, company, start, end, sources) -> None:
+        with self._state_lock:
+            if self._refresh_pool is None:
+                self._refresh_pool = ThreadPoolExecutor(
+                    max_workers=REFRESH_WORKERS,
+                    thread_name_prefix="news-refresh",
+                )
+
+        def run():
+            try:
+                with self._ticker_lock(symbol):
+                    self._collect(symbol, company, start, end, sources)
+            except Exception:
+                # Nobody is waiting for this.
+                pass
+
+        self._refresh_pool.submit(run)
 
     def _due(self, symbol: str, *, force: bool) -> list[NewsSource]:
         now = self._now()

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, time, timedelta, timezone
 
 from financial_assistant.api.clock import DeskClock, as_clock
 from financial_assistant.api.models import Anomaly, NewsItem
@@ -88,8 +88,21 @@ class NewsService:
             for status in self._news.status()
         ]
 
-    def feed(self, ticker: str, *, limit: int = 60) -> list[NewsItem]:
-        return self._wire(ticker.strip().upper())[:limit]
+    def feed(
+        self, ticker: str, *, limit: int = 60, day: date | None = None
+    ) -> list[NewsItem]:
+        """
+        The wire of the review window or, with `day`, what
+        was published in the two weeks around one session
+        the manager clicked on the chart, however far back.
+        """
+
+        symbol = ticker.strip().upper()
+
+        if day is None:
+            return self._wire(symbol)[:limit]
+
+        return self._around_day(symbol, day)[:limit]
 
     def refresh(self, ticker: str, *, limit: int = 60) -> list[NewsItem]:
         """
@@ -288,6 +301,36 @@ class NewsService:
         )
 
         return session_close(anchor) - timedelta(days=LOOKBACK_DAYS)
+
+    def _around_day(self, ticker: str, day: date) -> list[NewsItem]:
+        """
+        Sources are asked for the calendar weeks around the
+        day, from the Monday of the week before to the Sunday
+        of the day's own week, so the neighbouring sessions a
+        manager clicks next are already there. Nothing after
+        the desk's window is admitted, so a replay date stays
+        a wall.
+        """
+
+        monday = day - timedelta(days=day.weekday())
+
+        start = datetime.combine(monday - timedelta(days=7), time.min, timezone.utc)
+        end = min(
+            datetime.combine(monday + timedelta(days=7), time.min, timezone.utc),
+            self.window()[1],
+        )
+
+        return one_per_story(
+            item
+            for item in self._news.get(
+                ticker,
+                self._company(ticker),
+                start=start,
+                end=end,
+                slice=monday.isoformat(),
+            )
+            if start <= item.published_at <= end
+        )
 
     def _wire(self, ticker: str, *, force: bool = False) -> list[NewsItem]:
         start, end = self.window()

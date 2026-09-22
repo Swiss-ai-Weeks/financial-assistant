@@ -209,6 +209,10 @@ class GdeltDownloader:
     local = False
     min_refresh_minutes = 360
 
+    # A request for a past period does not wait for GDELT
+    # (see NewsRepository._refresh): its answer arrives behind.
+    slow = True
+
     def __init__(self, client: GdeltClient | None = None):
         self._client = client or GdeltClient()
 

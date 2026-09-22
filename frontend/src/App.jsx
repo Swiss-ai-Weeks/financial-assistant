@@ -260,6 +260,14 @@ export default function App() {
     maxAge: NEWS_AGE,
     persist: true,
   });
+  // A session clicked on the chart: the weeks around it are
+  // fetched from the providers that keep history, however far
+  // back the chart goes.
+  const dayNews = useResource(
+    () => api.tickerNews(ticker, newsDay),
+    `news:${ticker}:${newsDay}:${era}`,
+    { enabled: hasTicker && Boolean(newsDay), maxAge: NEWS_AGE, persist: true }
+  );
   const newsSources = useResource(api.newsSources, "news-sources", {
     enabled: sideTab === "news",
     maxAge: MINUTES,
@@ -863,10 +871,10 @@ export default function App() {
               {sideTab === "news" && (
                 <NewsFeed
                   ticker={ticker}
-                  news={tickerNews.data}
-                  loading={tickerNews.loading}
-                  refreshing={tickerNews.refreshing}
-                  error={tickerNews.error}
+                  news={newsDay ? dayNews.data : tickerNews.data}
+                  loading={newsDay ? dayNews.loading : tickerNews.loading}
+                  refreshing={newsDay ? dayNews.refreshing : tickerNews.refreshing}
+                  error={newsDay ? dayNews.error : tickerNews.error}
                   day={newsDay}
                   sources={newsSources.data}
                   onClearDay={() => setNewsDay(null)}

@@ -84,8 +84,8 @@ export const api = {
     request(`/pairs/${encodeURIComponent(a)}/${encodeURIComponent(b)}/spread`),
 
   portfolioNews: () => request("/news"),
-  tickerNews: (ticker) =>
-    request(`/news/${encodeURIComponent(ticker)}${query({ limit: 200 })}`),
+  tickerNews: (ticker, day) =>
+    request(`/news/${encodeURIComponent(ticker)}${query({ limit: 200, day })}`),
   anomalyNews: (anomalyId, ticker) =>
     request(`/news/anomaly/${encodeURIComponent(anomalyId)}${query({ ticker })}`),
   newsSources: () => request("/news/sources"),
