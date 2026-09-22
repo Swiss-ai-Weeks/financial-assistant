@@ -23,6 +23,49 @@ TIMEOUT_RETRIES = 1
 
 RUNAWAY_TEMPERATURE = 0.4
 
+# Below this many tokens left for the answer, a structured
+# reply would be cut off anyway: the prompt is the problem.
+MIN_OUTPUT_TOKENS = 256
+
+# The server reports the prompt as "at least" so many tokens.
+CONTEXT_MARGIN = 32
+
+CONTEXT_LIMIT = re.compile(
+    r"maximum context length is (\d+) tokens"
+)
+
+# vLLM words the prompt size two ways, depending on version:
+# "your prompt contains at least 6145 input tokens" and
+# "(6452 in the messages, 2048 in the completion)".
+PROMPT_SIZE = re.compile(
+    r"prompt contains at least (\d+) input tokens"
+    r"|\((\d+) in the messages"
+)
+
+
+def output_budget(detail: str) -> int | None:
+    """
+    How many tokens are left for the answer, when a server
+    refused a request for overflowing its context window.
+    None when the refusal was about something else.
+
+    Each retry asks for strictly fewer tokens than the one
+    before, so a server that keeps refusing ends in an error,
+    not a loop.
+    """
+
+    limit = CONTEXT_LIMIT.search(detail)
+    prompt = PROMPT_SIZE.search(detail)
+
+    if limit is None or prompt is None:
+        return None
+
+    return (
+        int(limit.group(1))
+        - int(prompt.group(1) or prompt.group(2))
+        - CONTEXT_MARGIN
+    )
+
 
 class LLMTransportError(RuntimeError):
     """
@@ -387,7 +430,13 @@ class OpenAICompatibleProvider:
         metadata: dict[str, Any] = {
             "chosen_model_id": self.model_id,
             "locality": self.locality,
-            "max_tokens": self.max_tokens,
+            # Lower than configured when the prompt left less
+            # room in the context window.
+            "max_tokens": getattr(
+                self._completion,
+                "max_tokens",
+                self.max_tokens,
+            ),
             "finish_reason": finish_reason,
             "latency_ms": round(
                 (time.monotonic() - started) * 1000
@@ -464,6 +513,9 @@ class OpenAICompatibleProvider:
         Send the request, adapting to the server instead
         of failing on the first difference:
 
+          400         prompt + max_tokens overflow the
+                      context window: ask for fewer output
+                      tokens, keeping everything else
           400 / 422   something optional was refused:
                       relax the request one step and try
                       again (see _give_something_up)
@@ -492,9 +544,15 @@ class OpenAICompatibleProvider:
                     request,
                     timeout=self.timeout_seconds,
                 ) as response:
-                    return read_completion(
+                    result = read_completion(
                         response
                     )
+
+                self._completion.max_tokens = payload[
+                    "max_tokens"
+                ]
+
+                return result
 
             except HTTPError as error:
                 if (
@@ -508,6 +566,35 @@ class OpenAICompatibleProvider:
                     )
                     continue
 
+                # The body can only be read once.
+                detail = error.read().decode(
+                    "utf-8",
+                    errors="replace",
+                )
+
+                budget = (
+                    output_budget(detail)
+                    if error.code == 400
+                    else None
+                )
+
+                if budget is not None:
+                    # Relaxing the format would not shrink the
+                    # prompt, so an overflow never falls through
+                    # to _give_something_up.
+                    if (
+                        budget < MIN_OUTPUT_TOKENS
+                        or budget >= payload["max_tokens"]
+                    ):
+                        raise LLMTransportError(
+                            "The prompt leaves no room for an "
+                            f"answer in the model's context "
+                            f"window: {detail[:300]}"
+                        ) from error
+
+                    payload["max_tokens"] = budget
+                    continue
+
                 if (
                     error.code in (400, 422)
                     and self._give_something_up(
@@ -516,10 +603,7 @@ class OpenAICompatibleProvider:
                 ):
                     continue
 
-                detail = error.read().decode(
-                    "utf-8",
-                    errors="replace",
-                )[:300]
+                detail = detail[:300]
 
                 raise LLMTransportError(
                     f"Model endpoint answered HTTP "

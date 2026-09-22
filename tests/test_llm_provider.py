@@ -30,9 +30,12 @@ class FakeEndpoint:
             raise TimeoutError("The read operation timed out")
 
         if isinstance(answer, int):
-            raise HTTPError(
+            answer = HTTPError(
                 request.full_url, answer, "refused", {}, io.BytesIO(b'{"detail": "no"}')
             )
+
+        if isinstance(answer, HTTPError):
+            raise answer
 
         finish = "stop"
 
@@ -246,3 +249,44 @@ def test_a_runaway_answer_gets_one_nudge(endpoint):
 
     with pytest.raises(ValueError, match="finish_reason=length"):
         provider().complete_json(system="s", user="u")
+
+
+def overflow(prompt_tokens, context=8192, requested=2048):
+    """vLLM's refusal of a prompt too long for its context window."""
+
+    message = (
+        f"This model's maximum context length is {context} tokens. "
+        f"However, you requested {requested} output tokens and your "
+        f"prompt contains at least {prompt_tokens} input tokens, for a "
+        f"total of at least {prompt_tokens + requested} tokens."
+    )
+
+    return HTTPError(
+        "http://llm", 400, "Bad Request", {},
+        io.BytesIO(json.dumps({"error": {"message": message}}).encode()),
+    )
+
+
+def test_a_context_overflow_asks_for_fewer_output_tokens(endpoint):
+    fake = endpoint(overflow(6145), '{"ok": true}')
+
+    llm = provider()
+    answer = llm.complete_json(system="s", user="u", schema={"type": "object"})
+
+    assert answer == {"ok": True}
+
+    # Only the output budget shrinks; nothing else is given up.
+    assert [r["max_tokens"] for r in fake.requests] == [2048, 8192 - 6145 - 32]
+    assert fake.requests[1]["response_format"]["type"] == "json_schema"
+    assert "chat_template_kwargs" in fake.requests[1]
+
+    assert llm.last_completion["max_tokens"] == 8192 - 6145 - 32
+
+
+def test_a_prompt_that_fills_the_context_is_reported_not_relaxed(endpoint):
+    fake = endpoint(overflow(8100))
+
+    with pytest.raises(LLMTransportError, match="no room for an answer"):
+        provider().complete_json(system="s", user="u")
+
+    assert len(fake.requests) == 1
