@@ -155,6 +155,7 @@ class AnomalyService:
         self._lock = threading.Lock()
         self._cache: dict[tuple, tuple[float, object]] = {}
         self._flights: dict[tuple, threading.Lock] = {}
+        self._generation = 0
         self._events: dict[str, AnomalyEvent] = {}
 
     # -------------------------------------------------
@@ -261,15 +262,7 @@ class AnomalyService:
 
         focus_set = frozenset(t.strip().upper() for t in focus)
 
-        universe = tuple(
-            dict.fromkeys(
-                (
-                    *focus_set,
-                    *self._portfolios.load().tickers,
-                    *self._instruments.universe,
-                )
-            )
-        )
+        universe = self._universe(focus_set)
 
         return self._cached(
             ("pairs", tuple(sorted(focus_set)), universe),
@@ -280,13 +273,21 @@ class AnomalyService:
         a, b = ticker_a.strip().upper(), ticker_b.strip().upper()
 
         prices = self._market.get_prices((a, b))
-        window = review_window(prices, self._review_days)
-        formation = self._formation_dates(prices, window.start)
 
-        fits = fit_pairs(
+        # The windows of the scan that raised the anomaly: the
+        # benchmark's calendar, not the pair's own, or the chart
+        # would draw a slightly different relationship.
+        calendar = self._market.get_prices((self._benchmark,))
+        window = review_window(calendar, self._review_days)
+        formation = self._formation_dates(calendar, window.start)
+
+        if len(formation) < self._formation_observations:
+            raise NotFound(f"Not enough history before {window.start} for {a}/{b}.")
+
+        fits = self._fit(
             prices,
-            start=formation[0],
-            end=formation[-1],
+            formation,
+            bounded=len(self._universe((a, b))) > LARGE_UNIVERSE,
             corr_min=-1.0,
             alpha=1.0,
         )
@@ -322,6 +323,19 @@ class AnomalyService:
     # -------------------------------------------------
     # Internals
     # -------------------------------------------------
+
+    def _universe(self, focus) -> tuple[str, ...]:
+        """What a scan looks through: the focus, the book, the peers."""
+
+        return tuple(
+            dict.fromkeys(
+                (
+                    *focus,
+                    *self._portfolios.load().tickers,
+                    *self._instruments.universe,
+                )
+            )
+        )
 
     def _signals(self, ticker: str) -> list[Anomaly]:
         return self._cached(
@@ -372,26 +386,22 @@ class AnomalyService:
         window = review_window(calendar, self._review_days)
         formation = self._formation_dates(calendar, window.start)
 
-        if prices["ticker"].nunique() > LARGE_UNIVERSE:
-            # Years of history nobody fits on would only slow
-            # the pivot down. A calendar margin covers markets
-            # whose holidays differ from the benchmark's.
-            recent = prices.loc[
-                pd.to_datetime(prices["date"])
-                >= pd.Timestamp(formation[0]) - pd.Timedelta(days=45)
-            ]
-
-            fits = fit_large_universe(
-                recent,
-                start=pd.Timestamp(formation[0]) - pd.Timedelta(days=45),
-                end=formation[-1],
+        if len(formation) < self._formation_observations:
+            # The desk travelled further back than its history
+            # allows. A relationship fitted on whatever is left
+            # would not be the 24-month one the blotter claims.
+            fits = ()
+        else:
+            fits = self._fit(
+                prices,
+                formation,
+                bounded=large,
                 corr_min=self._corr_min,
                 alpha=self._alpha,
                 focus=None if whole else focus,
                 sectors=self._instruments.sectors,
                 corr_min_same_sector=self._corr_min_same_sector,
                 groups=self._instruments.groups,
-                formation_observations=self._formation_observations,
                 max_peers_per_ticker=(
                     PEERS_PER_UNIVERSE_TICKER
                     if whole
@@ -399,22 +409,8 @@ class AnomalyService:
                 ),
             )
 
-            legs = {t for fit in fits for t in (fit.ticker_a, fit.ticker_b)}
-            monitored = recent.loc[recent["ticker"].isin(legs)]
-
-        else:
-            fits = fit_pairs(
-                prices,
-                start=formation[0],
-                end=formation[-1],
-                corr_min=self._corr_min,
-                alpha=self._alpha,
-                focus=focus,
-                sectors=self._instruments.sectors,
-                corr_min_same_sector=self._corr_min_same_sector,
-            )
-
-            monitored = prices
+        legs = {t for fit in fits for t in (fit.ticker_a, fit.ticker_b)}
+        monitored = prices.loc[prices["ticker"].isin(legs)]
 
         zscores, detected = monitor_pairs(
             monitored,
@@ -457,6 +453,48 @@ class AnomalyService:
                 for fit in fits
             ],
             anomalies=[self._register_pair(anomaly) for anomaly in detected],
+        )
+
+    def _fit(
+        self,
+        prices: pd.DataFrame,
+        formation: list,
+        *,
+        bounded: bool,
+        groups: dict[str, str] | None = None,
+        max_peers_per_ticker: int = PEERS_PER_FOCUS_TICKER,
+        **thresholds,
+    ):
+        """
+        Relationships on the formation window, which ends
+        strictly before the review window starts.
+
+        A universe of thousands goes through the bounded
+        fitter; a book and a watchlist through the exhaustive
+        one. Same test, same thresholds.
+        """
+
+        if not bounded:
+            return fit_pairs(
+                prices,
+                start=formation[0],
+                end=formation[-1],
+                **thresholds,
+            )
+
+        # Markets whose holidays differ from the benchmark's
+        # need a calendar margin to reach the same number of
+        # sessions. Older history would only slow the pivot.
+        earliest = pd.Timestamp(formation[0]) - pd.Timedelta(45, unit="D")
+
+        return fit_large_universe(
+            prices.loc[pd.to_datetime(prices["date"]) >= earliest],
+            start=earliest,
+            end=formation[-1],
+            groups=groups,
+            formation_observations=self._formation_observations,
+            max_peers_per_ticker=max_peers_per_ticker,
+            **thresholds,
         )
 
     def _formation_dates(self, prices: pd.DataFrame, review_start) -> list:
@@ -561,14 +599,24 @@ class AnomalyService:
                 if hit is not None and time.time() - hit[0] < CACHE_SECONDS:
                     return hit[1]
 
-            value = compute()
+            # The desk may travel in time while a scan runs (the
+            # warm-up takes a minute). Such a scan read a market
+            # that is no longer the visible one, possibly half of
+            # each: it is neither remembered nor returned.
+            while True:
+                with self._lock:
+                    generation = self._generation
 
-            with self._lock:
-                self._cache[key] = (time.time(), value)
-                self._flights.pop(key, None)
+                value = compute()
 
-        return value
+                with self._lock:
+                    if generation == self._generation:
+                        self._cache[key] = (time.time(), value)
+                        self._flights.pop(key, None)
+
+                        return value
 
     def invalidate(self) -> None:
         with self._lock:
+            self._generation += 1
             self._cache.clear()

@@ -76,7 +76,7 @@ def scan_pairs_as_of(
     entry: float = 2.0,
     sectors: dict[str, str] | None = None,
     corr_min_same_sector: float | None = None,
-    batched: bool = False,
+    bounded: bool = False,
 ) -> tuple[
     HistoricalPairSignal,
     ...
@@ -202,11 +202,12 @@ def scan_pairs_as_of(
     # strictly before the time-travel date.
     # -------------------------------------------------
 
-    if batched:
+    if bounded:
         # A walk-forward replay refits every relationship at
-        # dozens of past dates. The batched engine tests them
-        # together, with the same statistics; `max_peers` as
-        # large as the universe means no candidate is dropped.
+        # dozens of past dates. The large-universe fitter spreads
+        # the tests over worker processes, with the same
+        # statistics; `max_peers` as large as the universe means
+        # no candidate is dropped.
         from .scalable import fit_large_universe
 
         fits = fit_large_universe(

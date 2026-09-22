@@ -61,8 +61,8 @@ ANALOGUE_MAX_AGE_DAYS = 45
 ANALOGUE_MAX_TICKERS = 160
 
 # Above this many securities the analogue replay uses the
-# batched cointegration engine.
-BATCHED_ABOVE = 40
+# large-universe fitter, whose tests run on worker processes.
+BOUNDED_ABOVE = 40
 
 # Candidates whose news is read and triaged per scan.
 MAX_CANDIDATES = 40
@@ -138,6 +138,9 @@ class DiscoveryService:
         self._job = DiscoveryJob()
         self._job_lock = threading.Lock()
 
+        # Counts the desk's moves in time (see reset).
+        self._era = 0
+
     # -------------------------------------------------
     # Background job
     # -------------------------------------------------
@@ -150,10 +153,13 @@ class DiscoveryService:
         """
         Forget the last result: the desk moved in time, so it
         describes a market that is no longer the visible one.
-        A scan still running keeps its slot and finishes.
+        A scan still running read some of its prices before the
+        move: it is started again rather than published.
         """
 
         with self._job_lock:
+            self._era += 1
+
             if self._job.status != "running":
                 self._job = DiscoveryJob()
 
@@ -187,20 +193,33 @@ class DiscoveryService:
     def _run_job(self) -> None:
         started = time.perf_counter()
 
-        try:
-            discovery = self.scan()
-            outcome = {"status": "completed", "discovery": discovery, "stage": "Done"}
+        while True:
+            with self._job_lock:
+                era = self._era
 
-        except Exception as error:
-            outcome = {
-                "status": "failed",
-                "error": str(error) or type(error).__name__,
-            }
+            try:
+                discovery = self.scan()
+                outcome = {"status": "completed", "discovery": discovery, "stage": "Done"}
 
-        with self._job_lock:
-            self._job = self._job.model_copy(
-                update={**outcome, "seconds": round(time.perf_counter() - started, 1)}
-            )
+            except Exception as error:
+                outcome = {
+                    "status": "failed",
+                    "error": str(error) or type(error).__name__,
+                }
+
+            with self._job_lock:
+                if era != self._era:
+                    # The desk moved in time meanwhile.
+                    self._job = self._job.model_copy(
+                        update={"stage": "The date changed: scanning again"}
+                    )
+                    continue
+
+                self._job = self._job.model_copy(
+                    update={**outcome, "seconds": round(time.perf_counter() - started, 1)}
+                )
+
+                return
 
     def _stage(self, text: str) -> None:
         with self._job_lock:
@@ -806,11 +825,11 @@ class DiscoveryService:
                 entry=self._entry,
                 sectors=self._instruments.sectors,
                 corr_min_same_sector=self._corr_min_same_sector,
-                # Fifty refits of a hundred-odd names: the
-                # batched engine turns minutes into seconds.
+                # Fifty refits of a hundred-odd names: worker
+                # processes share out the statsmodels tests.
                 **(
-                    {"batched": True}
-                    if prices["ticker"].nunique() > BATCHED_ABOVE
+                    {"bounded": True}
+                    if prices["ticker"].nunique() > BOUNDED_ABOVE
                     else {}
                 ),
             )

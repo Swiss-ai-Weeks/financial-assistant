@@ -5,11 +5,12 @@ from datetime import date, timedelta
 import numpy as np
 import pandas as pd
 
-from .batched import engle_granger_batch, integrated_of_order_one
 from .cointegration import (
     _prepare_prices,
     engle_granger,
+    engle_granger_many,
     half_life,
+    integrated,
     is_i1,
 )
 
@@ -348,10 +349,6 @@ def fit_bounded_pairs(
                     "pvalue"
                 ],
 
-                adf_lags=result[
-                    "lags"
-                ],
-
                 nobs=result[
                     "nobs"
                 ],
@@ -471,11 +468,10 @@ def fit_large_universe(
     pairs are admitted at `corr_min_same_sector`, all others
     at `corr_min`, and both orderings of a pair are tested.
 
-    The tests themselves, tens of thousands of ADF regressions
-    with lag selection, are where the time goes. They run as a
-    handful of batched matrix operations (see batched.py): on
-    the GPU through cuBLAS when PyTorch sees one, in NumPy
-    otherwise, with statsmodels' numbers either way.
+    The tests themselves are statsmodels' (is_i1 and coint,
+    through cointegration.engle_granger) and are where the time
+    goes: they are spread over worker processes (see
+    cointegration.engle_granger_many).
     """
 
     if formation_observations <= 2:
@@ -578,21 +574,17 @@ def fit_large_universe(
     own_rows = {ticker: tail(ticker) for ticker in involved}
     testable = [t for t in involved if own_rows[t] is not None]
 
-    integrated = dict(
+    i1 = dict(
         zip(
             testable,
-            integrated_of_order_one(
-                np.array([values[own_rows[t], column[t]] for t in testable])
-            )
-            if testable
-            else (),
+            integrated([values[own_rows[t], column[t]] for t in testable]),
         )
     )
 
     admitted = []
 
     for first, second in candidates:
-        if not (integrated.get(first) and integrated.get(second)):
+        if not (i1.get(first) and i1.get(second)):
             continue
 
         rows = tail(first, second)
@@ -613,23 +605,25 @@ def fit_large_universe(
     fits: list[PairFit] = []
 
     if admitted:
-        left = np.array([item[4] for item in admitted])
-        right = np.array([item[5] for item in admitted])
-
         # Engle-Granger is not symmetric: both orderings are
         # tested and the stronger relationship is kept, with
         # ticker_a as its dependent leg.
-        forward = engle_granger_batch(left, right)
-        backward = engle_granger_batch(right, left)
+        outcomes = engle_granger_many(
+            [
+                ordering
+                for _, _, _, _, a, b in admitted
+                for ordering in ((a, b), (b, a))
+            ]
+        )
 
         for index, (first, second, exact, rows, _, _) in enumerate(admitted):
             options = [
-                (result.pvalue[index], dependent, regressor, result)
+                (result["pvalue"], dependent, regressor, result)
                 for dependent, regressor, result in (
-                    (first, second, forward),
-                    (second, first, backward),
+                    (first, second, outcomes[2 * index]),
+                    (second, first, outcomes[2 * index + 1]),
                 )
-                if result.pvalue[index] < alpha
+                if result["pvalue"] < alpha
             ]
 
             if not options:
@@ -637,12 +631,12 @@ def fit_large_universe(
 
             _, ticker_a, ticker_b, result = min(options, key=lambda item: item[0])
 
-            spread_std = float(result.spread_std[index])
+            spread_std = result["spread_std"]
 
             if not np.isfinite(spread_std) or spread_std <= 0:
                 continue
 
-            hl = float(result.half_life[index])
+            hl = result["half_life"]
 
             fits.append(
                 PairFit(
@@ -652,14 +646,13 @@ def fit_large_universe(
                     formation_start=sessions[rows[0]].date(),
                     formation_end=sessions[rows[-1]].date(),
                     correlation=exact,
-                    const=float(result.const[index]),
-                    beta=float(result.beta[index]),
-                    adf_stat=float(result.statistic[index]),
-                    pvalue=float(result.pvalue[index]),
-                    adf_lags=int(result.lags[index]),
-                    nobs=int(result.observations[index]),
+                    const=result["const"],
+                    beta=result["beta"],
+                    adf_stat=result["adf_stat"],
+                    pvalue=result["pvalue"],
+                    nobs=result["nobs"],
                     half_life_days=None if not np.isfinite(hl) else hl,
-                    spread_mean=float(result.spread_mean[index]),
+                    spread_mean=result["spread_mean"],
                     spread_std=spread_std,
                 )
             )

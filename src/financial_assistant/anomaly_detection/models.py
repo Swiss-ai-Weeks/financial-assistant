@@ -39,7 +39,8 @@ class PairFit(BaseModel):
     adf_stat: float
     pvalue: float
 
-    adf_lags: int
+    # statsmodels' coint does not report the lag order.
+    adf_lags: int | None = None
     nobs: int
 
     half_life_days: float | None = None

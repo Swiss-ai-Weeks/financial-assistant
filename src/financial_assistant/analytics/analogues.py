@@ -216,7 +216,7 @@ def build_pair_analogue_base(
     step_sessions: int = 10,
     lookback_sessions: int = 500,
     until: date | None = None,
-    batched: bool = False,
+    bounded: bool = False,
 ) -> PairAnalogueBase:
     """
     Scan history every `step_sessions` and record each new
@@ -253,7 +253,7 @@ def build_pair_analogue_base(
                 entry=entry,
                 sectors=sectors,
                 corr_min_same_sector=corr_min_same_sector,
-                batched=batched,
+                bounded=bounded,
             )
         except ValueError:
             continue

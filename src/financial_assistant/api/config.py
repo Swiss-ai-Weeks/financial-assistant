@@ -248,7 +248,7 @@ class Settings:
             pairs_recalibration_window=int(env("PAIRS_RECALIBRATION_WINDOW", "252")),
             pairs_corr_min=float(env("PAIRS_CORR_MIN", "0.70")),
             pairs_corr_min_same_sector=float(
-                env("PAIRS_CORR_MIN_SAME_SECTOR", "0.50")
+                env("PAIRS_CORR_MIN_SAME_SECTOR", env("PAIRS_CORR_MIN", "0.70"))
             ),
             pairs_alpha=float(env("PAIRS_ALPHA", "0.05")),
             pairs_entry=float(env("PAIRS_ENTRY", "2.0")),

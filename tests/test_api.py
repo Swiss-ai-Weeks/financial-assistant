@@ -1381,6 +1381,50 @@ def test_copilot_may_move_the_view_but_never_the_graph(client):
     assert too_long.status_code == 400
 
 
+def test_every_monitor_follows_the_chosen_date(client):
+    live = client.get("/api/market/AAA/candles?days=60").json()["candles"]
+    past = live[-15]["time"]
+
+    before = client.get("/api/anomalies").json()
+    assert any(a["observed_on"] > past for a in before)
+
+    client.put("/api/system/as-of", json={"as_of": past})
+
+    replayed = client.get("/api/anomalies").json()
+    scan = client.get("/api/pairs").json()
+
+    assert replayed and all(a["observed_on"] <= past for a in replayed)
+    assert len({a["strategy"] for a in replayed}) > 1
+
+    assert scan["monitoring_end"] == past
+    assert scan["formation_end"] < scan["monitoring_start"]
+
+    client.put("/api/system/as-of", json={"as_of": None})
+
+    assert client.get("/api/anomalies").json() == before
+
+
+def test_a_discovery_overtaken_by_time_travel_starts_again(client):
+    discovery = client.app.dependency_overrides[deps.get_discovery_service]()
+
+    scan, calls = discovery.scan, []
+
+    def scan_then_travel():
+        calls.append(True)
+
+        if len(calls) == 1:
+            # The date changes while the first scan is running.
+            discovery.reset()
+
+        return scan()
+
+    discovery.scan = scan_then_travel
+
+    discover(client)
+
+    assert len(calls) == 2
+
+
 class HistoryNewsSource(FakeNewsSource):
     """A provider that keeps history: one story a day over any window."""
 

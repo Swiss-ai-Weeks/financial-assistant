@@ -1,18 +1,19 @@
 from __future__ import annotations
 
 import itertools
+import os
+from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures.process import BrokenProcessPool
 from datetime import date
+from threading import Lock
 
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-from statsmodels.tsa.adfvalues import (
-    mackinnonp,
-)
-
 from statsmodels.tsa.stattools import (
     adfuller,
+    coint,
 )
 
 from .models import (
@@ -149,6 +150,13 @@ def engle_granger(
 
     y and x should normally be log-price series.
 
+    The test is statsmodels' coint: the regression
+    y = const + beta*x + spread, then ADF with AIC lag
+    selection on the spread, judged against MacKinnon's
+    cointegration distribution for two series. coint does
+    not return the regression, so the same OLS is fitted
+    here for the hedge ratio and the spread.
+
     Returns None when the I(1) precondition fails.
     """
 
@@ -184,28 +192,13 @@ def engle_granger(
 
     # Step 2:
     #
-    # ADF on estimated residuals.
-    (
-        adf_stat,
-        _,
-        lags,
-        nobs,
-        _,
-        _,
-    ) = adfuller(
-        spread,
-        regression="n",
-        autolag="AIC",
-        result_object=False,
-    )
-
-    # Because these residuals were estimated rather
-    # than directly observed, use MacKinnon's
-    # cointegration distribution for N=2.
-    pvalue = mackinnonp(
-        adf_stat,
-        regression="c",
-        N=2,
+    # ADF on those residuals, with MacKinnon's p-value
+    # for estimated (not observed) residuals, N=2.
+    adf_stat, pvalue, _ = coint(
+        y_clean,
+        x_clean,
+        trend="c",
+        autolag="aic",
     )
 
     return {
@@ -221,13 +214,101 @@ def engle_granger(
         "pvalue": float(
             pvalue
         ),
-        "lags": int(lags),
-        "nobs": int(nobs),
+        "nobs": len(spread),
         "cointegrated": (
             pvalue < alpha
         ),
         "spread": spread,
     }
+
+
+# -------------------------------------------------
+# Many tests at once
+# -------------------------------------------------
+
+# Below this many tests a scan runs in-process: starting
+# the worker processes would cost more than it saves.
+PARALLEL_ABOVE = 64
+
+_pool: ProcessPoolExecutor | None = None
+_pool_lock = Lock()
+
+
+def _workers() -> int:
+    """PAIRS_WORKERS processes, every core by default; 1 is serial."""
+
+    wanted = os.environ.get("PAIRS_WORKERS", "").strip()
+
+    return max(1, int(wanted)) if wanted else (os.cpu_count() or 1)
+
+
+def _map(function, items: list) -> list:
+    """
+    function over items, on worker processes when there are
+    enough of them. Each test is independent and pure, so
+    the answers are the serial ones in the serial order.
+    """
+
+    global _pool
+
+    if len(items) <= PARALLEL_ABOVE or _workers() == 1:
+        return [function(item) for item in items]
+
+    with _pool_lock:
+        if _pool is None:
+            _pool = ProcessPoolExecutor(_workers())
+        pool = _pool
+
+    try:
+        return list(pool.map(function, items, chunksize=32))
+    except BrokenProcessPool:
+        # A worker died (out of memory, killed): a fresh pool
+        # next time, the serial answer now.
+        with _pool_lock:
+            _pool = None
+        return [function(item) for item in items]
+
+
+def _i1_of(values: np.ndarray) -> bool:
+    return is_i1(pd.Series(values))
+
+
+def integrated(series: list[np.ndarray]) -> list[bool]:
+    """is_i1 for each series."""
+
+    return _map(_i1_of, series)
+
+
+def _engle_granger_of(pair: tuple[np.ndarray, np.ndarray]) -> dict:
+    """
+    engle_granger on one (y, x) ordering, reduced to what a
+    PairFit needs: the spread itself stays in the worker.
+    """
+
+    y, x = pair
+
+    result = engle_granger(
+        pd.Series(y),
+        pd.Series(x),
+        check_i1=False,
+    )
+
+    spread = result.pop("spread")
+
+    return {
+        **result,
+        "spread_mean": float(spread.mean()),
+        "spread_std": float(spread.std()),
+        "half_life": half_life(spread),
+    }
+
+
+def engle_granger_many(
+    pairs: list[tuple[np.ndarray, np.ndarray]],
+) -> list[dict]:
+    """engle_granger (without the I(1) check) for each (y, x)."""
+
+    return _map(_engle_granger_of, pairs)
 
 
 def screen_pairs(
@@ -343,42 +424,67 @@ def screen_pairs(
         log_px.index.max().date()
     )
 
-    for first, second in candidates:
-        # Engle-Granger is not symmetric: regressing A on B
-        # and B on A give different residuals and can give
-        # different verdicts. Both orderings are tested and
-        # the stronger relationship is kept, with ticker_a
-        # as its dependent leg.
-        orderings = [
-            (dependent, regressor, outcome)
-            for dependent, regressor in (
-                (first, second),
-                (second, first),
+    # I(1) is a property of a security: checked once
+    # each, not once per pair it appears in.
+    involved = sorted(
+        {ticker for pair in candidates for ticker in pair}
+    )
+
+    i1 = dict(
+        zip(
+            involved,
+            integrated(
+                [log_px[ticker].to_numpy() for ticker in involved]
+            ),
+        )
+    )
+
+    candidates = [
+        (first, second)
+        for first, second in candidates
+        if i1[first] and i1[second]
+    ]
+
+    # Engle-Granger is not symmetric: regressing A on B
+    # and B on A give different residuals and can give
+    # different verdicts. Both orderings are tested and
+    # the stronger relationship is kept, with ticker_a
+    # as its dependent leg.
+    orderings = [
+        (dependent, regressor)
+        for first, second in candidates
+        for dependent, regressor in (
+            (first, second),
+            (second, first),
+        )
+    ]
+
+    outcomes = engle_granger_many(
+        [
+            (
+                log_px[dependent].to_numpy(),
+                log_px[regressor].to_numpy(),
             )
-            if (
-                outcome := engle_granger(
-                    log_px[dependent],
-                    log_px[regressor],
-                    alpha=alpha,
-                )
-            )
-            is not None
-            and outcome["cointegrated"]
+            for dependent, regressor in orderings
+        ]
+    )
+
+    for index in range(len(candidates)):
+        passing = [
+            (*orderings[n], outcomes[n])
+            for n in (2 * index, 2 * index + 1)
+            if outcomes[n]["pvalue"] < alpha
         ]
 
-        if not orderings:
+        if not passing:
             continue
 
         ticker_a, ticker_b, result = min(
-            orderings,
+            passing,
             key=lambda ordering: ordering[2]["pvalue"],
         )
 
-        spread = result["spread"]
-
-        spread_std = float(
-            spread.std()
-        )
+        spread_std = result["spread_std"]
 
         if (
             not np.isfinite(spread_std)
@@ -386,9 +492,7 @@ def screen_pairs(
         ):
             continue
 
-        hl = half_life(
-            spread
-        )
+        hl = result["half_life"]
 
         fits.append(
             PairFit(
@@ -418,7 +522,6 @@ def screen_pairs(
                 ),
                 pvalue=result["pvalue"],
 
-                adf_lags=result["lags"],
                 nobs=result["nobs"],
 
                 half_life_days=(
@@ -427,9 +530,7 @@ def screen_pairs(
                     else float(hl)
                 ),
 
-                spread_mean=float(
-                    spread.mean()
-                ),
+                spread_mean=result["spread_mean"],
                 spread_std=spread_std,
             )
         )
