@@ -1,7 +1,0 @@
-universe,raw_ticker,yahoo_ticker,name,sector,location,exchange,currency,mapping_status
-stoxx_600_proxy,EDP,,EDP ENERGIAS DE PORTUGAL,Utilities,Portugal,Nyse Euronext - Euronext Lisbon,EUR,unmapped
-stoxx_600_proxy,BCP,,BANCO COMERCIAL PORTUGUES SA,Financials,Portugal,Nyse Euronext - Euronext Lisbon,EUR,unmapped
-stoxx_600_proxy,GALP,,GALP ENERGIA SGPS SA CLASS B,Energy,Portugal,Nyse Euronext - Euronext Lisbon,EUR,unmapped
-stoxx_600_proxy,QIA,,QIAGEN,Health Care,Germany,Deutsche Boerse Xetra,EUR,unmapped
-stoxx_600_proxy,JMT,,JERONIMO MARTINS SA,Consumer Staples,Portugal,Nyse Euronext - Euronext Lisbon,EUR,unmapped
-stoxx_600_proxy,EDPR,,EDP RENEWABLES SA,Utilities,Portugal,Nyse Euronext - Euronext Lisbon,EUR,unmapped
