@@ -16,7 +16,7 @@ to the whole universe:
 
 The tests are statsmodels': statsmodels.tsa.stattools.coint for
 Engle-Granger, sm.OLS for the hedge ratio and spread it judges,
-and is_i1 / half_life from anomaly_detection.cointegration.
+and is_i1 from anomaly_detection.cointegration.
 Pairs are independent, so they are spread over worker processes.
 
 With a GPU (--device auto picks CUDA, then Apple's MPS) the same
@@ -24,8 +24,16 @@ tests run batched in PyTorch instead: every series has the same
 length, so each ADF regression of a chunk of pairs is one
 batched matrix product and one batched solve. Lag selection,
 samples, t statistics and MacKinnon p-values follow
-statsmodels' adfuller step by step. The hedge ratio, constant,
-spread and half-life stay in float64 NumPy, which is cheap.
+statsmodels' adfuller step by step. The hedge ratio, constant
+and spread stay in float64 NumPy, which is cheap.
+
+beta is the hedge ratio of the regression on log prices,
+
+    log(A) = const + beta * log(B) + spread
+
+so it is a ratio of dollars, not of shares: $beta of B against
+each $1 of A. In shares, beta * price(A) / price(B) of B per
+share of A.
 
 The universe spans US and European exchanges, whose holidays
 differ. Prices are put on the union of trading days and carried
@@ -47,10 +55,7 @@ import statsmodels.api as sm
 from statsmodels.tsa.adfvalues import mackinnonp
 from statsmodels.tsa.stattools import coint
 
-from financial_assistant.anomaly_detection.cointegration import (
-    half_life,
-    is_i1,
-)
+from financial_assistant.anomaly_detection.cointegration import is_i1
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -155,8 +160,6 @@ def _best_ordering(pair: tuple[int, int]) -> dict | None:
     if not np.isfinite(spread_std) or spread_std <= 0:
         return None
 
-    hl = half_life(spread)
-
     return {
         "a": dependent,
         "b": regressor,
@@ -164,7 +167,6 @@ def _best_ordering(pair: tuple[int, int]) -> dict | None:
         "beta": fit.params[1],
         "adf_stat": statistic,
         "pvalue": pvalue,
-        "half_life_days": hl if np.isfinite(hl) else np.nan,
         "spread_mean": float(spread.mean()),
         "spread_std": spread_std,
     }
@@ -383,20 +385,11 @@ def engle_granger_gpu(y: np.ndarray, x: np.ndarray, *, device, chunk: int) -> di
         [adf_statistic(spread[part], constant=False, device=device) for part in _chunks(len(y), chunk)]
     )
 
-    # half_life: d s[t] = a + b * s[t-1].
-    lagged = spread[:, :-1] - spread[:, :-1].mean(axis=1, keepdims=True)
-    change = np.diff(spread, axis=1)
-
-    with np.errstate(divide="ignore", invalid="ignore"):
-        speed = (lagged * (change - change.mean(axis=1, keepdims=True))).sum(axis=1) / (lagged * lagged).sum(axis=1)
-        half_life_days = np.where(speed < 0, -np.log(2.0) / speed, np.nan)
-
     return {
         "const": const,
         "beta": beta,
         "adf_stat": statistic,
         "pvalue": _pvalues(statistic, 2),
-        "half_life_days": half_life_days,
         "spread_mean": spread.mean(axis=1),
         "spread_std": spread.std(axis=1, ddof=1),
     }
@@ -547,7 +540,7 @@ def main() -> None:
     with pd.option_context("display.width", 160, "display.max_columns", 20):
         print(
             cointegrated[
-                ["ticker_a", "ticker_b", "sector_a", "sector_b", "correlation", "beta", "pvalue", "half_life_days"]
+                ["ticker_a", "ticker_b", "sector_a", "sector_b", "correlation", "beta", "pvalue"]
             ]
             .head(20)
             .to_string(index=False)
