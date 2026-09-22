@@ -526,7 +526,8 @@ class OpenAICompatibleProvider:
             TRIMMED_OUTPUT_TOKENS,
         )
 
-        keep = len(user) - round(
+        # The marker that replaces the cut takes room too.
+        keep = len(user) - len(TRIM_MARKER) - round(
             (
                 prompt_tokens
                 - int(limit.group(1))
