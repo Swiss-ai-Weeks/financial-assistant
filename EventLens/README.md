@@ -240,24 +240,21 @@ including:
 
 The default scoring weights are:
 
-  Criterion                   Weight
-  ------------------------- --------
-  Temporal fit                  0.18
-  Relationship directness       0.14
-  Economic plausibility         0.14
-  Materiality                   0.12
-  Directional consistency       0.10
-  Market-footprint fit          0.10
-  Source independence           0.08
-  Primary-source support        0.08
-  Novelty                       0.06
+| Criterion | Weight |
+|---|---:|
+| Temporal fit | 0.18 |
+| Relationship directness | 0.14 |
+| Economic plausibility | 0.14 |
+| Materiality | 0.12 |
+| Directional consistency | 0.10 |
+| Market-footprint fit | 0.10 |
+| Source independence | 0.08 |
+| Primary-source support | 0.08 |
+| Novelty | 0.06 |
 
-The deterministic scorer also applies evidence-coverage requirements,
-core-criterion checks, contradiction penalties, score caps, and
-classification thresholds.
+The deterministic scorer also applies evidence-coverage requirements, core-criterion checks, contradiction penalties, score caps, and classification thresholds.
 
-The resulting score is an **uncalibrated candidate-ranking score from
-0--100**. It is not a causal probability.
+The resulting score is an **uncalibrated candidate-ranking score from 0–100**. It is not a causal probability.
 
 ## Scoring and Evidence
 
