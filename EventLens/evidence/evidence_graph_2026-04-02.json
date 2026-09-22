@@ -1,0 +1,1189 @@
+{
+  "schema_version": "integrated_daily_evidence_graph_v1",
+  "ticker": "TSLA",
+  "anomaly_date": "2026-04-02",
+  "as_of": "2026-04-02T20:00:00+00:00",
+  "daily_anomaly": {
+    "date": "2026-04-02",
+    "close": 360.59,
+    "return_pct": -5.42,
+    "volume_zscore": 2.57,
+    "intraday_onset": null
+  },
+  "baseline_ranker_unchanged": true,
+  "baseline_ranks_recomputed_by_original_ranker": true,
+  "semantic_overlay_provided": false,
+  "stored_articles_in_window": 432,
+  "lexically_relevant_articles": 59,
+  "model_calls": 0,
+  "trained_tgn": false,
+  "graph_ranks_computed": 0,
+  "graph": {
+    "nodes": [
+      {
+        "id": "anomaly:TSLA:2026-04-02",
+        "type": "daily_anomaly",
+        "date": "2026-04-02",
+        "return_pct": -5.42,
+        "volume_zscore": 2.57,
+        "price_onset_at": null
+      },
+      {
+        "id": "company:TSLA",
+        "type": "target_company",
+        "ticker": "TSLA"
+      },
+      {
+        "id": "event_candidate:e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla's First-Quarter Deliveries Miss Views as Wedbush Flags Tough Demand Backdrop",
+        "candidate_validated": false,
+        "group_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80"
+      },
+      {
+        "id": "article:e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "type": "news_article",
+        "article_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "title": "Tesla's First-Quarter Deliveries Miss Views as Wedbush Flags Tough Demand Backdrop",
+        "published_at": "2026-04-02T16:25:58+00:00",
+        "ingested_at": "2026-09-22T07:50:16+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=6e445e011fb74215a2b318f8e04c278a3b7a56333e4680bebf639127a33bb8c0",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla's China-Made EV Sales Leap Nearly 9% In March",
+        "candidate_validated": false,
+        "group_id": "95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4"
+      },
+      {
+        "id": "article:95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+        "type": "news_article",
+        "article_id": "95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+        "title": "Tesla's China-Made EV Sales Leap Nearly 9% In March",
+        "published_at": "2026-04-02T07:54:09+00:00",
+        "ingested_at": "2026-09-22T07:50:16+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=2f6dc94415f183848e42fa4d1b948a542dd8b4db276820dfa6b5a16b88b6fe66",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Why Tesla (TSLA) Stock Is Up Today",
+        "candidate_validated": false,
+        "group_id": "3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d"
+      },
+      {
+        "id": "article:3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+        "type": "news_article",
+        "article_id": "3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+        "title": "Why Tesla (TSLA) Stock Is Up Today",
+        "published_at": "2026-04-01T03:33:19+00:00",
+        "ingested_at": "2026-09-22T07:50:15+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=7d791aa1cba39e74cd76ac3d4b4aa6c6c7753ad67110d2eebed0e1095f56b78e",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Gary Black Says TSLA Has Underperformed Nasdaq For 5 Years Because It Has Never Lived Up To Unsupervised FSD Hype: 'TSLA Still Has Only 9 Robotaxis'",
+        "candidate_validated": false,
+        "group_id": "856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4"
+      },
+      {
+        "id": "article:856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "type": "news_article",
+        "article_id": "856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "title": "Gary Black Says TSLA Has Underperformed Nasdaq For 5 Years Because It Has Never Lived Up To Unsupervised FSD Hype: 'TSLA Still Has Only 9 Robotaxis'",
+        "published_at": "2026-03-31T21:30:51+00:00",
+        "ingested_at": "2026-09-22T07:50:14+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=d7139896f3620025d30c8eb39496f659d6e3fedc0eba36548aaaf413f0ad8b32",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "article:da569311ac341eb5025675a5973dfb0e49564f440a2b02f247a0c2d0d9683291",
+        "type": "news_article",
+        "article_id": "da569311ac341eb5025675a5973dfb0e49564f440a2b02f247a0c2d0d9683291",
+        "title": "Gary Black Says TSLA Has Underperformed Nasdaq For 5 Years Because It Has Never Lived Up To Unsupervised FSD Hype: 'TSLA Still Has Only 9 Robotaxis'",
+        "published_at": "2026-03-30T03:08:49+00:00",
+        "ingested_at": "2026-09-22T07:50:13+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=722009fcac8fd98a341e24fc4470a4ff283f310a81a5865f0550dc4c212c9c6a",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Assessing Tesla (TSLA) Valuation As Shares Weaken And AI Narratives Diverge",
+        "candidate_validated": false,
+        "group_id": "3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3"
+      },
+      {
+        "id": "article:3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+        "type": "news_article",
+        "article_id": "3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+        "title": "Assessing Tesla (TSLA) Valuation As Shares Weaken And AI Narratives Diverge",
+        "published_at": "2026-03-30T15:07:59+00:00",
+        "ingested_at": "2026-09-22T07:50:13+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=a1a1b6a2258ade517e30533b6e2e55f144f03e7a2382b90f852a5f3f75c4b4f9",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla (TSLA) Rises Higher Than Market: Key Facts",
+        "candidate_validated": false,
+        "group_id": "4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058"
+      },
+      {
+        "id": "article:4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+        "type": "news_article",
+        "article_id": "4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+        "title": "Tesla (TSLA) Rises Higher Than Market: Key Facts",
+        "published_at": "2026-04-01T21:45:04+00:00",
+        "ingested_at": "2026-09-22T07:50:15+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=1ead55117f31c6dbd55b22881ae534898ff4c8a97e24aa1cb25ea930100fdcab",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "type": "candidate_event_proxy",
+        "title_proxy": "GLJ Maintains Sell Rating on Tesla (TSLA)",
+        "candidate_validated": false,
+        "group_id": "8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636"
+      },
+      {
+        "id": "article:8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "type": "news_article",
+        "article_id": "8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "title": "GLJ Maintains Sell Rating on Tesla (TSLA)",
+        "published_at": "2026-04-01T19:30:03+00:00",
+        "ingested_at": "2026-09-22T07:50:15+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=efe7149e1fe20c9edb55b9ff11d0749c8d8f40743618c0596c6c5d0420f3f8cb",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "article:9e6c1eb15a1942845421b07fe7952eca64ca2d474fbed68d6052016ffe00afd3",
+        "type": "news_article",
+        "article_id": "9e6c1eb15a1942845421b07fe7952eca64ca2d474fbed68d6052016ffe00afd3",
+        "title": "GLJ Research Reiterates Sell on Tesla, Maintains $24.86 Price Target",
+        "published_at": "2026-03-30T09:07:05+00:00",
+        "ingested_at": "2026-09-22T07:50:13+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=d13dbc4585a256c71494b2a34c9a2f68e5a8d3db4ad6d69dac4df25f6ceb82e4",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+        "type": "candidate_event_proxy",
+        "title_proxy": "The Tesla Robotaxi Story Is A Myth: Why I'm Maintaining My Strong Sell Into Q1 Earnings",
+        "candidate_validated": false,
+        "group_id": "c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf"
+      },
+      {
+        "id": "article:c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+        "type": "news_article",
+        "article_id": "c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+        "title": "The Tesla Robotaxi Story Is A Myth: Why I'm Maintaining My Strong Sell Into Q1 Earnings",
+        "published_at": "2026-03-27T08:45:00+00:00",
+        "ingested_at": "2026-09-22T07:50:10+00:00",
+        "source_name": "SeekingAlpha",
+        "source_url": "https://finnhub.io/api/news?id=d1d7ffc2aa44d2da6add2d952e358009043eb0d4c22a8f3c6c7f7c57f543229e",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Blue Owl limits fund withdrawals, mortgage rates rise for fifth week",
+        "candidate_validated": false,
+        "group_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+      },
+      {
+        "id": "article:40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "type": "news_article",
+        "article_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "title": "Blue Owl limits fund withdrawals, mortgage rates rise for fifth week",
+        "published_at": "2026-04-02T17:21:34+00:00",
+        "ingested_at": "2026-09-22T07:50:16+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=45f8662aacbabe50e25ffc31bd5b73563b44d0bfa0c48003dc97876ecb472b12",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla's Q1 Delivery Numbers 'Underwhelming,' But Not Surprising Given Current Global EV Backdrop, Wedbush Says",
+        "candidate_validated": false,
+        "group_id": "0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95"
+      },
+      {
+        "id": "article:0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+        "type": "news_article",
+        "article_id": "0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+        "title": "Tesla's Q1 Delivery Numbers 'Underwhelming,' But Not Surprising Given Current Global EV Backdrop, Wedbush Says",
+        "published_at": "2026-04-02T14:53:16+00:00",
+        "ingested_at": "2026-09-22T07:50:16+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=f4a312d146a3ab4cd6e24b31d3d134ed805941c101fdf1c6def39471122be179",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla Stock Hasn’t Looked This Cheap in a While",
+        "candidate_validated": false,
+        "group_id": "f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae"
+      },
+      {
+        "id": "article:f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+        "type": "news_article",
+        "article_id": "f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+        "title": "Tesla Stock Hasn’t Looked This Cheap in a While",
+        "published_at": "2026-04-02T14:48:25+00:00",
+        "ingested_at": "2026-09-22T07:50:16+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=df74a5d898835a25ed98e6480d08547f65c27c0436f4e06dc11e14866e32cca5",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla Slides 3% on Delivery Shortfall: Why the $20 Billion Robotaxi Bet Makes This Miss Hard to Judge",
+        "candidate_validated": false,
+        "group_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+      },
+      {
+        "id": "article:5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "type": "news_article",
+        "article_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "title": "Tesla Slides 3% on Delivery Shortfall: Why the $20 Billion Robotaxi Bet Makes This Miss Hard to Judge",
+        "published_at": "2026-04-02T14:24:19+00:00",
+        "ingested_at": "2026-09-22T07:50:16+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=870a335a43ad1a08270c26ac9a29b75a79e153ea802f816e63a2c2a34dd1144f",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "anomaly:TSLA:2026-04-02",
+        "target": "company:TSLA",
+        "type": "observed_for_company",
+        "provenance": "anomalies.json",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "causal": false
+      },
+      {
+        "source": "article:e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "target": "event_candidate:e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "type": "heuristically_grouped_with",
+        "provenance": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+        "causal": false
+      },
+      {
+        "source": "article:95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+        "target": "event_candidate:95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+        "type": "heuristically_grouped_with",
+        "provenance": "95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+        "causal": false
+      },
+      {
+        "source": "article:3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+        "target": "event_candidate:3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+        "type": "heuristically_grouped_with",
+        "provenance": "3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "causal": false
+      },
+      {
+        "source": "article:856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "target": "event_candidate:856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "type": "heuristically_grouped_with",
+        "provenance": "856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "article:da569311ac341eb5025675a5973dfb0e49564f440a2b02f247a0c2d0d9683291",
+        "target": "event_candidate:856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "type": "heuristically_grouped_with",
+        "provenance": "da569311ac341eb5025675a5973dfb0e49564f440a2b02f247a0c2d0d9683291",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:da569311ac341eb5025675a5973dfb0e49564f440a2b02f247a0c2d0d9683291",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "da569311ac341eb5025675a5973dfb0e49564f440a2b02f247a0c2d0d9683291",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+        "causal": false
+      },
+      {
+        "source": "article:3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+        "target": "event_candidate:3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+        "type": "heuristically_grouped_with",
+        "provenance": "3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+        "causal": false
+      },
+      {
+        "source": "article:4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+        "target": "event_candidate:4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+        "type": "heuristically_grouped_with",
+        "provenance": "4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "causal": false
+      },
+      {
+        "source": "article:8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "target": "event_candidate:8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "type": "heuristically_grouped_with",
+        "provenance": "8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "article:9e6c1eb15a1942845421b07fe7952eca64ca2d474fbed68d6052016ffe00afd3",
+        "target": "event_candidate:8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "type": "heuristically_grouped_with",
+        "provenance": "9e6c1eb15a1942845421b07fe7952eca64ca2d474fbed68d6052016ffe00afd3",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:9e6c1eb15a1942845421b07fe7952eca64ca2d474fbed68d6052016ffe00afd3",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "9e6c1eb15a1942845421b07fe7952eca64ca2d474fbed68d6052016ffe00afd3",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+        "causal": false
+      },
+      {
+        "source": "article:c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+        "target": "event_candidate:c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+        "type": "heuristically_grouped_with",
+        "provenance": "c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "causal": false
+      },
+      {
+        "source": "article:40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "target": "event_candidate:40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "type": "heuristically_grouped_with",
+        "provenance": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+        "causal": false
+      },
+      {
+        "source": "article:0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+        "target": "event_candidate:0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+        "type": "heuristically_grouped_with",
+        "provenance": "0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+        "causal": false
+      },
+      {
+        "source": "article:f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+        "target": "event_candidate:f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+        "type": "heuristically_grouped_with",
+        "provenance": "f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "causal": false
+      },
+      {
+        "source": "article:5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "target": "event_candidate:5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "type": "heuristically_grouped_with",
+        "provenance": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "target": "anomaly:TSLA:2026-04-02",
+        "type": "daily_publication_context",
+        "provenance": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "baseline_position": 1,
+      "group_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+      "candidate_title_proxy": "Tesla's First-Quarter Deliveries Miss Views as Wedbush Flags Tough Demand Backdrop",
+      "candidate_event": "Tesla's First-Quarter Deliveries Miss Views as Wedbush Flags Tough Demand Backdrop",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6989,
+      "article_ids": [
+        "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+          "title": "Tesla's First-Quarter Deliveries Miss Views as Wedbush Flags Tough Demand Backdrop",
+          "published_at": "2026-04-02T16:25:58+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6989,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 2,
+      "group_id": "95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+      "candidate_title_proxy": "Tesla's China-Made EV Sales Leap Nearly 9% In March",
+      "candidate_event": "Tesla's China-Made EV Sales Leap Nearly 9% In March",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6964,
+      "article_ids": [
+        "95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+          "title": "Tesla's China-Made EV Sales Leap Nearly 9% In March",
+          "published_at": "2026-04-02T07:54:09+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6964,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 3,
+      "group_id": "3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+      "candidate_title_proxy": "Why Tesla (TSLA) Stock Is Up Today",
+      "candidate_event": "Why Tesla (TSLA) Stock Is Up Today",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5924,
+      "article_ids": [
+        "3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+          "title": "Why Tesla (TSLA) Stock Is Up Today",
+          "published_at": "2026-04-01T03:33:19+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5924,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 4,
+      "group_id": "856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+      "candidate_title_proxy": "Gary Black Says TSLA Has Underperformed Nasdaq For 5 Years Because It Has Never Lived Up To Unsupervised FSD Hype: 'TSLA Still Has Only 9 Robotaxis'",
+      "candidate_event": "Gary Black Says TSLA Has Underperformed Nasdaq For 5 Years Because It Has Never Lived Up To Unsupervised FSD Hype: 'TSLA Still Has Only 9 Robotaxis'",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5879,
+      "article_ids": [
+        "856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+        "da569311ac341eb5025675a5973dfb0e49564f440a2b02f247a0c2d0d9683291"
+      ],
+      "daily_classes": {
+        "prior_day": 2
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+          "title": "Gary Black Says TSLA Has Underperformed Nasdaq For 5 Years Because It Has Never Lived Up To Unsupervised FSD Hype: 'TSLA Still Has Only 9 Robotaxis'",
+          "published_at": "2026-03-31T21:30:51+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5879,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        },
+        {
+          "article_id": "da569311ac341eb5025675a5973dfb0e49564f440a2b02f247a0c2d0d9683291",
+          "title": "Gary Black Says TSLA Has Underperformed Nasdaq For 5 Years Because It Has Never Lived Up To Unsupervised FSD Hype: 'TSLA Still Has Only 9 Robotaxis'",
+          "published_at": "2026-03-30T03:08:49+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.4689,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 5,
+      "group_id": "3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+      "candidate_title_proxy": "Assessing Tesla (TSLA) Valuation As Shares Weaken And AI Narratives Diverge",
+      "candidate_event": "Assessing Tesla (TSLA) Valuation As Shares Weaken And AI Narratives Diverge",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5653,
+      "article_ids": [
+        "3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+          "title": "Assessing Tesla (TSLA) Valuation As Shares Weaken And AI Narratives Diverge",
+          "published_at": "2026-03-30T15:07:59+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5653,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 6,
+      "group_id": "4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+      "candidate_title_proxy": "Tesla (TSLA) Rises Higher Than Market: Key Facts",
+      "candidate_event": "Tesla (TSLA) Rises Higher Than Market: Key Facts",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5184,
+      "article_ids": [
+        "4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+          "title": "Tesla (TSLA) Rises Higher Than Market: Key Facts",
+          "published_at": "2026-04-01T21:45:04+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5184,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 7,
+      "group_id": "8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+      "candidate_title_proxy": "GLJ Maintains Sell Rating on Tesla (TSLA)",
+      "candidate_event": "GLJ Maintains Sell Rating on Tesla (TSLA)",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5168,
+      "article_ids": [
+        "8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+        "9e6c1eb15a1942845421b07fe7952eca64ca2d474fbed68d6052016ffe00afd3"
+      ],
+      "daily_classes": {
+        "prior_day": 2
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+          "title": "GLJ Maintains Sell Rating on Tesla (TSLA)",
+          "published_at": "2026-04-01T19:30:03+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5168,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        },
+        {
+          "article_id": "9e6c1eb15a1942845421b07fe7952eca64ca2d474fbed68d6052016ffe00afd3",
+          "title": "GLJ Research Reiterates Sell on Tesla, Maintains $24.86 Price Target",
+          "published_at": "2026-03-30T09:07:05+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.3133,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 8,
+      "group_id": "c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+      "candidate_title_proxy": "The Tesla Robotaxi Story Is A Myth: Why I'm Maintaining My Strong Sell Into Q1 Earnings",
+      "candidate_event": "The Tesla Robotaxi Story Is A Myth: Why I'm Maintaining My Strong Sell Into Q1 Earnings",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5095,
+      "article_ids": [
+        "c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+          "title": "The Tesla Robotaxi Story Is A Myth: Why I'm Maintaining My Strong Sell Into Q1 Earnings",
+          "published_at": "2026-03-27T08:45:00+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5095,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 9,
+      "group_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+      "candidate_title_proxy": "Blue Owl limits fund withdrawals, mortgage rates rise for fifth week",
+      "candidate_event": "Blue Owl limits fund withdrawals, mortgage rates rise for fifth week",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4492,
+      "article_ids": [
+        "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+          "title": "Blue Owl limits fund withdrawals, mortgage rates rise for fifth week",
+          "published_at": "2026-04-02T17:21:34+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.4492,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 10,
+      "group_id": "0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+      "candidate_title_proxy": "Tesla's Q1 Delivery Numbers 'Underwhelming,' But Not Surprising Given Current Global EV Backdrop, Wedbush Says",
+      "candidate_event": "Tesla's Q1 Delivery Numbers 'Underwhelming,' But Not Surprising Given Current Global EV Backdrop, Wedbush Says",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4485,
+      "article_ids": [
+        "0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+          "title": "Tesla's Q1 Delivery Numbers 'Underwhelming,' But Not Surprising Given Current Global EV Backdrop, Wedbush Says",
+          "published_at": "2026-04-02T14:53:16+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.4485,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 11,
+      "group_id": "f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+      "candidate_title_proxy": "Tesla Stock Hasn’t Looked This Cheap in a While",
+      "candidate_event": "Tesla Stock Hasn’t Looked This Cheap in a While",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4485,
+      "article_ids": [
+        "f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+          "title": "Tesla Stock Hasn’t Looked This Cheap in a While",
+          "published_at": "2026-04-02T14:48:25+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.4485,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 12,
+      "group_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+      "candidate_title_proxy": "Tesla Slides 3% on Delivery Shortfall: Why the $20 Billion Robotaxi Bet Makes This Miss Hard to Judge",
+      "candidate_event": "Tesla Slides 3% on Delivery Shortfall: Why the $20 Billion Robotaxi Bet Makes This Miss Hard to Judge",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4483,
+      "article_ids": [
+        "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+          "title": "Tesla Slides 3% on Delivery Shortfall: Why the $20 Billion Robotaxi Bet Makes This Miss Hard to Judge",
+          "published_at": "2026-04-02T14:24:19+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.4483,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    }
+  ],
+  "article_reuse_across_groups": {},
+  "limitations": [
+    "Offline SQLite only: no internet or model calls.",
+    "Publication-day context cannot establish news preceding price movement.",
+    "Ingestion after historical cutoff may imply retrospective rather than real-time availability.",
+    "Text-matched source excerpts do not verify semantic entailment or source independence.",
+    "No causal ranking or new economic scores; archived judgments remain unverified."
+  ]
+}

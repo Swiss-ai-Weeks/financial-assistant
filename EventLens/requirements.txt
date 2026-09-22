@@ -1,0 +1,19 @@
+# Current financial anomaly agent (versions not pinned; environment versions unknown)
+pandas
+numpy
+yfinance
+langchain-core
+langchain-ollama
+
+# Optional: uncomment to run read_news.py (Parquet inspection)
+# pyarrow
+
+# Planned news-scoring module only (not integrated yet)
+# pydantic
+
+# Install: python -m pip install -r requirements.txt
+# For exact installed versions: python -m pip freeze > requirements-lock.txt
+
+# Dependencies actually imported by existing model.py and news/causal_scoring:
+langchain-openai
+pydantic>=2

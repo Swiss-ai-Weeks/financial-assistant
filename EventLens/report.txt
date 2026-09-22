@@ -1,0 +1,37 @@
+**Tesla (TSLA) 3-Year Market Anomaly Analysis**
+*Period: 2023-09-22 to 2026-09-21*
+
+### 1. Key Findings
+
+- **Total anomalies detected:** 41
+- **Positive anomalies:** 24
+- **Negative anomalies:** 17
+
+**Methodology:** Anomalies were identified using a rolling window of 20 trading days. An event was flagged when the absolute volume z-score exceeded 2 and the absolute daily return percentage exceeded 2. The first 20 trading days of the period were excluded from volume z-score calculations due to insufficient rolling history.
+
+### 2. Most Extreme Events
+
+The following events represent the most significant deviations from normal trading patterns based on the combined criteria of extreme volume and price movement:
+
+| Date | Close Price | Volume Z-Score | Return % | Classification |
+|------|-------------|----------------|----------|----------------|
+| 2025-06-05 | 284.70 | 9.36 | -14.26 | Negative anomaly |
+| 2026-07-23 | 319.69 | 6.32 | -14.52 | Negative anomaly |
+| 2025-09-12 | 395.94 | 6.03 | 7.36 | Positive anomaly |
+| 2024-01-25 | 182.63 | 8.17 | -12.13 | Negative anomaly |
+| 2024-10-24 | 260.48 | 5.81 | 21.92 | Positive anomaly |
+
+**Event Context:**
+- **2025-06-05:** This event recorded the highest volume z-score (9.36) in the dataset, accompanied by a significant negative return of -14.26%.
+- **2026-07-23:** Featured elevated volume (z-score 6.32) with a sharp negative return of -14.52%, marking one of the largest daily declines in the period.
+- **2025-09-12:** A positive anomaly where high volume (z-score 6.03) coincided with a substantial gain of 7.36%.
+- **2024-01-25:** Notable for extreme volume (z-score 8.17) paired with a double-digit negative return of -12.13%.
+- **2024-10-24:** Recorded the highest positive return (21.92%) among the flagged events, supported by elevated volume (z-score 5.81).
+
+### 3. Key Observations
+
+- The analysis identified 41 total anomalies over the 3-year period, with positive anomalies (24) outnumbering negative ones (17).
+- Volume spikes and price movements exceeding 2 standard deviations from rolling means were the primary detection criteria.
+- The dataset shows a distribution of 24 instances where price and volume moved favorably and 17 instances where the movement was negative.
+- No causal inferences regarding market sentiment, trading pressure, or price direction precedence should be drawn from these daily co-occurrences alone.
+- Statistical observations are limited to the co-occurrence of volume and return thresholds as defined by the rolling window methodology.

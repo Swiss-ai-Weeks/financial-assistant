@@ -1,0 +1,753 @@
+{
+  "schema_version": "integrated_daily_evidence_graph_v1",
+  "ticker": "TSLA",
+  "anomaly_date": "2026-08-21",
+  "as_of": "2026-08-21T20:00:00+00:00",
+  "daily_anomaly": {
+    "date": "2026-08-21",
+    "close": 362.86,
+    "return_pct": 5.14,
+    "volume_zscore": 2.59,
+    "intraday_onset": null
+  },
+  "baseline_ranker_unchanged": true,
+  "baseline_ranks_recomputed_by_original_ranker": true,
+  "semantic_overlay_provided": false,
+  "stored_articles_in_window": 93,
+  "lexically_relevant_articles": 8,
+  "model_calls": 0,
+  "trained_tgn": false,
+  "graph_ranks_computed": 0,
+  "graph": {
+    "nodes": [
+      {
+        "id": "anomaly:TSLA:2026-08-21",
+        "type": "daily_anomaly",
+        "date": "2026-08-21",
+        "return_pct": 5.14,
+        "volume_zscore": 2.59,
+        "price_onset_at": null
+      },
+      {
+        "id": "company:TSLA",
+        "type": "target_company",
+        "ticker": "TSLA"
+      },
+      {
+        "id": "event_candidate:3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla (TSLA) Up 8% Since Last Earnings Report: Can It Continue?",
+        "candidate_validated": false,
+        "group_id": "3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964"
+      },
+      {
+        "id": "article:3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+        "type": "news_article",
+        "article_id": "3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+        "title": "Tesla (TSLA) Up 8% Since Last Earnings Report: Can It Continue?",
+        "published_at": "2026-08-21T16:30:13+00:00",
+        "ingested_at": "2026-09-22T07:50:25+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=2d2ac295e022d38e561b93b4bb44fc879284bfc2f30d56e2024a8d52034119f8",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla: Tailwinds Outweigh The Noise",
+        "candidate_validated": false,
+        "group_id": "b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1"
+      },
+      {
+        "id": "article:b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+        "type": "news_article",
+        "article_id": "b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+        "title": "Tesla: Tailwinds Outweigh The Noise",
+        "published_at": "2026-08-21T14:38:51+00:00",
+        "ingested_at": "2026-09-22T07:50:25+00:00",
+        "source_name": "SeekingAlpha",
+        "source_url": "https://finnhub.io/api/news?id=8ee1a070c21c5c44789c1aede9626377ea04d1cfa52c593f563ac80515ad9b8f",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla’s Steering-Wheel-Free Cybercab Could Hit Austin Streets This Month as Elon Musk Ramps Up Robotaxi Push: TSLA Stock Down 1.38% (UPDATED)",
+        "candidate_validated": false,
+        "group_id": "3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0"
+      },
+      {
+        "id": "article:3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+        "type": "news_article",
+        "article_id": "3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+        "title": "Tesla’s Steering-Wheel-Free Cybercab Could Hit Austin Streets This Month as Elon Musk Ramps Up Robotaxi Push: TSLA Stock Down 1.38% (UPDATED)",
+        "published_at": "2026-08-18T08:05:46+00:00",
+        "ingested_at": "2026-09-22T07:50:22+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=f58a4f8212c75bea49b4d9b1df68d7a249dc4c1baa2a85d9ac103fd4d648c4a3",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Former Tesla President Says Roadster Demo Could Be a ‘Not-So-Hidden Attempt’ to Knit TSLA and SPCX Together: ‘Probably Sooner Rather Than Later’",
+        "candidate_validated": false,
+        "group_id": "5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0"
+      },
+      {
+        "id": "article:5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+        "type": "news_article",
+        "article_id": "5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+        "title": "Former Tesla President Says Roadster Demo Could Be a ‘Not-So-Hidden Attempt’ to Knit TSLA and SPCX Together: ‘Probably Sooner Rather Than Later’",
+        "published_at": "2026-08-18T06:19:01+00:00",
+        "ingested_at": "2026-09-22T07:50:22+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=fc8afb85637c9421a1e70780bba31bf72b2f9bdad1700e48dcb8b751a27757e4",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla: The Numbers Do Not Justify The Valuation",
+        "candidate_validated": false,
+        "group_id": "b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e"
+      },
+      {
+        "id": "article:b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+        "type": "news_article",
+        "article_id": "b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+        "title": "Tesla: The Numbers Do Not Justify The Valuation",
+        "published_at": "2026-08-21T19:52:06+00:00",
+        "ingested_at": "2026-09-22T07:50:25+00:00",
+        "source_name": "SeekingAlpha",
+        "source_url": "https://finnhub.io/api/news?id=7341f01bc010ec119643d3c0b97960a3ceb616d3b0c83b565b6296d69911d7d3",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Elon Musk’s Tesla Compensation Was 2.5 Million Times the Median Worker’s Pay in 2025, 41 Times the EV Giant's 2025 Net Income: TSLA Stock Up 1.59% (UPDATED)",
+        "candidate_validated": false,
+        "group_id": "adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803"
+      },
+      {
+        "id": "article:adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+        "type": "news_article",
+        "article_id": "adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+        "title": "Elon Musk’s Tesla Compensation Was 2.5 Million Times the Median Worker’s Pay in 2025, 41 Times the EV Giant's 2025 Net Income: TSLA Stock Up 1.59% (UPDATED)",
+        "published_at": "2026-08-14T09:15:53+00:00",
+        "ingested_at": "2026-09-22T07:50:17+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=694865d4cff7fb8c40d40f3798271292ef36858cc3bac6f7cf3d2dd438ad58b5",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla: No One Is Paying Attention",
+        "candidate_validated": false,
+        "group_id": "5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648"
+      },
+      {
+        "id": "article:5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+        "type": "news_article",
+        "article_id": "5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+        "title": "Tesla: No One Is Paying Attention",
+        "published_at": "2026-08-19T13:31:00+00:00",
+        "ingested_at": "2026-09-22T07:50:23+00:00",
+        "source_name": "SeekingAlpha",
+        "source_url": "https://finnhub.io/api/news?id=e52d1c52a67473b926a5dc82fbab6706912661f1cdaf7a07b1f376ccb286c62d",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+        "type": "candidate_event_proxy",
+        "title_proxy": "GLJ Research Reiterates Sell on Tesla, Maintains $24.86 Price Target",
+        "candidate_validated": false,
+        "group_id": "e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1"
+      },
+      {
+        "id": "article:e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+        "type": "news_article",
+        "article_id": "e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+        "title": "GLJ Research Reiterates Sell on Tesla, Maintains $24.86 Price Target",
+        "published_at": "2026-08-18T09:45:05+00:00",
+        "ingested_at": "2026-09-22T07:50:22+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=7b39a71794329b7e439708fa19629429ff9e93f2f449aa6a5535957c766e0ebb",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "anomaly:TSLA:2026-08-21",
+        "target": "company:TSLA",
+        "type": "observed_for_company",
+        "provenance": "anomalies.json",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+        "causal": false
+      },
+      {
+        "source": "article:3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+        "target": "event_candidate:3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+        "type": "heuristically_grouped_with",
+        "provenance": "3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "daily_publication_context",
+        "provenance": "3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+        "causal": false
+      },
+      {
+        "source": "article:b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+        "target": "event_candidate:b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+        "type": "heuristically_grouped_with",
+        "provenance": "b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "daily_publication_context",
+        "provenance": "b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+        "causal": false
+      },
+      {
+        "source": "article:3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+        "target": "event_candidate:3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+        "type": "heuristically_grouped_with",
+        "provenance": "3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "daily_publication_context",
+        "provenance": "3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+        "causal": false
+      },
+      {
+        "source": "article:5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+        "target": "event_candidate:5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+        "type": "heuristically_grouped_with",
+        "provenance": "5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "daily_publication_context",
+        "provenance": "5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+        "causal": false
+      },
+      {
+        "source": "article:b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+        "target": "event_candidate:b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+        "type": "heuristically_grouped_with",
+        "provenance": "b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "daily_publication_context",
+        "provenance": "b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+        "causal": false
+      },
+      {
+        "source": "article:adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+        "target": "event_candidate:adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+        "type": "heuristically_grouped_with",
+        "provenance": "adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "daily_publication_context",
+        "provenance": "adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+        "causal": false
+      },
+      {
+        "source": "article:5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+        "target": "event_candidate:5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+        "type": "heuristically_grouped_with",
+        "provenance": "5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "daily_publication_context",
+        "provenance": "5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+        "causal": false
+      },
+      {
+        "source": "article:e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+        "target": "event_candidate:e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+        "type": "heuristically_grouped_with",
+        "provenance": "e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+        "target": "anomaly:TSLA:2026-08-21",
+        "type": "daily_publication_context",
+        "provenance": "e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "baseline_position": 1,
+      "group_id": "3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+      "candidate_title_proxy": "Tesla (TSLA) Up 8% Since Last Earnings Report: Can It Continue?",
+      "candidate_event": "Tesla (TSLA) Up 8% Since Last Earnings Report: Can It Continue?",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.999,
+      "article_ids": [
+        "3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+          "title": "Tesla (TSLA) Up 8% Since Last Earnings Report: Can It Continue?",
+          "published_at": "2026-08-21T16:30:13+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.999,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 2,
+      "group_id": "b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+      "candidate_title_proxy": "Tesla: Tailwinds Outweigh The Noise",
+      "candidate_event": "Tesla: Tailwinds Outweigh The Noise",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5359,
+      "article_ids": [
+        "b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+          "title": "Tesla: Tailwinds Outweigh The Noise",
+          "published_at": "2026-08-21T14:38:51+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.5359,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 3,
+      "group_id": "3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+      "candidate_title_proxy": "Tesla’s Steering-Wheel-Free Cybercab Could Hit Austin Streets This Month as Elon Musk Ramps Up Robotaxi Push: TSLA Stock Down 1.38% (UPDATED)",
+      "candidate_event": "Tesla’s Steering-Wheel-Free Cybercab Could Hit Austin Streets This Month as Elon Musk Ramps Up Robotaxi Push: TSLA Stock Down 1.38% (UPDATED)",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4726,
+      "article_ids": [
+        "3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+          "title": "Tesla’s Steering-Wheel-Free Cybercab Could Hit Austin Streets This Month as Elon Musk Ramps Up Robotaxi Push: TSLA Stock Down 1.38% (UPDATED)",
+          "published_at": "2026-08-18T08:05:46+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.4726,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 4,
+      "group_id": "5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+      "candidate_title_proxy": "Former Tesla President Says Roadster Demo Could Be a ‘Not-So-Hidden Attempt’ to Knit TSLA and SPCX Together: ‘Probably Sooner Rather Than Later’",
+      "candidate_event": "Former Tesla President Says Roadster Demo Could Be a ‘Not-So-Hidden Attempt’ to Knit TSLA and SPCX Together: ‘Probably Sooner Rather Than Later’",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4712,
+      "article_ids": [
+        "5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+          "title": "Former Tesla President Says Roadster Demo Could Be a ‘Not-So-Hidden Attempt’ to Knit TSLA and SPCX Together: ‘Probably Sooner Rather Than Later’",
+          "published_at": "2026-08-18T06:19:01+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.4712,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 5,
+      "group_id": "b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+      "candidate_title_proxy": "Tesla: The Numbers Do Not Justify The Valuation",
+      "candidate_event": "Tesla: The Numbers Do Not Justify The Valuation",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.45,
+      "article_ids": [
+        "b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+          "title": "Tesla: The Numbers Do Not Justify The Valuation",
+          "published_at": "2026-08-21T19:52:06+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.45,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 6,
+      "group_id": "adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+      "candidate_title_proxy": "Elon Musk’s Tesla Compensation Was 2.5 Million Times the Median Worker’s Pay in 2025, 41 Times the EV Giant's 2025 Net Income: TSLA Stock Up 1.59% (UPDATED)",
+      "candidate_event": "Elon Musk’s Tesla Compensation Was 2.5 Million Times the Median Worker’s Pay in 2025, 41 Times the EV Giant's 2025 Net Income: TSLA Stock Up 1.59% (UPDATED)",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.41,
+      "article_ids": [
+        "adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+          "title": "Elon Musk’s Tesla Compensation Was 2.5 Million Times the Median Worker’s Pay in 2025, 41 Times the EV Giant's 2025 Net Income: TSLA Stock Up 1.59% (UPDATED)",
+          "published_at": "2026-08-14T09:15:53+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.41,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 7,
+      "group_id": "5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+      "candidate_title_proxy": "Tesla: No One Is Paying Attention",
+      "candidate_event": "Tesla: No One Is Paying Attention",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.3345,
+      "article_ids": [
+        "5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+          "title": "Tesla: No One Is Paying Attention",
+          "published_at": "2026-08-19T13:31:00+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.3345,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 8,
+      "group_id": "e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+      "candidate_title_proxy": "GLJ Research Reiterates Sell on Tesla, Maintains $24.86 Price Target",
+      "candidate_event": "GLJ Research Reiterates Sell on Tesla, Maintains $24.86 Price Target",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.3138,
+      "article_ids": [
+        "e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+          "title": "GLJ Research Reiterates Sell on Tesla, Maintains $24.86 Price Target",
+          "published_at": "2026-08-18T09:45:05+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.3138,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    }
+  ],
+  "article_reuse_across_groups": {},
+  "limitations": [
+    "Offline SQLite only: no internet or model calls.",
+    "Publication-day context cannot establish news preceding price movement.",
+    "Ingestion after historical cutoff may imply retrospective rather than real-time availability.",
+    "Text-matched source excerpts do not verify semantic entailment or source independence.",
+    "No causal ranking or new economic scores; archived judgments remain unverified."
+  ]
+}

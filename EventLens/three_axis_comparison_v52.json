@@ -1,0 +1,765 @@
+{
+  "experiment": "phase5_2_diagnostic_three_axes_not_causal_ranking",
+  "day": "2025-10-28",
+  "as_of": "2025-10-28T20:00:00+00:00",
+  "model": "nvidia/nemotron-3.5-lightning",
+  "model_calls_attempted": 13,
+  "old_rank_preserved": true,
+  "new_causal_ranking": false,
+  "trained_tgn": false,
+  "groups": [
+    {
+      "group_id": "7a276c0a36ef544944c217ea269c2b255ff5c913cabac8ebc3446626ab021f68",
+      "candidate_event": "NVIDIA selected Joby Aviation as aviation launch partner for the NVIDIA IGX Thor platform",
+      "old_rank": 0.9988,
+      "old_rank_position": 1,
+      "old_status": "supported_hypothesis",
+      "prior_alerts": [],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "7a276c0a36ef544944c217ea269c2b255ff5c913cabac8ebc3446626ab021f68"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-28T16:07:37+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "manual_review_required",
+      "semantic_axes": {
+        "event_verification": {
+          "status": "supported",
+          "event_stage": "announced",
+          "unsupported_details": [],
+          "rationale": "The title and summary explicitly state NVIDIA selected Joby Aviation as the aviation launch partner for the IGX Thor platform.",
+          "citations": []
+        },
+        "company_relationship": {
+          "status": "direct",
+          "rationale": "The source describes NVIDIA selecting Joby Aviation as a launch partner, indicating a direct business relationship.",
+          "citations": [
+            {
+              "article_id": "7a276c0a36ef544944c217ea269c2b255ff5c913cabac8ebc3446626ab021f68",
+              "field": "summary",
+              "quote": "NVIDIA's selection of Joby as the only aviation launch partner for the new NVIDIA IGX Thor platform"
+            }
+          ]
+        },
+        "economic_mechanism": {
+          "status": "unknown",
+          "mechanism": null,
+          "rationale": "The source does not describe an economic mechanism or business driver linking the event to financial outcomes.",
+          "citations": []
+        }
+      },
+      "validation_issues": [
+        "event_verification:citation_0:quote_not_found",
+        "event_verification:positive_assessment_without_valid_quote"
+      ],
+      "format_errors_before_success": [],
+      "failed_model_response": null,
+      "model_calls": 1,
+      "candidate_score": null,
+      "new_causal_rank": null
+    },
+    {
+      "group_id": "af40d60b91939644daf8359cd454fb2dfc9617a5a28b5f378e784d32d7a7d5b3",
+      "candidate_event": "Infleqtion to host NVIDIA NVQLink quantum supercomputer at Illinois Quantum Park",
+      "old_rank": 0.9985,
+      "old_rank_position": 2,
+      "old_status": "context_only",
+      "prior_alerts": [],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "af40d60b91939644daf8359cd454fb2dfc9617a5a28b5f378e784d32d7a7d5b3"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-28T14:49:17+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "manual_review_required",
+      "semantic_axes": {
+        "event_verification": {
+          "status": "supported",
+          "event_stage": "announced",
+          "unsupported_details": [],
+          "rationale": "The title explicitly states Infleqtion will host an NVIDIA NVQLink quantum supercomputer at Illinois Quantum Park.",
+          "citations": [
+            {
+              "article_id": "af40d60b91939644daf8359cd454fb2dfc9617a5a28b5f378e784d32d7a7d5b3",
+              "field": "title",
+              "quote": "Infleqtion To Host NVIDIA NVQLink Quantum Supercomputer At Illinois Quantum Park"
+            }
+          ]
+        },
+        "company_relationship": {
+          "status": "direct",
+          "rationale": "The event involves Infleqtion hosting NVIDIA's NVQLink quantum supercomputer, establishing a direct partnership between Infleqtion and NVIDIA.",
+          "citations": [
+            {
+              "article_id": "af40d60b91939644daf8359cd454fb2dfc9617a5a28b5f378e784d32d7a7d5b3",
+              "field": "title",
+              "quote": "Infleqtion To Host NVIDIA NVQLink Quantum Supercomputer At Illinois Quantum Park"
+            }
+          ]
+        },
+        "economic_mechanism": {
+          "status": "unknown",
+          "mechanism": null,
+          "rationale": "No economic mechanism or business driver relationship is described in the provided title or summary.",
+          "citations": []
+        }
+      },
+      "validation_issues": [
+        "economic_mechanism:citation_0:quote_not_found"
+      ],
+      "format_errors_before_success": [],
+      "failed_model_response": null,
+      "model_calls": 1,
+      "candidate_score": null,
+      "new_causal_rank": null
+    },
+    {
+      "group_id": "5e40e5915c35410a75ab44e653a72d055e7d22714381010a25cd2909b22710e4",
+      "candidate_event": "Flex announced collaboration with NVIDIA to support modular data center systems using NVIDIA cuOpt",
+      "old_rank": 0.9984,
+      "old_rank_position": 3,
+      "old_status": "context_only",
+      "prior_alerts": [
+        {
+          "type": "named_technology_missing_from_summary",
+          "term": "cuopt",
+          "meaning": "Summary is truncated or may describe a different claim; inspect full source."
+        },
+        {
+          "type": "possible_title_summary_claim_fusion",
+          "meaning": "Event combines modular data-center collaboration with cuOpt while supplied summary contains no cuOpt."
+        }
+      ],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "5e40e5915c35410a75ab44e653a72d055e7d22714381010a25cd2909b22710e4"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-28T14:43:53+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "manual_review_required",
+      "semantic_axes": {
+        "event_verification": {
+          "status": "partially_supported",
+          "event_stage": "announced",
+          "unsupported_details": [
+            "Flex announced collaboration with NVIDIA to support modular data center systems"
+          ],
+          "rationale": "The title confirms Flex deployed NVIDIA cuOpt for capacity planning and process optimization. The summary mentions supporting modular data center systems development but does not explicitly state NVIDIA cuOpt is used for that specific purpose, only that the collaboration leverages Flex's capabilities.",
+          "citations": [
+            {
+              "article_id": "5e40e5915c35410a75ab44e653a72d055e7d22714381010a25cd2909b22710e4",
+              "field": "title",
+              "quote": "Flex Deploys NVIDIA cuOpt For Capacity Planning, Route Simulations, And Process Optimization In Its Facilities"
+            },
+            {
+              "article_id": "5e40e5915c35410a75ab44e653a72d055e7d22714381010a25cd2909b22710e4",
+              "field": "summary",
+              "quote": "Flex (NASDAQ:FLEX) today announced it is supporting the development of modular data center systems with NVIDIA. The collaboration will leverage Flex's advanced manufacturing capabilities and footprint to deliver"
+            }
+          ]
+        },
+        "company_relationship": {
+          "status": "direct",
+          "rationale": "Flex and NVIDIA are collaborating; Flex is deploying NVIDIA cuOpt in its facilities, establishing a direct business relationship.",
+          "citations": [
+            {
+              "article_id": "5e40e5915c35410a75ab44e653a72d055e7d22714381010a25cd2909b22710e4",
+              "field": "title",
+              "quote": "Flex Deploys NVIDIA cuOpt For Capacity Planning, Route Simulations, And Process Optimization In Its Facilities"
+            }
+          ]
+        },
+        "economic_mechanism": {
+          "status": "unsupported",
+          "rationale": "No explicit description of an event-to-business-driver relationship is provided in the sources.",
+          "mechanism": null,
+          "citations": []
+        }
+      },
+      "validation_issues": [
+        "event_verification:unsupported_details_repeat_candidate"
+      ],
+      "format_errors_before_success": [
+        "ValueError: economic_mechanism: invalid keys; missing=['mechanism'] extra=[]"
+      ],
+      "failed_model_response": null,
+      "model_calls": 2,
+      "candidate_score": null,
+      "new_causal_rank": null
+    },
+    {
+      "group_id": "01e296f648d8d2efcc1f59c643c1ff9e19160e59f69de132e531f5185653ea42",
+      "candidate_event": "NVIDIA DRIVE AGX Hyperion 10 technology selected for Uber's expanded global autonomous fleets, with Stellantis supplying 5,000 Level 4 vehicles",
+      "old_rank": 0.9982,
+      "old_rank_position": 4,
+      "old_status": "supported_hypothesis",
+      "prior_alerts": [
+        {
+          "type": "named_technology_missing_from_summary",
+          "term": "drive agx",
+          "meaning": "Summary is truncated or may describe a different claim; inspect full source."
+        },
+        {
+          "type": "named_technology_missing_from_summary",
+          "term": "hyperion 10",
+          "meaning": "Summary is truncated or may describe a different claim; inspect full source."
+        }
+      ],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "01e296f648d8d2efcc1f59c643c1ff9e19160e59f69de132e531f5185653ea42"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-28T14:02:50+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "manual_review_required",
+      "semantic_axes": {
+        "event_verification": {
+          "status": "supported",
+          "event_stage": "announced",
+          "unsupported_details": [],
+          "rationale": "The title explicitly states Uber plans to expand global autonomous fleets with Stellantis supplying 5,000 Level 4 vehicles powered by NVIDIA DRIVE AGX Hyperion 10.",
+          "citations": [
+            {
+              "article_id": "01e296f648d8d2efcc1f59c643c1ff9e19160e59f69de132e531f5185653ea42",
+              "field": "title",
+              "quote": "Uber Plans To Expand Global Autonomous Fleets; Stellantis To Supply 5,000 Level 4 Vehicles To Uber, Powered By NVIDIA DRIVE AGX Hyperion 10"
+            }
+          ]
+        },
+        "company_relationship": {
+          "status": "direct",
+          "rationale": "The title and summary describe a partnership between Uber and NVIDIA for autonomous fleets, indicating a direct business relationship.",
+          "citations": [
+            {
+              "article_id": "01e296f648d8d2efcc1f59c643c1ff9e19160e59f69de132e531f5185653ea42",
+              "field": "summary",
+              "quote": "Uber Technologies, Inc. (NYSE: UBER) today announced it is working with NVIDIA to accelerate the next generation of robotaxi and autonomous delivery fleets using NVIDIA AI Architecture."
+            }
+          ]
+        },
+        "economic_mechanism": {
+          "status": "unknown",
+          "mechanism": null,
+          "rationale": "No explicit economic mechanism (e.g., revenue share, pricing model) is described in the provided text; only a partnership announcement is reported.",
+          "citations": [
+            {
+              "article_id": "01e296f648d8d2efcc1f59c643c1ff9e19160e59f69de132e531f5185653ea42",
+              "field": "summary",
+              "quote": "Uber Technologies, Inc. (NYSE: UBER) today announced it is working with NVIDIA to accelerate the next generation of robotaxi and autonomous delivery fleets using NVIDIA AI Architecture."
+            }
+          ]
+        }
+      },
+      "validation_issues": [],
+      "format_errors_before_success": [],
+      "failed_model_response": null,
+      "model_calls": 1,
+      "candidate_score": null,
+      "new_causal_rank": null
+    },
+    {
+      "group_id": "1f9bb83d50eeaab9c3f22f0be6ae699b7e43cf2e972f23d4f75bc1e5b5b75e32",
+      "candidate_event": "NVIDIA and Nokia form strategic alliance to accelerate AI-native mobile networks and launch 6G-ready Arc Aerial RAN computer",
+      "old_rank": 0.9978,
+      "old_rank_position": 5,
+      "old_status": "supported_hypothesis",
+      "prior_alerts": [],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "1f9bb83d50eeaab9c3f22f0be6ae699b7e43cf2e972f23d4f75bc1e5b5b75e32"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-28T12:38:45+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "assessment_error",
+      "semantic_axes": null,
+      "validation_issues": [
+        "FormatRetryExhausted: Format retry exhausted: ValueError: economic_mechanism: invalid keys; missing=['mechanism'] extra=[] | ValueError: economic_mechanism: invalid keys; missing=['mechanism'] extra=[]"
+      ],
+      "format_errors_before_success": [
+        "ValueError: economic_mechanism: invalid keys; missing=['mechanism'] extra=[]",
+        "ValueError: economic_mechanism: invalid keys; missing=['mechanism'] extra=[]"
+      ],
+      "failed_model_response": "{\n  \"event_verification\": {\n    \"status\": \"supported\",\n    \"event_stage\": \"announced\",\n    \"unsupported_details\": [],\n    \"rationale\": \"The source explicitly announces the formation of a strategic alliance and the launch of a new product.\",\n    \"citations\": [\n      {\n        \"article_id\": \"1f9bb83d50eeaab9c3f22f0be6ae699b7e43cf2e972f23d4f75bc1e5b5b75e32\",\n        \"field\": \"title\",\n        \"quote\": \"NVIDIA And Nokia Form Strategic Alliance To Accelerate AI-Native Mobile Networks; Launch 6G-Ready Arc Aerial RAN Computer With Support From T-Mobile And Dell\"\n      }\n    ]\n  },\n  \"company_relationship\": {\n    \"status\": \"direct\",\n    \"rationale\": \"The source describes a direct strategic alliance and partnership between NVIDIA and Nokia.\",\n    \"citations\": [\n      {\n        \"article_id\": \"1f9bb83d50eeaab9c3f22f0be6ae699b7e43cf2e972f23d4f75bc1e5b5b75e32\",\n        \"field\": \"summary\",\n        \"quote\": \"NVIDIA and Nokia to establish a strategic partnership\"\n      }\n    ]\n  },\n  \"economic_mechanism\": {\n    \"status\": \"unsupported\",\n    \"rationale\": \"The source does not describe an economic mechanism or business driver linking the event to financial outcomes.\",\n    \"citations\": [\n      {\n        \"article_id\": \"1f9bb83d50eeaab9c3f22f0be6ae699b7e43cf2e972f23d4f75bc1e5b5b75e32\",\n        \"field\": \"summary\",\n        \"quote\": \"\"\n      }\n    ]\n  }\n}",
+      "model_calls": 2,
+      "candidate_score": null,
+      "new_causal_rank": null
+    },
+    {
+      "group_id": "1016e9b10172a78fa80d693632b62691eea5237e19b45e591b96cf68ddacc30c",
+      "candidate_event": "Nvidia customers expected to continue significant AI capital expenditures",
+      "old_rank": 0.9028,
+      "old_rank_position": 6,
+      "old_status": "context_only",
+      "prior_alerts": [],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "1016e9b10172a78fa80d693632b62691eea5237e19b45e591b96cf68ddacc30c"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-27T14:08:00+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "manual_review_required",
+      "semantic_axes": {
+        "event_verification": {
+          "status": "supported",
+          "event_stage": "expected",
+          "unsupported_details": [],
+          "rationale": "The summary explicitly states that Nvidia's largest customers are expected to continue making significant capital expenditures on AI.",
+          "citations": [
+            {
+              "article_id": "1016e9b10172a78fa80d693632b62691eea5237e19b45e591b96cf68ddacc30c",
+              "field": "summary",
+              "quote": "Nvidia’s largest customers are expected to continue making significant capital expenditures on artificial intelligence."
+            }
+          ]
+        },
+        "company_relationship": {
+          "status": "none",
+          "rationale": "The event describes customer behavior, not a direct or indirect relationship, contract, or investment involving NVIDIA as the target company.",
+          "citations": [
+            {
+              "article_id": "1016e9b10172a78fa80d693632b62691eea5237e19b45e591b96cf68ddacc30c",
+              "field": "summary",
+              "quote": "Nvidia’s largest customers are expected to continue making significant capital expenditures on artificial intelligence."
+            }
+          ]
+        },
+        "economic_mechanism": {
+          "status": "unknown",
+          "mechanism": null,
+          "rationale": "The source does not explicitly describe an event-to-business-driver relationship; it only states a customer expenditure expectation.",
+          "citations": [
+            {
+              "article_id": "1016e9b10172a78fa80d693632b62691eea5237e19b45e591b96cf68ddacc30c",
+              "field": "summary",
+              "quote": "Nvidia’s largest customers are expected to continue making significant capital expenditures on artificial intelligence."
+            }
+          ]
+        }
+      },
+      "validation_issues": [
+        "company_relationship:none_despite_target_named_in_event_and_title"
+      ],
+      "format_errors_before_success": [],
+      "failed_model_response": null,
+      "model_calls": 1,
+      "candidate_score": null,
+      "new_causal_rank": null
+    },
+    {
+      "group_id": "02ff888c67b7236966a7f70fe2422d6624e66684c95424de7b95c81c1a884648",
+      "candidate_event": "SuperX AI investment in MicroInference to strengthen Nvidia-based AI supply chain",
+      "old_rank": 0.8483,
+      "old_rank_position": 7,
+      "old_status": "context_only",
+      "prior_alerts": [],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "02ff888c67b7236966a7f70fe2422d6624e66684c95424de7b95c81c1a884648"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-24T12:58:45+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "assessed_model_judgment",
+      "semantic_axes": {
+        "event_verification": {
+          "status": "supported",
+          "event_stage": "completed",
+          "unsupported_details": [],
+          "rationale": "The article confirms SuperX AI invested in MicroInference to strengthen Nvidia-based AI supply chain.",
+          "citations": [
+            {
+              "article_id": "02ff888c67b7236966a7f70fe2422d6624e66684c95424de7b95c81c1a884648",
+              "field": "title",
+              "quote": "SuperX Invests In MicroInference To Strengthen Nvidia-Based AI Supply Chain"
+            }
+          ]
+        },
+        "company_relationship": {
+          "status": "indirect",
+          "rationale": "SuperX AI's investment in MicroInference strengthens the Nvidia-based AI supply chain, but does not establish a direct contract or investment by NVIDIA.",
+          "citations": [
+            {
+              "article_id": "02ff888c67b7236966a7f70fe2422d6624e66684c95424de7b95c81c1a884648",
+              "field": "summary",
+              "quote": "SuperX AI (NASDAQ: SUPX) invests in MicroInference Pte. Ltd., strengthening its supply chain for NVIDIA servers and networking equipment."
+            }
+          ]
+        },
+        "economic_mechanism": {
+          "status": "unsupported",
+          "rationale": "The article does not explicitly describe an event-to-business-driver relationship; mere mention of supply chain strengthening is not an economic mechanism.",
+          "mechanism": null,
+          "citations": [
+            {
+              "article_id": "02ff888c67b7236966a7f70fe2422d6624e66684c95424de7b95c81c1a884648",
+              "field": "summary",
+              "quote": "SuperX AI (NASDAQ: SUPX) invests in MicroInference Pte. Ltd., strengthening its supply chain for NVIDIA servers and networking equipment."
+            }
+          ]
+        }
+      },
+      "validation_issues": [],
+      "format_errors_before_success": [],
+      "failed_model_response": null,
+      "model_calls": 1,
+      "candidate_score": null,
+      "new_causal_rank": null
+    },
+    {
+      "group_id": "4c9f9fb5892d2fd938b05c1430d5d746e7c45a6ba221ddd09b8e962a313f3321",
+      "candidate_event": "Intel Q3 earnings set to test stock's rally amid Nvidia, US government investments",
+      "old_rank": 0.8321,
+      "old_rank_position": 8,
+      "old_status": "context_only",
+      "prior_alerts": [],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "4c9f9fb5892d2fd938b05c1430d5d746e7c45a6ba221ddd09b8e962a313f3321"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-23T15:09:22+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "manual_review_required",
+      "semantic_axes": {
+        "event_verification": {
+          "status": "not_supported",
+          "event_stage": "expected",
+          "unsupported_details": [
+            "Q3 earnings test of rally",
+            "amid Nvidia, US government investments"
+          ],
+          "rationale": "The article title and summary discuss Intel's Q3 earnings and its struggling manufacturing business. There is no mention of Nvidia's stock rally being tested or US government investments in the context of testing a rally. The candidate event constructs a relationship (testing stock's rally amid Nvidia, US government investments) that is not present in the source.",
+          "citations": [
+            {
+              "article_id": "4c9f9fb5892d2fd938b05c1430d5d746e7c45a6ba221ddd09b8e962a313f3321",
+              "field": "title",
+              "quote": "Intel Q3 earnings set to test stock's rally amid Nvidia, US government investments"
+            },
+            {
+              "article_id": "4c9f9fb5892d2fd938b05c1430d5d746e7c45a6ba221ddd09b8e962a313f3321",
+              "field": "summary",
+              "quote": "Wall Street is looking for any signals on the future of Intel's struggling manufacturing business."
+            }
+          ]
+        },
+        "company_relationship": {
+          "status": "none",
+          "rationale": "The article is about Intel's Q3 earnings and manufacturing business. NVIDIA is only mentioned in the title as part of the phrase 'amid Nvidia, US government investments', which does not establish a direct or indirect relationship between NVIDIA and the event described. The target company NVIDIA is not the subject of the article.",
+          "citations": [
+            {
+              "article_id": "4c9f9fb5892d2fd938b05c1430d5d746e7c45a6ba221ddd09b8e962a313f3321",
+              "field": "title",
+              "quote": "Intel Q3 earnings set to test stock's rally amid Nvidia, US government investments"
+            },
+            {
+              "article_id": "4c9f9fb5892d2fd938b05c1430d5d746e7c45a6ba221ddd09b8e962a313f3321",
+              "field": "summary",
+              "quote": "Wall Street is looking for any signals on the future of Intel's struggling manufacturing business."
+            }
+          ]
+        },
+        "economic_mechanism": {
+          "status": "unknown",
+          "mechanism": null,
+          "rationale": "The article does not describe any economic mechanism linking an event to NVIDIA's business. There is no evidence-backed description of an event-to-business-driver relationship. The mention of 'US government investments' and 'Nvidia' in the title is not connected to a described mechanism affecting NVIDIA.",
+          "citations": [
+            {
+              "article_id": "4c9f9fb5892d2fd938b05c1430d5d746e7c45a6ba221ddd09b8e962a313f3321",
+              "field": "title",
+              "quote": "Intel Q3 earnings set to test stock's rally amid Nvidia, US government investments"
+            },
+            {
+              "article_id": "4c9f9fb5892d2fd938b05c1430d5d746e7c45a6ba221ddd09b8e962a313f3321",
+              "field": "summary",
+              "quote": "Wall Street is looking for any signals on the future of Intel's struggling manufacturing business."
+            }
+          ]
+        }
+      },
+      "validation_issues": [
+        "event_verification:negative_despite_title_matching_candidate",
+        "company_relationship:none_despite_target_named_in_event_and_title"
+      ],
+      "format_errors_before_success": [],
+      "failed_model_response": null,
+      "model_calls": 1,
+      "candidate_score": null,
+      "new_causal_rank": null
+    },
+    {
+      "group_id": "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+      "candidate_event": "Nvidia faced general earnings risks and China revenue declines",
+      "old_rank": 0.8286,
+      "old_rank_position": 9,
+      "old_status": "context_only",
+      "prior_alerts": [],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-23T10:25:07+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "manual_review_required",
+      "semantic_axes": {
+        "event_verification": {
+          "status": "partially_supported",
+          "event_stage": "expected",
+          "unsupported_details": [
+            "general earnings risks",
+            "China revenue declines"
+          ],
+          "rationale": "The summary mentions China revenue drops and competition, but does not confirm general earnings risks or specific revenue decline figures.",
+          "citations": [
+            {
+              "article_id": "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+              "field": "summary",
+              "quote": "Nvidia Corporation faces key earnings as China revenue drops and competition rises."
+            }
+          ]
+        },
+        "company_relationship": {
+          "status": "none",
+          "rationale": "The articles discuss Nvidia's own performance and market position, not a relationship with another target company.",
+          "citations": [
+            {
+              "article_id": "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+              "field": "title",
+              "quote": "Nvidia: The Big 3 Issues Before Earnings"
+            }
+          ]
+        },
+        "economic_mechanism": {
+          "status": "unknown",
+          "mechanism": null,
+          "rationale": "No economic mechanism linking China revenue changes to a business driver is described in the provided text.",
+          "citations": []
+        }
+      },
+      "validation_issues": [
+        "company_relationship:none_despite_target_named_in_event_and_title"
+      ],
+      "format_errors_before_success": [],
+      "failed_model_response": null,
+      "model_calls": 1,
+      "candidate_score": null,
+      "new_causal_rank": null
+    },
+    {
+      "group_id": "640bea9d3df4bb04b4942377e6b589c7fe2900c4d95b167a75e46ac99fae2113",
+      "candidate_event": "Hyperscale Data announces intent to launch on-demand NVIDIA GPU cloud platform",
+      "old_rank": 0.8253,
+      "old_rank_position": 10,
+      "old_status": "context_only",
+      "prior_alerts": [],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "640bea9d3df4bb04b4942377e6b589c7fe2900c4d95b167a75e46ac99fae2113"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-23T06:02:12+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "manual_review_required",
+      "semantic_axes": {
+        "event_verification": {
+          "status": "partially_supported",
+          "event_stage": "expected",
+          "unsupported_details": [
+            "Candidate joins title and summary with unsupported relation"
+          ],
+          "rationale": "Title announces intent to launch; summary confirms plans to launch on-demand NVIDIA GPU cloud platform. No completed event or explicit contract/investment established.",
+          "citations": [
+            {
+              "article_id": "640bea9d3df4bb04b4942377e6b589c7fe2900c4d95b167a75e46ac99fae2113",
+              "field": "title",
+              "quote": "Hyperscale Data Announces Intent To Launch On-Demand NVIDIA Graphics Processing Unit Cloud Platform From Michigan AI Data Center Campus"
+            }
+          ]
+        },
+        "company_relationship": {
+          "status": "none",
+          "rationale": "No evidence of a direct or indirect contract, investment, or partnership between NVIDIA and Hyperscale Data in the provided sources. The event involves Hyperscale Data using NVIDIA GPUs, not NVIDIA as the contracting party.",
+          "citations": []
+        },
+        "economic_mechanism": {
+          "status": "unsupported",
+          "mechanism": null,
+          "rationale": "No economic mechanism is described in the sources. The summary merely states Hyperscale Data's plans to launch a platform; no explicit event-to-business-driver relationship is provided.",
+          "citations": []
+        }
+      },
+      "validation_issues": [
+        "company_relationship:citation_0:quote_not_found",
+        "economic_mechanism:citation_0:quote_not_found",
+        "company_relationship:none_despite_target_named_in_event_and_title"
+      ],
+      "format_errors_before_success": [],
+      "failed_model_response": null,
+      "model_calls": 1,
+      "candidate_score": null,
+      "new_causal_rank": null
+    },
+    {
+      "group_id": "a1efb3961050026e52ffdc1ae740dbcf1cf445d2002964058e1531ca216c1e59",
+      "candidate_event": "U.S.-China trade deal framework discussed as bullish for tech stocks",
+      "old_rank": 0.5902,
+      "old_rank_position": 11,
+      "old_status": "context_only",
+      "prior_alerts": [],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "a1efb3961050026e52ffdc1ae740dbcf1cf445d2002964058e1531ca216c1e59"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-26T21:14:47+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "assessed_model_judgment",
+      "semantic_axes": {
+        "event_verification": {
+          "status": "partially_supported",
+          "event_stage": "expected",
+          "rationale": "The article reports that U.S.-China trade deal framework discussions are considered bullish for tech stocks, but does not confirm the deal has been finalized or executed.",
+          "unsupported_details": [
+            "No confirmation that a finalized trade deal framework exists or has been implemented"
+          ],
+          "citations": [
+            {
+              "article_id": "a1efb3961050026e52ffdc1ae740dbcf1cf445d2002964058e1531ca216c1e59",
+              "field": "title",
+              "quote": "U.S.-China Trade Deal Framework a Bullish Sign for Stocks: Ives"
+            }
+          ]
+        },
+        "company_relationship": {
+          "status": "indirect",
+          "rationale": "The article mentions NVIDIA in the context of chip sales into China, but does not indicate NVIDIA is directly involved in or benefiting from the specific trade deal framework discussion.",
+          "citations": [
+            {
+              "article_id": "a1efb3961050026e52ffdc1ae740dbcf1cf445d2002964058e1531ca216c1e59",
+              "field": "summary",
+              "quote": "the far reaching impact around the AI Revolution from chip production, Nvidia/AMD sales into China"
+            }
+          ]
+        },
+        "economic_mechanism": {
+          "status": "plausible_unverified",
+          "rationale": "The article suggests that resolution of U.S.-China trade tensions could positively impact NVIDIA through chip sales into China, but does not explicitly describe a verified event-to-business-driver relationship.",
+          "mechanism": null,
+          "citations": [
+            {
+              "article_id": "a1efb3961050026e52ffdc1ae740dbcf1cf445d2002964058e1531ca216c1e59",
+              "field": "summary",
+              "quote": "This continues to be a lingering overhang on tech stocks that could be removed as the far reaching impact around the AI Revolution from chip production, Nvidia/AMD sales into China"
+            }
+          ]
+        }
+      },
+      "validation_issues": [],
+      "format_errors_before_success": [],
+      "failed_model_response": null,
+      "model_calls": 1,
+      "candidate_score": null,
+      "new_causal_rank": null
+    },
+    {
+      "group_id": "b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+      "candidate_event": null,
+      "old_rank": 0.4975,
+      "old_rank_position": 12,
+      "old_status": "validation_rejected",
+      "prior_alerts": [],
+      "temporal_validity": {
+        "status": "published_by_cutoff",
+        "cutoff_at": "2025-10-28T20:00:00+00:00",
+        "eligible_article_ids": [
+          "b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4"
+        ],
+        "excluded_late_article_ids": [],
+        "earliest_published_at": "2025-10-21T12:05:24+00:00",
+        "price_move_onset_verified": false,
+        "method": "deterministic_python"
+      },
+      "excluded_late_articles": [],
+      "status": "no_candidate_or_pre_cutoff_evidence",
+      "semantic_axes": null,
+      "validation_issues": [],
+      "format_errors_before_success": [],
+      "failed_model_response": null,
+      "model_calls": 0,
+      "candidate_score": null,
+      "new_causal_rank": null
+    }
+  ],
+  "old_supported_needing_review": [
+    "7a276c0a36ef544944c217ea269c2b255ff5c913cabac8ebc3446626ab021f68",
+    "01e296f648d8d2efcc1f59c643c1ff9e19160e59f69de132e531f5185653ea42",
+    "1f9bb83d50eeaab9c3f22f0be6ae699b7e43cf2e972f23d4f75bc1e5b5b75e32"
+  ],
+  "limitations": [
+    "Only Finnhub titles and summaries, not full publisher articles.",
+    "Time check compares publication to as-of only, NOT onset of stock price movement.",
+    "Semantic outcomes are unverified model judgments, even when quotes match.",
+    "No source lineage verification, cross-article graph comparison or causal rank."
+  ]
+}

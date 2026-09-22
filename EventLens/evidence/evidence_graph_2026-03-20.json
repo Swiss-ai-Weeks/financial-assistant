@@ -1,0 +1,1145 @@
+{
+  "schema_version": "integrated_daily_evidence_graph_v1",
+  "ticker": "TSLA",
+  "anomaly_date": "2026-03-20",
+  "as_of": "2026-03-20T20:00:00+00:00",
+  "daily_anomaly": {
+    "date": "2026-03-20",
+    "close": 367.96,
+    "return_pct": -3.24,
+    "volume_zscore": 3.16,
+    "intraday_onset": null
+  },
+  "baseline_ranker_unchanged": true,
+  "baseline_ranks_recomputed_by_original_ranker": true,
+  "semantic_overlay_provided": false,
+  "stored_articles_in_window": 390,
+  "lexically_relevant_articles": 45,
+  "model_calls": 0,
+  "trained_tgn": false,
+  "graph_ranks_computed": 0,
+  "graph": {
+    "nodes": [
+      {
+        "id": "anomaly:TSLA:2026-03-20",
+        "type": "daily_anomaly",
+        "date": "2026-03-20",
+        "return_pct": -3.24,
+        "volume_zscore": 3.16,
+        "price_onset_at": null
+      },
+      {
+        "id": "company:TSLA",
+        "type": "target_company",
+        "ticker": "TSLA"
+      },
+      {
+        "id": "event_candidate:abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+        "type": "candidate_event_proxy",
+        "title_proxy": "As Tesla Gears Up to Launch Terafab, Is TSLA Stock a Buy?",
+        "candidate_validated": false,
+        "group_id": "abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484"
+      },
+      {
+        "id": "article:abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+        "type": "news_article",
+        "article_id": "abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+        "title": "As Tesla Gears Up to Launch Terafab, Is TSLA Stock a Buy?",
+        "published_at": "2026-03-18T17:02:44+00:00",
+        "ingested_at": "2026-09-22T07:50:05+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=00a49c00a380cc91865452e7bbc342aabc4305411a7d6030d0ce84de623ad6eb",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "type": "candidate_event_proxy",
+        "title_proxy": "How Will Tesla Sales, TSLA Stock Be Impacted By Crude Oil Prices Due To Iran War? Gary Black Says Lays Down The Math",
+        "candidate_validated": false,
+        "group_id": "2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397"
+      },
+      {
+        "id": "article:2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "type": "news_article",
+        "article_id": "2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "title": "How Will Tesla Sales, TSLA Stock Be Impacted By Crude Oil Prices Due To Iran War? Gary Black Says Lays Down The Math",
+        "published_at": "2026-03-17T13:30:59+00:00",
+        "ingested_at": "2026-09-22T07:50:04+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=d8f681cde59c2d8a6d9b4a7a669caeabcd638e86043ecfabcfd1c8a7d3267d2e",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "article:5a583a45c93de4d5a1aa8d406b702ebeb4fbb48c4804e8fcec4f603ce0f0b049",
+        "type": "news_article",
+        "article_id": "5a583a45c93de4d5a1aa8d406b702ebeb4fbb48c4804e8fcec4f603ce0f0b049",
+        "title": "How Will Tesla Sales, TSLA Stock Be Impacted By Crude Oil Prices Due To Iran War? Gary Black Says Lays Down The Math",
+        "published_at": "2026-03-15T11:39:43+00:00",
+        "ingested_at": "2026-09-22T07:50:02+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=c35a95ac4c658025b3080d3b2d25ae5ea9860f0a7d4669a468de3f536015f135",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla (TSLA) Growth in China Signals Strong Global Demand, EV Sales Surge 91%",
+        "candidate_validated": false,
+        "group_id": "1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0"
+      },
+      {
+        "id": "article:1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+        "type": "news_article",
+        "article_id": "1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+        "title": "Tesla (TSLA) Growth in China Signals Strong Global Demand, EV Sales Surge 91%",
+        "published_at": "2026-03-17T12:42:20+00:00",
+        "ingested_at": "2026-09-22T07:50:04+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=ae5e20a21ae410f1844b15090186a160f28a137ce2c67643e7946bbe2d66a8de",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+        "type": "candidate_event_proxy",
+        "title_proxy": "How The Tesla (TSLA) Investment Story Is Shifting Around Autonomy Energy And 2026 Risks",
+        "candidate_validated": false,
+        "group_id": "baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638"
+      },
+      {
+        "id": "article:baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+        "type": "news_article",
+        "article_id": "baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+        "title": "How The Tesla (TSLA) Investment Story Is Shifting Around Autonomy Energy And 2026 Risks",
+        "published_at": "2026-03-17T03:16:17+00:00",
+        "ingested_at": "2026-09-22T07:50:04+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=fd2e886d193c916319c4c7e1f0ac887471883e2c2469553ce86ab29908e98638",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+        "type": "candidate_event_proxy",
+        "title_proxy": "TSMC Stock (TSM) Wilts as Iranian Attacks Batter Helium Supply and Threaten Chip Production",
+        "candidate_validated": false,
+        "group_id": "23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f"
+      },
+      {
+        "id": "article:23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+        "type": "news_article",
+        "article_id": "23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+        "title": "TSMC Stock (TSM) Wilts as Iranian Attacks Batter Helium Supply and Threaten Chip Production",
+        "published_at": "2026-03-20T12:36:11+00:00",
+        "ingested_at": "2026-09-22T07:50:08+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=c4f3e4dbd121118793140d418689a2a319db0b559a65b4004ce3e60ac641d920",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla AI6 Chip Push With Samsung Meets Rising Autonomy Safety Scrutiny",
+        "candidate_validated": false,
+        "group_id": "9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de"
+      },
+      {
+        "id": "article:9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+        "type": "news_article",
+        "article_id": "9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+        "title": "Tesla AI6 Chip Push With Samsung Meets Rising Autonomy Safety Scrutiny",
+        "published_at": "2026-03-20T05:05:40+00:00",
+        "ingested_at": "2026-09-22T07:50:08+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=872c376b877f6ce0e6029872da2b8990259160c8f80e9caeac467da90f6de6bd",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla FSD Poised To Win European Approval. But TSLA Stock Is Close To A Round Trip.",
+        "candidate_validated": false,
+        "group_id": "36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896"
+      },
+      {
+        "id": "article:36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+        "type": "news_article",
+        "article_id": "36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+        "title": "Tesla FSD Poised To Win European Approval. But TSLA Stock Is Close To A Round Trip.",
+        "published_at": "2026-03-20T16:37:48+00:00",
+        "ingested_at": "2026-09-22T07:50:08+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=8bc4f1954c09dc26356a39ee50c21517ea346f74846a84053b512d98dd3822d8",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Tesla Faces a New FSD Probe: What Does That Mean for the TSLA Stock Bull Case?",
+        "candidate_validated": false,
+        "group_id": "848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982"
+      },
+      {
+        "id": "article:848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+        "type": "news_article",
+        "article_id": "848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+        "title": "Tesla Faces a New FSD Probe: What Does That Mean for the TSLA Stock Bull Case?",
+        "published_at": "2026-03-20T15:49:33+00:00",
+        "ingested_at": "2026-09-22T07:50:08+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=1bc972a98f907120fab53fd48765220646092ba9a6b62b6349a448eaae509ed8",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Assessing Tesla (TSLA) Valuation After Terafab AI Chip Launch And Surging China Deliveries",
+        "candidate_validated": false,
+        "group_id": "f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093"
+      },
+      {
+        "id": "article:f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+        "type": "news_article",
+        "article_id": "f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+        "title": "Assessing Tesla (TSLA) Valuation After Terafab AI Chip Launch And Surging China Deliveries",
+        "published_at": "2026-03-16T11:08:50+00:00",
+        "ingested_at": "2026-09-22T07:50:03+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=8aaf131ff3eb6d463031cd013114f47d79ec730d3619c6bbd51f76ff6a23ea1f",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+        "type": "candidate_event_proxy",
+        "title_proxy": "The Investment Case for Tesla After $4.3B Team-Up With LG Energy",
+        "candidate_validated": false,
+        "group_id": "9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370"
+      },
+      {
+        "id": "article:9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+        "type": "news_article",
+        "article_id": "9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+        "title": "The Investment Case for Tesla After $4.3B Team-Up With LG Energy",
+        "published_at": "2026-03-18T12:43:00+00:00",
+        "ingested_at": "2026-09-22T07:50:05+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=4d05258a563cda31a9c8f2d7a0be0b1aa8a81ed0d45c66f963b6daf1506d953b",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+        "type": "candidate_event_proxy",
+        "title_proxy": "TSYY: Aggressive Strategy Should Continue To Erode Capital (Rating Downgrade)",
+        "candidate_validated": false,
+        "group_id": "992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3"
+      },
+      {
+        "id": "article:992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+        "type": "news_article",
+        "article_id": "992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+        "title": "TSYY: Aggressive Strategy Should Continue To Erode Capital (Rating Downgrade)",
+        "published_at": "2026-03-18T10:32:34+00:00",
+        "ingested_at": "2026-09-22T07:50:05+00:00",
+        "source_name": "SeekingAlpha",
+        "source_url": "https://finnhub.io/api/news?id=36a156c1ec2259f66929f27a8a71ef28c620da383905b4c831806482e8cb24ff",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Truckers love Tesla's electric semi-truck. Here's why.",
+        "candidate_validated": false,
+        "group_id": "b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7"
+      },
+      {
+        "id": "article:b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+        "type": "news_article",
+        "article_id": "b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+        "title": "Truckers love Tesla's electric semi-truck. Here's why.",
+        "published_at": "2026-03-20T19:58:40+00:00",
+        "ingested_at": "2026-09-22T07:50:08+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=ca492e86c1176a49b92aa59bece9d3ac1e025c7df137a270880ac795a77406c0",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "anomaly:TSLA:2026-03-20",
+        "target": "company:TSLA",
+        "type": "observed_for_company",
+        "provenance": "anomalies.json",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+        "causal": false
+      },
+      {
+        "source": "article:abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+        "target": "event_candidate:abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+        "type": "heuristically_grouped_with",
+        "provenance": "abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "causal": false
+      },
+      {
+        "source": "article:2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "target": "event_candidate:2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "type": "heuristically_grouped_with",
+        "provenance": "2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "article:5a583a45c93de4d5a1aa8d406b702ebeb4fbb48c4804e8fcec4f603ce0f0b049",
+        "target": "event_candidate:2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "type": "heuristically_grouped_with",
+        "provenance": "5a583a45c93de4d5a1aa8d406b702ebeb4fbb48c4804e8fcec4f603ce0f0b049",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:5a583a45c93de4d5a1aa8d406b702ebeb4fbb48c4804e8fcec4f603ce0f0b049",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "5a583a45c93de4d5a1aa8d406b702ebeb4fbb48c4804e8fcec4f603ce0f0b049",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+        "causal": false
+      },
+      {
+        "source": "article:1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+        "target": "event_candidate:1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+        "type": "heuristically_grouped_with",
+        "provenance": "1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+        "causal": false
+      },
+      {
+        "source": "article:baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+        "target": "event_candidate:baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+        "type": "heuristically_grouped_with",
+        "provenance": "baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+        "causal": false
+      },
+      {
+        "source": "article:23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+        "target": "event_candidate:23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+        "type": "heuristically_grouped_with",
+        "provenance": "23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+        "causal": false
+      },
+      {
+        "source": "article:9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+        "target": "event_candidate:9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+        "type": "heuristically_grouped_with",
+        "provenance": "9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+        "causal": false
+      },
+      {
+        "source": "article:36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+        "target": "event_candidate:36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+        "type": "heuristically_grouped_with",
+        "provenance": "36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+        "causal": false
+      },
+      {
+        "source": "article:848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+        "target": "event_candidate:848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+        "type": "heuristically_grouped_with",
+        "provenance": "848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+        "causal": false
+      },
+      {
+        "source": "article:f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+        "target": "event_candidate:f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+        "type": "heuristically_grouped_with",
+        "provenance": "f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+        "causal": false
+      },
+      {
+        "source": "article:9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+        "target": "event_candidate:9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+        "type": "heuristically_grouped_with",
+        "provenance": "9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+        "causal": false
+      },
+      {
+        "source": "article:992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+        "target": "event_candidate:992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+        "type": "heuristically_grouped_with",
+        "provenance": "992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+        "causal": false
+      },
+      {
+        "source": "article:b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+        "target": "event_candidate:b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+        "type": "heuristically_grouped_with",
+        "provenance": "b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+        "target": "anomaly:TSLA:2026-03-20",
+        "type": "daily_publication_context",
+        "provenance": "b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "baseline_position": 1,
+      "group_id": "abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+      "candidate_title_proxy": "As Tesla Gears Up to Launch Terafab, Is TSLA Stock a Buy?",
+      "candidate_event": "As Tesla Gears Up to Launch Terafab, Is TSLA Stock a Buy?",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8871,
+      "article_ids": [
+        "abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+          "title": "As Tesla Gears Up to Launch Terafab, Is TSLA Stock a Buy?",
+          "published_at": "2026-03-18T17:02:44+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8871,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 2,
+      "group_id": "2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+      "candidate_title_proxy": "How Will Tesla Sales, TSLA Stock Be Impacted By Crude Oil Prices Due To Iran War? Gary Black Says Lays Down The Math",
+      "candidate_event": "How Will Tesla Sales, TSLA Stock Be Impacted By Crude Oil Prices Due To Iran War? Gary Black Says Lays Down The Math",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8666,
+      "article_ids": [
+        "2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+        "5a583a45c93de4d5a1aa8d406b702ebeb4fbb48c4804e8fcec4f603ce0f0b049"
+      ],
+      "daily_classes": {
+        "prior_day": 2
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+          "title": "How Will Tesla Sales, TSLA Stock Be Impacted By Crude Oil Prices Due To Iran War? Gary Black Says Lays Down The Math",
+          "published_at": "2026-03-17T13:30:59+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8666,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        },
+        {
+          "article_id": "5a583a45c93de4d5a1aa8d406b702ebeb4fbb48c4804e8fcec4f603ce0f0b049",
+          "title": "How Will Tesla Sales, TSLA Stock Be Impacted By Crude Oil Prices Due To Iran War? Gary Black Says Lays Down The Math",
+          "published_at": "2026-03-15T11:39:43+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8295,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 3,
+      "group_id": "1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+      "candidate_title_proxy": "Tesla (TSLA) Growth in China Signals Strong Global Demand, EV Sales Surge 91%",
+      "candidate_event": "Tesla (TSLA) Growth in China Signals Strong Global Demand, EV Sales Surge 91%",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.866,
+      "article_ids": [
+        "1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+          "title": "Tesla (TSLA) Growth in China Signals Strong Global Demand, EV Sales Surge 91%",
+          "published_at": "2026-03-17T12:42:20+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.866,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 4,
+      "group_id": "baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+      "candidate_title_proxy": "How The Tesla (TSLA) Investment Story Is Shifting Around Autonomy Energy And 2026 Risks",
+      "candidate_event": "How The Tesla (TSLA) Investment Story Is Shifting Around Autonomy Energy And 2026 Risks",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.859,
+      "article_ids": [
+        "baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+          "title": "How The Tesla (TSLA) Investment Story Is Shifting Around Autonomy Energy And 2026 Risks",
+          "published_at": "2026-03-17T03:16:17+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.859,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 5,
+      "group_id": "23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+      "candidate_title_proxy": "TSMC Stock (TSM) Wilts as Iranian Attacks Batter Helium Supply and Threaten Chip Production",
+      "candidate_event": "TSMC Stock (TSM) Wilts as Iranian Attacks Batter Helium Supply and Threaten Chip Production",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6978,
+      "article_ids": [
+        "23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+          "title": "TSMC Stock (TSM) Wilts as Iranian Attacks Batter Helium Supply and Threaten Chip Production",
+          "published_at": "2026-03-20T12:36:11+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6978,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 6,
+      "group_id": "9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+      "candidate_title_proxy": "Tesla AI6 Chip Push With Samsung Meets Rising Autonomy Safety Scrutiny",
+      "candidate_event": "Tesla AI6 Chip Push With Samsung Meets Rising Autonomy Safety Scrutiny",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6956,
+      "article_ids": [
+        "9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+          "title": "Tesla AI6 Chip Push With Samsung Meets Rising Autonomy Safety Scrutiny",
+          "published_at": "2026-03-20T05:05:40+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6956,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 7,
+      "group_id": "36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+      "candidate_title_proxy": "Tesla FSD Poised To Win European Approval. But TSLA Stock Is Close To A Round Trip.",
+      "candidate_event": "Tesla FSD Poised To Win European Approval. But TSLA Stock Is Close To A Round Trip.",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.609,
+      "article_ids": [
+        "36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+          "title": "Tesla FSD Poised To Win European Approval. But TSLA Stock Is Close To A Round Trip.",
+          "published_at": "2026-03-20T16:37:48+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.609,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 8,
+      "group_id": "848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+      "candidate_title_proxy": "Tesla Faces a New FSD Probe: What Does That Mean for the TSLA Stock Bull Case?",
+      "candidate_event": "Tesla Faces a New FSD Probe: What Does That Mean for the TSLA Stock Bull Case?",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6088,
+      "article_ids": [
+        "848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+          "title": "Tesla Faces a New FSD Probe: What Does That Mean for the TSLA Stock Bull Case?",
+          "published_at": "2026-03-20T15:49:33+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6088,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 9,
+      "group_id": "f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+      "candidate_title_proxy": "Assessing Tesla (TSLA) Valuation After Terafab AI Chip Launch And Surging China Deliveries",
+      "candidate_event": "Assessing Tesla (TSLA) Valuation After Terafab AI Chip Launch And Surging China Deliveries",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.597,
+      "article_ids": [
+        "f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+          "title": "Assessing Tesla (TSLA) Valuation After Terafab AI Chip Launch And Surging China Deliveries",
+          "published_at": "2026-03-16T11:08:50+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.597,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 10,
+      "group_id": "9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+      "candidate_title_proxy": "The Investment Case for Tesla After $4.3B Team-Up With LG Energy",
+      "candidate_event": "The Investment Case for Tesla After $4.3B Team-Up With LG Energy",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5839,
+      "article_ids": [
+        "9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+          "title": "The Investment Case for Tesla After $4.3B Team-Up With LG Energy",
+          "published_at": "2026-03-18T12:43:00+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5839,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 11,
+      "group_id": "992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+      "candidate_title_proxy": "TSYY: Aggressive Strategy Should Continue To Erode Capital (Rating Downgrade)",
+      "candidate_event": "TSYY: Aggressive Strategy Should Continue To Erode Capital (Rating Downgrade)",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5822,
+      "article_ids": [
+        "992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+          "title": "TSYY: Aggressive Strategy Should Continue To Erode Capital (Rating Downgrade)",
+          "published_at": "2026-03-18T10:32:34+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5822,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 12,
+      "group_id": "b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+      "candidate_title_proxy": "Truckers love Tesla's electric semi-truck. Here's why.",
+      "candidate_event": "Truckers love Tesla's electric semi-truck. Here's why.",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.45,
+      "article_ids": [
+        "b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+          "title": "Truckers love Tesla's electric semi-truck. Here's why.",
+          "published_at": "2026-03-20T19:58:40+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.45,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    }
+  ],
+  "article_reuse_across_groups": {},
+  "limitations": [
+    "Offline SQLite only: no internet or model calls.",
+    "Publication-day context cannot establish news preceding price movement.",
+    "Ingestion after historical cutoff may imply retrospective rather than real-time availability.",
+    "Text-matched source excerpts do not verify semantic entailment or source independence.",
+    "No causal ranking or new economic scores; archived judgments remain unverified."
+  ]
+}

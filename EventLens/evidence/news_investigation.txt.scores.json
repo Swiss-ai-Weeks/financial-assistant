@@ -1,0 +1,636 @@
+{
+  "schema_version": "v22-causal-sidecar",
+  "scoring_method": "Existing deterministic causal scorer; semantic criteria missing until assessed; not causal probability",
+  "scores": [
+    {
+      "event": "Q1 deliveries miss estimates",
+      "hypothesis": {
+        "event": "Q1 deliveries miss estimates",
+        "mechanism": "The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.",
+        "evidence_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "evidence_quote": " first-quarter deliveries missed Wall Street's estimates as Wedbush Securities flagged",
+        "claim_flags": [
+          "unsupported_financial_or_market_outcome",
+          "needs_review:unmatched_product_or_numeric_token:Q1",
+          "quote_recovered_from_source"
+        ],
+        "original_mechanism": "Missed delivery estimates typically signal weaker demand and execution concerns, which can pressure the stock price.",
+        "relationship_class": "needs_review",
+        "event_status": "documented_not_independently_verified",
+        "direction_alignment": "unknown_or_mixed"
+      },
+      "assessment": {
+        "anomaly_id": "2026-04-02",
+        "candidate_event_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "anomaly_start_at": "2026-04-02T13:30:00Z",
+        "anomaly_end_at": "2026-04-02T20:00:00Z",
+        "as_of_at": "2026-04-02T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+            "source_name": "Yahoo",
+            "source_uri": "https://finnhub.io/api/news?id=6e445e011fb74215a2b318f8e04c278a3b7a56333e4680bebf639127a33bb8c0",
+            "published_at": "2026-04-02T16:25:58Z",
+            "lineage_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ],
+        "relationship_directness": {
+          "value": null,
+          "rationale": "Not assessed; no model/human judgement supplied.",
+          "evidence_ids": [],
+          "method": "model_judgment"
+        },
+        "economic_plausibility": {
+          "value": null,
+          "rationale": "Not assessed; no model/human judgement supplied.",
+          "evidence_ids": [],
+          "method": "model_judgment"
+        },
+        "materiality": {
+          "value": null,
+          "rationale": "Not assessed; no model/human judgement supplied.",
+          "evidence_ids": [],
+          "method": "model_judgment"
+        },
+        "directional_consistency": {
+          "value": null,
+          "rationale": "Not assessed; no model/human judgement supplied.",
+          "evidence_ids": [],
+          "method": "model_judgment"
+        },
+        "novelty": {
+          "value": null,
+          "rationale": "Not assessed; no model/human judgement supplied.",
+          "evidence_ids": [],
+          "method": "model_judgment"
+        },
+        "market_footprint_fit": {
+          "value": null,
+          "rationale": "Not assessed; no model/human judgement supplied.",
+          "evidence_ids": [],
+          "method": "model_judgment"
+        }
+      },
+      "result": {
+        "anomaly_id": "2026-04-02",
+        "candidate_event_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "policy": {
+          "version": "causal-candidate-v1",
+          "weights": {
+            "temporal_fit": 0.18,
+            "relationship_directness": 0.14,
+            "economic_plausibility": 0.14,
+            "materiality": 0.12,
+            "directional_consistency": 0.1,
+            "source_independence": 0.08,
+            "primary_source_support": 0.08,
+            "novelty": 0.06,
+            "market_footprint_fit": 0.1
+          },
+          "contradiction_penalty": 0.25,
+          "temporal_grace_hours": 24.0,
+          "temporal_half_life_hours": 48.0,
+          "independent_source_target": 3,
+          "minimum_evidence_coverage": 0.7,
+          "core_criterion_floor": 0.25,
+          "insufficient_evidence_score_cap": 60.0,
+          "weak_core_score_cap": 40.0,
+          "plausible_threshold": 65.0,
+          "strong_threshold": 85.0
+        },
+        "eligible": true,
+        "score": 20.7,
+        "classification": "insufficient_evidence",
+        "evidence_coverage": 0.34,
+        "criteria": {
+          "temporal_fit": {
+            "value": 1.0,
+            "rationale": "First supporting public evidence appeared at 2026-04-02T16:25:58+00:00; 0.0 hours before the anomaly window.",
+            "evidence_ids": [
+              "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80"
+            ],
+            "method": "rule"
+          },
+          "relationship_directness": {
+            "value": null,
+            "rationale": "Not assessed; no model/human judgement supplied.",
+            "evidence_ids": [],
+            "method": "model_judgment"
+          },
+          "economic_plausibility": {
+            "value": null,
+            "rationale": "Not assessed; no model/human judgement supplied.",
+            "evidence_ids": [],
+            "method": "model_judgment"
+          },
+          "materiality": {
+            "value": null,
+            "rationale": "Not assessed; no model/human judgement supplied.",
+            "evidence_ids": [],
+            "method": "model_judgment"
+          },
+          "directional_consistency": {
+            "value": null,
+            "rationale": "Not assessed; no model/human judgement supplied.",
+            "evidence_ids": [],
+            "method": "model_judgment"
+          },
+          "source_independence": {
+            "value": 0.3333,
+            "rationale": "Found 1 distinct supporting reporting lineage(s); target is 3.",
+            "evidence_ids": [
+              "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80"
+            ],
+            "method": "rule"
+          },
+          "primary_source_support": {
+            "value": 0.0,
+            "rationale": "No supporting primary source is available.",
+            "evidence_ids": [],
+            "method": "rule"
+          },
+          "novelty": {
+            "value": null,
+            "rationale": "Not assessed; no model/human judgement supplied.",
+            "evidence_ids": [],
+            "method": "model_judgment"
+          },
+          "market_footprint_fit": {
+            "value": null,
+            "rationale": "Not assessed; no model/human judgement supplied.",
+            "evidence_ids": [],
+            "method": "model_judgment"
+          }
+        },
+        "contradiction_strength": {
+          "value": 0.0,
+          "rationale": "Contradictory lineage quality is 0.00 versus 0.50 for supporting lineages.",
+          "evidence_ids": [],
+          "method": "rule"
+        },
+        "missing_criteria": [
+          "relationship_directness",
+          "economic_plausibility",
+          "materiality",
+          "directional_consistency",
+          "novelty",
+          "market_footprint_fit"
+        ],
+        "ignored_evidence_ids": [],
+        "caps_applied": [
+          "insufficient_evidence_coverage"
+        ],
+        "causal_cutoff_at": "2026-04-02T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+            "source_name": "Yahoo",
+            "source_uri": "https://finnhub.io/api/news?id=6e445e011fb74215a2b318f8e04c278a3b7a56333e4680bebf639127a33bb8c0",
+            "published_at": "2026-04-02T16:25:58Z",
+            "lineage_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ]
+      },
+      "limitations": [
+        "LLM criterion scores are uncalibrated judgements, not verified entailment or causal probabilities.",
+        "Only representative source included; independent reporting and primary sources require separate verification.",
+        "Daily anomaly onset approximated by session open; no intraday timing claim."
+      ],
+      "ticker": "TSLA",
+      "anomaly_date": "2026-04-02",
+      "retrieval_score": 0.6989
+    },
+    {
+      "event": "Tesla Q1 deliveries missed Wall Street estimates",
+      "hypothesis": {
+        "event": "Tesla Q1 deliveries missed Wall Street estimates",
+        "mechanism": "Missed delivery estimates typically negatively impact investor sentiment and stock price.",
+        "evidence_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "evidence_quote": "Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+        "claim_flags": [
+          "needs_review:unmatched_product_or_numeric_token:Q1"
+        ],
+        "original_mechanism": "Missed delivery estimates typically negatively impact investor sentiment and stock price.",
+        "relationship_class": "needs_review",
+        "event_status": "documented_not_independently_verified",
+        "direction_alignment": "unknown_or_mixed"
+      },
+      "assessment": {
+        "anomaly_id": "2026-04-02",
+        "candidate_event_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "anomaly_start_at": "2026-04-02T13:30:00Z",
+        "anomaly_end_at": "2026-04-02T20:00:00Z",
+        "as_of_at": "2026-04-02T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+            "source_name": "Yahoo",
+            "source_uri": "https://finnhub.io/api/news?id=45f8662aacbabe50e25ffc31bd5b73563b44d0bfa0c48003dc97876ecb472b12",
+            "published_at": "2026-04-02T17:21:34Z",
+            "lineage_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ],
+        "relationship_directness": {
+          "value": 0.9,
+          "rationale": "The summary directly links the delivery miss to the stock price drop. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "evidence_ids": [
+            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+          ],
+          "method": "model_judgment"
+        },
+        "economic_plausibility": {
+          "value": 0.95,
+          "rationale": "Missing delivery estimates is a well-understood negative catalyst for automotive manufacturers. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "evidence_ids": [
+            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+          ],
+          "method": "model_judgment"
+        },
+        "materiality": {
+          "value": 1.0,
+          "rationale": "Q1 delivery figures are a primary metric for Tesla's production and demand health. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "evidence_ids": [
+            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+          ],
+          "method": "model_judgment"
+        },
+        "directional_consistency": {
+          "value": 1.0,
+          "rationale": "The news explicitly states the stock dropped, consistent with the negative event. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "evidence_ids": [
+            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+          ],
+          "method": "model_judgment"
+        },
+        "novelty": {
+          "value": 0.8,
+          "rationale": "Q1 delivery misses are a recurring but material event; this specific instance is fresh catalyst for the anomaly day. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "evidence_ids": [
+            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+          ],
+          "method": "model_judgment"
+        },
+        "market_footprint_fit": {
+          "value": 1.0,
+          "rationale": "Tesla is a major constituent of major indices (^DJI, ^GSPC, ^IXIC) referenced in the broader market context. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "evidence_ids": [
+            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+          ],
+          "method": "model_judgment"
+        }
+      },
+      "result": {
+        "anomaly_id": "2026-04-02",
+        "candidate_event_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "policy": {
+          "version": "causal-candidate-v1",
+          "weights": {
+            "temporal_fit": 0.18,
+            "relationship_directness": 0.14,
+            "economic_plausibility": 0.14,
+            "materiality": 0.12,
+            "directional_consistency": 0.1,
+            "source_independence": 0.08,
+            "primary_source_support": 0.08,
+            "novelty": 0.06,
+            "market_footprint_fit": 0.1
+          },
+          "contradiction_penalty": 0.25,
+          "temporal_grace_hours": 24.0,
+          "temporal_half_life_hours": 48.0,
+          "independent_source_target": 3,
+          "minimum_evidence_coverage": 0.7,
+          "core_criterion_floor": 0.25,
+          "insufficient_evidence_score_cap": 60.0,
+          "weak_core_score_cap": 40.0,
+          "plausible_threshold": 65.0,
+          "strong_threshold": 85.0
+        },
+        "eligible": true,
+        "score": 83.4,
+        "classification": "plausible",
+        "evidence_coverage": 1.0,
+        "criteria": {
+          "temporal_fit": {
+            "value": 1.0,
+            "rationale": "First supporting public evidence appeared at 2026-04-02T17:21:34+00:00; 0.0 hours before the anomaly window.",
+            "evidence_ids": [
+              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            ],
+            "method": "rule"
+          },
+          "relationship_directness": {
+            "value": 0.9,
+            "rationale": "The summary directly links the delivery miss to the stock price drop. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "evidence_ids": [
+              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            ],
+            "method": "model_judgment"
+          },
+          "economic_plausibility": {
+            "value": 0.95,
+            "rationale": "Missing delivery estimates is a well-understood negative catalyst for automotive manufacturers. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "evidence_ids": [
+              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            ],
+            "method": "model_judgment"
+          },
+          "materiality": {
+            "value": 1.0,
+            "rationale": "Q1 delivery figures are a primary metric for Tesla's production and demand health. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "evidence_ids": [
+              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            ],
+            "method": "model_judgment"
+          },
+          "directional_consistency": {
+            "value": 1.0,
+            "rationale": "The news explicitly states the stock dropped, consistent with the negative event. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "evidence_ids": [
+              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            ],
+            "method": "model_judgment"
+          },
+          "source_independence": {
+            "value": 0.3333,
+            "rationale": "Found 1 distinct supporting reporting lineage(s); target is 3.",
+            "evidence_ids": [
+              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            ],
+            "method": "rule"
+          },
+          "primary_source_support": {
+            "value": 0.0,
+            "rationale": "No supporting primary source is available.",
+            "evidence_ids": [],
+            "method": "rule"
+          },
+          "novelty": {
+            "value": 0.8,
+            "rationale": "Q1 delivery misses are a recurring but material event; this specific instance is fresh catalyst for the anomaly day. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "evidence_ids": [
+              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            ],
+            "method": "model_judgment"
+          },
+          "market_footprint_fit": {
+            "value": 1.0,
+            "rationale": "Tesla is a major constituent of major indices (^DJI, ^GSPC, ^IXIC) referenced in the broader market context. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "evidence_ids": [
+              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            ],
+            "method": "model_judgment"
+          }
+        },
+        "contradiction_strength": {
+          "value": 0.0,
+          "rationale": "Contradictory lineage quality is 0.00 versus 0.50 for supporting lineages.",
+          "evidence_ids": [],
+          "method": "rule"
+        },
+        "missing_criteria": [],
+        "ignored_evidence_ids": [],
+        "caps_applied": [],
+        "causal_cutoff_at": "2026-04-02T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+            "source_name": "Yahoo",
+            "source_uri": "https://finnhub.io/api/news?id=45f8662aacbabe50e25ffc31bd5b73563b44d0bfa0c48003dc97876ecb472b12",
+            "published_at": "2026-04-02T17:21:34Z",
+            "lineage_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ]
+      },
+      "limitations": [
+        "LLM criterion scores are uncalibrated judgements, not verified entailment or causal probabilities.",
+        "Only representative source included; independent reporting and primary sources require separate verification.",
+        "Daily anomaly onset approximated by session open; no intraday timing claim."
+      ],
+      "ticker": "TSLA",
+      "anomaly_date": "2026-04-02",
+      "retrieval_score": 0.4492
+    },
+    {
+      "event": "Tesla Q1 2026 delivery miss reported on 2026-04-02",
+      "hypothesis": {
+        "event": "Tesla Q1 2026 delivery miss reported on 2026-04-02",
+        "mechanism": "Missed delivery consensus typically signals demand concerns and near-term execution risk, which can pressure the stock.",
+        "evidence_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "evidence_quote": "Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street's consensus range of approximately 365,645 to 372,160 vehicles.",
+        "claim_flags": [],
+        "original_mechanism": null,
+        "relationship_class": "plausible_unverified_link",
+        "event_status": "documented_not_independently_verified",
+        "direction_alignment": "unknown_or_mixed"
+      },
+      "assessment": {
+        "anomaly_id": "2026-04-02",
+        "candidate_event_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "anomaly_start_at": "2026-04-02T13:30:00Z",
+        "anomaly_end_at": "2026-04-02T20:00:00Z",
+        "as_of_at": "2026-04-02T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+            "source_name": "Yahoo",
+            "source_uri": "https://finnhub.io/api/news?id=870a335a43ad1a08270c26ac9a29b75a79e153ea802f816e63a2c2a34dd1144f",
+            "published_at": "2026-04-02T14:24:19Z",
+            "lineage_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ],
+        "relationship_directness": {
+          "value": 0.8,
+          "rationale": "The source directly states the stock declined on the delivery miss, establishing a contemporaneous market reaction. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "evidence_ids": [
+            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+          ],
+          "method": "model_judgment"
+        },
+        "economic_plausibility": {
+          "value": 0.9,
+          "rationale": "A delivery miss relative to consensus is a well-understood fundamental trigger for near-term sentiment adjustment in the auto/ev sector. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "evidence_ids": [
+            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+          ],
+          "method": "model_judgment"
+        },
+        "materiality": {
+          "value": 0.95,
+          "rationale": "The miss represents roughly a 2-4% shortfall against consensus, a meaningful variance for a high-volume name like Tesla. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "evidence_ids": [
+            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+          ],
+          "method": "model_judgment"
+        },
+        "directional_consistency": {
+          "value": 1.0,
+          "rationale": "The event (delivery miss) and the anomaly (negative return) are directionally identical; the source explicitly links the miss to the price decline. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "evidence_ids": [
+            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+          ],
+          "method": "model_judgment"
+        },
+        "novelty": {
+          "value": 0.3,
+          "rationale": "Q1 delivery reports are a recurring quarterly event; this specific miss is a single-instance data point. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "evidence_ids": [
+            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+          ],
+          "method": "model_judgment"
+        },
+        "market_footprint_fit": {
+          "value": 0.9,
+          "rationale": "Tesla is a large-cap liquid stock; a ~3% early-trading move on earnings-delivery news is consistent with its typical market footprint. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "evidence_ids": [
+            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+          ],
+          "method": "model_judgment"
+        }
+      },
+      "result": {
+        "anomaly_id": "2026-04-02",
+        "candidate_event_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "policy": {
+          "version": "causal-candidate-v1",
+          "weights": {
+            "temporal_fit": 0.18,
+            "relationship_directness": 0.14,
+            "economic_plausibility": 0.14,
+            "materiality": 0.12,
+            "directional_consistency": 0.1,
+            "source_independence": 0.08,
+            "primary_source_support": 0.08,
+            "novelty": 0.06,
+            "market_footprint_fit": 0.1
+          },
+          "contradiction_penalty": 0.25,
+          "temporal_grace_hours": 24.0,
+          "temporal_half_life_hours": 48.0,
+          "independent_source_target": 3,
+          "minimum_evidence_coverage": 0.7,
+          "core_criterion_floor": 0.25,
+          "insufficient_evidence_score_cap": 60.0,
+          "weak_core_score_cap": 40.0,
+          "plausible_threshold": 65.0,
+          "strong_threshold": 85.0
+        },
+        "eligible": true,
+        "score": 76.7,
+        "classification": "plausible",
+        "evidence_coverage": 1.0,
+        "criteria": {
+          "temporal_fit": {
+            "value": 1.0,
+            "rationale": "First supporting public evidence appeared at 2026-04-02T14:24:19+00:00; 0.0 hours before the anomaly window.",
+            "evidence_ids": [
+              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            ],
+            "method": "rule"
+          },
+          "relationship_directness": {
+            "value": 0.8,
+            "rationale": "The source directly states the stock declined on the delivery miss, establishing a contemporaneous market reaction. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "evidence_ids": [
+              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            ],
+            "method": "model_judgment"
+          },
+          "economic_plausibility": {
+            "value": 0.9,
+            "rationale": "A delivery miss relative to consensus is a well-understood fundamental trigger for near-term sentiment adjustment in the auto/ev sector. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "evidence_ids": [
+              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            ],
+            "method": "model_judgment"
+          },
+          "materiality": {
+            "value": 0.95,
+            "rationale": "The miss represents roughly a 2-4% shortfall against consensus, a meaningful variance for a high-volume name like Tesla. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "evidence_ids": [
+              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            ],
+            "method": "model_judgment"
+          },
+          "directional_consistency": {
+            "value": 1.0,
+            "rationale": "The event (delivery miss) and the anomaly (negative return) are directionally identical; the source explicitly links the miss to the price decline. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "evidence_ids": [
+              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            ],
+            "method": "model_judgment"
+          },
+          "source_independence": {
+            "value": 0.3333,
+            "rationale": "Found 1 distinct supporting reporting lineage(s); target is 3.",
+            "evidence_ids": [
+              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            ],
+            "method": "rule"
+          },
+          "primary_source_support": {
+            "value": 0.0,
+            "rationale": "No supporting primary source is available.",
+            "evidence_ids": [],
+            "method": "rule"
+          },
+          "novelty": {
+            "value": 0.3,
+            "rationale": "Q1 delivery reports are a recurring quarterly event; this specific miss is a single-instance data point. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "evidence_ids": [
+              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            ],
+            "method": "model_judgment"
+          },
+          "market_footprint_fit": {
+            "value": 0.9,
+            "rationale": "Tesla is a large-cap liquid stock; a ~3% early-trading move on earnings-delivery news is consistent with its typical market footprint. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "evidence_ids": [
+              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            ],
+            "method": "model_judgment"
+          }
+        },
+        "contradiction_strength": {
+          "value": 0.0,
+          "rationale": "Contradictory lineage quality is 0.00 versus 0.50 for supporting lineages.",
+          "evidence_ids": [],
+          "method": "rule"
+        },
+        "missing_criteria": [],
+        "ignored_evidence_ids": [],
+        "caps_applied": [],
+        "causal_cutoff_at": "2026-04-02T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+            "source_name": "Yahoo",
+            "source_uri": "https://finnhub.io/api/news?id=870a335a43ad1a08270c26ac9a29b75a79e153ea802f816e63a2c2a34dd1144f",
+            "published_at": "2026-04-02T14:24:19Z",
+            "lineage_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ]
+      },
+      "limitations": [
+        "LLM criterion scores are uncalibrated judgements, not verified entailment or causal probabilities.",
+        "Only representative source included; independent reporting and primary sources require separate verification.",
+        "Daily anomaly onset approximated by session open; no intraday timing claim."
+      ],
+      "ticker": "TSLA",
+      "anomaly_date": "2026-04-02",
+      "retrieval_score": 0.4483
+    }
+  ]
+}

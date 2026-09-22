@@ -1,0 +1,1199 @@
+{
+  "schema_version": "scoring-readiness-v2",
+  "causal_scores_computed": 0,
+  "note": "Retrieval rank is not causality. No semantic numeric inputs supplied; no causal scores computed.",
+  "anomalies": [
+    {
+      "date": "2026-03-20",
+      "groups": [
+        {
+          "group_id": "abd0edac26b824ae48b7aa6ed847c41c054cf5e78b855ed279e778fff3b2f484",
+          "title": "As Tesla Gears Up to Launch Terafab, Is TSLA Stock a Buy?",
+          "source_url": "https://finnhub.io/api/news?id=00a49c00a380cc91865452e7bbc342aabc4305411a7d6030d0ce84de623ad6eb",
+          "retrieval_rank": 1,
+          "retrieval_score": 0.8871,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla announced Terafab project launch",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'Tesla has announced the launch of its Terafab project, costing an estimated $20-25 billion.'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "announced",
+              "launch",
+              "project",
+              "terafab"
+            ],
+            "title_matches": [
+              "launch",
+              "terafab"
+            ],
+            "excerpt_matches": [
+              "announced",
+              "launch",
+              "project",
+              "terafab"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The article reports Tesla's announced Terafab project but was published on 2026-03-18, two days before the anomaly date. It does not explain the 2026-03-20 price move and lacks a source-supported market bridge to that specific event.",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "2abf003af25ad61111b1e3fa8d7ebbbc4d44be152b33f53d48cdc41ce94cf397",
+          "title": "How Will Tesla Sales, TSLA Stock Be Impacted By Crude Oil Prices Due To Iran War? Gary Black Says Lays Down The Math",
+          "source_url": "https://finnhub.io/api/news?id=d8f681cde59c2d8a6d9b4a7a669caeabcd638e86043ecfabcfd1c8a7d3267d2e",
+          "retrieval_rank": 2,
+          "retrieval_score": 0.8666,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Gary Black commentary on Brent crude prices and theoretical Tesla sales impact",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "\"As Brent crude prices surpass $100 per barrel due to the ongoing Iran war, The Future Fund LLC's Managing Partner, Gary Black, laid out the math about the potential impact on Tesla Inc.'s sales and stock.\"",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "black",
+              "brent",
+              "commentary",
+              "crude",
+              "gary",
+              "impact",
+              "prices",
+              "sales",
+              "theoretical"
+            ],
+            "title_matches": [
+              "black",
+              "crude",
+              "gary",
+              "prices",
+              "sales"
+            ],
+            "excerpt_matches": [
+              "black",
+              "brent",
+              "crude",
+              "gary",
+              "impact",
+              "prices",
+              "sales"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "Gary Black's commentary on oil price impacts on Tesla sales is a dated financial analysis (published 2026-03-17) with no company-specific event or market bridge to the 2026-03-20 anomaly. The article is not about a new contract, CEO statement on demand, or any catalyst published on the anomaly day. ",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "1eb4c8da8765c3e824c917ebc250235195bddfc92d4541a59d00bcf7cf7176e0",
+          "title": "Tesla (TSLA) Growth in China Signals Strong Global Demand, EV Sales Surge 91%",
+          "source_url": "https://finnhub.io/api/news?id=ae5e20a21ae410f1844b15090186a160f28a137ce2c67643e7946bbe2d66a8de",
+          "retrieval_rank": 3,
+          "retrieval_score": 0.866,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla Chinese EV sales surge 91% in February",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'Tesla Inc. (NASDAQ:TSLA) reported a solid 91% increase in Chinese electric vehicle sales in February.'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "chinese",
+              "february",
+              "sales",
+              "surge"
+            ],
+            "title_matches": [
+              "sales",
+              "surge"
+            ],
+            "excerpt_matches": [
+              "chinese",
+              "february",
+              "sales"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The news article reports Tesla's strong Chinese sales growth from March 11, but it is dated March 17 and published before the anomaly day (2026-03-20). No event occurring on or directly linked to 2026-03-20 is substantiated. The article's focus on prior sales data does not establish a documented mar",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "baeef139e2bf07bf698969d618ad7368bcb2b9a42aa944867c1baebeb1b1b638",
+          "title": "How The Tesla (TSLA) Investment Story Is Shifting Around Autonomy Energy And 2026 Risks",
+          "source_url": "https://finnhub.io/api/news?id=fd2e886d193c916319c4c7e1f0ac887471883e2c2469553ce86ab29908e98638",
+          "retrieval_rank": 4,
+          "retrieval_score": 0.859,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla investment story shift around autonomy, energy, and 2026 risks",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "\"Tesla's updated fair value price target of US$421.61 is effectively unchanged from the prior US$421.73, signaling only a very small shift in the underlying model.\"",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "around",
+              "autonomy",
+              "energy",
+              "investment",
+              "risks",
+              "shift",
+              "story"
+            ],
+            "title_matches": [
+              "around",
+              "autonomy",
+              "energy",
+              "investment",
+              "risks",
+              "story"
+            ],
+            "excerpt_matches": [
+              "shift"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The news article discusses Tesla's investment story shift and fair value price target revision, but does not mention any company-specific event, contract, or catalyst occurring on 2026-03-20. The article is dated 2026-03-17 and covers broader narrative shifts, not a documented event on the anomaly d",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "23081f78009d2410e476b958d421b89aa196f5e198b3537987e9ef6174e24a8f",
+          "title": "TSMC Stock (TSM) Wilts as Iranian Attacks Batter Helium Supply and Threaten Chip Production",
+          "source_url": "https://finnhub.io/api/news?id=c4f3e4dbd121118793140d418689a2a319db0b559a65b4004ce3e60ac641d920",
+          "retrieval_rank": 5,
+          "retrieval_score": 0.6978,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Helium supply disruption from Iranian attacks potentially impacting semiconductor and EV production",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'AI stock Nvidia (NVDA) and EV maker Tesla (TSLA) could also soon be in the firing line because of the rapid hike in helium prices.'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "attacks",
+              "disruption",
+              "helium",
+              "impacting",
+              "iranian",
+              "potentially",
+              "production",
+              "semiconductor",
+              "supply"
+            ],
+            "title_matches": [
+              "attacks",
+              "helium",
+              "iranian",
+              "production",
+              "supply"
+            ],
+            "excerpt_matches": [
+              "helium"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The news article discusses helium supply disruptions from Iranian attacks affecting semiconductor production. While TSLA is mentioned as a company that could be 'in the firing line' due to rapid helium price hikes, the summary provides no company-specific event, financial effect, or market bridge ex",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "9277e72dcfea760dba3296e79a66e06e46d64758037d3cceb059c7deddf025de",
+          "title": "Tesla AI6 Chip Push With Samsung Meets Rising Autonomy Safety Scrutiny",
+          "source_url": "https://finnhub.io/api/news?id=872c376b877f6ce0e6029872da2b8990259160c8f80e9caeac467da90f6de6bd",
+          "retrieval_rank": 6,
+          "retrieval_score": 0.6956,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla AI6 chip development and FSD safety scrutiny reported on 2026-03-20",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "\"Tesla is developing a next generation AI6 chip for its autonomous driving and robotics platforms, targeting rollout around 2027 to 2028. The AI6 chip is set to be manufactured in partnership with Samsung at a leading edge semiconductor facility. U.S. regulators have escalated their probe into potential safety defects in Tesla's Full Self Driving system after multiple crash incidents.\"",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "ai6",
+              "chip",
+              "development",
+              "fsd",
+              "reported",
+              "safety",
+              "scrutiny"
+            ],
+            "title_matches": [
+              "ai6",
+              "chip",
+              "safety",
+              "scrutiny"
+            ],
+            "excerpt_matches": [
+              "ai6",
+              "chip",
+              "safety"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The news reports Tesla's development of a next-generation AI6 chip and regulatory scrutiny of FSD, but does not describe any stock reaction, price move, or market bridge linking these events to the observed -3.24% return. No explicit connection to the anomaly is provided.",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "36b3d3ac691048dec6935e49ad803e9241becfb5dddc7563569be20fe92e3896",
+          "title": "Tesla FSD Poised To Win European Approval. But TSLA Stock Is Close To A Round Trip.",
+          "source_url": "https://finnhub.io/api/news?id=8bc4f1954c09dc26356a39ee50c21517ea346f74846a84053b512d98dd3822d8",
+          "retrieval_rank": 7,
+          "retrieval_score": 0.609,
+          "investigation_status": "validation_rejected",
+          "relationship": "",
+          "event": "",
+          "model_interpretation": "",
+          "source_excerpt": "",
+          "source_alignment": {
+            "status": "unknown",
+            "event_terms": [],
+            "title_matches": [],
+            "excerpt_matches": [],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "hypothesis_1:counter_direction_without_market_evidence",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "rejected",
+          "causal_score": null
+        },
+        {
+          "group_id": "848beeaae709335120a9cfdd20901c054875168c9c32490b40f11884f8eea982",
+          "title": "Tesla Faces a New FSD Probe: What Does That Mean for the TSLA Stock Bull Case?",
+          "source_url": "https://finnhub.io/api/news?id=1bc972a98f907120fab53fd48765220646092ba9a6b62b6349a448eaae509ed8",
+          "retrieval_rank": 8,
+          "retrieval_score": 0.6088,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla FSD probe announced",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "\"The NHTSA will probe the EV giant's FSD system.\"",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "announced",
+              "fsd",
+              "probe"
+            ],
+            "title_matches": [
+              "fsd",
+              "probe"
+            ],
+            "excerpt_matches": [
+              "fsd",
+              "probe"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The only provided news item is a general FSD probe headline with no company-specific financial event, contract, or market bridge described. It does not meet criteria for supported_hypothesis.",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "f76f604be2249a879f17e82d3ed4f1e03391d5ac4eb813dcd36c13ac9a1bb093",
+          "title": "Assessing Tesla (TSLA) Valuation After Terafab AI Chip Launch And Surging China Deliveries",
+          "source_url": "https://finnhub.io/api/news?id=8aaf131ff3eb6d463031cd013114f47d79ec730d3619c6bbd51f76ff6a23ea1f",
+          "retrieval_rank": 9,
+          "retrieval_score": 0.597,
+          "investigation_status": "validation_rejected",
+          "relationship": "",
+          "event": "",
+          "model_interpretation": "",
+          "source_excerpt": "",
+          "source_alignment": {
+            "status": "unknown",
+            "event_terms": [],
+            "title_matches": [],
+            "excerpt_matches": [],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "hypothesis_1:price_commentary_not_event",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "rejected",
+          "causal_score": null
+        },
+        {
+          "group_id": "9c700bab706c5909f9663922bf40bb2a75def588ef7a3db15c40b1b752aba370",
+          "title": "The Investment Case for Tesla After $4.3B Team-Up With LG Energy",
+          "source_url": "https://finnhub.io/api/news?id=4d05258a563cda31a9c8f2d7a0be0b1aa8a81ed0d45c66f963b6daf1506d953b",
+          "retrieval_rank": 10,
+          "retrieval_score": 0.5839,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla $4.3B LG Energy deal for Megapack battery supply",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "\"TSLA's $4.3B LG Energy deal boosts domestic battery supply for Megapack, but EV weakness and rising spending cloud the stock's appeal.\"",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "battery",
+              "deal",
+              "energy",
+              "megapack",
+              "supply"
+            ],
+            "title_matches": [
+              "energy"
+            ],
+            "excerpt_matches": [
+              "battery",
+              "deal",
+              "energy",
+              "megapack",
+              "supply"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The cited article is dated 2026-03-18, two days prior to the anomaly date 2026-03-20. It discusses a $4.3B LG Energy deal and EV weakness, but provides no explicit market bridge to the specific -3.24% return on 2026-03-20. The event is documented but lacks a supported market linkage for the anomaly ",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "992b7590d1c5a54d03cf7808364c43bb137b67c25e2948ff6221c6e6fa80a4d3",
+          "title": "TSYY: Aggressive Strategy Should Continue To Erode Capital (Rating Downgrade)",
+          "source_url": "https://finnhub.io/api/news?id=36a156c1ec2259f66929f27a8a71ef28c620da383905b4c831806482e8cb24ff",
+          "retrieval_rank": 11,
+          "retrieval_score": 0.5822,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "TSYY ETF downgrade and NAV erosion discussion",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'TSYY downgraded to sell: GraniteShares YieldBOOST TSLA ETFâ\\x80\\x99s 99% yield hides NAV erosion, volatile payouts, and risky 2x TSLA options.'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "discussion",
+              "downgrade",
+              "erosion",
+              "etf",
+              "nav",
+              "tsyy"
+            ],
+            "title_matches": [
+              "downgrade",
+              "tsyy"
+            ],
+            "excerpt_matches": [
+              "erosion",
+              "etf",
+              "nav",
+              "tsyy"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "News about a yield-boost ETF (TSYY) downgrade and NAV erosion for a 3x TSLA options strategy is sector/ETF-specific financial analysis. No explicit company event, contract, or market bridge to TSLA's stock price action is described. The anomaly is a -3.24% return with high volume; the news item does",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "b338b501d6e9d5fd400909914918eb2945483b926789be17346ac002ebe980b7",
+          "title": "Truckers love Tesla's electric semi-truck. Here's why.",
+          "source_url": "https://finnhub.io/api/news?id=ca492e86c1176a49b92aa59bece9d3ac1e025c7df137a270880ac795a77406c0",
+          "retrieval_rank": 12,
+          "retrieval_score": 0.45,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla electric semi-truck pilot testing with truckers",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'Tesla (TSLA) is launching its electric semi-truck. The vehicle is currently undergoing trucker pilot test.'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "electric",
+              "pilot",
+              "semi",
+              "testing",
+              "truck",
+              "truckers"
+            ],
+            "title_matches": [
+              "electric",
+              "semi",
+              "truck",
+              "truckers"
+            ],
+            "excerpt_matches": [
+              "electric",
+              "pilot",
+              "semi",
+              "truck"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "A single article about Tesla semi-truck pilot testing is documented, but contains no explicit market bridge to the stock's -3.24% return on 2026-03-20. The event is a company operation, not a price-moving catalyst per the source.",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        }
+      ]
+    },
+    {
+      "date": "2026-04-02",
+      "groups": [
+        {
+          "group_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+          "title": "Tesla's First-Quarter Deliveries Miss Views as Wedbush Flags Tough Demand Backdrop",
+          "source_url": "https://finnhub.io/api/news?id=6e445e011fb74215a2b318f8e04c278a3b7a56333e4680bebf639127a33bb8c0",
+          "retrieval_rank": 1,
+          "retrieval_score": 0.6989,
+          "investigation_status": "supported_hypothesis",
+          "relationship": "needs_review",
+          "event": "Q1 deliveries miss estimates and Wedbush flags tough demand backdrop",
+          "model_interpretation": "Lower-than-expected deliveries signal weakening demand, which is directionally compatible with the observed negative return.",
+          "source_excerpt": "\"Tesla's (TSLA) first-quarter deliveries missed Wall Street's estimates as Wedbush Securities flagged\"",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "backdrop",
+              "deliveries",
+              "demand",
+              "estimates",
+              "flags",
+              "miss",
+              "tough",
+              "wedbush"
+            ],
+            "title_matches": [
+              "backdrop",
+              "deliveries",
+              "demand",
+              "flags",
+              "miss",
+              "tough",
+              "wedbush"
+            ],
+            "excerpt_matches": [
+              "deliveries",
+              "estimates",
+              "wedbush"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "Documented Q1 delivery miss with Wedbush demand flag on the anomaly day provides a concrete event with a plausible demand-weakness pathway compatible with the -5.42% return.",
+          "claim_flags": "needs_review:unmatched_product_or_numeric_token:Q1",
+          "review_reasons": [
+            "relationship_needs_review",
+            "validator_claim_flags"
+          ],
+          "scoring_readiness": "review_required",
+          "causal_score": null
+        },
+        {
+          "group_id": "95c2ab642d59c88536bd476b51fa291df6a52639cfbb4c75972bb4b7e560ade4",
+          "title": "Tesla's China-Made EV Sales Leap Nearly 9% In March",
+          "source_url": "https://finnhub.io/api/news?id=2f6dc94415f183848e42fa4d1b948a542dd8b4db276820dfa6b5a16b88b6fe66",
+          "retrieval_rank": 2,
+          "retrieval_score": 0.6964,
+          "investigation_status": "validation_rejected",
+          "relationship": "",
+          "event": "",
+          "model_interpretation": "",
+          "source_excerpt": "",
+          "source_alignment": {
+            "status": "unknown",
+            "event_terms": [],
+            "title_matches": [],
+            "excerpt_matches": [],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "hypothesis_1:counter_direction_without_market_evidence",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "rejected",
+          "causal_score": null
+        },
+        {
+          "group_id": "3631c7012314e772e78a8e7135febcb84c85b8c0f0078b696fe8c306f4c8f06d",
+          "title": "Why Tesla (TSLA) Stock Is Up Today",
+          "source_url": "https://finnhub.io/api/news?id=7d791aa1cba39e74cd76ac3d4b4aa6c6c7753ad67110d2eebed0e1095f56b78e",
+          "retrieval_rank": 3,
+          "retrieval_score": 0.5924,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla Japan investment announcement",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "\"Shares of electric vehicle pioneer Tesla (NASDAQ:TSLA) jumped 4.2% in the afternoon session after CEO Elon Musk announced a 'big' investment in Japan to expand the company's service infrastructure and Supercharger network.\"",
+          "source_alignment": {
+            "status": "review_title_event_mismatch",
+            "event_terms": [
+              "announcement",
+              "investment",
+              "japan"
+            ],
+            "title_matches": [],
+            "excerpt_matches": [
+              "investment",
+              "japan"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The cited article reports a 4.2% afternoon jump on 2026-04-01 due to Musk's Japan investment announcement, but the anomaly date is 2026-04-02 with a -5.42% return. The article is stale relative to the anomaly date and does not explain the decline. No company/sector bridge is established for the 2026",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "856ed39d5151b072bffe0d04e5cd7e5d759fd7e1d5933deb6b090132875d41a4",
+          "title": "Gary Black Says TSLA Has Underperformed Nasdaq For 5 Years Because It Has Never Lived Up To Unsupervised FSD Hype: 'TSLA Still Has Only 9 Robotaxis'",
+          "source_url": "https://finnhub.io/api/news?id=d7139896f3620025d30c8eb39496f659d6e3fedc0eba36548aaaf413f0ad8b32",
+          "retrieval_rank": 4,
+          "retrieval_score": 0.5879,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Gary Black criticizes Tesla's FSD performance and robotaxi count",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'Gary Black of The Future Fund LLC has criticized Tesla Inc. for underperforming the Nasdaq 100 index for the last five years, which he thinks happened due to the brand not living up to the Full Self-Driving (FSD) promises.'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "black",
+              "count",
+              "criticizes",
+              "fsd",
+              "gary",
+              "performance",
+              "robotaxi"
+            ],
+            "title_matches": [
+              "black",
+              "fsd",
+              "gary"
+            ],
+            "excerpt_matches": [
+              "black",
+              "fsd",
+              "gary"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "Gary Black's criticism of Tesla's FSD performance is a dated commentary (published 2026-03-31, anomaly 2026-04-02) with no explicit market bridge to the daily price move. The source does not describe a stock reaction, and the event is not a documented catalyst for the anomaly.",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "3dc718ef6bea082614350c233465013947a8788aed3fbf0cc3f2c0e6929ef0e3",
+          "title": "Assessing Tesla (TSLA) Valuation As Shares Weaken And AI Narratives Diverge",
+          "source_url": "https://finnhub.io/api/news?id=a1a1b6a2258ade517e30533b6e2e55f144f03e7a2382b90f852a5f3f75c4b4f9",
+          "retrieval_rank": 5,
+          "retrieval_score": 0.5653,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Valuation assessment and general performance commentary on Tesla shares",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "\"Tesla's recent performance in context Tesla (TSLA) has been under pressure recently, with the share price showing a 2.8% decline over the past day and weaker returns over the past week, month, and past 3 months.\"",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "assessment",
+              "commentary",
+              "general",
+              "performance",
+              "valuation"
+            ],
+            "title_matches": [
+              "valuation"
+            ],
+            "excerpt_matches": [
+              "performance"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The cited article is a valuation assessment published on 2026-03-30, two days before the anomaly date. It discusses recent price weakness and general Tesla performance but contains no company-specific catalyst, contract, or event announced on or directly linked to 2026-04-02. No evidence supports a ",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "4fdb51f5e7c52ce04d5ff593575f83606176e58ebd1384ca458430a4222cd058",
+          "title": "Tesla (TSLA) Rises Higher Than Market: Key Facts",
+          "source_url": "https://finnhub.io/api/news?id=1ead55117f31c6dbd55b22881ae534898ff4c8a97e24aa1cb25ea930100fdcab",
+          "retrieval_rank": 6,
+          "retrieval_score": 0.5184,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla (TSLA) closed higher on 2026-04-01 after market close",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'Tesla (TSLA) closed the most recent trading day at $381.26, moving +2.56% from the previous trading session.'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "close",
+              "closed",
+              "higher",
+              "market"
+            ],
+            "title_matches": [
+              "higher",
+              "market"
+            ],
+            "excerpt_matches": [
+              "closed"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The only available news item is a post-close report of Tesla's prior-day price increase (+2.56% to $381.26) on 2026-04-01. It does not mention the 2026-04-02 anomaly (close $360.59, -5.42%) and provides no company-specific catalyst for the decline. No source-supported bridge to the anomaly exists.",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "8845aa05dff016fb6d2ee0b8bf7519514425e5fa21818ac0e060020c7ff76636",
+          "title": "GLJ Maintains Sell Rating on Tesla (TSLA)",
+          "source_url": "https://finnhub.io/api/news?id=efe7149e1fe20c9edb55b9ff11d0749c8d8f40743618c0596c6c5d0420f3f8cb",
+          "retrieval_rank": 7,
+          "retrieval_score": 0.5168,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "GLJ Maintains Sell Rating on Tesla (TSLA)",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'Tesla, Inc. (NASDAQ:TSLA) is one of the 10 Best Car Stocks to Buy in 2026. On March 30, GLJ Research reiterated its Sell rating on Tesla, Inc. (NASDAQ:TSLA) with a price target of $24.86 on the stock.'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "glj",
+              "maintains",
+              "rating",
+              "sell"
+            ],
+            "title_matches": [
+              "glj",
+              "maintains",
+              "rating",
+              "sell"
+            ],
+            "excerpt_matches": [
+              "glj",
+              "rating",
+              "sell"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "GLJ rating reiteration is a general analyst action with no company-specific event, contract, or market bridge described in the title or summary. The news does not establish a documented event pathway for Tesla on 2026-04-02.",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "c47a143705afcdee689669812fdf053cf3fc860c0a3cffe2a2abec1c6ae15cbf",
+          "title": "The Tesla Robotaxi Story Is A Myth: Why I'm Maintaining My Strong Sell Into Q1 Earnings",
+          "source_url": "https://finnhub.io/api/news?id=d1d7ffc2aa44d2da6add2d952e358009043eb0d4c22a8f3c6c7f7c57f543229e",
+          "retrieval_rank": 8,
+          "retrieval_score": 0.5095,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla autonomous mobility skepticism commentary",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'Tesla remains fundamentally unproven in autonomous mobility, lagging competitors in safety, transparency, and operational scale.'",
+          "source_alignment": {
+            "status": "review_title_event_mismatch",
+            "event_terms": [
+              "autonomous",
+              "commentary",
+              "mobility",
+              "skepticism"
+            ],
+            "title_matches": [],
+            "excerpt_matches": [
+              "autonomous",
+              "mobility"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The cited article is a dated bearish commentary from March 27, 2026, discussing Tesla's autonomous mobility challenges. It does not report a new company event, contract, or announcement on the anomaly date (2026-04-02). The summary contains no material numbers or event details linking to the stock's",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+          "title": "Blue Owl limits fund withdrawals, mortgage rates rise for fifth week",
+          "source_url": "https://finnhub.io/api/news?id=45f8662aacbabe50e25ffc31bd5b73563b44d0bfa0c48003dc97876ecb472b12",
+          "retrieval_rank": 9,
+          "retrieval_score": 0.4492,
+          "investigation_status": "supported_hypothesis",
+          "relationship": "needs_review",
+          "event": "Tesla Q1 deliveries miss Wall Street estimates",
+          "model_interpretation": "The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.",
+          "source_excerpt": "'Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.'",
+          "source_alignment": {
+            "status": "review_title_event_mismatch",
+            "event_terms": [
+              "deliveries",
+              "estimates",
+              "miss",
+              "street",
+              "wall"
+            ],
+            "title_matches": [],
+            "excerpt_matches": [
+              "deliveries",
+              "estimates",
+              "miss",
+              "street",
+              "wall"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The news source explicitly documents a company-specific event (Tesla Q1 deliveries miss estimates) that directly explains the observed -5.42% return. The event is contemporaneous with the anomaly date and provides a documented market link.",
+          "claim_flags": "unsupported_financial_or_market_outcome,needs_review:unmatched_product_or_numeric_token:Q1",
+          "review_reasons": [
+            "relationship_needs_review",
+            "validator_claim_flags",
+            "review_title_event_mismatch"
+          ],
+          "scoring_readiness": "review_required",
+          "causal_score": null
+        },
+        {
+          "group_id": "0d9e9493afab809723df18f2ecb89dbd7cf199ceb4030713dea251efca285d95",
+          "title": "Tesla's Q1 Delivery Numbers 'Underwhelming,' But Not Surprising Given Current Global EV Backdrop, Wedbush Says",
+          "source_url": "https://finnhub.io/api/news?id=f4a312d146a3ab4cd6e24b31d3d134ed805941c101fdf1c6def39471122be179",
+          "retrieval_rank": 10,
+          "retrieval_score": 0.4485,
+          "investigation_status": "supported_hypothesis",
+          "relationship": "plausible_unverified_link",
+          "event": "Q1 delivery miss",
+          "model_interpretation": "Negative delivery numbers reported by Wedbush, contributing to bearish sentiment.",
+          "source_excerpt": "' Q1 delivery numbers were quite \"underwhelming,\" but this was not a surprise given the'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "delivery",
+              "miss"
+            ],
+            "title_matches": [
+              "delivery"
+            ],
+            "excerpt_matches": [
+              "delivery"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "A documented company event (Q1 delivery miss) with a plausible, directionally compatible contextual pathway (negative delivery news contributing to a -5.42% daily return).",
+          "claim_flags": "quote_recovered_from_source",
+          "review_reasons": [
+            "validator_claim_flags"
+          ],
+          "scoring_readiness": "review_required",
+          "causal_score": null
+        },
+        {
+          "group_id": "f06f6a73924d5ee867657b644a087d395d121c077046d037a7276c83a1e97fae",
+          "title": "Tesla Stock Hasn’t Looked This Cheap in a While",
+          "source_url": "https://finnhub.io/api/news?id=df74a5d898835a25ed98e6480d08547f65c27c0436f4e06dc11e14866e32cca5",
+          "retrieval_rank": 11,
+          "retrieval_score": 0.4485,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "General market commentary on Tesla valuation",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "\"Tesla (NASDAQ:TSLA) isn't the only Mag Seven stock to think about buying after a brief plunge into bear market territory.\"",
+          "source_alignment": {
+            "status": "review_title_event_mismatch",
+            "event_terms": [
+              "commentary",
+              "general",
+              "market",
+              "valuation"
+            ],
+            "title_matches": [],
+            "excerpt_matches": [
+              "market"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The article discusses Tesla's stock price decline and mentions it as a potential buying opportunity, but does not report any company-specific event, contract, or development that could explain the -5.42% return. The content is general market commentary about valuation and sector sentiment, with no d",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+          "title": "Tesla Slides 3% on Delivery Shortfall: Why the $20 Billion Robotaxi Bet Makes This Miss Hard to Judge",
+          "source_url": "https://finnhub.io/api/news?id=870a335a43ad1a08270c26ac9a29b75a79e153ea802f816e63a2c2a34dd1144f",
+          "retrieval_rank": 12,
+          "retrieval_score": 0.4483,
+          "investigation_status": "supported_hypothesis",
+          "relationship": "plausible_unverified_link",
+          "event": "Tesla Q1 2026 delivery shortfall",
+          "model_interpretation": "The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.",
+          "source_excerpt": "\"Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street's consensus range of approximately 365,645 to 372,160 vehicles.\"",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "delivery",
+              "shortfall"
+            ],
+            "title_matches": [
+              "delivery",
+              "shortfall"
+            ],
+            "excerpt_matches": [],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "A documented delivery shortfall event on the anomaly day with a plausible market pathway; the source explicitly describes the stock reaction.",
+          "claim_flags": "unsupported_financial_or_market_outcome",
+          "review_reasons": [
+            "validator_claim_flags"
+          ],
+          "scoring_readiness": "review_required",
+          "causal_score": null
+        }
+      ]
+    },
+    {
+      "date": "2026-08-21",
+      "groups": [
+        {
+          "group_id": "3a705c61513daedab82d98f90f9baddf62492e18f2adf920fcec7aa5cec27964",
+          "title": "Tesla (TSLA) Up 8% Since Last Earnings Report: Can It Continue?",
+          "source_url": "https://finnhub.io/api/news?id=2d2ac295e022d38e561b93b4bb44fc879284bfc2f30d56e2024a8d52034119f8",
+          "retrieval_rank": 1,
+          "retrieval_score": 0.999,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Post-earnings commentary on Tesla stock performance",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "\"Tesla (TSLA) reported earnings 30 days ago. What's next for the stock? We take a look at earnings estimates for some clues.\"",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "commentary",
+              "earnings",
+              "performance",
+              "post"
+            ],
+            "title_matches": [
+              "earnings"
+            ],
+            "excerpt_matches": [
+              "earnings"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The only available article is a post-earnings commentary piece published on 2026-08-21, but it contains no company-specific catalyst, financial data, or market bridge explaining the 5.14% return. It is general analysis with no quoted event or mechanism linking to the anomaly.",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "b58c1d2ed64f9ca12b82cd107ed98c5bbb73ff631d937b8c99e80155aca22cc1",
+          "title": "Tesla: Tailwinds Outweigh The Noise",
+          "source_url": "https://finnhub.io/api/news?id=8ee1a070c21c5c44789c1aede9626377ea04d1cfa52c593f563ac80515ad9b8f",
+          "retrieval_rank": 2,
+          "retrieval_score": 0.5359,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla Q3 2026 earnings release with 26% YoY revenue surge",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'Tesla delivered a 26% YoY revenue surge despite a 23% YTD stock decline, with the EV business remaining a leading one, but competition remains fierce.'",
+          "source_alignment": {
+            "status": "review_title_event_mismatch",
+            "event_terms": [
+              "earnings",
+              "release",
+              "revenue",
+              "surge",
+              "yoy"
+            ],
+            "title_matches": [],
+            "excerpt_matches": [
+              "revenue",
+              "surge",
+              "yoy"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The news article reports Tesla's Q3 2026 financial results (26% YoY revenue surge) but does not mention any new catalyst, contract, or event published on 2026-08-21 that could explain the 5.14% daily return. The article is a general financial commentary with no company-specific driver tied to the an",
+          "claim_flags": "needs_review:unmatched_product_or_numeric_token:Q3",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "3c74bacd0b53ff68efd6d0af666da708bcc3d0e10b5354b226bc6a0c8159a9b0",
+          "title": "Tesla’s Steering-Wheel-Free Cybercab Could Hit Austin Streets This Month as Elon Musk Ramps Up Robotaxi Push: TSLA Stock Down 1.38% (UPDATED)",
+          "source_url": "https://finnhub.io/api/news?id=f58a4f8212c75bea49b4d9b1df68d7a249dc4c1baa2a85d9ac103fd4d648c4a3",
+          "retrieval_rank": 3,
+          "retrieval_score": 0.4726,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Potential Cybercab robotaxi rollout in Austin",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'Tesla could begin rolling out its Cybercab robotaxi in Austin this month, as the company ramps up testing and prepares to challenge Waymo.'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "austin",
+              "cybercab",
+              "potential",
+              "robotaxi",
+              "rollout"
+            ],
+            "title_matches": [
+              "austin",
+              "cybercab",
+              "robotaxi"
+            ],
+            "excerpt_matches": [
+              "austin",
+              "cybercab",
+              "robotaxi"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The cited article reports a potential Cybercab rollout timeline but does not describe a stock move, company-specific financial effect, or a documented market bridge for TSLA on 2026-08-21. The article is dated 2026-08-18 and discusses a future product rollout, not a catalyst occurring on the anomaly",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "5cb50acde0fdbe213b09cb0d47d521edcf54191892e6f5524c023d6202be43b0",
+          "title": "Former Tesla President Says Roadster Demo Could Be a ‘Not-So-Hidden Attempt’ to Knit TSLA and SPCX Together: ‘Probably Sooner Rather Than Later’",
+          "source_url": "https://finnhub.io/api/news?id=fc8afb85637c9421a1e70780bba31bf72b2f9bdad1700e48dcb8b751a27757e4",
+          "retrieval_rank": 4,
+          "retrieval_score": 0.4712,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Former Tesla President Jon McNeill comments that Tesla Roadster demo may signal deeper convergence with SpaceX",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "\"Former Tesla President Jon McNeill says Tesla's upcoming Roadster demo may signal deeper convergence with SpaceX.\"",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "comments",
+              "convergence",
+              "deeper",
+              "demo",
+              "former",
+              "jon",
+              "may",
+              "mcneill",
+              "president",
+              "roadster",
+              "signal",
+              "spacex",
+              "that"
+            ],
+            "title_matches": [
+              "demo",
+              "former",
+              "president",
+              "roadster"
+            ],
+            "excerpt_matches": [
+              "convergence",
+              "deeper",
+              "demo",
+              "former",
+              "jon",
+              "may",
+              "mcneill",
+              "president",
+              "roadster",
+              "signal",
+              "spacex"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "A single article from 2026-08-18 discusses a former Tesla president's comment about a Roadster demo potentially signaling convergence with SpaceX, but the anomaly date is 2026-08-21 and the article is 3 days old. No explicit market bridge or company-specific catalyst is provided for the 5.14% return",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "b5e11d30941c66550338891a76daab0dcab7723a70bc25b45285b6bec6fbfc1e",
+          "title": "Tesla: The Numbers Do Not Justify The Valuation",
+          "source_url": "https://finnhub.io/api/news?id=7341f01bc010ec119643d3c0b97960a3ceb616d3b0c83b565b6296d69911d7d3",
+          "retrieval_rank": 5,
+          "retrieval_score": 0.45,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Tesla valuation critique published on 2026-08-21",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'Tesla, Inc. rated Sell: record deliveries but margins & free cash flow collapse amid rising capex, China competition & FSD risks'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "critique",
+              "published",
+              "valuation"
+            ],
+            "title_matches": [
+              "valuation"
+            ],
+            "excerpt_matches": [],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The only article published on 2026-08-21 is a valuation critique with no company-specific event, catalyst, or market bridge explaining the 5.14% return. No documented event or sector pathway is provided.",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "adb166e4e6c55464dde9816a0c3638d1611205e92b754069c713a60f8140b803",
+          "title": "Elon Musk’s Tesla Compensation Was 2.5 Million Times the Median Worker’s Pay in 2025, 41 Times the EV Giant's 2025 Net Income: TSLA Stock Up 1.59% (UPDATED)",
+          "source_url": "https://finnhub.io/api/news?id=694865d4cff7fb8c40d40f3798271292ef36858cc3bac6f7cf3d2dd438ad58b5",
+          "retrieval_rank": 6,
+          "retrieval_score": 0.41,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Elon Musk's 2025 compensation package valued at $158B was 14x higher than other S&P 500 CEOs",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "\"Elon Musk's 2025 pay package was valued at $158B & was 14x higher than combined total of other S&P 500 CEOs.\"",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "14x",
+              "158b",
+              "2025",
+              "500",
+              "ceos",
+              "compensation",
+              "elon",
+              "higher",
+              "musk",
+              "other",
+              "package",
+              "than",
+              "valued"
+            ],
+            "title_matches": [
+              "2025",
+              "compensation",
+              "elon",
+              "musk"
+            ],
+            "excerpt_matches": [
+              "14x",
+              "158b",
+              "2025",
+              "500",
+              "ceos",
+              "elon",
+              "higher",
+              "musk",
+              "other",
+              "package",
+              "than",
+              "valued"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The only available news is a compensation article from 2026-08-14, which is a week prior to the anomaly date. It does not explain the 2026-08-21 price move and contains no sector or company pathway to the anomaly.",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "5cfa4dfaafdc711e9cc1e718ffccbe3fec643d5d6981e29fdf491593b76b5648",
+          "title": "Tesla: No One Is Paying Attention",
+          "source_url": "https://finnhub.io/api/news?id=e52d1c52a67473b926a5dc82fbab6706912661f1cdaf7a07b1f376ccb286c62d",
+          "retrieval_rank": 7,
+          "retrieval_score": 0.3345,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "Macro/sentiment commentary on Tesla",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'Tesla remains a Buy following a 25% YTD decline, as recent weakness is driven by macro factors and sentiment, not a broken thesis.'",
+          "source_alignment": {
+            "status": "review_title_event_mismatch",
+            "event_terms": [
+              "commentary",
+              "macro",
+              "sentiment"
+            ],
+            "title_matches": [],
+            "excerpt_matches": [
+              "macro",
+              "sentiment"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "The anomaly day (2026-08-21) has no cited news. The only group member is a 2026-08-19 article on macro/sentiment factors with no company-specific catalyst for the price move. No documented event or market bridge is provided.",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        },
+        {
+          "group_id": "e56105eb3f4131e1e102afdafc564ad90c6a4b79e2acd41b96d7c244fa2cb9e1",
+          "title": "GLJ Research Reiterates Sell on Tesla, Maintains $24.86 Price Target",
+          "source_url": "https://finnhub.io/api/news?id=7b39a71794329b7e439708fa19629429ff9e93f2f449aa6a5535957c766e0ebb",
+          "retrieval_rank": 8,
+          "retrieval_score": 0.3138,
+          "investigation_status": "context_only",
+          "relationship": "no_supported_link",
+          "event": "GLJ Research reiterated Sell rating on Tesla",
+          "model_interpretation": "No defensible link to the observed stock anomaly is established.",
+          "source_excerpt": "'GLJ Research analyst Gordon L. Johnson reiterates Tesla (NASDAQ:TSLA) with a Sell and maintains $24.86 price target.'",
+          "source_alignment": {
+            "status": "title_overlap_not_verified",
+            "event_terms": [
+              "glj",
+              "rating",
+              "reiterated",
+              "research",
+              "sell"
+            ],
+            "title_matches": [
+              "glj",
+              "research",
+              "sell"
+            ],
+            "excerpt_matches": [
+              "glj",
+              "research",
+              "sell"
+            ],
+            "note": "Lexical triage only; neither overlap nor mismatch proves or disproves the claim."
+          },
+          "reason": "GLJ Research reiterated a Sell rating and $24.86 price target on Tesla on 2026-08-18, which is prior to the anomaly date of 2026-08-21. The summary contains no information about a company event, market bridge, or price reaction on the anomaly day. This is stale commentary with no documented pathway ",
+          "claim_flags": "",
+          "review_reasons": [],
+          "scoring_readiness": "not_supported",
+          "causal_score": null
+        }
+      ]
+    }
+  ]
+}
