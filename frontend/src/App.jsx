@@ -26,6 +26,7 @@ import { isActive, useInvestigation } from "./hooks/useInvestigation";
 import { usePersistentState } from "./hooks/usePersistentState";
 import { useResource } from "./hooks/useResource";
 import { useTheme } from "./hooks/useTheme";
+import { BOTTOM_TABS, SIDE_TABS, resolveTab } from "./lib/deskTabs";
 import { resourceCache } from "./lib/resourceCache";
 
 // Chart depth that makes each horizon legible.
@@ -84,11 +85,15 @@ export default function App() {
   );
   const [days, setDays] = usePersistentState("days", 180);
   const [centerTab, setCenterTab] = usePersistentState("centerTab", "chart");
-  const [sideTab, setSideTab] = usePersistentState("sideTab", "findings");
-  const [bottomTab, setBottomTab] = usePersistentState(
+  const [wantedSideTab, setSideTab] = usePersistentState("sideTab", "findings");
+  const [wantedBottomTab, setBottomTab] = usePersistentState(
     "bottomTab",
     LINK.get("mode") === "copilot" ? "peers" : "anomalies"
   );
+
+  // The remembered tab, when the current view has it (lib/deskTabs).
+  const sideTab = resolveTab(SIDE_TABS, view, wantedSideTab);
+  const bottomTab = resolveTab(BOTTOM_TABS, view, wantedBottomTab);
 
   const [strategy, setStrategy] = usePersistentState("strategy", null);
   const [anomaly, setAnomaly] = usePersistentState("anomaly", null);
@@ -774,6 +779,7 @@ export default function App() {
                 {bottomTab === "peers" && (
                   <HorizonMatrix
                     microscope={microscope.data}
+                    error={microscope.error}
                     horizon={horizon}
                     onHorizon={setHorizon}
                     onSelectTicker={selectTicker}

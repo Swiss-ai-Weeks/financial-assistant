@@ -15,9 +15,15 @@ function tint(z) {
  * horizon. A row that is hot alone is a stock-specific move;
  * a hot column is the whole group moving at that timescale.
  */
-export default function HorizonMatrix({ microscope, horizon, onHorizon, onSelectTicker }) {
+export default function HorizonMatrix({ microscope, error, horizon, onHorizon, onSelectTicker }) {
+  if (error) return <div className="error-banner">{error}</div>;
+
   if (!microscope) {
-    return <div className="empty">Measuring…</div>;
+    return (
+      <div className="empty">
+        <span className="spinner" /> Measuring…
+      </div>
+    );
   }
 
   const horizons = microscope.ticks.map((tick) => tick.horizon);
