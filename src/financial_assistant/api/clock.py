@@ -15,7 +15,13 @@ from __future__ import annotations
 
 import threading
 from collections.abc import Callable
-from datetime import date
+from datetime import date, timedelta
+
+# How far back the desk replays. The chart shows up to two
+# years, but pair relationships need 504 sessions of history
+# before the review window, so older dates would show a
+# market with no relationships in it.
+REPLAY_DAYS = 365
 
 
 class DeskClock:
@@ -38,8 +44,20 @@ class DeskClock:
         self._listeners.append(listener)
 
     def set(self, as_of: date | None) -> None:
-        if as_of is not None and as_of > date.today():
-            raise ValueError("The desk cannot travel to a date in the future.")
+        if as_of is not None:
+            today = date.today()
+
+            if as_of > today:
+                raise ValueError("The desk cannot travel to a date in the future.")
+
+            if as_of < today - timedelta(days=REPLAY_DAYS):
+                raise ValueError(
+                    f"The desk replays the last {REPLAY_DAYS} days only: "
+                    f"{as_of.isoformat()} is too far back."
+                )
+
+            if as_of.weekday() >= 5:
+                raise ValueError(f"{as_of.isoformat()} is not a trading session.")
 
         with self._lock:
             changed = as_of != self._as_of

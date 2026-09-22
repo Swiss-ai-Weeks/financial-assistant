@@ -1,6 +1,8 @@
 import { compact, money, percent, price, signed, tone } from "../../lib/format";
-import { ClockIcon, MoonIcon, StarIcon, SunIcon } from "../icons";
+import { MoonIcon, StarIcon, SunIcon } from "../icons";
 import TickerSearch from "../portfolio/TickerSearch";
+import ModelMenu from "./ModelMenu";
+import SessionPicker from "./SessionPicker";
 
 function Stat({ label, value, className = "" }) {
   return (
@@ -8,47 +10,6 @@ function Stat({ label, value, className = "" }) {
       <div className="stat__label">{label}</div>
       <div className={`stat__value mono ${className}`}>{value}</div>
     </div>
-  );
-}
-
-/**
- * Which model explains the next anomaly. One investigation is
- * read by one model; choosing another and explaining again
- * is how two readings end up side by side in Why.
- */
-function ModelPicker({ llm, models, modelId, onSelect }) {
-  const list = models?.models.filter((model) => model.roles.includes("analysis"));
-
-  if (!list?.length) {
-    return (
-      <div className="topbar__model" title={llm?.detail}>
-        <span className={`dot ${llm?.online ? "dot--on" : "dot--off"}`} />
-        <span className="mono">MODEL</span>
-      </div>
-    );
-  }
-
-  const active = list.find((model) => model.id === modelId) ?? list[0];
-
-  return (
-    <label
-      className="topbar__model"
-      title={`${active.model} · ${active.local ? "prompts stay on this machine" : "external endpoint"} · ${active.detail}`}
-    >
-      <span className={`dot ${active.online ? "dot--on" : "dot--off"}`} />
-      <select
-        className="mono"
-        value={active.id}
-        onChange={(event) => onSelect(event.target.value)}
-      >
-        {list.map((model) => (
-          <option key={model.id} value={model.id} disabled={!model.online}>
-            {model.label.toUpperCase()}
-            {model.online ? "" : " · OFFLINE"}
-          </option>
-        ))}
-      </select>
-    </label>
   );
 }
 
@@ -122,35 +83,9 @@ export default function TopBar({
 
         {/* The whole desk moves: later prices and later news
             stop existing until it is brought back to today. */}
-        <label
-          className={`topbar__asof ${asOf ? "is-replay" : ""}`}
-          title={
-            asOf
-              ? "Replay: nothing after this date exists for the desk"
-              : "Live. Pick a past session to replay the desk as of that day"
-          }
-        >
-          <ClockIcon size={16} />
-          <span className="stat__label">{asOf ? "REPLAY" : "LIVE"}</span>
-          <input
-            type="date"
-            className="mono"
-            value={asOf ?? ""}
-            max={latestSession ?? undefined}
-            onChange={(event) => onTimeTravel(event.target.value || null)}
-          />
-          {asOf && (
-            <button
-              type="button"
-              className="topbar__today mono"
-              onClick={() => onTimeTravel(null)}
-            >
-              TODAY
-            </button>
-          )}
-        </label>
+        <SessionPicker asOf={asOf} latestSession={latestSession} onTimeTravel={onTimeTravel} />
 
-        <ModelPicker
+        <ModelMenu
           llm={llm}
           models={models}
           modelId={modelId}
