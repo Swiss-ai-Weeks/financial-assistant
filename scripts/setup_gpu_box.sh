@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Set Pythia up on the GPU instance, from the two files copied
-# off a laptop (see docs/DEPLOY_GPU.md):
+# off a laptop (see "Running on the GPU box" in README.md):
 #
 #   pythia.bundle     the code, as a git bundle
 #   pythia-data.tgz   news archive + price and analogue caches

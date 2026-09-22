@@ -76,7 +76,7 @@ make search    # optional: SearXNG for wider web retrieval, then set SEARXNG_URL
 Compare models on the same anomaly: **Apertus**, the Swiss AI Initiative's fully
 open model, is offered next to Nemotron. `make apertus` serves it on the GPU
 box (port 8001), or set `APERTUS_API_KEY` to use a hosted gateway. More models go
-in `PYTHIA_MODELS`. See [docs/INTEGRATION.md](docs/INTEGRATION.md).
+in `PYTHIA_MODELS`. See [Model and serving](#model-and-serving).
 
 ```bash
 make universe  # once: prices for the 3,200-security universe (Russell 2500 + STOXX 600)
@@ -142,23 +142,264 @@ remembered (and survive a page refresh), then refreshed behind the scenes.
    the Swiss open model and Nemotron agree, and where a person should look.
 7. **The hardware story.** The model pill in the top bar is green when the
    selected model is reachable, and every Explain shows measured latency per stage. Why
-   this model, on this hardware: [docs/MODEL.md](docs/MODEL.md).
+   this model, on this hardware: [Model and serving](#model-and-serving).
 
-## Documentation
+## Architecture
 
-- [Architecture](docs/ARCHITECTURE.md): controllers, services, repositories;
-  the strategy monitors; temporal provenance.
-- [Model choice](docs/MODEL.md): why Nemotron 3.5 Lightning 30B-A3B, and how it
-  is served on two H100s.
-- [ClaimGraph integration](docs/INTEGRATION.md): models and Apertus, SEC
-  fundamentals, follow-ups, Copilot, portfolio, universe, news cache, time travel.
-- [EventKG integration](docs/eventkg-integration.md)
-- API reference: <http://localhost:8080/docs> while the API runs.
+```
+frontend/ (React + Vite)
+    │  /api
+    ▼
+src/financial_assistant/api/          HTTP service (FastAPI)
+    controllers/     HTTP in, HTTP out. No business rules.
+    services/        Use cases and business rules. No HTTP, no disk, no network.
+    repositories/    Everything that touches disk or the network.
+    dependencies.py  Composition root: builds each object once, injects via Depends.
+    │
+    ▼
+src/financial_assistant/              Domain. Knows nothing about HTTP.
+    anomaly_detection/   pairs (cointegration) + VWAP, TWAP, trend detectors
+    analytics/           abnormal returns per horizon, historical analogues
+    market_data/         Yahoo Finance daily OHLCV
+    retrieval/           news providers, article fetching, point-in-time eligibility
+    fundamentals/        SEC Company Facts, as filed by the evidence cutoff
+    research/            deterministic research planning
+    llm/                 model registry + the model stages
+    claimgraph/          typed investigation state -> auditable graph
+    copilot/             the advisory chat panel of a graph tab
+    portfolio/           versioned book analytics
+    causal_scoring/      deterministic candidate scorer
+    simulation/          hindsight-only pair trade replay
+```
+
+`controllers → services → repositories`, and services → domain; nothing points
+the other way. Tests replace only the repository boundary (market download,
+symbol search, news source, article fetcher, language model); controllers,
+services and the ClaimGraph pipeline run for real (`tests/test_api.py`).
+
+The three stories are three services on one engine: `PostMortemService` (past),
+`MicroscopeService` (now) and `DiscoveryService` (next), over
+`analytics/abnormal.py` (what is unusual, per horizon) and
+`analytics/analogues.py` (what happened next in comparable past situations).
+
+- **Discovery's causal stage is the model's.** Nemotron reads the top admissible
+  headlines of every candidate (`llm/causal_triage.py`) and answers
+  `lasting_event`, `transient_event` or `no_event` with the headline it rests
+  on. Lasting events are dropped as justified repricings. Readings are stored
+  under `data/state/triage/`, keyed by the anomaly and the exact headlines, so an
+  unchanged desk replays them without a GPU.
+- **Past and Next never show the same thing twice.** Discovery headlines only
+  setups with no held leg; the others are listed as already on the desk.
+- **Abnormal return** is the return a market model (beta on the previous 252
+  sessions) does not explain, judged against daily abnormal volatility from the
+  year *before* the horizon, scaled by √horizon.
+- **Analogues** are past days on which a security (or a pair) stood as far from
+  normal in the same direction over the same horizon, with a fully elapsed
+  outcome. Relationship analogues are walk-forward: pairs are fitted only on
+  data before each past date. Built once per universe, cached under
+  `data/cache/analogues/`.
+
+### Strategy monitors
+
+Each strategy rests on one assumption. A monitor fires when it stops holding.
+
+| Monitor | Assumes | Flags |
+|---|---|---|
+| VWAP | today's volume curve looks like history | volume > 3σ (log, 20d); close stretched > 2.5× typical from VWAP20 |
+| TWAP | price does not drift while the order works | 5-session TWAP shortfall vs arrival price > 2.5× typical |
+| Trend (MA cross) | a cross starts a persistent trend | MA7/MA25 crosses; whipsaw = reversed within 5 sessions |
+| Pairs | the spread reverts to its mean | Engle-Granger cointegrated pairs with spread beyond 2σ |
+
+All detectors are point-in-time: baselines use only sessions *before* the one
+being scored.
+
+### Pairs: how a relationship is found
+
+- A pair is tested only when the daily log returns of its legs correlate
+  ≥ 0.70 over the formation window (`PAIRS_CORR_MIN`). Every test is a chance of
+  a false positive, so this filter is also the guard against flukes.
+  `PAIRS_CORR_MIN_SAME_SECTOR` can set a looser bar within a sector.
+- Both legs must be I(1) by ADF (unit root not rejected in levels, rejected in
+  first differences, 5 %). Then Engle-Granger: OLS of log A on log B gives the
+  hedge ratio beta, and ADF with AIC lag selection on the residuals is judged
+  against MacKinnon's surface for two series (`PAIRS_ALPHA`). All of it is
+  statsmodels' own (`adfuller`, `coint`, `OLS`).
+- Engle-Granger is asymmetric, so both orderings are tested and the stronger is
+  kept, with `ticker_a` as the dependent leg.
+- beta is a ratio of **dollars**, not shares: $beta of B against each $1 of A.
+- Relationships are fitted on **504 sessions** (24 months, `PAIRS_FORMATION`)
+  before the review window, and beta and const never change inside it. Only
+  the yardstick, the spread's mean and standard deviation, is re-estimated
+  every 21 sessions from the trailing 252, from data strictly before the
+  session judged (`PAIRS_RECALIBRATE_SESSIONS`, `PAIRS_RECALIBRATION_WINDOW`).
+- Scans of more than a few dozen tests spread them over worker processes
+  (`PAIRS_WORKERS`, every core by default). On an 11-core laptop: 2 s for 1,000
+  names with 5 peers each, 30 s for 3,000 names with no peer limit.
+
+### Universe
+
+`data/universe/securities.json` is the catalogue: Russell 2500 and STOXX 600
+**proxies** (holdings snapshots, not licensed index membership) plus the
+hand-written large caps, about 3,200 securities. The Russell 2500 is US small
+and mid caps: the ~500 largest US companies come only from the large-cap list.
+`UNIVERSE_CATALOG=off` returns to the hand-written list.
+
+- `make universe` fills the price cache in resumable chunks. The desk never
+  downloads thousands of tickers inside a request; until `make universe` has
+  run, scans cover whatever is already cached.
+- `UNIVERSE_MAX` (default 1,000) bounds what is scanned: large caps, then names
+  in the sectors of the book, then the rest. All 3,200 stay searchable.
+- Above 400 securities, scans switch to `fit_large_universe`: pairwise-complete
+  correlations (exchanges have different holidays), at most *K* peers per
+  security before any test, pairs kept inside one universe and currency (a
+  EUR/USD pair would be a bet on the exchange rate).
+- Memberships are current snapshots: a replayed desk inherits today's
+  survivors. Nothing claims point-in-time membership.
+
+### Evidence cutoff
+
+A daily bar becomes observable at the session close (21:00 UTC), the
+**evidence cutoff** of an anomaly:
+
+- published ≤ cutoff → *admissible*, may be used as evidence;
+- published > cutoff → *hindsight*, shown dimmed, never sent to the model;
+- undated → never admissible.
+
+Evidence is organised around **key dates** (a relationship's onset and peak),
+not recency: articles from the two days up to each key date lead the list.
+Ordered by recency, AVGO/NVDA, which broke on Aug 19 and was detected on Sep
+18, was explained from twelve Sep 18 articles and none of the 230 around its
+onset. Fetched pages must also match their headline, because publishers answer
+automated requests with consent walls that extract into clean, irrelevant text.
+
+### Replay date
+
+`AS_OF=YYYY-MM-DD`, or the date in the top bar (`PUT /api/system/as-of`), pins
+the desk to a past session: `MarketDataRepository` hides later sessions and
+`NewsService.window()` hides later news. For the pair monitor on a date D, the
+review window is the 30 days ending on D, the relationship is fitted on the 504
+sessions ending strictly before it, and every yardstick comes from sessions
+before the one judged. `tests/test_point_in_time.py` replays the desk on D on
+the true history and on one rewritten after D, and requires identical results.
+A scan overtaken by a change of date is run again. A date with fewer than 504
+sessions of history before its review window fits no pairs: raise
+`HISTORY_DAYS` (1600) and run `make universe`.
+
+GDELT and Yahoo are always merged because they fail in opposite directions:
+GDELT reaches back to 2017 but its index lags about a week; Yahoo is precise
+for the last few weeks and has nothing older. Replays more than a few weeks
+back are GDELT-only in practice. What real GDELT downloads taught us is encoded
+in `repositories/gdelt.py`: it matches text, not tickers; templated content
+farms were 88% of results for a large bank; queries have an undocumented length
+cap; the rate limit arrives as HTTP 429 *or* a 200 with a plain-text notice;
+`seendate` is crawl time, which can only exclude evidence, never admit
+hindsight.
+
+### State on disk
+
+```
+data/seed/portfolio.json          the demo book, committed
+data/universe/                    the security catalogue, committed
+data/archive/news/*.jsonl         titles, summaries, URLs, timestamps
+data/cache/documents/*.json       fetched article text (ignored: third-party content)
+data/cache/market/daily/*.csv     OHLCV per ticker              (ignored)
+data/cache/news/*.json            accumulated wire per ticker   (ignored)
+data/state/                       edited book, investigations, triage (ignored)
+```
+
+`make reset` forgets the state and keeps the caches.
+
+## Model and serving
+
+The model is never asked whether an explanation is *true*. An investigation is
+a fan-out of narrow, JSON-constrained tasks: claim extraction with a verbatim
+quote (one call per article), competing hypotheses, a hypothesis audit,
+relation assessment per hypothesis, and, in discovery, causal triage per
+unusual relationship. Everything else is deterministic code: admissibility,
+quote verification (the quote must occur literally in the article), verdict
+tallies, the graph. A triage answer citing a headline that was not offered, or
+was published after the anomaly, is discarded, never repaired.
+
+**Why Nemotron 3.5 Lightning 30B-A3B:** 3B active parameters of 30B (mixture of
+experts), so per-token cost is a small model's; hybrid Mamba-2 + attention, so
+whole articles fit in the prompt; reasoning switchable per request (every stage
+runs with `enable_thinking: false`); open weights served by us, so holdings and
+questions never leave the machine; recommended by the hackathon instructors for
+this hardware.
+
+**On 2 × H100 80 GB:** BF16 weights are ~60 GB, so one GPU holds a full replica.
+`make llm` runs **two replicas** (data parallel, one endpoint on :8000) rather
+than one model sharded over both: requests are independent, so throughput
+scales, there is no per-token all-reduce, and one replica keeps serving if the
+other restarts. `LLM_TOPOLOGY=sharded` is only for contexts longer than one
+GPU's KV cache. `--enable-prefix-caching` matters because every stage repeats a
+long system prompt. The NVFP4 checkpoints target Blackwell; on Hopper we serve
+BF16. Extra flags from the model card go in `VLLM_EXTRA_ARGS`.
+
+**Hosted for development, local for recordings.** `LLM_PROFILE=hosted` uses
+NVIDIA's gateway (`LLM_API_KEY` from <https://build.nvidia.com>);
+`LLM_PROFILE=local` uses vLLM on the H100s. Saved explanations and triage
+readings replay without a model, and every saved run records its provider and
+model, so `make runs` proves a recording was produced locally. Before
+recording: `make forget-runs`, `make warm`, then Explain the findings you will
+show. The client adapts to hosted gateways instead of failing: a refused
+optional field (HTTP 400/422) is dropped and the request retried, JSON is read
+out of a `<think>` block or code fence when JSON mode is refused, 429s are
+waited out, and `LLM_WORKERS=4` keeps free tiers from being flooded. Without
+`LLM_API_KEY` the model shows **offline** rather than failing on first use.
+
+**Apertus** (Swiss AI Initiative) sits next to Nemotron. `APERTUS_PROFILE=local`
+(`make apertus`, port 8001) serves the 8B on the GPU with the most free memory,
+in a fixed ~24 GB beside Nemotron; `APERTUS_SIZE=70b` takes both cards (tensor
+parallel, ~140 GB BF16, or `APERTUS_QUANTIZATION=fp8`) and Nemotron cannot run
+at the same time. `APERTUS_PROFILE=hosted` (with `APERTUS_API_KEY`) uses any
+OpenAI-compatible host. More models go in `PYTHIA_MODELS`;
+`LLM_EGRESS_POLICY=local_only` refuses every model not on our own network. Each
+`ModelRun` records registry id, locality, latency, finish reason and reported
+token counts; nothing is estimated.
+
+## Running on the GPU box
+
+```bash
+git pull                   # or, on a fresh box: bash scripts/setup_gpu_box.sh
+make llm                   # Nemotron on both H100s; first start downloads ~60 GB
+make serve                 # the desk on ONE port, printed at start
+make warm                  # once
+```
+
+`scripts/setup_gpu_box.sh` sets a fresh box up from a git bundle and a data
+tarball (`data/archive/news`, `data/cache/analogues`, `data/cache/market`): it
+checks the GPUs, clones, unpacks, installs dependencies and vLLM, and sets
+`LLM_PROFILE=local`. `.env` is never copied: it holds API keys.
+
+- **Opened in a browser** (VS Code web, NVIDIA Launchpad): use `make serve`,
+  then **PORTS → Forward a Port** → that port → globe icon. The desk uses
+  relative paths, so it works under a prefix like `/proxy/8081/`. `make dev`
+  does not: its hot-reload server assumes it owns the host root.
+- **Over SSH:** `ssh -L 8081:localhost:8081 <user>@<gpu-host>`, then
+  <http://localhost:8081>.
+- On the hackathon box, 8080 is the instance's own gateway (`openshell-gateway`,
+  do not stop it). `make dev` and `make serve` take the first free port.
+- Gated weights: `huggingface-cli login` first. If `make llm` rejects a flag,
+  upgrade vLLM or pass the card's flags through `VLLM_EXTRA_ARGS`.
+
+## Not yet verified on live services
+
+Automated tests never leave the machine. Not yet exercised for real:
+
+- an end-to-end investigation and a follow-up with a real model, in particular
+  the larger prompts that include SEC context;
+- Apertus itself: the hosted defaults and the vLLM flags in
+  `scripts/serve_apertus.sh` were written from documentation;
+- the keyed news providers (parsers are tested on fixtures);
+- `make universe` and discovery over the full catalogue (timing, Yahoo rate
+  limits).
 
 ## Event graph and source traceability
 
-The EventKG-inspired layer turns retrieved documents into atomic claims,
-canonical events, and typed temporal relations before causal scoring. It adds:
+A planned EventKG-inspired layer would turn retrieved documents into atomic
+claims, canonical events, and typed temporal relations before causal scoring.
+It would add:
 
 - conservative event identity resolution;
 - lineage-aware claim fusion without erasing contradictions;
@@ -166,9 +407,28 @@ canonical events, and typed temporal relations before causal scoring. It adds:
 - evidence-backed economic paths from an event to a company or instrument;
 - claim, relation, document, and policy IDs carried into the score result.
 
-The implementation is storage-independent and does not require RDF or a graph
-database. See [the EventKG integration guide](docs/eventkg-integration.md) for
-the architecture, invariants, ingestion contract, and Avalanche extension.
+The design follows the [EventKG paper](https://arxiv.org/abs/1804.04526)
+without RDF, SPARQL or a graph database. It is not in this branch's code yet
+(there is no `event_graph` package); these are the rules it must keep. An
+article is not a claim and a claim is not an event. The invariants that prevent
+backtest leakage:
+
+- timezone-aware timestamps everywhere; `retrieved_at` never precedes
+  `published_at`, `extracted_at` never precedes retrieval;
+- a historical snapshot rejects event metadata updated after its `as_of_at`;
+  later claims appear only as opaque ignored IDs;
+- a correction supersedes, but never deletes, its earlier claim;
+- syndicated copies sharing a `lineage_id` count once; competing credible
+  assertions stay `contested`;
+- a relation needs at least one supporting claim, and a causal path uses only
+  accepted relations valid at the replay time (no generic `related_to` edge).
+
+Fusion weights by source role (primary 1.00, independent 0.80, secondary 0.50,
+syndicated 0.35, market data 0.00) are versioned ranking heuristics, not
+calibrated probabilities: change them only through a new
+`FusionPolicy.version`. Every displayed signal must resolve through
+signal → score → event snapshot → relations → claims → source documents, never
+a rationale string alone.
 
 ## First contribution: causal candidate scoring
 
@@ -323,24 +583,6 @@ print(result.model_dump_json(indent=2))
 For historical replay, set `as_of_at` to the simulated decision time. Never
 attach later news or future prices to a criterion: the scorer will ignore the
 late evidence, but upstream feature generation must also observe the cut-off.
-
-## Static prototype dashboard
-
-The earlier static prototype,
-[`prototypes/causal-signal-dashboard-static/index.html`](prototypes/causal-signal-dashboard-static/index.html),
-demonstrates how an anomaly,
-causal qualification, continuation probability, and a long/short/no-trade
-research signal fit together. It includes three fictional scenarios, an as-of
-time slider, evidence-backed mechanism paths, criterion-level attribution, and
-source-lineage traceability.
-
-Open the file directly, or serve the repository locally:
-
-```bash
-python -m http.server 8000
-```
-
-Then visit `http://localhost:8000/prototypes/causal-signal-dashboard-static/`.
 
 ## Development
 

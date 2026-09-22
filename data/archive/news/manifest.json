@@ -1,0 +1,3450 @@
+{
+ "finnhub:AAL:2026-08-09:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:19:39.915025+00:00"
+ },
+ "finnhub:AAL:2026-08-16:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:19:39.915025+00:00"
+ },
+ "finnhub:AAL:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:19:39.915025+00:00"
+ },
+ "finnhub:AAL:2026-08-30:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:19:39.915025+00:00"
+ },
+ "finnhub:AAL:2026-09-06:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:19:39.915025+00:00"
+ },
+ "finnhub:AAL:2026-09-13:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T08:19:39.915025+00:00"
+ },
+ "finnhub:AAPL:2026-08-09:v1": {
+  "articles": 225,
+  "downloaded_at": "2026-09-20T08:05:00.362596+00:00"
+ },
+ "finnhub:AAPL:2026-08-16:v1": {
+  "articles": 99,
+  "downloaded_at": "2026-09-20T08:05:00.362596+00:00"
+ },
+ "finnhub:AAPL:2026-08-23:v1": {
+  "articles": 79,
+  "downloaded_at": "2026-09-20T08:05:00.362596+00:00"
+ },
+ "finnhub:AAPL:2026-08-30:v1": {
+  "articles": 243,
+  "downloaded_at": "2026-09-20T08:05:00.362596+00:00"
+ },
+ "finnhub:AAPL:2026-09-06:v1": {
+  "articles": 243,
+  "downloaded_at": "2026-09-20T08:05:00.362596+00:00"
+ },
+ "finnhub:AAPL:2026-09-13:v1": {
+  "articles": 245,
+  "downloaded_at": "2026-09-20T08:05:00.362596+00:00"
+ },
+ "finnhub:ABBV:2026-08-09:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T08:01:44.496941+00:00"
+ },
+ "finnhub:ABBV:2026-08-16:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:01:44.496941+00:00"
+ },
+ "finnhub:ABBV:2026-08-23:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:01:44.496941+00:00"
+ },
+ "finnhub:ABBV:2026-08-30:v1": {
+  "articles": 52,
+  "downloaded_at": "2026-09-20T08:01:44.496941+00:00"
+ },
+ "finnhub:ABBV:2026-09-06:v1": {
+  "articles": 41,
+  "downloaded_at": "2026-09-20T08:01:44.496941+00:00"
+ },
+ "finnhub:ABBV:2026-09-13:v1": {
+  "articles": 43,
+  "downloaded_at": "2026-09-20T08:01:44.496941+00:00"
+ },
+ "finnhub:ABT:2026-08-09:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:02:46.341486+00:00"
+ },
+ "finnhub:ABT:2026-08-16:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:02:46.341486+00:00"
+ },
+ "finnhub:ABT:2026-08-23:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:02:46.341486+00:00"
+ },
+ "finnhub:ABT:2026-08-30:v1": {
+  "articles": 60,
+  "downloaded_at": "2026-09-20T08:02:46.341486+00:00"
+ },
+ "finnhub:ABT:2026-09-06:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:02:46.341486+00:00"
+ },
+ "finnhub:ABT:2026-09-13:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:02:46.341486+00:00"
+ },
+ "finnhub:ACN:2026-08-09:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:04:52.704532+00:00"
+ },
+ "finnhub:ACN:2026-08-16:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:04:52.704532+00:00"
+ },
+ "finnhub:ACN:2026-08-23:v1": {
+  "articles": 27,
+  "downloaded_at": "2026-09-20T08:04:52.704532+00:00"
+ },
+ "finnhub:ACN:2026-08-30:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:04:52.704532+00:00"
+ },
+ "finnhub:ACN:2026-09-06:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T08:04:52.704532+00:00"
+ },
+ "finnhub:ACN:2026-09-13:v1": {
+  "articles": 66,
+  "downloaded_at": "2026-09-20T08:04:52.704532+00:00"
+ },
+ "finnhub:ADBE:2026-08-09:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:05:46.772361+00:00"
+ },
+ "finnhub:ADBE:2026-08-16:v1": {
+  "articles": 35,
+  "downloaded_at": "2026-09-20T08:05:46.772361+00:00"
+ },
+ "finnhub:ADBE:2026-08-23:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:05:46.772361+00:00"
+ },
+ "finnhub:ADBE:2026-08-30:v1": {
+  "articles": 84,
+  "downloaded_at": "2026-09-20T08:05:46.772361+00:00"
+ },
+ "finnhub:ADBE:2026-09-06:v1": {
+  "articles": 178,
+  "downloaded_at": "2026-09-20T08:05:46.772361+00:00"
+ },
+ "finnhub:ADBE:2026-09-13:v1": {
+  "articles": 61,
+  "downloaded_at": "2026-09-20T08:05:46.772361+00:00"
+ },
+ "finnhub:AIG:2026-08-09:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T07:59:56.263328+00:00"
+ },
+ "finnhub:AIG:2026-08-16:v1": {
+  "articles": 4,
+  "downloaded_at": "2026-09-20T07:59:56.263328+00:00"
+ },
+ "finnhub:AIG:2026-08-23:v1": {
+  "articles": 3,
+  "downloaded_at": "2026-09-20T07:59:56.263328+00:00"
+ },
+ "finnhub:AIG:2026-08-30:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T07:59:56.263328+00:00"
+ },
+ "finnhub:AIG:2026-09-06:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T07:59:56.263328+00:00"
+ },
+ "finnhub:AIG:2026-09-13:v1": {
+  "articles": 4,
+  "downloaded_at": "2026-09-20T07:59:56.263328+00:00"
+ },
+ "finnhub:AMAT:2026-08-09:v1": {
+  "articles": 145,
+  "downloaded_at": "2026-09-20T08:04:04.679481+00:00"
+ },
+ "finnhub:AMAT:2026-08-16:v1": {
+  "articles": 38,
+  "downloaded_at": "2026-09-20T08:04:04.679481+00:00"
+ },
+ "finnhub:AMAT:2026-08-23:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:04:04.679481+00:00"
+ },
+ "finnhub:AMAT:2026-08-30:v1": {
+  "articles": 32,
+  "downloaded_at": "2026-09-20T08:04:04.679481+00:00"
+ },
+ "finnhub:AMAT:2026-09-06:v1": {
+  "articles": 30,
+  "downloaded_at": "2026-09-20T08:04:04.679481+00:00"
+ },
+ "finnhub:AMAT:2026-09-13:v1": {
+  "articles": 51,
+  "downloaded_at": "2026-09-20T08:04:04.679481+00:00"
+ },
+ "finnhub:AMD:2026-08-09:v1": {
+  "articles": 139,
+  "downloaded_at": "2026-09-20T08:03:17.173079+00:00"
+ },
+ "finnhub:AMD:2026-08-16:v1": {
+  "articles": 65,
+  "downloaded_at": "2026-09-20T08:03:17.173079+00:00"
+ },
+ "finnhub:AMD:2026-08-23:v1": {
+  "articles": 59,
+  "downloaded_at": "2026-09-20T08:03:17.173079+00:00"
+ },
+ "finnhub:AMD:2026-08-30:v1": {
+  "articles": 123,
+  "downloaded_at": "2026-09-20T08:03:17.173079+00:00"
+ },
+ "finnhub:AMD:2026-09-06:v1": {
+  "articles": 203,
+  "downloaded_at": "2026-09-20T08:03:17.173079+00:00"
+ },
+ "finnhub:AMD:2026-09-13:v1": {
+  "articles": 218,
+  "downloaded_at": "2026-09-20T08:03:17.173079+00:00"
+ },
+ "finnhub:AMGN:2026-08-09:v1": {
+  "articles": 32,
+  "downloaded_at": "2026-09-20T08:01:59.885045+00:00"
+ },
+ "finnhub:AMGN:2026-08-16:v1": {
+  "articles": 34,
+  "downloaded_at": "2026-09-20T08:01:59.885045+00:00"
+ },
+ "finnhub:AMGN:2026-08-23:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:01:59.885045+00:00"
+ },
+ "finnhub:AMGN:2026-08-30:v1": {
+  "articles": 36,
+  "downloaded_at": "2026-09-20T08:01:59.885045+00:00"
+ },
+ "finnhub:AMGN:2026-09-06:v1": {
+  "articles": 81,
+  "downloaded_at": "2026-09-20T08:01:59.885045+00:00"
+ },
+ "finnhub:AMGN:2026-09-13:v1": {
+  "articles": 32,
+  "downloaded_at": "2026-09-20T08:01:59.885045+00:00"
+ },
+ "finnhub:AMZN:2026-08-09:v1": {
+  "articles": 243,
+  "downloaded_at": "2026-09-20T08:05:31.274600+00:00"
+ },
+ "finnhub:AMZN:2026-08-16:v1": {
+  "articles": 146,
+  "downloaded_at": "2026-09-20T08:05:31.274600+00:00"
+ },
+ "finnhub:AMZN:2026-08-23:v1": {
+  "articles": 119,
+  "downloaded_at": "2026-09-20T08:05:31.274600+00:00"
+ },
+ "finnhub:AMZN:2026-08-30:v1": {
+  "articles": 246,
+  "downloaded_at": "2026-09-20T08:05:31.274600+00:00"
+ },
+ "finnhub:AMZN:2026-09-06:v1": {
+  "articles": 247,
+  "downloaded_at": "2026-09-20T08:05:31.274600+00:00"
+ },
+ "finnhub:AMZN:2026-09-13:v1": {
+  "articles": 246,
+  "downloaded_at": "2026-09-20T08:05:31.274600+00:00"
+ },
+ "finnhub:AVGO:2026-08-09:v1": {
+  "articles": 94,
+  "downloaded_at": "2026-09-20T08:03:24.883194+00:00"
+ },
+ "finnhub:AVGO:2026-08-16:v1": {
+  "articles": 85,
+  "downloaded_at": "2026-09-20T08:03:24.883194+00:00"
+ },
+ "finnhub:AVGO:2026-08-23:v1": {
+  "articles": 59,
+  "downloaded_at": "2026-09-20T08:03:24.883194+00:00"
+ },
+ "finnhub:AVGO:2026-08-30:v1": {
+  "articles": 244,
+  "downloaded_at": "2026-09-20T08:03:24.883194+00:00"
+ },
+ "finnhub:AVGO:2026-09-06:v1": {
+  "articles": 176,
+  "downloaded_at": "2026-09-20T08:03:24.883194+00:00"
+ },
+ "finnhub:AVGO:2026-09-13:v1": {
+  "articles": 162,
+  "downloaded_at": "2026-09-20T08:03:24.883194+00:00"
+ },
+ "finnhub:AXP:2026-08-09:v1": {
+  "articles": 41,
+  "downloaded_at": "2026-09-20T07:57:05.053635+00:00"
+ },
+ "finnhub:AXP:2026-08-16:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T07:57:05.053635+00:00"
+ },
+ "finnhub:AXP:2026-08-23:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T07:57:05.053635+00:00"
+ },
+ "finnhub:AXP:2026-08-30:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T07:57:05.053635+00:00"
+ },
+ "finnhub:AXP:2026-09-06:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T07:57:05.053635+00:00"
+ },
+ "finnhub:AXP:2026-09-13:v1": {
+  "articles": 37,
+  "downloaded_at": "2026-09-20T07:57:05.053635+00:00"
+ },
+ "finnhub:AZN:2026-08-09:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:02:15.421507+00:00"
+ },
+ "finnhub:AZN:2026-08-16:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:02:15.421507+00:00"
+ },
+ "finnhub:AZN:2026-08-23:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:02:15.421507+00:00"
+ },
+ "finnhub:AZN:2026-08-30:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:02:15.421507+00:00"
+ },
+ "finnhub:AZN:2026-09-06:v1": {
+  "articles": 42,
+  "downloaded_at": "2026-09-20T08:02:15.421507+00:00"
+ },
+ "finnhub:AZN:2026-09-13:v1": {
+  "articles": 49,
+  "downloaded_at": "2026-09-20T08:02:15.421507+00:00"
+ },
+ "finnhub:BA:2026-08-09:v1": {
+  "articles": 103,
+  "downloaded_at": "2026-09-20T08:08:13.613213+00:00"
+ },
+ "finnhub:BA:2026-08-16:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T08:08:13.613213+00:00"
+ },
+ "finnhub:BA:2026-08-23:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:08:13.613213+00:00"
+ },
+ "finnhub:BA:2026-08-30:v1": {
+  "articles": 96,
+  "downloaded_at": "2026-09-20T08:08:13.613213+00:00"
+ },
+ "finnhub:BA:2026-09-06:v1": {
+  "articles": 58,
+  "downloaded_at": "2026-09-20T08:08:13.613213+00:00"
+ },
+ "finnhub:BA:2026-09-13:v1": {
+  "articles": 97,
+  "downloaded_at": "2026-09-20T08:08:13.613213+00:00"
+ },
+ "finnhub:BAC:2026-08-09:v1": {
+  "articles": 58,
+  "downloaded_at": "2026-09-20T07:52:38.664100+00:00"
+ },
+ "finnhub:BAC:2026-08-16:v1": {
+  "articles": 28,
+  "downloaded_at": "2026-09-20T07:52:38.664100+00:00"
+ },
+ "finnhub:BAC:2026-08-23:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T07:52:38.664100+00:00"
+ },
+ "finnhub:BAC:2026-08-30:v1": {
+  "articles": 62,
+  "downloaded_at": "2026-09-20T07:52:38.664100+00:00"
+ },
+ "finnhub:BAC:2026-09-06:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T07:52:38.664100+00:00"
+ },
+ "finnhub:BAC:2026-09-13:v1": {
+  "articles": 104,
+  "downloaded_at": "2026-09-20T07:52:38.664100+00:00"
+ },
+ "finnhub:BLK:2026-08-09:v1": {
+  "articles": 96,
+  "downloaded_at": "2026-09-20T07:59:40.896897+00:00"
+ },
+ "finnhub:BLK:2026-08-16:v1": {
+  "articles": 34,
+  "downloaded_at": "2026-09-20T07:59:40.896897+00:00"
+ },
+ "finnhub:BLK:2026-08-23:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T07:59:40.896897+00:00"
+ },
+ "finnhub:BLK:2026-08-30:v1": {
+  "articles": 65,
+  "downloaded_at": "2026-09-20T07:59:40.896897+00:00"
+ },
+ "finnhub:BLK:2026-09-06:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T07:59:40.896897+00:00"
+ },
+ "finnhub:BLK:2026-09-13:v1": {
+  "articles": 84,
+  "downloaded_at": "2026-09-20T07:59:40.896897+00:00"
+ },
+ "finnhub:BMY:2026-08-09:v1": {
+  "articles": 46,
+  "downloaded_at": "2026-09-20T08:01:52.182295+00:00"
+ },
+ "finnhub:BMY:2026-08-16:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:01:52.182295+00:00"
+ },
+ "finnhub:BMY:2026-08-23:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:01:52.182295+00:00"
+ },
+ "finnhub:BMY:2026-08-30:v1": {
+  "articles": 39,
+  "downloaded_at": "2026-09-20T08:01:52.182295+00:00"
+ },
+ "finnhub:BMY:2026-09-06:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T08:01:52.182295+00:00"
+ },
+ "finnhub:BMY:2026-09-13:v1": {
+  "articles": 37,
+  "downloaded_at": "2026-09-20T08:01:52.182295+00:00"
+ },
+ "finnhub:BP:2026-08-09:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T08:15:21.373783+00:00"
+ },
+ "finnhub:BP:2026-08-16:v1": {
+  "articles": 4,
+  "downloaded_at": "2026-09-20T08:15:21.373783+00:00"
+ },
+ "finnhub:BP:2026-08-23:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:15:21.373783+00:00"
+ },
+ "finnhub:BP:2026-08-30:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:15:21.373783+00:00"
+ },
+ "finnhub:BP:2026-09-06:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:15:21.373783+00:00"
+ },
+ "finnhub:BP:2026-09-13:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:15:21.373783+00:00"
+ },
+ "finnhub:C:2026-08-09:v1": {
+  "articles": 34,
+  "downloaded_at": "2026-09-20T07:58:23.590076+00:00"
+ },
+ "finnhub:C:2026-08-16:v1": {
+  "articles": 32,
+  "downloaded_at": "2026-09-20T07:58:23.590076+00:00"
+ },
+ "finnhub:C:2026-08-23:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T07:58:23.590076+00:00"
+ },
+ "finnhub:C:2026-08-30:v1": {
+  "articles": 58,
+  "downloaded_at": "2026-09-20T07:58:23.590076+00:00"
+ },
+ "finnhub:C:2026-09-06:v1": {
+  "articles": 32,
+  "downloaded_at": "2026-09-20T07:58:23.590076+00:00"
+ },
+ "finnhub:C:2026-09-13:v1": {
+  "articles": 54,
+  "downloaded_at": "2026-09-20T07:58:23.590076+00:00"
+ },
+ "finnhub:CAT:2026-08-09:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T08:07:27.326418+00:00"
+ },
+ "finnhub:CAT:2026-08-16:v1": {
+  "articles": 35,
+  "downloaded_at": "2026-09-20T08:07:27.326418+00:00"
+ },
+ "finnhub:CAT:2026-08-23:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:07:27.326418+00:00"
+ },
+ "finnhub:CAT:2026-08-30:v1": {
+  "articles": 61,
+  "downloaded_at": "2026-09-20T08:07:27.326418+00:00"
+ },
+ "finnhub:CAT:2026-09-06:v1": {
+  "articles": 38,
+  "downloaded_at": "2026-09-20T08:07:27.326418+00:00"
+ },
+ "finnhub:CAT:2026-09-13:v1": {
+  "articles": 50,
+  "downloaded_at": "2026-09-20T08:07:27.326418+00:00"
+ },
+ "finnhub:CB:2026-08-09:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:00:04.023138+00:00"
+ },
+ "finnhub:CB:2026-08-16:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:00:04.023138+00:00"
+ },
+ "finnhub:CB:2026-08-23:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:00:04.023138+00:00"
+ },
+ "finnhub:CB:2026-08-30:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:00:04.023138+00:00"
+ },
+ "finnhub:CB:2026-09-06:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:00:04.023138+00:00"
+ },
+ "finnhub:CB:2026-09-13:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:00:04.023138+00:00"
+ },
+ "finnhub:CCL:2026-08-09:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:18:13.774417+00:00"
+ },
+ "finnhub:CCL:2026-08-16:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:18:13.774417+00:00"
+ },
+ "finnhub:CCL:2026-08-23:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:18:13.774417+00:00"
+ },
+ "finnhub:CCL:2026-08-30:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:18:13.774417+00:00"
+ },
+ "finnhub:CCL:2026-09-06:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:18:13.774417+00:00"
+ },
+ "finnhub:CCL:2026-09-13:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:18:13.774417+00:00"
+ },
+ "finnhub:CL:2026-08-09:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:06:17.696431+00:00"
+ },
+ "finnhub:CL:2026-08-16:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:06:17.696431+00:00"
+ },
+ "finnhub:CL:2026-08-23:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:06:17.696431+00:00"
+ },
+ "finnhub:CL:2026-08-30:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:06:17.696431+00:00"
+ },
+ "finnhub:CL:2026-09-06:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:06:17.696431+00:00"
+ },
+ "finnhub:CL:2026-09-13:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:06:17.696431+00:00"
+ },
+ "finnhub:CME:2026-08-09:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:15:06.624535+00:00"
+ },
+ "finnhub:CME:2026-08-16:v1": {
+  "articles": 21,
+  "downloaded_at": "2026-09-20T08:15:06.624535+00:00"
+ },
+ "finnhub:CME:2026-08-23:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:15:06.624535+00:00"
+ },
+ "finnhub:CME:2026-08-30:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:15:06.624535+00:00"
+ },
+ "finnhub:CME:2026-09-06:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:15:06.624535+00:00"
+ },
+ "finnhub:CME:2026-09-13:v1": {
+  "articles": 35,
+  "downloaded_at": "2026-09-20T08:15:06.624535+00:00"
+ },
+ "finnhub:COF:2026-08-09:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T07:59:25.439592+00:00"
+ },
+ "finnhub:COF:2026-08-16:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T07:59:25.439592+00:00"
+ },
+ "finnhub:COF:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T07:59:25.439592+00:00"
+ },
+ "finnhub:COF:2026-08-30:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T07:59:25.439592+00:00"
+ },
+ "finnhub:COF:2026-09-06:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T07:59:25.439592+00:00"
+ },
+ "finnhub:COF:2026-09-13:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T07:59:25.439592+00:00"
+ },
+ "finnhub:COP:2026-08-09:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:00:34.907839+00:00"
+ },
+ "finnhub:COP:2026-08-16:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:00:34.907839+00:00"
+ },
+ "finnhub:COP:2026-08-23:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:00:34.907839+00:00"
+ },
+ "finnhub:COP:2026-08-30:v1": {
+  "articles": 64,
+  "downloaded_at": "2026-09-20T08:00:34.907839+00:00"
+ },
+ "finnhub:COP:2026-09-06:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:00:34.907839+00:00"
+ },
+ "finnhub:COP:2026-09-13:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:00:34.907839+00:00"
+ },
+ "finnhub:COST:2026-08-09:v1": {
+  "articles": 37,
+  "downloaded_at": "2026-09-20T08:06:33.086280+00:00"
+ },
+ "finnhub:COST:2026-08-16:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:06:33.086280+00:00"
+ },
+ "finnhub:COST:2026-08-23:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:06:33.086280+00:00"
+ },
+ "finnhub:COST:2026-08-30:v1": {
+  "articles": 62,
+  "downloaded_at": "2026-09-20T08:06:33.086280+00:00"
+ },
+ "finnhub:COST:2026-09-06:v1": {
+  "articles": 45,
+  "downloaded_at": "2026-09-20T08:06:33.086280+00:00"
+ },
+ "finnhub:COST:2026-09-13:v1": {
+  "articles": 94,
+  "downloaded_at": "2026-09-20T08:06:33.086280+00:00"
+ },
+ "finnhub:CRM:2026-08-09:v1": {
+  "articles": 68,
+  "downloaded_at": "2026-09-20T08:05:39.003170+00:00"
+ },
+ "finnhub:CRM:2026-08-16:v1": {
+  "articles": 42,
+  "downloaded_at": "2026-09-20T08:05:39.003170+00:00"
+ },
+ "finnhub:CRM:2026-08-23:v1": {
+  "articles": 142,
+  "downloaded_at": "2026-09-20T08:05:39.003170+00:00"
+ },
+ "finnhub:CRM:2026-08-30:v1": {
+  "articles": 126,
+  "downloaded_at": "2026-09-20T08:05:39.003170+00:00"
+ },
+ "finnhub:CRM:2026-09-06:v1": {
+  "articles": 99,
+  "downloaded_at": "2026-09-20T08:05:39.003170+00:00"
+ },
+ "finnhub:CRM:2026-09-13:v1": {
+  "articles": 195,
+  "downloaded_at": "2026-09-20T08:05:39.003170+00:00"
+ },
+ "finnhub:CSCO:2026-08-09:v1": {
+  "articles": 194,
+  "downloaded_at": "2026-09-20T08:04:37.170864+00:00"
+ },
+ "finnhub:CSCO:2026-08-16:v1": {
+  "articles": 37,
+  "downloaded_at": "2026-09-20T08:04:37.170864+00:00"
+ },
+ "finnhub:CSCO:2026-08-23:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:04:37.170864+00:00"
+ },
+ "finnhub:CSCO:2026-08-30:v1": {
+  "articles": 67,
+  "downloaded_at": "2026-09-20T08:04:37.170864+00:00"
+ },
+ "finnhub:CSCO:2026-09-06:v1": {
+  "articles": 64,
+  "downloaded_at": "2026-09-20T08:04:37.170864+00:00"
+ },
+ "finnhub:CSCO:2026-09-13:v1": {
+  "articles": 63,
+  "downloaded_at": "2026-09-20T08:04:37.170864+00:00"
+ },
+ "finnhub:CSX:2026-08-09:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T08:08:44.461118+00:00"
+ },
+ "finnhub:CSX:2026-08-16:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:08:44.461118+00:00"
+ },
+ "finnhub:CSX:2026-08-23:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:08:44.461118+00:00"
+ },
+ "finnhub:CSX:2026-08-30:v1": {
+  "articles": 4,
+  "downloaded_at": "2026-09-20T08:08:44.461118+00:00"
+ },
+ "finnhub:CSX:2026-09-06:v1": {
+  "articles": 4,
+  "downloaded_at": "2026-09-20T08:08:44.461118+00:00"
+ },
+ "finnhub:CSX:2026-09-13:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T08:08:44.461118+00:00"
+ },
+ "finnhub:CVS:2026-08-09:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:02:30.885365+00:00"
+ },
+ "finnhub:CVS:2026-08-16:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:02:30.885365+00:00"
+ },
+ "finnhub:CVS:2026-08-23:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:02:30.885365+00:00"
+ },
+ "finnhub:CVS:2026-08-30:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T08:02:30.885365+00:00"
+ },
+ "finnhub:CVS:2026-09-06:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:02:30.885365+00:00"
+ },
+ "finnhub:CVS:2026-09-13:v1": {
+  "articles": 32,
+  "downloaded_at": "2026-09-20T08:02:30.885365+00:00"
+ },
+ "finnhub:CVX:2026-08-09:v1": {
+  "articles": 57,
+  "downloaded_at": "2026-09-20T08:00:27.493777+00:00"
+ },
+ "finnhub:CVX:2026-08-16:v1": {
+  "articles": 42,
+  "downloaded_at": "2026-09-20T08:00:27.493777+00:00"
+ },
+ "finnhub:CVX:2026-08-23:v1": {
+  "articles": 27,
+  "downloaded_at": "2026-09-20T08:00:27.493777+00:00"
+ },
+ "finnhub:CVX:2026-08-30:v1": {
+  "articles": 145,
+  "downloaded_at": "2026-09-20T08:00:27.493777+00:00"
+ },
+ "finnhub:CVX:2026-09-06:v1": {
+  "articles": 83,
+  "downloaded_at": "2026-09-20T08:00:27.493777+00:00"
+ },
+ "finnhub:CVX:2026-09-13:v1": {
+  "articles": 78,
+  "downloaded_at": "2026-09-20T08:00:27.493777+00:00"
+ },
+ "finnhub:DAL:2026-08-09:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:08:52.206517+00:00"
+ },
+ "finnhub:DAL:2026-08-16:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:08:52.206517+00:00"
+ },
+ "finnhub:DAL:2026-08-23:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:08:52.206517+00:00"
+ },
+ "finnhub:DAL:2026-08-30:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T08:08:52.206517+00:00"
+ },
+ "finnhub:DAL:2026-09-06:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:08:52.206517+00:00"
+ },
+ "finnhub:DAL:2026-09-13:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:08:52.206517+00:00"
+ },
+ "finnhub:DE:2026-08-09:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:07:35.213348+00:00"
+ },
+ "finnhub:DE:2026-08-16:v1": {
+  "articles": 56,
+  "downloaded_at": "2026-09-20T08:07:35.213348+00:00"
+ },
+ "finnhub:DE:2026-08-23:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:07:35.213348+00:00"
+ },
+ "finnhub:DE:2026-08-30:v1": {
+  "articles": 43,
+  "downloaded_at": "2026-09-20T08:07:35.213348+00:00"
+ },
+ "finnhub:DE:2026-09-06:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:07:35.213348+00:00"
+ },
+ "finnhub:DE:2026-09-13:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:07:35.213348+00:00"
+ },
+ "finnhub:DELL:2026-08-09:v1": {
+  "articles": 74,
+  "downloaded_at": "2026-09-20T08:04:13.497849+00:00"
+ },
+ "finnhub:DELL:2026-08-16:v1": {
+  "articles": 34,
+  "downloaded_at": "2026-09-20T08:04:13.497849+00:00"
+ },
+ "finnhub:DELL:2026-08-23:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:04:13.497849+00:00"
+ },
+ "finnhub:DELL:2026-08-30:v1": {
+  "articles": 246,
+  "downloaded_at": "2026-09-20T08:04:13.497849+00:00"
+ },
+ "finnhub:DELL:2026-09-06:v1": {
+  "articles": 128,
+  "downloaded_at": "2026-09-20T08:04:13.497849+00:00"
+ },
+ "finnhub:DELL:2026-09-13:v1": {
+  "articles": 118,
+  "downloaded_at": "2026-09-20T08:04:13.497849+00:00"
+ },
+ "finnhub:DHI:2026-08-09:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:17:42.889123+00:00"
+ },
+ "finnhub:DHI:2026-08-16:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:17:42.889123+00:00"
+ },
+ "finnhub:DHI:2026-08-23:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:17:42.889123+00:00"
+ },
+ "finnhub:DHI:2026-08-30:v1": {
+  "articles": 3,
+  "downloaded_at": "2026-09-20T08:17:42.889123+00:00"
+ },
+ "finnhub:DHI:2026-09-06:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:17:42.889123+00:00"
+ },
+ "finnhub:DHI:2026-09-13:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:17:42.889123+00:00"
+ },
+ "finnhub:DHR:2026-08-09:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:03:09.465934+00:00"
+ },
+ "finnhub:DHR:2026-08-16:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:03:09.465934+00:00"
+ },
+ "finnhub:DHR:2026-08-23:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:03:09.465934+00:00"
+ },
+ "finnhub:DHR:2026-08-30:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:03:09.465934+00:00"
+ },
+ "finnhub:DHR:2026-09-06:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:03:09.465934+00:00"
+ },
+ "finnhub:DHR:2026-09-13:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:03:09.465934+00:00"
+ },
+ "finnhub:DIS:2026-08-09:v1": {
+  "articles": 49,
+  "downloaded_at": "2026-09-20T08:07:19.868605+00:00"
+ },
+ "finnhub:DIS:2026-08-16:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T08:07:19.868605+00:00"
+ },
+ "finnhub:DIS:2026-08-23:v1": {
+  "articles": 29,
+  "downloaded_at": "2026-09-20T08:07:19.868605+00:00"
+ },
+ "finnhub:DIS:2026-08-30:v1": {
+  "articles": 28,
+  "downloaded_at": "2026-09-20T08:07:19.868605+00:00"
+ },
+ "finnhub:DIS:2026-09-06:v1": {
+  "articles": 34,
+  "downloaded_at": "2026-09-20T08:07:19.868605+00:00"
+ },
+ "finnhub:DIS:2026-09-13:v1": {
+  "articles": 46,
+  "downloaded_at": "2026-09-20T08:07:19.868605+00:00"
+ },
+ "finnhub:DUK:2026-08-09:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:09:54.764743+00:00"
+ },
+ "finnhub:DUK:2026-08-16:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:09:54.764743+00:00"
+ },
+ "finnhub:DUK:2026-08-23:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:09:54.764743+00:00"
+ },
+ "finnhub:DUK:2026-08-30:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:09:54.764743+00:00"
+ },
+ "finnhub:DUK:2026-09-06:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:09:54.764743+00:00"
+ },
+ "finnhub:DUK:2026-09-13:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:09:54.764743+00:00"
+ },
+ "finnhub:DVN:2026-08-09:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:15:39.715816+00:00"
+ },
+ "finnhub:DVN:2026-08-16:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:15:39.715816+00:00"
+ },
+ "finnhub:DVN:2026-08-23:v1": {
+  "articles": 4,
+  "downloaded_at": "2026-09-20T08:15:39.715816+00:00"
+ },
+ "finnhub:DVN:2026-08-30:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:15:39.715816+00:00"
+ },
+ "finnhub:DVN:2026-09-06:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:15:39.715816+00:00"
+ },
+ "finnhub:DVN:2026-09-13:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:15:39.715816+00:00"
+ },
+ "finnhub:ELV:2026-08-09:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:02:38.571167+00:00"
+ },
+ "finnhub:ELV:2026-08-16:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:02:38.571167+00:00"
+ },
+ "finnhub:ELV:2026-08-23:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:02:38.571167+00:00"
+ },
+ "finnhub:ELV:2026-08-30:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:02:38.571167+00:00"
+ },
+ "finnhub:ELV:2026-09-06:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:02:38.571167+00:00"
+ },
+ "finnhub:ELV:2026-09-13:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:02:38.571167+00:00"
+ },
+ "finnhub:EMR:2026-08-09:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:19:04.727145+00:00"
+ },
+ "finnhub:EMR:2026-08-16:v1": {
+  "articles": 8,
+  "downloaded_at": "2026-09-20T08:19:04.727145+00:00"
+ },
+ "finnhub:EMR:2026-08-23:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:19:04.727145+00:00"
+ },
+ "finnhub:EMR:2026-08-30:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:19:04.727145+00:00"
+ },
+ "finnhub:EMR:2026-09-06:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:19:04.727145+00:00"
+ },
+ "finnhub:EMR:2026-09-13:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:19:04.727145+00:00"
+ },
+ "finnhub:EOG:2026-08-09:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:00:42.741800+00:00"
+ },
+ "finnhub:EOG:2026-08-16:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:00:42.741800+00:00"
+ },
+ "finnhub:EOG:2026-08-23:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:00:42.741800+00:00"
+ },
+ "finnhub:EOG:2026-08-30:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:00:42.741800+00:00"
+ },
+ "finnhub:EOG:2026-09-06:v1": {
+  "articles": 4,
+  "downloaded_at": "2026-09-20T08:00:42.741800+00:00"
+ },
+ "finnhub:EOG:2026-09-13:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:00:42.741800+00:00"
+ },
+ "finnhub:ETN:2026-08-09:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:18:56.949141+00:00"
+ },
+ "finnhub:ETN:2026-08-16:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:18:56.949141+00:00"
+ },
+ "finnhub:ETN:2026-08-23:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:18:56.949141+00:00"
+ },
+ "finnhub:ETN:2026-08-30:v1": {
+  "articles": 27,
+  "downloaded_at": "2026-09-20T08:18:56.949141+00:00"
+ },
+ "finnhub:ETN:2026-09-06:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:18:56.949141+00:00"
+ },
+ "finnhub:ETN:2026-09-13:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T08:18:56.949141+00:00"
+ },
+ "finnhub:EWA:2026-08-09:v1": {
+  "articles": 1,
+  "downloaded_at": "2026-09-20T08:20:33.987209+00:00"
+ },
+ "finnhub:EWA:2026-08-16:v1": {
+  "articles": 1,
+  "downloaded_at": "2026-09-20T08:20:33.987209+00:00"
+ },
+ "finnhub:EWA:2026-08-23:v1": {
+  "articles": 0,
+  "downloaded_at": "2026-09-20T08:20:33.987209+00:00"
+ },
+ "finnhub:EWA:2026-08-30:v1": {
+  "articles": 2,
+  "downloaded_at": "2026-09-20T08:20:33.987209+00:00"
+ },
+ "finnhub:EWA:2026-09-06:v1": {
+  "articles": 2,
+  "downloaded_at": "2026-09-20T08:20:33.987209+00:00"
+ },
+ "finnhub:EWA:2026-09-13:v1": {
+  "articles": 2,
+  "downloaded_at": "2026-09-20T08:20:33.987209+00:00"
+ },
+ "finnhub:EWC:2026-08-09:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:20:41.741514+00:00"
+ },
+ "finnhub:EWC:2026-08-16:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:20:41.741514+00:00"
+ },
+ "finnhub:EWC:2026-08-23:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:20:41.741514+00:00"
+ },
+ "finnhub:EWC:2026-08-30:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:20:41.741514+00:00"
+ },
+ "finnhub:EWC:2026-09-06:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:20:41.741514+00:00"
+ },
+ "finnhub:EWC:2026-09-13:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:20:41.741514+00:00"
+ },
+ "finnhub:F:2026-08-09:v1": {
+  "articles": 49,
+  "downloaded_at": "2026-09-20T08:09:07.690845+00:00"
+ },
+ "finnhub:F:2026-08-16:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:09:07.690845+00:00"
+ },
+ "finnhub:F:2026-08-23:v1": {
+  "articles": 29,
+  "downloaded_at": "2026-09-20T08:09:07.690845+00:00"
+ },
+ "finnhub:F:2026-08-30:v1": {
+  "articles": 59,
+  "downloaded_at": "2026-09-20T08:09:07.690845+00:00"
+ },
+ "finnhub:F:2026-09-06:v1": {
+  "articles": 70,
+  "downloaded_at": "2026-09-20T08:09:07.690845+00:00"
+ },
+ "finnhub:F:2026-09-13:v1": {
+  "articles": 50,
+  "downloaded_at": "2026-09-20T08:09:07.690845+00:00"
+ },
+ "finnhub:FDX:2026-08-09:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T07:57:43.635463+00:00"
+ },
+ "finnhub:FDX:2026-08-16:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T07:57:43.635463+00:00"
+ },
+ "finnhub:FDX:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T07:57:43.635463+00:00"
+ },
+ "finnhub:FDX:2026-08-30:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T07:57:43.635463+00:00"
+ },
+ "finnhub:FDX:2026-09-06:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T07:57:43.635463+00:00"
+ },
+ "finnhub:FDX:2026-09-13:v1": {
+  "articles": 28,
+  "downloaded_at": "2026-09-20T07:57:43.635463+00:00"
+ },
+ "finnhub:GD:2026-08-09:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:18:46.934815+00:00"
+ },
+ "finnhub:GD:2026-08-16:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:18:46.934815+00:00"
+ },
+ "finnhub:GD:2026-08-23:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:18:46.934815+00:00"
+ },
+ "finnhub:GD:2026-08-30:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:18:46.934815+00:00"
+ },
+ "finnhub:GD:2026-09-06:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:18:46.934815+00:00"
+ },
+ "finnhub:GD:2026-09-13:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:18:46.934815+00:00"
+ },
+ "finnhub:GDX:2026-08-09:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:20:18.376466+00:00"
+ },
+ "finnhub:GDX:2026-08-16:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:20:18.376466+00:00"
+ },
+ "finnhub:GDX:2026-08-23:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:20:18.376466+00:00"
+ },
+ "finnhub:GDX:2026-08-30:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:20:18.376466+00:00"
+ },
+ "finnhub:GDX:2026-09-06:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:20:18.376466+00:00"
+ },
+ "finnhub:GDX:2026-09-13:v1": {
+  "articles": 8,
+  "downloaded_at": "2026-09-20T08:20:18.376466+00:00"
+ },
+ "finnhub:GE:2026-08-09:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:07:50.368883+00:00"
+ },
+ "finnhub:GE:2026-08-16:v1": {
+  "articles": 29,
+  "downloaded_at": "2026-09-20T08:07:50.368883+00:00"
+ },
+ "finnhub:GE:2026-08-23:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:07:50.368883+00:00"
+ },
+ "finnhub:GE:2026-08-30:v1": {
+  "articles": 29,
+  "downloaded_at": "2026-09-20T08:07:50.368883+00:00"
+ },
+ "finnhub:GE:2026-09-06:v1": {
+  "articles": 54,
+  "downloaded_at": "2026-09-20T08:07:50.368883+00:00"
+ },
+ "finnhub:GE:2026-09-13:v1": {
+  "articles": 46,
+  "downloaded_at": "2026-09-20T08:07:50.368883+00:00"
+ },
+ "finnhub:GILD:2026-08-09:v1": {
+  "articles": 21,
+  "downloaded_at": "2026-09-20T08:02:07.647173+00:00"
+ },
+ "finnhub:GILD:2026-08-16:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:02:07.647173+00:00"
+ },
+ "finnhub:GILD:2026-08-23:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:02:07.647173+00:00"
+ },
+ "finnhub:GILD:2026-08-30:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:02:07.647173+00:00"
+ },
+ "finnhub:GILD:2026-09-06:v1": {
+  "articles": 21,
+  "downloaded_at": "2026-09-20T08:02:07.647173+00:00"
+ },
+ "finnhub:GILD:2026-09-13:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:02:07.647173+00:00"
+ },
+ "finnhub:GLD:2026-08-09:v1": {
+  "articles": 27,
+  "downloaded_at": "2026-09-20T08:20:10.630419+00:00"
+ },
+ "finnhub:GLD:2026-08-16:v1": {
+  "articles": 44,
+  "downloaded_at": "2026-09-20T08:20:10.630419+00:00"
+ },
+ "finnhub:GLD:2026-08-23:v1": {
+  "articles": 62,
+  "downloaded_at": "2026-09-20T08:20:10.630419+00:00"
+ },
+ "finnhub:GLD:2026-08-30:v1": {
+  "articles": 48,
+  "downloaded_at": "2026-09-20T08:20:10.630419+00:00"
+ },
+ "finnhub:GLD:2026-09-06:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:20:10.630419+00:00"
+ },
+ "finnhub:GLD:2026-09-13:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T08:20:10.630419+00:00"
+ },
+ "finnhub:GM:2026-08-09:v1": {
+  "articles": 50,
+  "downloaded_at": "2026-09-20T08:09:15.461913+00:00"
+ },
+ "finnhub:GM:2026-08-16:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:09:15.461913+00:00"
+ },
+ "finnhub:GM:2026-08-23:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:09:15.461913+00:00"
+ },
+ "finnhub:GM:2026-08-30:v1": {
+  "articles": 41,
+  "downloaded_at": "2026-09-20T08:09:15.461913+00:00"
+ },
+ "finnhub:GM:2026-09-06:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T08:09:15.461913+00:00"
+ },
+ "finnhub:GM:2026-09-13:v1": {
+  "articles": 68,
+  "downloaded_at": "2026-09-20T08:09:15.461913+00:00"
+ },
+ "finnhub:GOOG:2026-08-09:v1": {
+  "articles": 249,
+  "downloaded_at": "2026-09-20T08:17:01.461971+00:00"
+ },
+ "finnhub:GOOG:2026-08-16:v1": {
+  "articles": 134,
+  "downloaded_at": "2026-09-20T08:17:01.461971+00:00"
+ },
+ "finnhub:GOOG:2026-08-23:v1": {
+  "articles": 110,
+  "downloaded_at": "2026-09-20T08:17:01.461971+00:00"
+ },
+ "finnhub:GOOG:2026-08-30:v1": {
+  "articles": 248,
+  "downloaded_at": "2026-09-20T08:17:01.461971+00:00"
+ },
+ "finnhub:GOOG:2026-09-06:v1": {
+  "articles": 248,
+  "downloaded_at": "2026-09-20T08:17:01.461971+00:00"
+ },
+ "finnhub:GOOG:2026-09-13:v1": {
+  "articles": 249,
+  "downloaded_at": "2026-09-20T08:17:01.461971+00:00"
+ },
+ "finnhub:GOOGL:2026-08-09:v1": {
+  "articles": 245,
+  "downloaded_at": "2026-09-20T08:05:16.017032+00:00"
+ },
+ "finnhub:GOOGL:2026-08-16:v1": {
+  "articles": 138,
+  "downloaded_at": "2026-09-20T08:05:16.017032+00:00"
+ },
+ "finnhub:GOOGL:2026-08-23:v1": {
+  "articles": 119,
+  "downloaded_at": "2026-09-20T08:05:16.017032+00:00"
+ },
+ "finnhub:GOOGL:2026-08-30:v1": {
+  "articles": 245,
+  "downloaded_at": "2026-09-20T08:05:16.017032+00:00"
+ },
+ "finnhub:GOOGL:2026-09-06:v1": {
+  "articles": 247,
+  "downloaded_at": "2026-09-20T08:05:16.017032+00:00"
+ },
+ "finnhub:GOOGL:2026-09-13:v1": {
+  "articles": 249,
+  "downloaded_at": "2026-09-20T08:05:16.017032+00:00"
+ },
+ "finnhub:GS:2026-08-09:v1": {
+  "articles": 82,
+  "downloaded_at": "2026-09-20T07:57:12.738046+00:00"
+ },
+ "finnhub:GS:2026-08-16:v1": {
+  "articles": 45,
+  "downloaded_at": "2026-09-20T07:57:12.738046+00:00"
+ },
+ "finnhub:GS:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T07:57:12.738046+00:00"
+ },
+ "finnhub:GS:2026-08-30:v1": {
+  "articles": 101,
+  "downloaded_at": "2026-09-20T07:57:12.738046+00:00"
+ },
+ "finnhub:GS:2026-09-06:v1": {
+  "articles": 65,
+  "downloaded_at": "2026-09-20T07:57:12.738046+00:00"
+ },
+ "finnhub:GS:2026-09-13:v1": {
+  "articles": 92,
+  "downloaded_at": "2026-09-20T07:57:12.738046+00:00"
+ },
+ "finnhub:HAL:2026-08-09:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:15:48.538092+00:00"
+ },
+ "finnhub:HAL:2026-08-16:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:15:48.538092+00:00"
+ },
+ "finnhub:HAL:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:15:48.538092+00:00"
+ },
+ "finnhub:HAL:2026-08-30:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:15:48.538092+00:00"
+ },
+ "finnhub:HAL:2026-09-06:v1": {
+  "articles": 3,
+  "downloaded_at": "2026-09-20T08:15:48.538092+00:00"
+ },
+ "finnhub:HAL:2026-09-13:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:15:48.538092+00:00"
+ },
+ "finnhub:HD:2026-08-09:v1": {
+  "articles": 66,
+  "downloaded_at": "2026-09-20T07:57:20.469095+00:00"
+ },
+ "finnhub:HD:2026-08-16:v1": {
+  "articles": 87,
+  "downloaded_at": "2026-09-20T07:57:20.469095+00:00"
+ },
+ "finnhub:HD:2026-08-23:v1": {
+  "articles": 27,
+  "downloaded_at": "2026-09-20T07:57:20.469095+00:00"
+ },
+ "finnhub:HD:2026-08-30:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T07:57:20.469095+00:00"
+ },
+ "finnhub:HD:2026-09-06:v1": {
+  "articles": 38,
+  "downloaded_at": "2026-09-20T07:57:20.469095+00:00"
+ },
+ "finnhub:HD:2026-09-13:v1": {
+  "articles": 30,
+  "downloaded_at": "2026-09-20T07:57:20.469095+00:00"
+ },
+ "finnhub:HLT:2026-08-09:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:18:06.166408+00:00"
+ },
+ "finnhub:HLT:2026-08-16:v1": {
+  "articles": 4,
+  "downloaded_at": "2026-09-20T08:18:06.166408+00:00"
+ },
+ "finnhub:HLT:2026-08-23:v1": {
+  "articles": 3,
+  "downloaded_at": "2026-09-20T08:18:06.166408+00:00"
+ },
+ "finnhub:HLT:2026-08-30:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:18:06.166408+00:00"
+ },
+ "finnhub:HLT:2026-09-06:v1": {
+  "articles": 3,
+  "downloaded_at": "2026-09-20T08:18:06.166408+00:00"
+ },
+ "finnhub:HLT:2026-09-13:v1": {
+  "articles": 3,
+  "downloaded_at": "2026-09-20T08:18:06.166408+00:00"
+ },
+ "finnhub:HON:2026-08-09:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T08:07:42.667461+00:00"
+ },
+ "finnhub:HON:2026-08-16:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:07:42.667461+00:00"
+ },
+ "finnhub:HON:2026-08-23:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:07:42.667461+00:00"
+ },
+ "finnhub:HON:2026-08-30:v1": {
+  "articles": 34,
+  "downloaded_at": "2026-09-20T08:07:42.667461+00:00"
+ },
+ "finnhub:HON:2026-09-06:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:07:42.667461+00:00"
+ },
+ "finnhub:HON:2026-09-13:v1": {
+  "articles": 30,
+  "downloaded_at": "2026-09-20T08:07:42.667461+00:00"
+ },
+ "finnhub:HPE:2026-08-09:v1": {
+  "articles": 71,
+  "downloaded_at": "2026-09-20T07:57:59.106196+00:00"
+ },
+ "finnhub:HPE:2026-08-16:v1": {
+  "articles": 28,
+  "downloaded_at": "2026-09-20T07:57:59.106196+00:00"
+ },
+ "finnhub:HPE:2026-08-23:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T07:57:59.106196+00:00"
+ },
+ "finnhub:HPE:2026-08-30:v1": {
+  "articles": 150,
+  "downloaded_at": "2026-09-20T07:57:59.106196+00:00"
+ },
+ "finnhub:HPE:2026-09-06:v1": {
+  "articles": 73,
+  "downloaded_at": "2026-09-20T07:57:59.106196+00:00"
+ },
+ "finnhub:HPE:2026-09-13:v1": {
+  "articles": 83,
+  "downloaded_at": "2026-09-20T07:57:59.106196+00:00"
+ },
+ "finnhub:HPQ:2026-08-09:v1": {
+  "articles": 30,
+  "downloaded_at": "2026-09-20T08:04:22.494321+00:00"
+ },
+ "finnhub:HPQ:2026-08-16:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:04:22.494321+00:00"
+ },
+ "finnhub:HPQ:2026-08-23:v1": {
+  "articles": 66,
+  "downloaded_at": "2026-09-20T08:04:22.494321+00:00"
+ },
+ "finnhub:HPQ:2026-08-30:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:04:22.494321+00:00"
+ },
+ "finnhub:HPQ:2026-09-06:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T08:04:22.494321+00:00"
+ },
+ "finnhub:HPQ:2026-09-13:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:04:22.494321+00:00"
+ },
+ "finnhub:IBM:2026-08-09:v1": {
+  "articles": 53,
+  "downloaded_at": "2026-09-20T08:04:29.469006+00:00"
+ },
+ "finnhub:IBM:2026-08-16:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T08:04:29.469006+00:00"
+ },
+ "finnhub:IBM:2026-08-23:v1": {
+  "articles": 38,
+  "downloaded_at": "2026-09-20T08:04:29.469006+00:00"
+ },
+ "finnhub:IBM:2026-08-30:v1": {
+  "articles": 94,
+  "downloaded_at": "2026-09-20T08:04:29.469006+00:00"
+ },
+ "finnhub:IBM:2026-09-06:v1": {
+  "articles": 69,
+  "downloaded_at": "2026-09-20T08:04:29.469006+00:00"
+ },
+ "finnhub:IBM:2026-09-13:v1": {
+  "articles": 92,
+  "downloaded_at": "2026-09-20T08:04:29.469006+00:00"
+ },
+ "finnhub:ICE:2026-08-09:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:14:58.860503+00:00"
+ },
+ "finnhub:ICE:2026-08-16:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:14:58.860503+00:00"
+ },
+ "finnhub:ICE:2026-08-23:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:14:58.860503+00:00"
+ },
+ "finnhub:ICE:2026-08-30:v1": {
+  "articles": 29,
+  "downloaded_at": "2026-09-20T08:14:58.860503+00:00"
+ },
+ "finnhub:ICE:2026-09-06:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:14:58.860503+00:00"
+ },
+ "finnhub:ICE:2026-09-13:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:14:58.860503+00:00"
+ },
+ "finnhub:INTC:2026-08-09:v1": {
+  "articles": 175,
+  "downloaded_at": "2026-09-20T08:03:41.440630+00:00"
+ },
+ "finnhub:INTC:2026-08-16:v1": {
+  "articles": 66,
+  "downloaded_at": "2026-09-20T08:03:41.440630+00:00"
+ },
+ "finnhub:INTC:2026-08-23:v1": {
+  "articles": 43,
+  "downloaded_at": "2026-09-20T08:03:41.440630+00:00"
+ },
+ "finnhub:INTC:2026-08-30:v1": {
+  "articles": 101,
+  "downloaded_at": "2026-09-20T08:03:41.440630+00:00"
+ },
+ "finnhub:INTC:2026-09-06:v1": {
+  "articles": 174,
+  "downloaded_at": "2026-09-20T08:03:41.440630+00:00"
+ },
+ "finnhub:INTC:2026-09-13:v1": {
+  "articles": 244,
+  "downloaded_at": "2026-09-20T08:03:41.440630+00:00"
+ },
+ "finnhub:JNJ:2026-08-09:v1": {
+  "articles": 56,
+  "downloaded_at": "2026-09-20T08:01:36.731258+00:00"
+ },
+ "finnhub:JNJ:2026-08-16:v1": {
+  "articles": 38,
+  "downloaded_at": "2026-09-20T08:01:36.731258+00:00"
+ },
+ "finnhub:JNJ:2026-08-23:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:01:36.731258+00:00"
+ },
+ "finnhub:JNJ:2026-08-30:v1": {
+  "articles": 56,
+  "downloaded_at": "2026-09-20T08:01:36.731258+00:00"
+ },
+ "finnhub:JNJ:2026-09-06:v1": {
+  "articles": 70,
+  "downloaded_at": "2026-09-20T08:01:36.731258+00:00"
+ },
+ "finnhub:JNJ:2026-09-13:v1": {
+  "articles": 83,
+  "downloaded_at": "2026-09-20T08:01:36.731258+00:00"
+ },
+ "finnhub:JPM:2026-08-09:v1": {
+  "articles": 85,
+  "downloaded_at": "2026-09-20T07:52:45.834251+00:00"
+ },
+ "finnhub:JPM:2026-08-16:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T07:52:45.834251+00:00"
+ },
+ "finnhub:JPM:2026-08-23:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T07:52:45.834251+00:00"
+ },
+ "finnhub:JPM:2026-08-30:v1": {
+  "articles": 102,
+  "downloaded_at": "2026-09-20T07:52:45.834251+00:00"
+ },
+ "finnhub:JPM:2026-09-06:v1": {
+  "articles": 78,
+  "downloaded_at": "2026-09-20T07:52:45.834251+00:00"
+ },
+ "finnhub:JPM:2026-09-13:v1": {
+  "articles": 122,
+  "downloaded_at": "2026-09-20T07:52:45.834251+00:00"
+ },
+ "finnhub:KLAC:2026-08-09:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:16:45.976493+00:00"
+ },
+ "finnhub:KLAC:2026-08-16:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:16:45.976493+00:00"
+ },
+ "finnhub:KLAC:2026-08-23:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:16:45.976493+00:00"
+ },
+ "finnhub:KLAC:2026-08-30:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:16:45.976493+00:00"
+ },
+ "finnhub:KLAC:2026-09-06:v1": {
+  "articles": 21,
+  "downloaded_at": "2026-09-20T08:16:45.976493+00:00"
+ },
+ "finnhub:KLAC:2026-09-13:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:16:45.976493+00:00"
+ },
+ "finnhub:KMB:2026-08-09:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:17:14.655522+00:00"
+ },
+ "finnhub:KMB:2026-08-16:v1": {
+  "articles": 8,
+  "downloaded_at": "2026-09-20T08:17:14.655522+00:00"
+ },
+ "finnhub:KMB:2026-08-23:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:17:14.655522+00:00"
+ },
+ "finnhub:KMB:2026-08-30:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:17:14.655522+00:00"
+ },
+ "finnhub:KMB:2026-09-06:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:17:14.655522+00:00"
+ },
+ "finnhub:KMB:2026-09-13:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:17:14.655522+00:00"
+ },
+ "finnhub:KMI:2026-08-09:v1": {
+  "articles": 21,
+  "downloaded_at": "2026-09-20T08:16:06.262209+00:00"
+ },
+ "finnhub:KMI:2026-08-16:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:16:06.262209+00:00"
+ },
+ "finnhub:KMI:2026-08-23:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:16:06.262209+00:00"
+ },
+ "finnhub:KMI:2026-08-30:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:16:06.262209+00:00"
+ },
+ "finnhub:KMI:2026-09-06:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:16:06.262209+00:00"
+ },
+ "finnhub:KMI:2026-09-13:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:16:06.262209+00:00"
+ },
+ "finnhub:KO:2026-08-09:v1": {
+  "articles": 56,
+  "downloaded_at": "2026-09-20T08:06:02.186783+00:00"
+ },
+ "finnhub:KO:2026-08-16:v1": {
+  "articles": 34,
+  "downloaded_at": "2026-09-20T08:06:02.186783+00:00"
+ },
+ "finnhub:KO:2026-08-23:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:06:02.186783+00:00"
+ },
+ "finnhub:KO:2026-08-30:v1": {
+  "articles": 60,
+  "downloaded_at": "2026-09-20T08:06:02.186783+00:00"
+ },
+ "finnhub:KO:2026-09-06:v1": {
+  "articles": 54,
+  "downloaded_at": "2026-09-20T08:06:02.186783+00:00"
+ },
+ "finnhub:KO:2026-09-13:v1": {
+  "articles": 67,
+  "downloaded_at": "2026-09-20T08:06:02.186783+00:00"
+ },
+ "finnhub:LEN:2026-08-09:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:17:50.610832+00:00"
+ },
+ "finnhub:LEN:2026-08-16:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:17:50.610832+00:00"
+ },
+ "finnhub:LEN:2026-08-23:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:17:50.610832+00:00"
+ },
+ "finnhub:LEN:2026-08-30:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:17:50.610832+00:00"
+ },
+ "finnhub:LEN:2026-09-06:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:17:50.610832+00:00"
+ },
+ "finnhub:LEN:2026-09-13:v1": {
+  "articles": 80,
+  "downloaded_at": "2026-09-20T08:17:50.610832+00:00"
+ },
+ "finnhub:LLY:2026-08-09:v1": {
+  "articles": 71,
+  "downloaded_at": "2026-09-20T07:58:14.548679+00:00"
+ },
+ "finnhub:LLY:2026-08-16:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T07:58:14.548679+00:00"
+ },
+ "finnhub:LLY:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T07:58:14.548679+00:00"
+ },
+ "finnhub:LLY:2026-08-30:v1": {
+  "articles": 76,
+  "downloaded_at": "2026-09-20T07:58:14.548679+00:00"
+ },
+ "finnhub:LLY:2026-09-06:v1": {
+  "articles": 72,
+  "downloaded_at": "2026-09-20T07:58:14.548679+00:00"
+ },
+ "finnhub:LLY:2026-09-13:v1": {
+  "articles": 113,
+  "downloaded_at": "2026-09-20T07:58:14.548679+00:00"
+ },
+ "finnhub:LMT:2026-08-09:v1": {
+  "articles": 45,
+  "downloaded_at": "2026-09-20T08:08:05.827187+00:00"
+ },
+ "finnhub:LMT:2026-08-16:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T08:08:05.827187+00:00"
+ },
+ "finnhub:LMT:2026-08-23:v1": {
+  "articles": 21,
+  "downloaded_at": "2026-09-20T08:08:05.827187+00:00"
+ },
+ "finnhub:LMT:2026-08-30:v1": {
+  "articles": 36,
+  "downloaded_at": "2026-09-20T08:08:05.827187+00:00"
+ },
+ "finnhub:LMT:2026-09-06:v1": {
+  "articles": 58,
+  "downloaded_at": "2026-09-20T08:08:05.827187+00:00"
+ },
+ "finnhub:LMT:2026-09-13:v1": {
+  "articles": 64,
+  "downloaded_at": "2026-09-20T08:08:05.827187+00:00"
+ },
+ "finnhub:LOW:2026-08-09:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T07:57:28.178711+00:00"
+ },
+ "finnhub:LOW:2026-08-16:v1": {
+  "articles": 61,
+  "downloaded_at": "2026-09-20T07:57:28.178711+00:00"
+ },
+ "finnhub:LOW:2026-08-23:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T07:57:28.178711+00:00"
+ },
+ "finnhub:LOW:2026-08-30:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T07:57:28.178711+00:00"
+ },
+ "finnhub:LOW:2026-09-06:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T07:57:28.178711+00:00"
+ },
+ "finnhub:LOW:2026-09-13:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T07:57:28.178711+00:00"
+ },
+ "finnhub:LRCX:2026-08-09:v1": {
+  "articles": 45,
+  "downloaded_at": "2026-09-20T07:52:53.343390+00:00"
+ },
+ "finnhub:LRCX:2026-08-16:v1": {
+  "articles": 35,
+  "downloaded_at": "2026-09-20T07:52:53.343390+00:00"
+ },
+ "finnhub:LRCX:2026-08-23:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T07:52:53.343390+00:00"
+ },
+ "finnhub:LRCX:2026-08-30:v1": {
+  "articles": 37,
+  "downloaded_at": "2026-09-20T07:52:53.343390+00:00"
+ },
+ "finnhub:LRCX:2026-09-06:v1": {
+  "articles": 29,
+  "downloaded_at": "2026-09-20T07:52:53.343390+00:00"
+ },
+ "finnhub:LRCX:2026-09-13:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T07:52:53.343390+00:00"
+ },
+ "finnhub:LUV:2026-08-09:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:19:47.646631+00:00"
+ },
+ "finnhub:LUV:2026-08-16:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T08:19:47.646631+00:00"
+ },
+ "finnhub:LUV:2026-08-23:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T08:19:47.646631+00:00"
+ },
+ "finnhub:LUV:2026-08-30:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:19:47.646631+00:00"
+ },
+ "finnhub:LUV:2026-09-06:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:19:47.646631+00:00"
+ },
+ "finnhub:LUV:2026-09-13:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:19:47.646631+00:00"
+ },
+ "finnhub:MA:2026-08-09:v1": {
+  "articles": 45,
+  "downloaded_at": "2026-09-20T07:59:17.867936+00:00"
+ },
+ "finnhub:MA:2026-08-16:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T07:59:17.867936+00:00"
+ },
+ "finnhub:MA:2026-08-23:v1": {
+  "articles": 35,
+  "downloaded_at": "2026-09-20T07:59:17.867936+00:00"
+ },
+ "finnhub:MA:2026-08-30:v1": {
+  "articles": 32,
+  "downloaded_at": "2026-09-20T07:59:17.867936+00:00"
+ },
+ "finnhub:MA:2026-09-06:v1": {
+  "articles": 46,
+  "downloaded_at": "2026-09-20T07:59:17.867936+00:00"
+ },
+ "finnhub:MA:2026-09-13:v1": {
+  "articles": 58,
+  "downloaded_at": "2026-09-20T07:59:17.867936+00:00"
+ },
+ "finnhub:MAR:2026-08-09:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:17:58.340203+00:00"
+ },
+ "finnhub:MAR:2026-08-16:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:17:58.340203+00:00"
+ },
+ "finnhub:MAR:2026-08-23:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:17:58.340203+00:00"
+ },
+ "finnhub:MAR:2026-08-30:v1": {
+  "articles": 30,
+  "downloaded_at": "2026-09-20T08:17:58.340203+00:00"
+ },
+ "finnhub:MAR:2026-09-06:v1": {
+  "articles": 8,
+  "downloaded_at": "2026-09-20T08:17:58.340203+00:00"
+ },
+ "finnhub:MAR:2026-09-13:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:17:58.340203+00:00"
+ },
+ "finnhub:MCD:2026-08-09:v1": {
+  "articles": 50,
+  "downloaded_at": "2026-09-20T08:07:11.752005+00:00"
+ },
+ "finnhub:MCD:2026-08-16:v1": {
+  "articles": 28,
+  "downloaded_at": "2026-09-20T08:07:11.752005+00:00"
+ },
+ "finnhub:MCD:2026-08-23:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:07:11.752005+00:00"
+ },
+ "finnhub:MCD:2026-08-30:v1": {
+  "articles": 36,
+  "downloaded_at": "2026-09-20T08:07:11.752005+00:00"
+ },
+ "finnhub:MCD:2026-09-06:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T08:07:11.752005+00:00"
+ },
+ "finnhub:MCD:2026-09-13:v1": {
+  "articles": 76,
+  "downloaded_at": "2026-09-20T08:07:11.752005+00:00"
+ },
+ "finnhub:MCO:2026-08-09:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:14:51.202460+00:00"
+ },
+ "finnhub:MCO:2026-08-16:v1": {
+  "articles": 4,
+  "downloaded_at": "2026-09-20T08:14:51.202460+00:00"
+ },
+ "finnhub:MCO:2026-08-23:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:14:51.202460+00:00"
+ },
+ "finnhub:MCO:2026-08-30:v1": {
+  "articles": 8,
+  "downloaded_at": "2026-09-20T08:14:51.202460+00:00"
+ },
+ "finnhub:MCO:2026-09-06:v1": {
+  "articles": 3,
+  "downloaded_at": "2026-09-20T08:14:51.202460+00:00"
+ },
+ "finnhub:MCO:2026-09-13:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:14:51.202460+00:00"
+ },
+ "finnhub:MDLZ:2026-08-09:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:06:25.365566+00:00"
+ },
+ "finnhub:MDLZ:2026-08-16:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:06:25.365566+00:00"
+ },
+ "finnhub:MDLZ:2026-08-23:v1": {
+  "articles": 21,
+  "downloaded_at": "2026-09-20T08:06:25.365566+00:00"
+ },
+ "finnhub:MDLZ:2026-08-30:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:06:25.365566+00:00"
+ },
+ "finnhub:MDLZ:2026-09-06:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:06:25.365566+00:00"
+ },
+ "finnhub:MDLZ:2026-09-13:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:06:25.365566+00:00"
+ },
+ "finnhub:MDT:2026-08-09:v1": {
+  "articles": 34,
+  "downloaded_at": "2026-09-20T08:02:54.007060+00:00"
+ },
+ "finnhub:MDT:2026-08-16:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:02:54.007060+00:00"
+ },
+ "finnhub:MDT:2026-08-23:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:02:54.007060+00:00"
+ },
+ "finnhub:MDT:2026-08-30:v1": {
+  "articles": 84,
+  "downloaded_at": "2026-09-20T08:02:54.007060+00:00"
+ },
+ "finnhub:MDT:2026-09-06:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:02:54.007060+00:00"
+ },
+ "finnhub:MDT:2026-09-13:v1": {
+  "articles": 36,
+  "downloaded_at": "2026-09-20T08:02:54.007060+00:00"
+ },
+ "finnhub:MET:2026-08-09:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T07:59:48.581845+00:00"
+ },
+ "finnhub:MET:2026-08-16:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T07:59:48.581845+00:00"
+ },
+ "finnhub:MET:2026-08-23:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T07:59:48.581845+00:00"
+ },
+ "finnhub:MET:2026-08-30:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T07:59:48.581845+00:00"
+ },
+ "finnhub:MET:2026-09-06:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T07:59:48.581845+00:00"
+ },
+ "finnhub:MET:2026-09-13:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T07:59:48.581845+00:00"
+ },
+ "finnhub:META:2026-08-09:v1": {
+  "articles": 248,
+  "downloaded_at": "2026-09-20T08:05:23.548927+00:00"
+ },
+ "finnhub:META:2026-08-16:v1": {
+  "articles": 130,
+  "downloaded_at": "2026-09-20T08:05:23.548927+00:00"
+ },
+ "finnhub:META:2026-08-23:v1": {
+  "articles": 118,
+  "downloaded_at": "2026-09-20T08:05:23.548927+00:00"
+ },
+ "finnhub:META:2026-08-30:v1": {
+  "articles": 233,
+  "downloaded_at": "2026-09-20T08:05:23.548927+00:00"
+ },
+ "finnhub:META:2026-09-06:v1": {
+  "articles": 249,
+  "downloaded_at": "2026-09-20T08:05:23.548927+00:00"
+ },
+ "finnhub:META:2026-09-13:v1": {
+  "articles": 247,
+  "downloaded_at": "2026-09-20T08:05:23.548927+00:00"
+ },
+ "finnhub:MMM:2026-08-09:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:08:21.312347+00:00"
+ },
+ "finnhub:MMM:2026-08-16:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:08:21.312347+00:00"
+ },
+ "finnhub:MMM:2026-08-23:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:08:21.312347+00:00"
+ },
+ "finnhub:MMM:2026-08-30:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:08:21.312347+00:00"
+ },
+ "finnhub:MMM:2026-09-06:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:08:21.312347+00:00"
+ },
+ "finnhub:MMM:2026-09-13:v1": {
+  "articles": 21,
+  "downloaded_at": "2026-09-20T08:08:21.312347+00:00"
+ },
+ "finnhub:MO:2026-08-09:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:17:23.539969+00:00"
+ },
+ "finnhub:MO:2026-08-16:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:17:23.539969+00:00"
+ },
+ "finnhub:MO:2026-08-23:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:17:23.539969+00:00"
+ },
+ "finnhub:MO:2026-08-30:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:17:23.539969+00:00"
+ },
+ "finnhub:MO:2026-09-06:v1": {
+  "articles": 27,
+  "downloaded_at": "2026-09-20T08:17:23.539969+00:00"
+ },
+ "finnhub:MO:2026-09-13:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:17:23.539969+00:00"
+ },
+ "finnhub:MPC:2026-08-09:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:01:05.894145+00:00"
+ },
+ "finnhub:MPC:2026-08-16:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:01:05.894145+00:00"
+ },
+ "finnhub:MPC:2026-08-23:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:01:05.894145+00:00"
+ },
+ "finnhub:MPC:2026-08-30:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:01:05.894145+00:00"
+ },
+ "finnhub:MPC:2026-09-06:v1": {
+  "articles": 30,
+  "downloaded_at": "2026-09-20T08:01:05.894145+00:00"
+ },
+ "finnhub:MPC:2026-09-13:v1": {
+  "articles": 36,
+  "downloaded_at": "2026-09-20T08:01:05.894145+00:00"
+ },
+ "finnhub:MRK:2026-08-09:v1": {
+  "articles": 52,
+  "downloaded_at": "2026-09-20T08:01:29.101518+00:00"
+ },
+ "finnhub:MRK:2026-08-16:v1": {
+  "articles": 92,
+  "downloaded_at": "2026-09-20T08:01:29.101518+00:00"
+ },
+ "finnhub:MRK:2026-08-23:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T08:01:29.101518+00:00"
+ },
+ "finnhub:MRK:2026-08-30:v1": {
+  "articles": 63,
+  "downloaded_at": "2026-09-20T08:01:29.101518+00:00"
+ },
+ "finnhub:MRK:2026-09-06:v1": {
+  "articles": 62,
+  "downloaded_at": "2026-09-20T08:01:29.101518+00:00"
+ },
+ "finnhub:MRK:2026-09-13:v1": {
+  "articles": 61,
+  "downloaded_at": "2026-09-20T08:01:29.101518+00:00"
+ },
+ "finnhub:MS:2026-08-09:v1": {
+  "articles": 46,
+  "downloaded_at": "2026-09-20T07:58:39.023125+00:00"
+ },
+ "finnhub:MS:2026-08-16:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T07:58:39.023125+00:00"
+ },
+ "finnhub:MS:2026-08-23:v1": {
+  "articles": 8,
+  "downloaded_at": "2026-09-20T07:58:39.023125+00:00"
+ },
+ "finnhub:MS:2026-08-30:v1": {
+  "articles": 60,
+  "downloaded_at": "2026-09-20T07:58:39.023125+00:00"
+ },
+ "finnhub:MS:2026-09-06:v1": {
+  "articles": 47,
+  "downloaded_at": "2026-09-20T07:58:39.023125+00:00"
+ },
+ "finnhub:MS:2026-09-13:v1": {
+  "articles": 65,
+  "downloaded_at": "2026-09-20T07:58:39.023125+00:00"
+ },
+ "finnhub:MSFT:2026-08-09:v1": {
+  "articles": 249,
+  "downloaded_at": "2026-09-20T08:05:08.100953+00:00"
+ },
+ "finnhub:MSFT:2026-08-16:v1": {
+  "articles": 107,
+  "downloaded_at": "2026-09-20T08:05:08.100953+00:00"
+ },
+ "finnhub:MSFT:2026-08-23:v1": {
+  "articles": 102,
+  "downloaded_at": "2026-09-20T08:05:08.100953+00:00"
+ },
+ "finnhub:MSFT:2026-08-30:v1": {
+  "articles": 244,
+  "downloaded_at": "2026-09-20T08:05:08.100953+00:00"
+ },
+ "finnhub:MSFT:2026-09-06:v1": {
+  "articles": 249,
+  "downloaded_at": "2026-09-20T08:05:08.100953+00:00"
+ },
+ "finnhub:MSFT:2026-09-13:v1": {
+  "articles": 250,
+  "downloaded_at": "2026-09-20T08:05:08.100953+00:00"
+ },
+ "finnhub:MU:2026-08-09:v1": {
+  "articles": 181,
+  "downloaded_at": "2026-09-20T08:03:49.192261+00:00"
+ },
+ "finnhub:MU:2026-08-16:v1": {
+  "articles": 108,
+  "downloaded_at": "2026-09-20T08:03:49.192261+00:00"
+ },
+ "finnhub:MU:2026-08-23:v1": {
+  "articles": 78,
+  "downloaded_at": "2026-09-20T08:03:49.192261+00:00"
+ },
+ "finnhub:MU:2026-08-30:v1": {
+  "articles": 194,
+  "downloaded_at": "2026-09-20T08:03:49.192261+00:00"
+ },
+ "finnhub:MU:2026-09-06:v1": {
+  "articles": 194,
+  "downloaded_at": "2026-09-20T08:03:49.192261+00:00"
+ },
+ "finnhub:MU:2026-09-13:v1": {
+  "articles": 242,
+  "downloaded_at": "2026-09-20T08:03:49.192261+00:00"
+ },
+ "finnhub:NEE:2026-08-09:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:09:47.044191+00:00"
+ },
+ "finnhub:NEE:2026-08-16:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:09:47.044191+00:00"
+ },
+ "finnhub:NEE:2026-08-23:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:09:47.044191+00:00"
+ },
+ "finnhub:NEE:2026-08-30:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:09:47.044191+00:00"
+ },
+ "finnhub:NEE:2026-09-06:v1": {
+  "articles": 29,
+  "downloaded_at": "2026-09-20T08:09:47.044191+00:00"
+ },
+ "finnhub:NEE:2026-09-13:v1": {
+  "articles": 27,
+  "downloaded_at": "2026-09-20T08:09:47.044191+00:00"
+ },
+ "finnhub:NFLX:2026-08-09:v1": {
+  "articles": 80,
+  "downloaded_at": "2026-09-20T08:05:54.544026+00:00"
+ },
+ "finnhub:NFLX:2026-08-16:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T08:05:54.544026+00:00"
+ },
+ "finnhub:NFLX:2026-08-23:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:05:54.544026+00:00"
+ },
+ "finnhub:NFLX:2026-08-30:v1": {
+  "articles": 68,
+  "downloaded_at": "2026-09-20T08:05:54.544026+00:00"
+ },
+ "finnhub:NFLX:2026-09-06:v1": {
+  "articles": 41,
+  "downloaded_at": "2026-09-20T08:05:54.544026+00:00"
+ },
+ "finnhub:NFLX:2026-09-13:v1": {
+  "articles": 95,
+  "downloaded_at": "2026-09-20T08:05:54.544026+00:00"
+ },
+ "finnhub:NKE:2026-08-09:v1": {
+  "articles": 45,
+  "downloaded_at": "2026-09-20T08:06:56.286083+00:00"
+ },
+ "finnhub:NKE:2026-08-16:v1": {
+  "articles": 35,
+  "downloaded_at": "2026-09-20T08:06:56.286083+00:00"
+ },
+ "finnhub:NKE:2026-08-23:v1": {
+  "articles": 41,
+  "downloaded_at": "2026-09-20T08:06:56.286083+00:00"
+ },
+ "finnhub:NKE:2026-08-30:v1": {
+  "articles": 70,
+  "downloaded_at": "2026-09-20T08:06:56.286083+00:00"
+ },
+ "finnhub:NKE:2026-09-06:v1": {
+  "articles": 74,
+  "downloaded_at": "2026-09-20T08:06:56.286083+00:00"
+ },
+ "finnhub:NKE:2026-09-13:v1": {
+  "articles": 91,
+  "downloaded_at": "2026-09-20T08:06:56.286083+00:00"
+ },
+ "finnhub:NOC:2026-08-09:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:18:39.181262+00:00"
+ },
+ "finnhub:NOC:2026-08-16:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:18:39.181262+00:00"
+ },
+ "finnhub:NOC:2026-08-23:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:18:39.181262+00:00"
+ },
+ "finnhub:NOC:2026-08-30:v1": {
+  "articles": 21,
+  "downloaded_at": "2026-09-20T08:18:39.181262+00:00"
+ },
+ "finnhub:NOC:2026-09-06:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:18:39.181262+00:00"
+ },
+ "finnhub:NOC:2026-09-13:v1": {
+  "articles": 38,
+  "downloaded_at": "2026-09-20T08:18:39.181262+00:00"
+ },
+ "finnhub:NSC:2026-08-09:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:19:31.058949+00:00"
+ },
+ "finnhub:NSC:2026-08-16:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:19:31.058949+00:00"
+ },
+ "finnhub:NSC:2026-08-23:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:19:31.058949+00:00"
+ },
+ "finnhub:NSC:2026-08-30:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T08:19:31.058949+00:00"
+ },
+ "finnhub:NSC:2026-09-06:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:19:31.058949+00:00"
+ },
+ "finnhub:NSC:2026-09-13:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:19:31.058949+00:00"
+ },
+ "finnhub:NVDA:2026-08-09:v1": {
+  "articles": 248,
+  "downloaded_at": "2026-09-20T07:57:51.363840+00:00"
+ },
+ "finnhub:NVDA:2026-08-16:v1": {
+  "articles": 214,
+  "downloaded_at": "2026-09-20T07:57:51.363840+00:00"
+ },
+ "finnhub:NVDA:2026-08-23:v1": {
+  "articles": 246,
+  "downloaded_at": "2026-09-20T07:57:51.363840+00:00"
+ },
+ "finnhub:NVDA:2026-08-30:v1": {
+  "articles": 248,
+  "downloaded_at": "2026-09-20T07:57:51.363840+00:00"
+ },
+ "finnhub:NVDA:2026-09-06:v1": {
+  "articles": 249,
+  "downloaded_at": "2026-09-20T07:57:51.363840+00:00"
+ },
+ "finnhub:NVDA:2026-09-13:v1": {
+  "articles": 249,
+  "downloaded_at": "2026-09-20T07:57:51.363840+00:00"
+ },
+ "finnhub:NVO:2026-08-09:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T07:58:06.821258+00:00"
+ },
+ "finnhub:NVO:2026-08-16:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T07:58:06.821258+00:00"
+ },
+ "finnhub:NVO:2026-08-23:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T07:58:06.821258+00:00"
+ },
+ "finnhub:NVO:2026-08-30:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T07:58:06.821258+00:00"
+ },
+ "finnhub:NVO:2026-09-06:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T07:58:06.821258+00:00"
+ },
+ "finnhub:NVO:2026-09-13:v1": {
+  "articles": 91,
+  "downloaded_at": "2026-09-20T07:58:06.821258+00:00"
+ },
+ "finnhub:ORCL:2026-08-09:v1": {
+  "articles": 122,
+  "downloaded_at": "2026-09-20T08:04:44.897268+00:00"
+ },
+ "finnhub:ORCL:2026-08-16:v1": {
+  "articles": 42,
+  "downloaded_at": "2026-09-20T08:04:44.897268+00:00"
+ },
+ "finnhub:ORCL:2026-08-23:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T08:04:44.897268+00:00"
+ },
+ "finnhub:ORCL:2026-08-30:v1": {
+  "articles": 163,
+  "downloaded_at": "2026-09-20T08:04:44.897268+00:00"
+ },
+ "finnhub:ORCL:2026-09-06:v1": {
+  "articles": 246,
+  "downloaded_at": "2026-09-20T08:04:44.897268+00:00"
+ },
+ "finnhub:ORCL:2026-09-13:v1": {
+  "articles": 210,
+  "downloaded_at": "2026-09-20T08:04:44.897268+00:00"
+ },
+ "finnhub:OXY:2026-08-09:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:00:58.108581+00:00"
+ },
+ "finnhub:OXY:2026-08-16:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:00:58.108581+00:00"
+ },
+ "finnhub:OXY:2026-08-23:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:00:58.108581+00:00"
+ },
+ "finnhub:OXY:2026-08-30:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:00:58.108581+00:00"
+ },
+ "finnhub:OXY:2026-09-06:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:00:58.108581+00:00"
+ },
+ "finnhub:OXY:2026-09-13:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:00:58.108581+00:00"
+ },
+ "finnhub:PEP:2026-08-09:v1": {
+  "articles": 28,
+  "downloaded_at": "2026-09-20T07:57:35.922092+00:00"
+ },
+ "finnhub:PEP:2026-08-16:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T07:57:35.922092+00:00"
+ },
+ "finnhub:PEP:2026-08-23:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T07:57:35.922092+00:00"
+ },
+ "finnhub:PEP:2026-08-30:v1": {
+  "articles": 30,
+  "downloaded_at": "2026-09-20T07:57:35.922092+00:00"
+ },
+ "finnhub:PEP:2026-09-06:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T07:57:35.922092+00:00"
+ },
+ "finnhub:PEP:2026-09-13:v1": {
+  "articles": 42,
+  "downloaded_at": "2026-09-20T07:57:35.922092+00:00"
+ },
+ "finnhub:PFE:2026-08-09:v1": {
+  "articles": 49,
+  "downloaded_at": "2026-09-20T08:01:21.289090+00:00"
+ },
+ "finnhub:PFE:2026-08-16:v1": {
+  "articles": 35,
+  "downloaded_at": "2026-09-20T08:01:21.289090+00:00"
+ },
+ "finnhub:PFE:2026-08-23:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:01:21.289090+00:00"
+ },
+ "finnhub:PFE:2026-08-30:v1": {
+  "articles": 107,
+  "downloaded_at": "2026-09-20T08:01:21.289090+00:00"
+ },
+ "finnhub:PFE:2026-09-06:v1": {
+  "articles": 39,
+  "downloaded_at": "2026-09-20T08:01:21.289090+00:00"
+ },
+ "finnhub:PFE:2026-09-13:v1": {
+  "articles": 53,
+  "downloaded_at": "2026-09-20T08:01:21.289090+00:00"
+ },
+ "finnhub:PG:2026-08-09:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:06:09.937326+00:00"
+ },
+ "finnhub:PG:2026-08-16:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:06:09.937326+00:00"
+ },
+ "finnhub:PG:2026-08-23:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:06:09.937326+00:00"
+ },
+ "finnhub:PG:2026-08-30:v1": {
+  "articles": 55,
+  "downloaded_at": "2026-09-20T08:06:09.937326+00:00"
+ },
+ "finnhub:PG:2026-09-06:v1": {
+  "articles": 29,
+  "downloaded_at": "2026-09-20T08:06:09.937326+00:00"
+ },
+ "finnhub:PG:2026-09-13:v1": {
+  "articles": 34,
+  "downloaded_at": "2026-09-20T08:06:09.937326+00:00"
+ },
+ "finnhub:PGR:2026-08-09:v1": {
+  "articles": 8,
+  "downloaded_at": "2026-09-20T08:00:11.839232+00:00"
+ },
+ "finnhub:PGR:2026-08-16:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:00:11.839232+00:00"
+ },
+ "finnhub:PGR:2026-08-23:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:00:11.839232+00:00"
+ },
+ "finnhub:PGR:2026-08-30:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:00:11.839232+00:00"
+ },
+ "finnhub:PGR:2026-09-06:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:00:11.839232+00:00"
+ },
+ "finnhub:PGR:2026-09-13:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:00:11.839232+00:00"
+ },
+ "finnhub:PM:2026-08-09:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T08:17:32.601977+00:00"
+ },
+ "finnhub:PM:2026-08-16:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:17:32.601977+00:00"
+ },
+ "finnhub:PM:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:17:32.601977+00:00"
+ },
+ "finnhub:PM:2026-08-30:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:17:32.601977+00:00"
+ },
+ "finnhub:PM:2026-09-06:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:17:32.601977+00:00"
+ },
+ "finnhub:PM:2026-09-13:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:17:32.601977+00:00"
+ },
+ "finnhub:PNC:2026-08-09:v1": {
+  "articles": 4,
+  "downloaded_at": "2026-09-20T07:58:54.677390+00:00"
+ },
+ "finnhub:PNC:2026-08-16:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T07:58:54.677390+00:00"
+ },
+ "finnhub:PNC:2026-08-23:v1": {
+  "articles": 2,
+  "downloaded_at": "2026-09-20T07:58:54.677390+00:00"
+ },
+ "finnhub:PNC:2026-08-30:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T07:58:54.677390+00:00"
+ },
+ "finnhub:PNC:2026-09-06:v1": {
+  "articles": 3,
+  "downloaded_at": "2026-09-20T07:58:54.677390+00:00"
+ },
+ "finnhub:PNC:2026-09-13:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T07:58:54.677390+00:00"
+ },
+ "finnhub:PPG:2026-08-09:v1": {
+  "articles": 2,
+  "downloaded_at": "2026-09-20T08:19:20.032482+00:00"
+ },
+ "finnhub:PPG:2026-08-16:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:19:20.032482+00:00"
+ },
+ "finnhub:PPG:2026-08-23:v1": {
+  "articles": 2,
+  "downloaded_at": "2026-09-20T08:19:20.032482+00:00"
+ },
+ "finnhub:PPG:2026-08-30:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:19:20.032482+00:00"
+ },
+ "finnhub:PPG:2026-09-06:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T08:19:20.032482+00:00"
+ },
+ "finnhub:PPG:2026-09-13:v1": {
+  "articles": 4,
+  "downloaded_at": "2026-09-20T08:19:20.032482+00:00"
+ },
+ "finnhub:PSX:2026-08-09:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:01:13.542464+00:00"
+ },
+ "finnhub:PSX:2026-08-16:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:01:13.542464+00:00"
+ },
+ "finnhub:PSX:2026-08-23:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:01:13.542464+00:00"
+ },
+ "finnhub:PSX:2026-08-30:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:01:13.542464+00:00"
+ },
+ "finnhub:PSX:2026-09-06:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:01:13.542464+00:00"
+ },
+ "finnhub:PSX:2026-09-13:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:01:13.542464+00:00"
+ },
+ "finnhub:PYPL:2026-08-09:v1": {
+  "articles": 28,
+  "downloaded_at": "2026-09-20T07:59:33.082301+00:00"
+ },
+ "finnhub:PYPL:2026-08-16:v1": {
+  "articles": 44,
+  "downloaded_at": "2026-09-20T07:59:33.082301+00:00"
+ },
+ "finnhub:PYPL:2026-08-23:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T07:59:33.082301+00:00"
+ },
+ "finnhub:PYPL:2026-08-30:v1": {
+  "articles": 45,
+  "downloaded_at": "2026-09-20T07:59:33.082301+00:00"
+ },
+ "finnhub:PYPL:2026-09-06:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T07:59:33.082301+00:00"
+ },
+ "finnhub:PYPL:2026-09-13:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T07:59:33.082301+00:00"
+ },
+ "finnhub:QCOM:2026-08-09:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T08:03:33.857795+00:00"
+ },
+ "finnhub:QCOM:2026-08-16:v1": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:03:33.857795+00:00"
+ },
+ "finnhub:QCOM:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:03:33.857795+00:00"
+ },
+ "finnhub:QCOM:2026-08-30:v1": {
+  "articles": 49,
+  "downloaded_at": "2026-09-20T08:03:33.857795+00:00"
+ },
+ "finnhub:QCOM:2026-09-06:v1": {
+  "articles": 129,
+  "downloaded_at": "2026-09-20T08:03:33.857795+00:00"
+ },
+ "finnhub:QCOM:2026-09-13:v1": {
+  "articles": 79,
+  "downloaded_at": "2026-09-20T08:03:33.857795+00:00"
+ },
+ "finnhub:RCL:2026-08-09:v1": {
+  "articles": 8,
+  "downloaded_at": "2026-09-20T08:18:21.512335+00:00"
+ },
+ "finnhub:RCL:2026-08-16:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:18:21.512335+00:00"
+ },
+ "finnhub:RCL:2026-08-23:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:18:21.512335+00:00"
+ },
+ "finnhub:RCL:2026-08-30:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:18:21.512335+00:00"
+ },
+ "finnhub:RCL:2026-09-06:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:18:21.512335+00:00"
+ },
+ "finnhub:RCL:2026-09-13:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:18:21.512335+00:00"
+ },
+ "finnhub:RTX:2026-08-09:v1": {
+  "articles": 30,
+  "downloaded_at": "2026-09-20T08:07:58.105214+00:00"
+ },
+ "finnhub:RTX:2026-08-16:v1": {
+  "articles": 30,
+  "downloaded_at": "2026-09-20T08:07:58.105214+00:00"
+ },
+ "finnhub:RTX:2026-08-23:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:07:58.105214+00:00"
+ },
+ "finnhub:RTX:2026-08-30:v1": {
+  "articles": 29,
+  "downloaded_at": "2026-09-20T08:07:58.105214+00:00"
+ },
+ "finnhub:RTX:2026-09-06:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:07:58.105214+00:00"
+ },
+ "finnhub:RTX:2026-09-13:v1": {
+  "articles": 54,
+  "downloaded_at": "2026-09-20T08:07:58.105214+00:00"
+ },
+ "finnhub:SBUX:2026-08-09:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:07:04.023536+00:00"
+ },
+ "finnhub:SBUX:2026-08-16:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:07:04.023536+00:00"
+ },
+ "finnhub:SBUX:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:07:04.023536+00:00"
+ },
+ "finnhub:SBUX:2026-08-30:v1": {
+  "articles": 53,
+  "downloaded_at": "2026-09-20T08:07:04.023536+00:00"
+ },
+ "finnhub:SBUX:2026-09-06:v1": {
+  "articles": 27,
+  "downloaded_at": "2026-09-20T08:07:04.023536+00:00"
+ },
+ "finnhub:SBUX:2026-09-13:v1": {
+  "articles": 41,
+  "downloaded_at": "2026-09-20T08:07:04.023536+00:00"
+ },
+ "finnhub:SCHW:2026-08-09:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T07:59:02.183215+00:00"
+ },
+ "finnhub:SCHW:2026-08-16:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T07:59:02.183215+00:00"
+ },
+ "finnhub:SCHW:2026-08-23:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T07:59:02.183215+00:00"
+ },
+ "finnhub:SCHW:2026-08-30:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T07:59:02.183215+00:00"
+ },
+ "finnhub:SCHW:2026-09-06:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T07:59:02.183215+00:00"
+ },
+ "finnhub:SCHW:2026-09-13:v1": {
+  "articles": 32,
+  "downloaded_at": "2026-09-20T07:59:02.183215+00:00"
+ },
+ "finnhub:SHEL:2026-08-09:v1": {
+  "articles": 2,
+  "downloaded_at": "2026-09-20T08:15:28.659578+00:00"
+ },
+ "finnhub:SHEL:2026-08-16:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:15:28.659578+00:00"
+ },
+ "finnhub:SHEL:2026-08-23:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:15:28.659578+00:00"
+ },
+ "finnhub:SHEL:2026-08-30:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:15:28.659578+00:00"
+ },
+ "finnhub:SHEL:2026-09-06:v1": {
+  "articles": 41,
+  "downloaded_at": "2026-09-20T08:15:28.659578+00:00"
+ },
+ "finnhub:SHEL:2026-09-13:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:15:28.659578+00:00"
+ },
+ "finnhub:SHW:2026-08-09:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:19:12.429933+00:00"
+ },
+ "finnhub:SHW:2026-08-16:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T08:19:12.429933+00:00"
+ },
+ "finnhub:SHW:2026-08-23:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:19:12.429933+00:00"
+ },
+ "finnhub:SHW:2026-08-30:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:19:12.429933+00:00"
+ },
+ "finnhub:SHW:2026-09-06:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:19:12.429933+00:00"
+ },
+ "finnhub:SHW:2026-09-13:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:19:12.429933+00:00"
+ },
+ "finnhub:SLB:2026-08-09:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T08:00:50.429287+00:00"
+ },
+ "finnhub:SLB:2026-08-16:v1": {
+  "articles": 8,
+  "downloaded_at": "2026-09-20T08:00:50.429287+00:00"
+ },
+ "finnhub:SLB:2026-08-23:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:00:50.429287+00:00"
+ },
+ "finnhub:SLB:2026-08-30:v1": {
+  "articles": 41,
+  "downloaded_at": "2026-09-20T08:00:50.429287+00:00"
+ },
+ "finnhub:SLB:2026-09-06:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T08:00:50.429287+00:00"
+ },
+ "finnhub:SLB:2026-09-13:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:00:50.429287+00:00"
+ },
+ "finnhub:SLV:2026-08-09:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:20:26.283344+00:00"
+ },
+ "finnhub:SLV:2026-08-16:v1": {
+  "articles": 8,
+  "downloaded_at": "2026-09-20T08:20:26.283344+00:00"
+ },
+ "finnhub:SLV:2026-08-23:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:20:26.283344+00:00"
+ },
+ "finnhub:SLV:2026-08-30:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:20:26.283344+00:00"
+ },
+ "finnhub:SLV:2026-09-06:v1": {
+  "articles": 7,
+  "downloaded_at": "2026-09-20T08:20:26.283344+00:00"
+ },
+ "finnhub:SLV:2026-09-13:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:20:26.283344+00:00"
+ },
+ "finnhub:SO:2026-08-09:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:20:03.086802+00:00"
+ },
+ "finnhub:SO:2026-08-16:v1": {
+  "articles": 5,
+  "downloaded_at": "2026-09-20T08:20:03.086802+00:00"
+ },
+ "finnhub:SO:2026-08-23:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:20:03.086802+00:00"
+ },
+ "finnhub:SO:2026-08-30:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:20:03.086802+00:00"
+ },
+ "finnhub:SO:2026-09-06:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:20:03.086802+00:00"
+ },
+ "finnhub:SO:2026-09-13:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:20:03.086802+00:00"
+ },
+ "finnhub:SPGI:2026-08-09:v1": {
+  "articles": 28,
+  "downloaded_at": "2026-09-20T08:14:43.420799+00:00"
+ },
+ "finnhub:SPGI:2026-08-16:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:14:43.420799+00:00"
+ },
+ "finnhub:SPGI:2026-08-23:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:14:43.420799+00:00"
+ },
+ "finnhub:SPGI:2026-08-30:v1": {
+  "articles": 39,
+  "downloaded_at": "2026-09-20T08:14:43.420799+00:00"
+ },
+ "finnhub:SPGI:2026-09-06:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T08:14:43.420799+00:00"
+ },
+ "finnhub:SPGI:2026-09-13:v1": {
+  "articles": 47,
+  "downloaded_at": "2026-09-20T08:14:43.420799+00:00"
+ },
+ "finnhub:T:2026-08-09:v1": {
+  "articles": 50,
+  "downloaded_at": "2026-09-20T08:09:32.348261+00:00"
+ },
+ "finnhub:T:2026-08-16:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:09:32.348261+00:00"
+ },
+ "finnhub:T:2026-08-23:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:09:32.348261+00:00"
+ },
+ "finnhub:T:2026-08-30:v1": {
+  "articles": 43,
+  "downloaded_at": "2026-09-20T08:09:32.348261+00:00"
+ },
+ "finnhub:T:2026-09-06:v1": {
+  "articles": 64,
+  "downloaded_at": "2026-09-20T08:09:32.348261+00:00"
+ },
+ "finnhub:T:2026-09-13:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T08:09:32.348261+00:00"
+ },
+ "finnhub:TFC:2026-08-09:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:14:31.279162+00:00"
+ },
+ "finnhub:TFC:2026-08-16:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T08:14:31.279162+00:00"
+ },
+ "finnhub:TFC:2026-08-23:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:14:31.279162+00:00"
+ },
+ "finnhub:TFC:2026-08-30:v1": {
+  "articles": 77,
+  "downloaded_at": "2026-09-20T08:14:31.279162+00:00"
+ },
+ "finnhub:TFC:2026-09-06:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:14:31.279162+00:00"
+ },
+ "finnhub:TFC:2026-09-13:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T08:14:31.279162+00:00"
+ },
+ "finnhub:TGT:2026-08-09:v1": {
+  "articles": 62,
+  "downloaded_at": "2026-09-20T08:06:48.600165+00:00"
+ },
+ "finnhub:TGT:2026-08-16:v1": {
+  "articles": 85,
+  "downloaded_at": "2026-09-20T08:06:48.600165+00:00"
+ },
+ "finnhub:TGT:2026-08-23:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:06:48.600165+00:00"
+ },
+ "finnhub:TGT:2026-08-30:v1": {
+  "articles": 57,
+  "downloaded_at": "2026-09-20T08:06:48.600165+00:00"
+ },
+ "finnhub:TGT:2026-09-06:v1": {
+  "articles": 42,
+  "downloaded_at": "2026-09-20T08:06:48.600165+00:00"
+ },
+ "finnhub:TGT:2026-09-13:v1": {
+  "articles": 63,
+  "downloaded_at": "2026-09-20T08:06:48.600165+00:00"
+ },
+ "finnhub:TMO:2026-08-09:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:03:01.728699+00:00"
+ },
+ "finnhub:TMO:2026-08-16:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:03:01.728699+00:00"
+ },
+ "finnhub:TMO:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:03:01.728699+00:00"
+ },
+ "finnhub:TMO:2026-08-30:v1": {
+  "articles": 39,
+  "downloaded_at": "2026-09-20T08:03:01.728699+00:00"
+ },
+ "finnhub:TMO:2026-09-06:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:03:01.728699+00:00"
+ },
+ "finnhub:TMO:2026-09-13:v1": {
+  "articles": 21,
+  "downloaded_at": "2026-09-20T08:03:01.728699+00:00"
+ },
+ "finnhub:TSLA:2026-08-09:v1": {
+  "articles": 159,
+  "downloaded_at": "2026-09-20T08:09:23.109158+00:00"
+ },
+ "finnhub:TSLA:2026-08-16:v1": {
+  "articles": 92,
+  "downloaded_at": "2026-09-20T08:09:23.109158+00:00"
+ },
+ "finnhub:TSLA:2026-08-23:v1": {
+  "articles": 65,
+  "downloaded_at": "2026-09-20T08:09:23.109158+00:00"
+ },
+ "finnhub:TSLA:2026-08-30:v1": {
+  "articles": 242,
+  "downloaded_at": "2026-09-20T08:09:23.109158+00:00"
+ },
+ "finnhub:TSLA:2026-09-06:v1": {
+  "articles": 205,
+  "downloaded_at": "2026-09-20T08:09:23.109158+00:00"
+ },
+ "finnhub:TSLA:2026-09-13:v1": {
+  "articles": 237,
+  "downloaded_at": "2026-09-20T08:09:23.109158+00:00"
+ },
+ "finnhub:TSM:2026-08-09:v1": {
+  "articles": 33,
+  "downloaded_at": "2026-09-20T07:53:01.056444+00:00"
+ },
+ "finnhub:TSM:2026-08-16:v1": {
+  "articles": 30,
+  "downloaded_at": "2026-09-20T07:53:01.056444+00:00"
+ },
+ "finnhub:TSM:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T07:53:01.056444+00:00"
+ },
+ "finnhub:TSM:2026-08-30:v1": {
+  "articles": 36,
+  "downloaded_at": "2026-09-20T07:53:01.056444+00:00"
+ },
+ "finnhub:TSM:2026-09-06:v1": {
+  "articles": 109,
+  "downloaded_at": "2026-09-20T07:53:01.056444+00:00"
+ },
+ "finnhub:TSM:2026-09-13:v1": {
+  "articles": 78,
+  "downloaded_at": "2026-09-20T07:53:01.056444+00:00"
+ },
+ "finnhub:TXN:2026-08-09:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:03:56.924166+00:00"
+ },
+ "finnhub:TXN:2026-08-16:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:03:56.924166+00:00"
+ },
+ "finnhub:TXN:2026-08-23:v1": {
+  "articles": 19,
+  "downloaded_at": "2026-09-20T08:03:56.924166+00:00"
+ },
+ "finnhub:TXN:2026-08-30:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:03:56.924166+00:00"
+ },
+ "finnhub:TXN:2026-09-06:v1": {
+  "articles": 21,
+  "downloaded_at": "2026-09-20T08:03:56.924166+00:00"
+ },
+ "finnhub:TXN:2026-09-13:v1": {
+  "articles": 27,
+  "downloaded_at": "2026-09-20T08:03:56.924166+00:00"
+ },
+ "finnhub:UAL:2026-08-09:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:08:59.912342+00:00"
+ },
+ "finnhub:UAL:2026-08-16:v1": {
+  "articles": 14,
+  "downloaded_at": "2026-09-20T08:08:59.912342+00:00"
+ },
+ "finnhub:UAL:2026-08-23:v1": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:08:59.912342+00:00"
+ },
+ "finnhub:UAL:2026-08-30:v1": {
+  "articles": 12,
+  "downloaded_at": "2026-09-20T08:08:59.912342+00:00"
+ },
+ "finnhub:UAL:2026-09-06:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:08:59.912342+00:00"
+ },
+ "finnhub:UAL:2026-09-13:v1": {
+  "articles": 29,
+  "downloaded_at": "2026-09-20T08:08:59.912342+00:00"
+ },
+ "finnhub:UNH:2026-08-09:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T08:02:23.084681+00:00"
+ },
+ "finnhub:UNH:2026-08-16:v1": {
+  "articles": 44,
+  "downloaded_at": "2026-09-20T08:02:23.084681+00:00"
+ },
+ "finnhub:UNH:2026-08-23:v1": {
+  "articles": 23,
+  "downloaded_at": "2026-09-20T08:02:23.084681+00:00"
+ },
+ "finnhub:UNH:2026-08-30:v1": {
+  "articles": 62,
+  "downloaded_at": "2026-09-20T08:02:23.084681+00:00"
+ },
+ "finnhub:UNH:2026-09-06:v1": {
+  "articles": 43,
+  "downloaded_at": "2026-09-20T08:02:23.084681+00:00"
+ },
+ "finnhub:UNH:2026-09-13:v1": {
+  "articles": 44,
+  "downloaded_at": "2026-09-20T08:02:23.084681+00:00"
+ },
+ "finnhub:UNP:2026-08-09:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:08:36.739296+00:00"
+ },
+ "finnhub:UNP:2026-08-16:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:08:36.739296+00:00"
+ },
+ "finnhub:UNP:2026-08-23:v1": {
+  "articles": 10,
+  "downloaded_at": "2026-09-20T08:08:36.739296+00:00"
+ },
+ "finnhub:UNP:2026-08-30:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:08:36.739296+00:00"
+ },
+ "finnhub:UNP:2026-09-06:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:08:36.739296+00:00"
+ },
+ "finnhub:UNP:2026-09-13:v1": {
+  "articles": 31,
+  "downloaded_at": "2026-09-20T08:08:36.739296+00:00"
+ },
+ "finnhub:UPS:2026-08-09:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:08:29.024794+00:00"
+ },
+ "finnhub:UPS:2026-08-16:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:08:29.024794+00:00"
+ },
+ "finnhub:UPS:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:08:29.024794+00:00"
+ },
+ "finnhub:UPS:2026-08-30:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:08:29.024794+00:00"
+ },
+ "finnhub:UPS:2026-09-06:v1": {
+  "articles": 11,
+  "downloaded_at": "2026-09-20T08:08:29.024794+00:00"
+ },
+ "finnhub:UPS:2026-09-13:v1": {
+  "articles": 22,
+  "downloaded_at": "2026-09-20T08:08:29.024794+00:00"
+ },
+ "finnhub:USB:2026-08-09:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T07:58:46.764316+00:00"
+ },
+ "finnhub:USB:2026-08-16:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T07:58:46.764316+00:00"
+ },
+ "finnhub:USB:2026-08-23:v1": {
+  "articles": 6,
+  "downloaded_at": "2026-09-20T07:58:46.764316+00:00"
+ },
+ "finnhub:USB:2026-08-30:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T07:58:46.764316+00:00"
+ },
+ "finnhub:USB:2026-09-06:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T07:58:46.764316+00:00"
+ },
+ "finnhub:USB:2026-09-13:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T07:58:46.764316+00:00"
+ },
+ "finnhub:V:2026-08-09:v1": {
+  "articles": 51,
+  "downloaded_at": "2026-09-20T07:59:09.923217+00:00"
+ },
+ "finnhub:V:2026-08-16:v1": {
+  "articles": 40,
+  "downloaded_at": "2026-09-20T07:59:09.923217+00:00"
+ },
+ "finnhub:V:2026-08-23:v1": {
+  "articles": 28,
+  "downloaded_at": "2026-09-20T07:59:09.923217+00:00"
+ },
+ "finnhub:V:2026-08-30:v1": {
+  "articles": 75,
+  "downloaded_at": "2026-09-20T07:59:09.923217+00:00"
+ },
+ "finnhub:V:2026-09-06:v1": {
+  "articles": 67,
+  "downloaded_at": "2026-09-20T07:59:09.923217+00:00"
+ },
+ "finnhub:V:2026-09-13:v1": {
+  "articles": 76,
+  "downloaded_at": "2026-09-20T07:59:09.923217+00:00"
+ },
+ "finnhub:VLO:2026-08-09:v1": {
+  "articles": 32,
+  "downloaded_at": "2026-09-20T08:15:57.420707+00:00"
+ },
+ "finnhub:VLO:2026-08-16:v1": {
+  "articles": 32,
+  "downloaded_at": "2026-09-20T08:15:57.420707+00:00"
+ },
+ "finnhub:VLO:2026-08-23:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:15:57.420707+00:00"
+ },
+ "finnhub:VLO:2026-08-30:v1": {
+  "articles": 39,
+  "downloaded_at": "2026-09-20T08:15:57.420707+00:00"
+ },
+ "finnhub:VLO:2026-09-06:v1": {
+  "articles": 35,
+  "downloaded_at": "2026-09-20T08:15:57.420707+00:00"
+ },
+ "finnhub:VLO:2026-09-13:v1": {
+  "articles": 36,
+  "downloaded_at": "2026-09-20T08:15:57.420707+00:00"
+ },
+ "finnhub:VZ:2026-08-09:v1": {
+  "articles": 52,
+  "downloaded_at": "2026-09-20T08:09:39.378488+00:00"
+ },
+ "finnhub:VZ:2026-08-16:v1": {
+  "articles": 25,
+  "downloaded_at": "2026-09-20T08:09:39.378488+00:00"
+ },
+ "finnhub:VZ:2026-08-23:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:09:39.378488+00:00"
+ },
+ "finnhub:VZ:2026-08-30:v1": {
+  "articles": 28,
+  "downloaded_at": "2026-09-20T08:09:39.378488+00:00"
+ },
+ "finnhub:VZ:2026-09-06:v1": {
+  "articles": 80,
+  "downloaded_at": "2026-09-20T08:09:39.378488+00:00"
+ },
+ "finnhub:VZ:2026-09-13:v1": {
+  "articles": 61,
+  "downloaded_at": "2026-09-20T08:09:39.378488+00:00"
+ },
+ "finnhub:WFC:2026-08-09:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T07:58:31.307223+00:00"
+ },
+ "finnhub:WFC:2026-08-16:v1": {
+  "articles": 18,
+  "downloaded_at": "2026-09-20T07:58:31.307223+00:00"
+ },
+ "finnhub:WFC:2026-08-23:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T07:58:31.307223+00:00"
+ },
+ "finnhub:WFC:2026-08-30:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T07:58:31.307223+00:00"
+ },
+ "finnhub:WFC:2026-09-06:v1": {
+  "articles": 20,
+  "downloaded_at": "2026-09-20T07:58:31.307223+00:00"
+ },
+ "finnhub:WFC:2026-09-13:v1": {
+  "articles": 59,
+  "downloaded_at": "2026-09-20T07:58:31.307223+00:00"
+ },
+ "finnhub:WMB:2026-08-09:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:16:13.956863+00:00"
+ },
+ "finnhub:WMB:2026-08-16:v1": {
+  "articles": 9,
+  "downloaded_at": "2026-09-20T08:16:13.956863+00:00"
+ },
+ "finnhub:WMB:2026-08-23:v1": {
+  "articles": 13,
+  "downloaded_at": "2026-09-20T08:16:13.956863+00:00"
+ },
+ "finnhub:WMB:2026-08-30:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:16:13.956863+00:00"
+ },
+ "finnhub:WMB:2026-09-06:v1": {
+  "articles": 16,
+  "downloaded_at": "2026-09-20T08:16:13.956863+00:00"
+ },
+ "finnhub:WMB:2026-09-13:v1": {
+  "articles": 15,
+  "downloaded_at": "2026-09-20T08:16:13.956863+00:00"
+ },
+ "finnhub:WMT:2026-08-09:v1": {
+  "articles": 81,
+  "downloaded_at": "2026-09-20T08:06:40.828597+00:00"
+ },
+ "finnhub:WMT:2026-08-16:v1": {
+  "articles": 130,
+  "downloaded_at": "2026-09-20T08:06:40.828597+00:00"
+ },
+ "finnhub:WMT:2026-08-23:v1": {
+  "articles": 43,
+  "downloaded_at": "2026-09-20T08:06:40.828597+00:00"
+ },
+ "finnhub:WMT:2026-08-30:v1": {
+  "articles": 136,
+  "downloaded_at": "2026-09-20T08:06:40.828597+00:00"
+ },
+ "finnhub:WMT:2026-09-06:v1": {
+  "articles": 79,
+  "downloaded_at": "2026-09-20T08:06:40.828597+00:00"
+ },
+ "finnhub:WMT:2026-09-13:v1": {
+  "articles": 105,
+  "downloaded_at": "2026-09-20T08:06:40.828597+00:00"
+ },
+ "finnhub:XOM:2026-08-09:v1": {
+  "articles": 34,
+  "downloaded_at": "2026-09-20T08:00:19.462183+00:00"
+ },
+ "finnhub:XOM:2026-08-16:v1": {
+  "articles": 36,
+  "downloaded_at": "2026-09-20T08:00:19.462183+00:00"
+ },
+ "finnhub:XOM:2026-08-23:v1": {
+  "articles": 17,
+  "downloaded_at": "2026-09-20T08:00:19.462183+00:00"
+ },
+ "finnhub:XOM:2026-08-30:v1": {
+  "articles": 62,
+  "downloaded_at": "2026-09-20T08:00:19.462183+00:00"
+ },
+ "finnhub:XOM:2026-09-06:v1": {
+  "articles": 74,
+  "downloaded_at": "2026-09-20T08:00:19.462183+00:00"
+ },
+ "finnhub:XOM:2026-09-13:v1": {
+  "articles": 61,
+  "downloaded_at": "2026-09-20T08:00:19.462183+00:00"
+ },
+ "gdelt:AXP:2026-08-09:6016b529": {
+  "articles": 45,
+  "downloaded_at": "2026-09-20T08:21:48.294563+00:00"
+ },
+ "gdelt:AXP:2026-08-16:6016b529": {
+  "articles": 57,
+  "downloaded_at": "2026-09-20T08:21:48.294563+00:00"
+ },
+ "gdelt:AXP:2026-08-23:6016b529": {
+  "articles": 26,
+  "downloaded_at": "2026-09-20T08:21:48.294563+00:00"
+ },
+ "gdelt:AXP:2026-08-30:6016b529": {
+  "articles": 24,
+  "downloaded_at": "2026-09-20T08:21:48.294563+00:00"
+ },
+ "gdelt:BAC:2026-08-09:3c58d026": {
+  "articles": 250,
+  "downloaded_at": "2026-09-19T21:55:44.458008+00:00"
+ },
+ "gdelt:BAC:2026-08-16:3c58d026": {
+  "articles": 244,
+  "downloaded_at": "2026-09-19T21:55:44.458008+00:00"
+ },
+ "gdelt:BAC:2026-08-23:3c58d026": {
+  "articles": 237,
+  "downloaded_at": "2026-09-19T21:55:44.458008+00:00"
+ },
+ "gdelt:BAC:2026-08-30:3c58d026": {
+  "articles": 176,
+  "downloaded_at": "2026-09-19T21:55:44.458008+00:00"
+ },
+ "gdelt:BAC:2026-09-06:3c58d026": {
+  "articles": 236,
+  "downloaded_at": "2026-09-19T21:55:44.458008+00:00"
+ },
+ "gdelt:BAC:2026-09-13:3c58d026": {
+  "articles": 3,
+  "downloaded_at": "2026-09-20T07:24:08.377138+00:00"
+ }
+}

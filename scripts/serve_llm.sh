@@ -6,7 +6,8 @@
 # behind ONE OpenAI-compatible endpoint. The weights (~60 GB)
 # fit a single 80 GB H100, and an investigation is a fan-out
 # of independent requests, so two replicas double throughput
-# with no tensor-parallel communication. See docs/MODEL.md.
+# with no tensor-parallel communication. See "Model and serving"
+# in README.md.
 #
 #   LLM_TOPOLOGY=replicas   one replica per GPU (default)
 #   LLM_TOPOLOGY=sharded    one model split over both GPUs:
