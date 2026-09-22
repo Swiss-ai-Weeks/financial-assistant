@@ -1355,3 +1355,40 @@
   font-size: 11px;
   color: var(--text-muted);
 }
+
+/* Institutional report: the existing Pythia palette and document rhythm. */
+.report { width: 100%; overflow-wrap: anywhere; }
+.report__header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; }
+.report__metadata { display: flex; flex-wrap: wrap; gap: 12px 24px; margin: 16px 0; }
+.report__assessment { display: inline-block; background: var(--accent-soft); color: var(--accent); padding: 6px 10px; margin-top: 16px; font-weight: 600; }
+.report__balance { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 14px 0; }
+.report__balance strong { display: block; font-size: 28px; font-weight: 500; }
+.report__bar { display: flex; gap: 3px; height: 6px; margin-bottom: 12px; }
+.report__bar--supporting { background: var(--up); }
+.report__bar--counter { background: var(--down); }
+.report__bar--unresolved { background: var(--accent); }
+.report__counter { border-left: 3px solid var(--down); padding-left: 16px; }
+.report__table { overflow-x: auto; }
+.report table { width: 100%; border-collapse: collapse; }
+.report th, .report td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+.report select { font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border-strong); padding: 6px; margin-left: 6px; }
+.report > details { margin-top: 24px; }
+.report__item details { margin-top: 6px; }
+.report__item pre { white-space: pre-wrap; }
+@media (max-width: 700px) {
+  body:has(.report) { min-width: 0; }
+  .report { padding: 16px; }
+  .report__metadata { flex-direction: column; gap: 8px; }
+  .report__balance { gap: 8px; }
+}
+@media print {
+  body:has(.report) { min-width: 0; height: auto; background: white; }
+  body:has(.report) * { visibility: hidden; }
+  body .report, body .report * { visibility: visible; }
+  body:has(.report) :is(#root, .workspace, .workspace__body, .workspace__main) { height: auto; overflow: visible; }
+  .report { position: absolute; inset: 0; max-width: none; color: var(--text); background: var(--bg); }
+  .report .report__actions, .report > details { display: none; }
+  .report h2 { break-after: avoid; }
+  .report__item, .report tr { break-inside: avoid; }
+  .report__bar { print-color-adjust: exact; }
+}

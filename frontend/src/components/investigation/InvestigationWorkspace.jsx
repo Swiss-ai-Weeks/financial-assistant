@@ -419,6 +419,8 @@ function GraphWorkspace({ run, example, visible, theme, models, onRefresh }) {
               graph={graph}
               cutoff={cutoff === "latest" ? originalCutoff(graph) : cutoff}
               workspaceId={id}
+              reportMode={ui.reportMode ?? "existing_position"}
+              onReportModeChange={(reportMode) => patch({ reportMode })}
               onClose={() => patch({ panel: "graph" })}
               onSelect={select}
             />
