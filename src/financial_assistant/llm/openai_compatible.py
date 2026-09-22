@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import re
 import threading
 import time
@@ -29,6 +30,21 @@ MIN_OUTPUT_TOKENS = 256
 
 # The server reports the prompt as "at least" so many tokens.
 CONTEXT_MARGIN = 32
+
+# How many times one request may be shortened, and what it
+# keeps for the answer once it has been.
+PROMPT_TRIMS = 2
+TRIMMED_OUTPUT_TOKENS = 1024
+
+# Below this, what is left of a prompt is not worth sending.
+MIN_PROMPT_CHARS = 1000
+
+TRIM_MARKER = (
+    "\n\n[... middle of this prompt removed to fit the "
+    "model's context window ...]\n\n"
+)
+
+log = logging.getLogger("uvicorn.error")
 
 CONTEXT_LIMIT = re.compile(
     r"maximum context length is (\d+) tokens"
@@ -358,6 +374,7 @@ class OpenAICompatibleProvider:
         }
 
         self._completion.metadata = {}
+        self._completion.trimmed_chars = None
         started = time.monotonic()
 
         if self.api_key:
@@ -438,6 +455,11 @@ class OpenAICompatibleProvider:
                 self.max_tokens,
             ),
             "finish_reason": finish_reason,
+            "prompt_trimmed_chars": getattr(
+                self._completion,
+                "trimmed_chars",
+                None,
+            ),
             "latency_ms": round(
                 (time.monotonic() - started) * 1000
             ),
@@ -460,6 +482,89 @@ class OpenAICompatibleProvider:
             for key, value in metadata.items()
             if value is not None
         }
+
+    def _trim(
+        self,
+        payload: dict[str, Any],
+        detail: str,
+    ) -> bool:
+        """
+        Cut the user turn down to what the context window
+        leaves, and say so in the log.
+
+        A hosted endpoint's window can be smaller than the
+        evidence a stage wants to send. Losing the middle of
+        one prompt costs less than losing the run, but it is
+        never silent: what was cut is named, and the answer
+        is marked as made on a shortened prompt.
+        """
+
+        limit = CONTEXT_LIMIT.search(detail)
+        prompt = PROMPT_SIZE.search(detail)
+
+        if limit is None or prompt is None:
+            return False
+
+        messages = payload["messages"]
+        user = messages[-1]["content"]
+
+        chars = sum(
+            len(message["content"])
+            for message in messages
+        )
+
+        prompt_tokens = int(
+            prompt.group(1) or prompt.group(2)
+        )
+
+        # The server counted the tokens of this very prompt,
+        # so its own ratio is the one to shrink by.
+        per_token = chars / prompt_tokens
+
+        answer = min(
+            self.max_tokens,
+            TRIMMED_OUTPUT_TOKENS,
+        )
+
+        keep = len(user) - round(
+            (
+                prompt_tokens
+                - int(limit.group(1))
+                + answer
+                + CONTEXT_MARGIN
+            )
+            * per_token
+        )
+
+        if keep < MIN_PROMPT_CHARS:
+            return False
+
+        # The instructions of a stage sit at both ends of the
+        # turn, so the middle is what goes.
+        head = keep * 2 // 3
+
+        messages[-1] = {
+            **messages[-1],
+            "content": (
+                user[:head]
+                + TRIM_MARKER
+                + user[len(user) - (keep - head):]
+            ),
+        }
+
+        payload["max_tokens"] = answer
+        self._completion.trimmed_chars = len(user) - keep
+
+        log.warning(
+            "Prompt trimmed by %d characters to fit the "
+            "%s-token context window of %s. First line: %.60s",
+            len(user) - keep,
+            limit.group(1),
+            self.model_name,
+            user.splitlines()[0] if user else "",
+        )
+
+        return True
 
     @staticmethod
     def _give_something_up(
@@ -525,6 +630,7 @@ class OpenAICompatibleProvider:
         payload = dict(payload)
         rate_limited = 0
         timed_out = 0
+        trimmed = 0
 
         while True:
             request = Request(
@@ -583,17 +689,25 @@ class OpenAICompatibleProvider:
                     # prompt, so an overflow never falls through
                     # to _give_something_up.
                     if (
-                        budget < MIN_OUTPUT_TOKENS
-                        or budget >= payload["max_tokens"]
+                        budget >= MIN_OUTPUT_TOKENS
+                        and budget < payload["max_tokens"]
                     ):
-                        raise LLMTransportError(
-                            "The prompt leaves no room for an "
-                            f"answer in the model's context "
-                            f"window: {detail[:300]}"
-                        ) from error
+                        payload["max_tokens"] = budget
+                        continue
 
-                    payload["max_tokens"] = budget
-                    continue
+                    # The prompt itself does not leave room for
+                    # an answer: cut it down to what fits.
+                    if trimmed < PROMPT_TRIMS and self._trim(
+                        payload,
+                        detail,
+                    ):
+                        trimmed += 1
+                        continue
+
+                    raise LLMTransportError(
+                        "The prompt does not fit the model's "
+                        f"context window: {detail[:300]}"
+                    ) from error
 
                 if (
                     error.code in (400, 422)

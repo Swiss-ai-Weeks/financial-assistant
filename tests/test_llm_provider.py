@@ -284,9 +284,44 @@ def test_a_context_overflow_asks_for_fewer_output_tokens(endpoint):
 
 
 def test_a_prompt_that_fills_the_context_is_reported_not_relaxed(endpoint):
+    # Too short to trim: nothing can be given up, so it is reported.
     fake = endpoint(overflow(8100))
 
-    with pytest.raises(LLMTransportError, match="no room for an answer"):
+    with pytest.raises(LLMTransportError, match="does not fit the model"):
         provider().complete_json(system="s", user="u")
+
+    assert len(fake.requests) == 1
+    assert fake.requests[0]["response_format"] == {"type": "json_object"}
+
+
+def test_a_prompt_too_long_for_the_window_is_trimmed_in_the_middle(endpoint, caplog):
+    # 8192 - 7927 = 265 tokens left, below what an answer needs,
+    # so the prompt itself has to give way.
+    fake = endpoint(overflow(7927, requested=266), '{"ok": true}')
+
+    user = "HEAD keep me\n" + ("filler " * 4000) + "TAIL keep me"
+
+    llm = provider()
+
+    with caplog.at_level("WARNING"):
+        assert llm.complete_json(system="s", user=user) == {"ok": True}
+
+    sent = fake.requests[1]["messages"][-1]["content"]
+
+    assert len(sent) < len(user)
+    assert sent.startswith("HEAD keep me")
+    assert sent.endswith("TAIL keep me")
+    assert module.TRIM_MARKER in sent
+
+    # The answer says it was made on a shortened prompt.
+    assert llm.last_completion["prompt_trimmed_chars"] > 0
+    assert "Prompt trimmed" in caplog.text
+
+
+def test_a_prompt_that_cannot_be_trimmed_enough_is_reported(endpoint):
+    fake = endpoint(overflow(8180, requested=266), overflow(8180, requested=266))
+
+    with pytest.raises(LLMTransportError, match="does not fit the model"):
+        provider().complete_json(system="s", user="short prompt")
 
     assert len(fake.requests) == 1
