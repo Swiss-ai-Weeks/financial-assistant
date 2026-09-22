@@ -1,0 +1,1101 @@
+{
+  "schema_version": "integrated_daily_evidence_graph_v1",
+  "ticker": "NVDA",
+  "anomaly_date": "2025-10-28",
+  "as_of": "2025-10-28T20:00:00+00:00",
+  "daily_anomaly": {
+    "date": "2025-10-28",
+    "close": 200.55,
+    "return_pct": 4.98,
+    "volume_zscore": 3.27,
+    "intraday_onset": null
+  },
+  "baseline_ranker_unchanged": true,
+  "baseline_ranks_recomputed_by_original_ranker": true,
+  "semantic_overlay_provided": false,
+  "stored_articles_in_window": 325,
+  "lexically_relevant_articles": 25,
+  "model_calls": 0,
+  "trained_tgn": false,
+  "graph_ranks_computed": 0,
+  "graph": {
+    "nodes": [
+      {
+        "id": "anomaly:NVDA:2025-10-28",
+        "type": "daily_anomaly",
+        "date": "2025-10-28",
+        "return_pct": 4.98,
+        "volume_zscore": 3.27,
+        "price_onset_at": null
+      },
+      {
+        "id": "company:NVDA",
+        "type": "target_company",
+        "ticker": "NVDA"
+      },
+      {
+        "id": "event_candidate:d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Blockbuster $40b AI Investment Is Only 10% of What’s Coming (NVDA, MSFT, META, BLK)",
+        "candidate_validated": false,
+        "group_id": "d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201"
+      },
+      {
+        "id": "article:d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+        "type": "news_article",
+        "article_id": "d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+        "title": "Blockbuster $40b AI Investment Is Only 10% of What’s Coming (NVDA, MSFT, META, BLK)",
+        "published_at": "2025-10-22T14:29:17+00:00",
+        "ingested_at": "2026-09-20T16:20:34+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=f3cf4942968aefb14203d48bdffe3b13185d6ad703e2e7dc5ce0ab896c876c96",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Nvidia Supplier Foxconn Goes All-In On AI With $1.37 Billion Supercomputing Investment",
+        "candidate_validated": false,
+        "group_id": "26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b"
+      },
+      {
+        "id": "article:26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+        "type": "news_article",
+        "article_id": "26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+        "title": "Nvidia Supplier Foxconn Goes All-In On AI With $1.37 Billion Supercomputing Investment",
+        "published_at": "2025-10-28T04:15:47+00:00",
+        "ingested_at": "2026-09-20T16:51:38+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=3abd55833e79d18a41b5e12f6174bdb40e839ca4b06414fc236c159e86426456",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Analyst on NVIDIA (NVDA) AI Deals and Debt Concerns: ‘We Are Not Running Out of Organic Capital’",
+        "candidate_validated": false,
+        "group_id": "f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db"
+      },
+      {
+        "id": "article:f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+        "type": "news_article",
+        "article_id": "f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+        "title": "Analyst on NVIDIA (NVDA) AI Deals and Debt Concerns: ‘We Are Not Running Out of Organic Capital’",
+        "published_at": "2025-10-28T09:43:06+00:00",
+        "ingested_at": "2026-09-20T16:51:38+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=460ad75425be2a0e77b329b62b5724756dd9be290e93a4fefed6c96430b91166",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Nvidia: The Big 3 Issues Before Earnings",
+        "candidate_validated": false,
+        "group_id": "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667"
+      },
+      {
+        "id": "article:c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+        "type": "news_article",
+        "article_id": "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+        "title": "Nvidia: The Big 3 Issues Before Earnings",
+        "published_at": "2025-10-23T10:25:07+00:00",
+        "ingested_at": "2026-09-20T16:20:34+00:00",
+        "source_name": "SeekingAlpha",
+        "source_url": "https://finnhub.io/api/news?id=4d3de79c63bb20310e373417839eaf4135832191b8ea62f383405ed1d1e39fb8",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Bubble Watch: AI Is Changing Everything, But No One Pays For It (MSFT, NVDA)",
+        "candidate_validated": false,
+        "group_id": "d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27"
+      },
+      {
+        "id": "article:d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+        "type": "news_article",
+        "article_id": "d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+        "title": "Bubble Watch: AI Is Changing Everything, But No One Pays For It (MSFT, NVDA)",
+        "published_at": "2025-10-22T15:29:17+00:00",
+        "ingested_at": "2026-09-20T16:20:33+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=8abbcf2854807eab0b8f3e3ff79704aa2b1ee27ad98decc4c02c613e9a00f61b",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Betting Big on Intel: Is INTC Stock a Buy Before Oct. 23 Earnings?",
+        "candidate_validated": false,
+        "group_id": "9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131"
+      },
+      {
+        "id": "article:9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+        "type": "news_article",
+        "article_id": "9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+        "title": "Betting Big on Intel: Is INTC Stock a Buy Before Oct. 23 Earnings?",
+        "published_at": "2025-10-21T13:10:48+00:00",
+        "ingested_at": "2026-09-20T16:20:33+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=43f5a9da9f2aebd705b072d6fcf108004f466373f5bdcbe5a0ded64524844924",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Does NVIDIA's (NVDA) Desktop AI Supercomputer Shift the Long-Term Growth Outlook?",
+        "candidate_validated": false,
+        "group_id": "8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c"
+      },
+      {
+        "id": "article:8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+        "type": "news_article",
+        "article_id": "8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+        "title": "Does NVIDIA's (NVDA) Desktop AI Supercomputer Shift the Long-Term Growth Outlook?",
+        "published_at": "2025-10-21T07:12:26+00:00",
+        "ingested_at": "2026-09-20T16:20:33+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=2bab69d304a561f3d1d5cd20fcf03864a0db45c31ee533631d0fe17ab5ed1f65",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Nvidia: 2 'What Ifs' That Could Change Everything",
+        "candidate_validated": false,
+        "group_id": "c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de"
+      },
+      {
+        "id": "article:c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+        "type": "news_article",
+        "article_id": "c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+        "title": "Nvidia: 2 'What Ifs' That Could Change Everything",
+        "published_at": "2025-10-28T09:18:47+00:00",
+        "ingested_at": "2026-09-20T16:51:38+00:00",
+        "source_name": "SeekingAlpha",
+        "source_url": "https://finnhub.io/api/news?id=f8fb2e71ce0c78e0b7a774ab1d726e72f5f4aebb538615aca4966159e3004411",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+        "type": "candidate_event_proxy",
+        "title_proxy": "What is the Next NVIDIA (NVDA)? Brad Gerstner Answers",
+        "candidate_validated": false,
+        "group_id": "a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1"
+      },
+      {
+        "id": "article:a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+        "type": "news_article",
+        "article_id": "a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+        "title": "What is the Next NVIDIA (NVDA)? Brad Gerstner Answers",
+        "published_at": "2025-10-28T13:39:24+00:00",
+        "ingested_at": "2026-09-20T16:51:38+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=7c3fe931b3397a987f55a26f206da42318348fcf447930bccbd0f34aee458501",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Former Biden Adviser Explains What Concerns Him About NVIDIA (NVDA)-Led AI ‘Bubble’",
+        "candidate_validated": false,
+        "group_id": "b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598"
+      },
+      {
+        "id": "article:b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+        "type": "news_article",
+        "article_id": "b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+        "title": "Former Biden Adviser Explains What Concerns Him About NVIDIA (NVDA)-Led AI ‘Bubble’",
+        "published_at": "2025-10-23T15:57:42+00:00",
+        "ingested_at": "2026-09-20T16:20:34+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=b5286e12cbcbdee3c7e4319d922dd4733db3238669a9c41985f47f8ea3d11030",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Nvidia (NVDA): Exploring Valuation After Recent Steady Share Price Gains",
+        "candidate_validated": false,
+        "group_id": "aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263"
+      },
+      {
+        "id": "article:aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+        "type": "news_article",
+        "article_id": "aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+        "title": "Nvidia (NVDA): Exploring Valuation After Recent Steady Share Price Gains",
+        "published_at": "2025-10-28T14:11:38+00:00",
+        "ingested_at": "2026-09-20T16:51:38+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=41824b6cdbfad99573a1496fb1ad279ba628dea6b9a3a41a35c031fbb862e362",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Beyond Meat, Tesla, and the aspiring Nvidia rival: Trending Stocks",
+        "candidate_validated": false,
+        "group_id": "b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4"
+      },
+      {
+        "id": "article:b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+        "type": "news_article",
+        "article_id": "b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+        "title": "Beyond Meat, Tesla, and the aspiring Nvidia rival: Trending Stocks",
+        "published_at": "2025-10-21T12:05:24+00:00",
+        "ingested_at": "2026-09-20T16:20:33+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=615b2732a3e0fa8f27b10562e727f263ea1e910564676f50d4511132d78ce2a5",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "anomaly:NVDA:2025-10-28",
+        "target": "company:NVDA",
+        "type": "observed_for_company",
+        "provenance": "anomalies.json",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+        "causal": false
+      },
+      {
+        "source": "article:d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+        "target": "event_candidate:d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+        "type": "heuristically_grouped_with",
+        "provenance": "d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+        "causal": false
+      },
+      {
+        "source": "article:26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+        "target": "event_candidate:26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+        "type": "heuristically_grouped_with",
+        "provenance": "26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+        "causal": false
+      },
+      {
+        "source": "article:f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+        "target": "event_candidate:f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+        "type": "heuristically_grouped_with",
+        "provenance": "f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+        "causal": false
+      },
+      {
+        "source": "article:c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+        "target": "event_candidate:c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+        "type": "heuristically_grouped_with",
+        "provenance": "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+        "causal": false
+      },
+      {
+        "source": "article:d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+        "target": "event_candidate:d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+        "type": "heuristically_grouped_with",
+        "provenance": "d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+        "causal": false
+      },
+      {
+        "source": "article:9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+        "target": "event_candidate:9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+        "type": "heuristically_grouped_with",
+        "provenance": "9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+        "causal": false
+      },
+      {
+        "source": "article:8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+        "target": "event_candidate:8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+        "type": "heuristically_grouped_with",
+        "provenance": "8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+        "causal": false
+      },
+      {
+        "source": "article:c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+        "target": "event_candidate:c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+        "type": "heuristically_grouped_with",
+        "provenance": "c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+        "causal": false
+      },
+      {
+        "source": "article:a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+        "target": "event_candidate:a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+        "type": "heuristically_grouped_with",
+        "provenance": "a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+        "causal": false
+      },
+      {
+        "source": "article:b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+        "target": "event_candidate:b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+        "type": "heuristically_grouped_with",
+        "provenance": "b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+        "causal": false
+      },
+      {
+        "source": "article:aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+        "target": "event_candidate:aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+        "type": "heuristically_grouped_with",
+        "provenance": "aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+        "causal": false
+      },
+      {
+        "source": "article:b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+        "target": "event_candidate:b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+        "type": "heuristically_grouped_with",
+        "provenance": "b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+        "target": "anomaly:NVDA:2025-10-28",
+        "type": "daily_publication_context",
+        "provenance": "b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "baseline_position": 1,
+      "group_id": "d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+      "candidate_title_proxy": "Blockbuster $40b AI Investment Is Only 10% of What’s Coming (NVDA, MSFT, META, BLK)",
+      "candidate_event": "Blockbuster $40b AI Investment Is Only 10% of What’s Coming (NVDA, MSFT, META, BLK)",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8138,
+      "article_ids": [
+        "d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "d8e164352b2ade6a5b54adbca0d0504165b61229c6dc2292cba9ef998e3b8201",
+          "title": "Blockbuster $40b AI Investment Is Only 10% of What’s Coming (NVDA, MSFT, META, BLK)",
+          "published_at": "2025-10-22T14:29:17+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8138,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 2,
+      "group_id": "26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+      "candidate_title_proxy": "Nvidia Supplier Foxconn Goes All-In On AI With $1.37 Billion Supercomputing Investment",
+      "candidate_event": "Nvidia Supplier Foxconn Goes All-In On AI With $1.37 Billion Supercomputing Investment",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6953,
+      "article_ids": [
+        "26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "26220ae201606c76b2fae5c6bc98d41de65fcb7d5552d195c18132f0397f889b",
+          "title": "Nvidia Supplier Foxconn Goes All-In On AI With $1.37 Billion Supercomputing Investment",
+          "published_at": "2025-10-28T04:15:47+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6953,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 3,
+      "group_id": "f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+      "candidate_title_proxy": "Analyst on NVIDIA (NVDA) AI Deals and Debt Concerns: ‘We Are Not Running Out of Organic Capital’",
+      "candidate_event": "Analyst on NVIDIA (NVDA) AI Deals and Debt Concerns: ‘We Are Not Running Out of Organic Capital’",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6069,
+      "article_ids": [
+        "f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "f6a25685cf5555ee6ba8a83357353dd268e7679729bb971d1177e723cdbb73db",
+          "title": "Analyst on NVIDIA (NVDA) AI Deals and Debt Concerns: ‘We Are Not Running Out of Organic Capital’",
+          "published_at": "2025-10-28T09:43:06+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6069,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 4,
+      "group_id": "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+      "candidate_title_proxy": "Nvidia: The Big 3 Issues Before Earnings",
+      "candidate_event": "Nvidia: The Big 3 Issues Before Earnings",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5286,
+      "article_ids": [
+        "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "c024615aef34470cc083462a0ff8b9c4336e4718b5fb095e8d3728885de39667",
+          "title": "Nvidia: The Big 3 Issues Before Earnings",
+          "published_at": "2025-10-23T10:25:07+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5286,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 5,
+      "group_id": "d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+      "candidate_title_proxy": "Bubble Watch: AI Is Changing Everything, But No One Pays For It (MSFT, NVDA)",
+      "candidate_event": "Bubble Watch: AI Is Changing Everything, But No One Pays For It (MSFT, NVDA)",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.512,
+      "article_ids": [
+        "d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "d3a03fd97b8336895f6edd8bcb62b5094039c31cfe8d10e3ca444e4066c83e27",
+          "title": "Bubble Watch: AI Is Changing Everything, But No One Pays For It (MSFT, NVDA)",
+          "published_at": "2025-10-22T15:29:17+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.512,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 6,
+      "group_id": "9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+      "candidate_title_proxy": "Betting Big on Intel: Is INTC Stock a Buy Before Oct. 23 Earnings?",
+      "candidate_event": "Betting Big on Intel: Is INTC Stock a Buy Before Oct. 23 Earnings?",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5,
+      "article_ids": [
+        "9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "9f12d94461ed4a1ad03f20c70db43967739019405a0a17723d4fbcf22becd131",
+          "title": "Betting Big on Intel: Is INTC Stock a Buy Before Oct. 23 Earnings?",
+          "published_at": "2025-10-21T13:10:48+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 7,
+      "group_id": "8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+      "candidate_title_proxy": "Does NVIDIA's (NVDA) Desktop AI Supercomputer Shift the Long-Term Growth Outlook?",
+      "candidate_event": "Does NVIDIA's (NVDA) Desktop AI Supercomputer Shift the Long-Term Growth Outlook?",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4975,
+      "article_ids": [
+        "8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "8ef2ef4d84783294fe4e204441ee895c0dbd55fce87f00931dfc3ae978b2817c",
+          "title": "Does NVIDIA's (NVDA) Desktop AI Supercomputer Shift the Long-Term Growth Outlook?",
+          "published_at": "2025-10-21T07:12:26+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.4975,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 8,
+      "group_id": "c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+      "candidate_title_proxy": "Nvidia: 2 'What Ifs' That Could Change Everything",
+      "candidate_event": "Nvidia: 2 'What Ifs' That Could Change Everything",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4468,
+      "article_ids": [
+        "c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "c3fbca4a5077bd5d3343da863063d9c5483a1aea9f75b043b568194decd4d2de",
+          "title": "Nvidia: 2 'What Ifs' That Could Change Everything",
+          "published_at": "2025-10-28T09:18:47+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.4468,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 9,
+      "group_id": "a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+      "candidate_title_proxy": "What is the Next NVIDIA (NVDA)? Brad Gerstner Answers",
+      "candidate_event": "What is the Next NVIDIA (NVDA)? Brad Gerstner Answers",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4456,
+      "article_ids": [
+        "a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "a8eb8ffe9e23369a9cde3a76ba0c5246477bb749d30c027b704b7a7effdf54b1",
+          "title": "What is the Next NVIDIA (NVDA)? Brad Gerstner Answers",
+          "published_at": "2025-10-28T13:39:24+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.4456,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 10,
+      "group_id": "b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+      "candidate_title_proxy": "Former Biden Adviser Explains What Concerns Him About NVIDIA (NVDA)-Led AI ‘Bubble’",
+      "candidate_event": "Former Biden Adviser Explains What Concerns Him About NVIDIA (NVDA)-Led AI ‘Bubble’",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4427,
+      "article_ids": [
+        "b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "b61a37d67dcebc2ee67aa170a43854dc756cff6e7bebdf406253021d2760a598",
+          "title": "Former Biden Adviser Explains What Concerns Him About NVIDIA (NVDA)-Led AI ‘Bubble’",
+          "published_at": "2025-10-23T15:57:42+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.4427,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 11,
+      "group_id": "aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+      "candidate_title_proxy": "Nvidia (NVDA): Exploring Valuation After Recent Steady Share Price Gains",
+      "candidate_event": "Nvidia (NVDA): Exploring Valuation After Recent Steady Share Price Gains",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.3583,
+      "article_ids": [
+        "aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "aaa77f97de4a323d588a0ef3500aa4d8a6a5cd4f22efb8428f9279cb5d10a263",
+          "title": "Nvidia (NVDA): Exploring Valuation After Recent Steady Share Price Gains",
+          "published_at": "2025-10-28T14:11:38+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.3583,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 12,
+      "group_id": "b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+      "candidate_title_proxy": "Beyond Meat, Tesla, and the aspiring Nvidia rival: Trending Stocks",
+      "candidate_event": "Beyond Meat, Tesla, and the aspiring Nvidia rival: Trending Stocks",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.3375,
+      "article_ids": [
+        "b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "b525536c4da8cc7883b7e3253df5805c93075b3e9c5c99d98ad8b16715d5cfb4",
+          "title": "Beyond Meat, Tesla, and the aspiring Nvidia rival: Trending Stocks",
+          "published_at": "2025-10-21T12:05:24+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.3375,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    }
+  ],
+  "article_reuse_across_groups": {},
+  "limitations": [
+    "Offline SQLite only: no internet or model calls.",
+    "Publication-day context cannot establish news preceding price movement.",
+    "Ingestion after historical cutoff may imply retrospective rather than real-time availability.",
+    "Text-matched source excerpts do not verify semantic entailment or source independence.",
+    "No causal ranking or new economic scores; archived judgments remain unverified."
+  ]
+}

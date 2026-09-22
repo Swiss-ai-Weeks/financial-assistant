@@ -1,0 +1,1190 @@
+{
+  "schema_version": "integrated_daily_evidence_graph_v1",
+  "ticker": "AMZN",
+  "anomaly_date": "2025-10-30",
+  "as_of": "2025-10-30T20:00:00+00:00",
+  "daily_anomaly": {
+    "date": "2025-10-30",
+    "close": 222.86,
+    "return_pct": -3.23,
+    "volume_zscore": 6.76,
+    "intraday_onset": null
+  },
+  "baseline_ranker_unchanged": true,
+  "baseline_ranks_recomputed_by_original_ranker": true,
+  "semantic_overlay_provided": false,
+  "stored_articles_in_window": 325,
+  "lexically_relevant_articles": 41,
+  "model_calls": 0,
+  "trained_tgn": false,
+  "graph_ranks_computed": 0,
+  "graph": {
+    "nodes": [
+      {
+        "id": "anomaly:AMZN:2025-10-30",
+        "type": "daily_anomaly",
+        "date": "2025-10-30",
+        "return_pct": -3.23,
+        "volume_zscore": 6.76,
+        "price_onset_at": null
+      },
+      {
+        "id": "company:AMZN",
+        "type": "target_company",
+        "ticker": "AMZN"
+      },
+      {
+        "id": "event_candidate:e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call Transcript",
+        "candidate_validated": false,
+        "group_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+      },
+      {
+        "id": "article:e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "type": "news_article",
+        "article_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "title": "Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call Transcript",
+        "published_at": "2025-10-30T19:36:25+00:00",
+        "ingested_at": "2026-09-22T14:30:54+00:00",
+        "source_name": "SeekingAlpha",
+        "source_url": "https://finnhub.io/api/news?id=92b8bff672cafadcaa7b0ec8aa913a56199c23b55af5088f553a0c6a556f8bff",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon Earnings: What To Look For From AMZN",
+        "candidate_validated": false,
+        "group_id": "378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda"
+      },
+      {
+        "id": "article:378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+        "type": "news_article",
+        "article_id": "378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+        "title": "Amazon Earnings: What To Look For From AMZN",
+        "published_at": "2025-10-29T03:06:39+00:00",
+        "ingested_at": "2026-09-22T14:30:53+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=9cae8542ba33c66c1bd296520a9fce8e17645f44eed8d16efc1f9bd0cb09acc8",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Buy the Mag 7 Laggards as Earnings Approach?: AMZN, AAPL",
+        "candidate_validated": false,
+        "group_id": "522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80"
+      },
+      {
+        "id": "article:522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+        "type": "news_article",
+        "article_id": "522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+        "title": "Buy the Mag 7 Laggards as Earnings Approach?: AMZN, AAPL",
+        "published_at": "2025-10-28T20:45:00+00:00",
+        "ingested_at": "2026-09-22T14:30:53+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=1f67727ea90fbabf249cdf404a1a370d5cd83d05461ad2bcd962bb2d258cff35",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Here’s the No. 1 Thing AMZN Stock Fans Should Watch When Amazon Reports Q3 Earnings",
+        "candidate_validated": false,
+        "group_id": "b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50"
+      },
+      {
+        "id": "article:b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "type": "news_article",
+        "article_id": "b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "title": "Here’s the No. 1 Thing AMZN Stock Fans Should Watch When Amazon Reports Q3 Earnings",
+        "published_at": "2025-10-27T14:35:09+00:00",
+        "ingested_at": "2026-09-22T14:30:52+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=35ba118b89659c16cf830fdfb3c72eeb0408aef0a94287d464ec8d67987b09bc",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "article:f3fecbcc82c0fd2b807bbcf4fb7ee4d135b71d62d99ebf1dc0b10ddc0871387f",
+        "type": "news_article",
+        "article_id": "f3fecbcc82c0fd2b807bbcf4fb7ee4d135b71d62d99ebf1dc0b10ddc0871387f",
+        "title": "Gear Up for Amazon (AMZN) Q3 Earnings: Wall Street Estimates for Key Metrics",
+        "published_at": "2025-10-27T13:15:07+00:00",
+        "ingested_at": "2026-09-22T14:30:52+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=bbe0a7056ec03532fd486b2f5946117ac153173c9092afc3272078fda9f49603",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon (AMZN) Earnings Expected to Grow: What to Know Ahead of Next Week's Release",
+        "candidate_validated": false,
+        "group_id": "7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2"
+      },
+      {
+        "id": "article:7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+        "type": "news_article",
+        "article_id": "7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+        "title": "Amazon (AMZN) Earnings Expected to Grow: What to Know Ahead of Next Week's Release",
+        "published_at": "2025-10-23T14:00:39+00:00",
+        "ingested_at": "2026-09-22T14:30:47+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=291d0a580714c3b5bb83eb1f572e697754e416d8d55fc1bb5919b96e6506171b",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon: AWS Roars And Stock Soars, But I'm Pausing Accumulation (Downgrade)",
+        "candidate_validated": false,
+        "group_id": "ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9"
+      },
+      {
+        "id": "article:ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+        "type": "news_article",
+        "article_id": "ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+        "title": "Amazon: AWS Roars And Stock Soars, But I'm Pausing Accumulation (Downgrade)",
+        "published_at": "2025-10-30T18:30:05+00:00",
+        "ingested_at": "2026-09-22T14:30:55+00:00",
+        "source_name": "SeekingAlpha",
+        "source_url": "https://finnhub.io/api/news?id=cb0e46cd05654bafa19ff4701f3ca2a98b4fa8eaae1cd64c4167aaab3e6bffea",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon earnings: Why this strategist is 'a little nervous'",
+        "candidate_validated": false,
+        "group_id": "ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f"
+      },
+      {
+        "id": "article:ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+        "type": "news_article",
+        "article_id": "ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+        "title": "Amazon earnings: Why this strategist is 'a little nervous'",
+        "published_at": "2025-10-30T15:42:47+00:00",
+        "ingested_at": "2026-09-22T14:30:55+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=d31a5411a7d5cc1a67398d5764f2a317de2277525e6bdf2f001d0f87f60a1b35",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "type": "candidate_event_proxy",
+        "title_proxy": "US-China trade truce, Alphabet earnings, Fed rate cut: 3 Things",
+        "candidate_validated": false,
+        "group_id": "748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e"
+      },
+      {
+        "id": "article:748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "type": "news_article",
+        "article_id": "748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "title": "US-China trade truce, Alphabet earnings, Fed rate cut: 3 Things",
+        "published_at": "2025-10-30T13:08:49+00:00",
+        "ingested_at": "2026-09-22T14:30:55+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=5c85c0e19470f691a034c16401911c61dc88d2544128cf5d1846a6cc11ac2f53",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "article:f843bf52485e6b409f45ad0f5882b1dffbc49c31a4dc43ea81da330d99468567",
+        "type": "news_article",
+        "article_id": "f843bf52485e6b409f45ad0f5882b1dffbc49c31a4dc43ea81da330d99468567",
+        "title": "Fed lookahead, Amazon layoffs, earnings latest: 3 Things",
+        "published_at": "2025-10-28T13:05:17+00:00",
+        "ingested_at": "2026-09-22T14:30:53+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=bcaba2dd166cf9b67155c293670f710098a19f152cf2ff51b0c51421d643c146",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon earnings: 2 reasons AWS could grow 20% in 2026",
+        "candidate_validated": false,
+        "group_id": "463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884"
+      },
+      {
+        "id": "article:463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+        "type": "news_article",
+        "article_id": "463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+        "title": "Amazon earnings: 2 reasons AWS could grow 20% in 2026",
+        "published_at": "2025-10-30T11:30:48+00:00",
+        "ingested_at": "2026-09-22T14:30:55+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=17f77760de70d39877aaf9d7298867be9a7a2bb3bb13e813554013e5c1b55b09",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Apple & Amazon earnings, Fed, mortgage rates: What to Watch",
+        "candidate_validated": false,
+        "group_id": "d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f"
+      },
+      {
+        "id": "article:d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+        "type": "news_article",
+        "article_id": "d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+        "title": "Apple & Amazon earnings, Fed, mortgage rates: What to Watch",
+        "published_at": "2025-10-29T23:00:00+00:00",
+        "ingested_at": "2026-09-22T14:30:53+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=45cc111297162d113226c7f71109ce6d894df76adefb0289f34a17cc77b422c7",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+        "type": "candidate_event_proxy",
+        "title_proxy": "KeyBanc Resumes Coverage of Amazon (AMZN) with Overweight Rating, $300 PT on Retail, Cloud Outlook",
+        "candidate_validated": false,
+        "group_id": "647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4"
+      },
+      {
+        "id": "article:647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+        "type": "news_article",
+        "article_id": "647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+        "title": "KeyBanc Resumes Coverage of Amazon (AMZN) with Overweight Rating, $300 PT on Retail, Cloud Outlook",
+        "published_at": "2025-10-29T15:24:55+00:00",
+        "ingested_at": "2026-09-22T14:30:53+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=f56774f3a0baaea895e25b7e4e76c98f22d22c3671c813e002e336e67a1a2a8f",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon: Surging Share Price Following Massive Beat",
+        "candidate_validated": false,
+        "group_id": "e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a"
+      },
+      {
+        "id": "article:e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+        "type": "news_article",
+        "article_id": "e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+        "title": "Amazon: Surging Share Price Following Massive Beat",
+        "published_at": "2025-10-30T19:35:29+00:00",
+        "ingested_at": "2026-09-22T14:30:55+00:00",
+        "source_name": "SeekingAlpha",
+        "source_url": "https://finnhub.io/api/news?id=955f4d3ab61e49c60885b9ed5c5b879ec3a7ab476573cf1aeb428fd649b4176e",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "anomaly:AMZN:2025-10-30",
+        "target": "company:AMZN",
+        "type": "observed_for_company",
+        "provenance": "anomalies.json",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "causal": false
+      },
+      {
+        "source": "article:e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "target": "event_candidate:e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "type": "heuristically_grouped_with",
+        "provenance": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+        "causal": false
+      },
+      {
+        "source": "article:378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+        "target": "event_candidate:378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+        "type": "heuristically_grouped_with",
+        "provenance": "378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+        "causal": false
+      },
+      {
+        "source": "article:522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+        "target": "event_candidate:522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+        "type": "heuristically_grouped_with",
+        "provenance": "522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "causal": false
+      },
+      {
+        "source": "article:b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "target": "event_candidate:b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "type": "heuristically_grouped_with",
+        "provenance": "b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "article:f3fecbcc82c0fd2b807bbcf4fb7ee4d135b71d62d99ebf1dc0b10ddc0871387f",
+        "target": "event_candidate:b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "type": "heuristically_grouped_with",
+        "provenance": "f3fecbcc82c0fd2b807bbcf4fb7ee4d135b71d62d99ebf1dc0b10ddc0871387f",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:f3fecbcc82c0fd2b807bbcf4fb7ee4d135b71d62d99ebf1dc0b10ddc0871387f",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "f3fecbcc82c0fd2b807bbcf4fb7ee4d135b71d62d99ebf1dc0b10ddc0871387f",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+        "causal": false
+      },
+      {
+        "source": "article:7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+        "target": "event_candidate:7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+        "type": "heuristically_grouped_with",
+        "provenance": "7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+        "causal": false
+      },
+      {
+        "source": "article:ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+        "target": "event_candidate:ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+        "type": "heuristically_grouped_with",
+        "provenance": "ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+        "causal": false
+      },
+      {
+        "source": "article:ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+        "target": "event_candidate:ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+        "type": "heuristically_grouped_with",
+        "provenance": "ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "causal": false
+      },
+      {
+        "source": "article:748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "target": "event_candidate:748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "type": "heuristically_grouped_with",
+        "provenance": "748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "article:f843bf52485e6b409f45ad0f5882b1dffbc49c31a4dc43ea81da330d99468567",
+        "target": "event_candidate:748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "type": "heuristically_grouped_with",
+        "provenance": "f843bf52485e6b409f45ad0f5882b1dffbc49c31a4dc43ea81da330d99468567",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:f843bf52485e6b409f45ad0f5882b1dffbc49c31a4dc43ea81da330d99468567",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "f843bf52485e6b409f45ad0f5882b1dffbc49c31a4dc43ea81da330d99468567",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+        "causal": false
+      },
+      {
+        "source": "article:463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+        "target": "event_candidate:463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+        "type": "heuristically_grouped_with",
+        "provenance": "463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+        "causal": false
+      },
+      {
+        "source": "article:d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+        "target": "event_candidate:d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+        "type": "heuristically_grouped_with",
+        "provenance": "d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+        "causal": false
+      },
+      {
+        "source": "article:647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+        "target": "event_candidate:647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+        "type": "heuristically_grouped_with",
+        "provenance": "647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+        "causal": false
+      },
+      {
+        "source": "article:e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+        "target": "event_candidate:e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+        "type": "heuristically_grouped_with",
+        "provenance": "e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+        "target": "anomaly:AMZN:2025-10-30",
+        "type": "daily_publication_context",
+        "provenance": "e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "baseline_position": 1,
+      "group_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+      "candidate_title_proxy": "Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call Transcript",
+      "candidate_event": "Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call Transcript",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.9999,
+      "article_ids": [
+        "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+          "title": "Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call Transcript",
+          "published_at": "2025-10-30T19:36:25+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.9999,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 2,
+      "group_id": "378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+      "candidate_title_proxy": "Amazon Earnings: What To Look For From AMZN",
+      "candidate_event": "Amazon Earnings: What To Look For From AMZN",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8946,
+      "article_ids": [
+        "378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "378741cdcf9d27a74011c4f1a7ba0fee0aaf4503c79cdeceed8a5ce198196fda",
+          "title": "Amazon Earnings: What To Look For From AMZN",
+          "published_at": "2025-10-29T03:06:39+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8946,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 3,
+      "group_id": "522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+      "candidate_title_proxy": "Buy the Mag 7 Laggards as Earnings Approach?: AMZN, AAPL",
+      "candidate_event": "Buy the Mag 7 Laggards as Earnings Approach?: AMZN, AAPL",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8898,
+      "article_ids": [
+        "522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "522ca3089067fe6e63ef517f4502d5ef35e01ceadbfbd158f8fd43030d668d80",
+          "title": "Buy the Mag 7 Laggards as Earnings Approach?: AMZN, AAPL",
+          "published_at": "2025-10-28T20:45:00+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8898,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 4,
+      "group_id": "b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+      "candidate_title_proxy": "Here’s the No. 1 Thing AMZN Stock Fans Should Watch When Amazon Reports Q3 Earnings",
+      "candidate_event": "Here’s the No. 1 Thing AMZN Stock Fans Should Watch When Amazon Reports Q3 Earnings",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8674,
+      "article_ids": [
+        "b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+        "f3fecbcc82c0fd2b807bbcf4fb7ee4d135b71d62d99ebf1dc0b10ddc0871387f"
+      ],
+      "daily_classes": {
+        "prior_day": 2
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "b4ae501525aa293e5ac04d105c898fe341db2eebc8c37c086660e22ee9454d50",
+          "title": "Here’s the No. 1 Thing AMZN Stock Fans Should Watch When Amazon Reports Q3 Earnings",
+          "published_at": "2025-10-27T14:35:09+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8674,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        },
+        {
+          "article_id": "f3fecbcc82c0fd2b807bbcf4fb7ee4d135b71d62d99ebf1dc0b10ddc0871387f",
+          "title": "Gear Up for Amazon (AMZN) Q3 Earnings: Wall Street Estimates for Key Metrics",
+          "published_at": "2025-10-27T13:15:07+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8664,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 5,
+      "group_id": "7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+      "candidate_title_proxy": "Amazon (AMZN) Earnings Expected to Grow: What to Know Ahead of Next Week's Release",
+      "candidate_event": "Amazon (AMZN) Earnings Expected to Grow: What to Know Ahead of Next Week's Release",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8,
+      "article_ids": [
+        "7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "7355b4b87032db233317c1a76c9dde3a2d0ed79f3f45e6922b81f4dd241692b2",
+          "title": "Amazon (AMZN) Earnings Expected to Grow: What to Know Ahead of Next Week's Release",
+          "published_at": "2025-10-23T14:00:39+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 6,
+      "group_id": "ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+      "candidate_title_proxy": "Amazon: AWS Roars And Stock Soars, But I'm Pausing Accumulation (Downgrade)",
+      "candidate_event": "Amazon: AWS Roars And Stock Soars, But I'm Pausing Accumulation (Downgrade)",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6996,
+      "article_ids": [
+        "ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "ae8cb71fad46bdab0507258e43fad9ba520f779e053566da3599eca889ce3fb9",
+          "title": "Amazon: AWS Roars And Stock Soars, But I'm Pausing Accumulation (Downgrade)",
+          "published_at": "2025-10-30T18:30:05+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6996,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 7,
+      "group_id": "ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+      "candidate_title_proxy": "Amazon earnings: Why this strategist is 'a little nervous'",
+      "candidate_event": "Amazon earnings: Why this strategist is 'a little nervous'",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6987,
+      "article_ids": [
+        "ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "ff37328bd2427dfc097672fb90ee69f8f80d91f6be6f48e2b67ea137e7c6c46f",
+          "title": "Amazon earnings: Why this strategist is 'a little nervous'",
+          "published_at": "2025-10-30T15:42:47+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6987,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 8,
+      "group_id": "748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+      "candidate_title_proxy": "US-China trade truce, Alphabet earnings, Fed rate cut: 3 Things",
+      "candidate_event": "US-China trade truce, Alphabet earnings, Fed rate cut: 3 Things",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.698,
+      "article_ids": [
+        "748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+        "f843bf52485e6b409f45ad0f5882b1dffbc49c31a4dc43ea81da330d99468567"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1,
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "748db6b243a18d66e51ea33f6d747fd3bb5c2eab4ace04912fb7ea3686073e5e",
+          "title": "US-China trade truce, Alphabet earnings, Fed rate cut: 3 Things",
+          "published_at": "2025-10-30T13:08:49+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.698,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        },
+        {
+          "article_id": "f843bf52485e6b409f45ad0f5882b1dffbc49c31a4dc43ea81da330d99468567",
+          "title": "Fed lookahead, Amazon layoffs, earnings latest: 3 Things",
+          "published_at": "2025-10-28T13:05:17+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5841,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 9,
+      "group_id": "463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+      "candidate_title_proxy": "Amazon earnings: 2 reasons AWS could grow 20% in 2026",
+      "candidate_event": "Amazon earnings: 2 reasons AWS could grow 20% in 2026",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6975,
+      "article_ids": [
+        "463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "463d551dd0b895877dfa83a8d85705e74dc6f4f5f1125891abf311c383a3d884",
+          "title": "Amazon earnings: 2 reasons AWS could grow 20% in 2026",
+          "published_at": "2025-10-30T11:30:48+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6975,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 10,
+      "group_id": "d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+      "candidate_title_proxy": "Apple & Amazon earnings, Fed, mortgage rates: What to Watch",
+      "candidate_event": "Apple & Amazon earnings, Fed, mortgage rates: What to Watch",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6094,
+      "article_ids": [
+        "d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "d9f787afdad8271e6bb0c922bb535797121356392de1c7e1c64005485e70548f",
+          "title": "Apple & Amazon earnings, Fed, mortgage rates: What to Watch",
+          "published_at": "2025-10-29T23:00:00+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.6094,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 11,
+      "group_id": "647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+      "candidate_title_proxy": "KeyBanc Resumes Coverage of Amazon (AMZN) with Overweight Rating, $300 PT on Retail, Cloud Outlook",
+      "candidate_event": "KeyBanc Resumes Coverage of Amazon (AMZN) with Overweight Rating, $300 PT on Retail, Cloud Outlook",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6012,
+      "article_ids": [
+        "647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "647b470122ebf08d197beed289b97ba635f8927708fc1118c803b407f2e262b4",
+          "title": "KeyBanc Resumes Coverage of Amazon (AMZN) with Overweight Rating, $300 PT on Retail, Cloud Outlook",
+          "published_at": "2025-10-29T15:24:55+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.6012,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 12,
+      "group_id": "e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+      "candidate_title_proxy": "Amazon: Surging Share Price Following Massive Beat",
+      "candidate_event": "Amazon: Surging Share Price Following Massive Beat",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5374,
+      "article_ids": [
+        "e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "e66571c99198ab6bdaff254949654acb59f00a3d9b8ccefbe5362d4a93f1d79a",
+          "title": "Amazon: Surging Share Price Following Massive Beat",
+          "published_at": "2025-10-30T19:35:29+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.5374,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    }
+  ],
+  "article_reuse_across_groups": {},
+  "limitations": [
+    "Offline SQLite only: no internet or model calls.",
+    "Publication-day context cannot establish news preceding price movement.",
+    "Ingestion after historical cutoff may imply retrospective rather than real-time availability.",
+    "Text-matched source excerpts do not verify semantic entailment or source independence.",
+    "No causal ranking or new economic scores; archived judgments remain unverified."
+  ]
+}

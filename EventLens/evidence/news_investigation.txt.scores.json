@@ -3,35 +3,246 @@
   "scoring_method": "Existing deterministic causal scorer; semantic criteria missing until assessed; not causal probability",
   "scores": [
     {
-      "event": "Q1 deliveries miss estimates",
+      "event": "Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call Transcript",
       "hypothesis": {
-        "event": "Q1 deliveries miss estimates",
-        "mechanism": "The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.",
-        "evidence_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
-        "evidence_quote": " first-quarter deliveries missed Wall Street's estimates as Wedbush Securities flagged",
-        "claim_flags": [
-          "unsupported_financial_or_market_outcome",
-          "needs_review:unmatched_product_or_numeric_token:Q1",
-          "quote_recovered_from_source"
-        ],
-        "original_mechanism": "Missed delivery estimates typically signal weaker demand and execution concerns, which can pressure the stock price.",
-        "relationship_class": "needs_review",
+        "event": "Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call Transcript",
+        "mechanism": "Earnings call transcript provides material company-specific financial and operational context for the trading day.",
+        "evidence_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "evidence_quote": "Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+        "claim_flags": [],
+        "original_mechanism": null,
+        "relationship_class": "plausible_unverified_link",
         "event_status": "documented_not_independently_verified",
         "direction_alignment": "unknown_or_mixed"
       },
       "assessment": {
-        "anomaly_id": "2026-04-02",
-        "candidate_event_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
-        "anomaly_start_at": "2026-04-02T13:30:00Z",
-        "anomaly_end_at": "2026-04-02T20:00:00Z",
-        "as_of_at": "2026-04-02T20:00:00Z",
+        "anomaly_id": "2025-10-30",
+        "candidate_event_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "anomaly_start_at": "2025-10-30T13:30:00Z",
+        "anomaly_end_at": "2025-10-30T20:00:00Z",
+        "as_of_at": "2025-10-30T20:00:00Z",
         "evidence": [
           {
-            "evidence_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+            "evidence_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+            "source_name": "SeekingAlpha",
+            "source_uri": "https://finnhub.io/api/news?id=92b8bff672cafadcaa7b0ec8aa913a56199c23b55af5088f553a0c6a556f8bff",
+            "published_at": "2025-10-30T19:36:25Z",
+            "lineage_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ],
+        "relationship_directness": {
+          "value": 0.3,
+          "rationale": "The earnings call transcript is a company-specific information event, but the source does not explicitly describe a stock reaction mechanism linking the transcript to the -3.23% return. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+          "evidence_ids": [
+            "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+          ],
+          "method": "model_judgment"
+        },
+        "economic_plausibility": {
+          "value": 0.8,
+          "rationale": "An earnings call transcript from the same day as the anomaly is economically plausible as contextual information for trading activity, though no direct causal link is established. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+          "evidence_ids": [
+            "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+          ],
+          "method": "model_judgment"
+        },
+        "materiality": {
+          "value": 1.0,
+          "rationale": "The earnings call transcript is a material company event by definition; it contains financial and operational data relevant to AMZN's market position. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+          "evidence_ids": [
+            "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+          ],
+          "method": "model_judgment"
+        },
+        "directional_consistency": {
+          "value": 0.1,
+          "rationale": "No sentiment direction can be inferred from the headline alone; the -3.23% return could be consistent with or opposite to any content within the earnings transcript. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+          "evidence_ids": [
+            "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+          ],
+          "method": "model_judgment"
+        },
+        "novelty": {
+          "value": 0.5,
+          "rationale": "An earnings call transcript published on the anomaly day is a recurring quarterly event, not a novel catalyst, but its timing on the anomaly day is notable. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+          "evidence_ids": [
+            "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+          ],
+          "method": "model_judgment"
+        },
+        "market_footprint_fit": {
+          "value": 0.9,
+          "rationale": "As the ticker symbol matches the company mentioned in the transcript, the event fits the market footprint of AMZN coverage. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+          "evidence_ids": [
+            "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+          ],
+          "method": "model_judgment"
+        }
+      },
+      "result": {
+        "anomaly_id": "2025-10-30",
+        "candidate_event_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+        "policy": {
+          "version": "causal-candidate-v1",
+          "weights": {
+            "temporal_fit": 0.18,
+            "relationship_directness": 0.14,
+            "economic_plausibility": 0.14,
+            "materiality": 0.12,
+            "directional_consistency": 0.1,
+            "source_independence": 0.08,
+            "primary_source_support": 0.08,
+            "novelty": 0.06,
+            "market_footprint_fit": 0.1
+          },
+          "contradiction_penalty": 0.25,
+          "temporal_grace_hours": 24.0,
+          "temporal_half_life_hours": 48.0,
+          "independent_source_target": 3,
+          "minimum_evidence_coverage": 0.7,
+          "core_criterion_floor": 0.25,
+          "insufficient_evidence_score_cap": 60.0,
+          "weak_core_score_cap": 40.0,
+          "plausible_threshold": 65.0,
+          "strong_threshold": 85.0
+        },
+        "eligible": true,
+        "score": 61.1,
+        "classification": "weak",
+        "evidence_coverage": 1.0,
+        "criteria": {
+          "temporal_fit": {
+            "value": 1.0,
+            "rationale": "First supporting public evidence appeared at 2025-10-30T19:36:25+00:00; 0.0 hours before the anomaly window.",
+            "evidence_ids": [
+              "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+            ],
+            "method": "rule"
+          },
+          "relationship_directness": {
+            "value": 0.3,
+            "rationale": "The earnings call transcript is a company-specific information event, but the source does not explicitly describe a stock reaction mechanism linking the transcript to the -3.23% return. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+            "evidence_ids": [
+              "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+            ],
+            "method": "model_judgment"
+          },
+          "economic_plausibility": {
+            "value": 0.8,
+            "rationale": "An earnings call transcript from the same day as the anomaly is economically plausible as contextual information for trading activity, though no direct causal link is established. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+            "evidence_ids": [
+              "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+            ],
+            "method": "model_judgment"
+          },
+          "materiality": {
+            "value": 1.0,
+            "rationale": "The earnings call transcript is a material company event by definition; it contains financial and operational data relevant to AMZN's market position. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+            "evidence_ids": [
+              "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+            ],
+            "method": "model_judgment"
+          },
+          "directional_consistency": {
+            "value": 0.1,
+            "rationale": "No sentiment direction can be inferred from the headline alone; the -3.23% return could be consistent with or opposite to any content within the earnings transcript. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+            "evidence_ids": [
+              "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+            ],
+            "method": "model_judgment"
+          },
+          "source_independence": {
+            "value": 0.3333,
+            "rationale": "Found 1 distinct supporting reporting lineage(s); target is 3.",
+            "evidence_ids": [
+              "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+            ],
+            "method": "rule"
+          },
+          "primary_source_support": {
+            "value": 0.0,
+            "rationale": "No supporting primary source is available.",
+            "evidence_ids": [],
+            "method": "rule"
+          },
+          "novelty": {
+            "value": 0.5,
+            "rationale": "An earnings call transcript published on the anomaly day is a recurring quarterly event, not a novel catalyst, but its timing on the anomaly day is notable. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+            "evidence_ids": [
+              "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+            ],
+            "method": "model_judgment"
+          },
+          "market_footprint_fit": {
+            "value": 0.9,
+            "rationale": "As the ticker symbol matches the company mentioned in the transcript, the event fits the market footprint of AMZN coverage. | Source excerpt: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT",
+            "evidence_ids": [
+              "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+            ],
+            "method": "model_judgment"
+          }
+        },
+        "contradiction_strength": {
+          "value": 0.0,
+          "rationale": "Contradictory lineage quality is 0.00 versus 0.50 for supporting lineages.",
+          "evidence_ids": [],
+          "method": "rule"
+        },
+        "missing_criteria": [],
+        "ignored_evidence_ids": [],
+        "caps_applied": [],
+        "causal_cutoff_at": "2025-10-30T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+            "source_name": "SeekingAlpha",
+            "source_uri": "https://finnhub.io/api/news?id=92b8bff672cafadcaa7b0ec8aa913a56199c23b55af5088f553a0c6a556f8bff",
+            "published_at": "2025-10-30T19:36:25Z",
+            "lineage_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ]
+      },
+      "limitations": [
+        "LLM criterion scores are uncalibrated judgements, not verified entailment or causal probabilities.",
+        "Only representative source included; independent reporting and primary sources require separate verification.",
+        "Daily anomaly onset approximated by session open; no intraday timing claim."
+      ],
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-30",
+      "retrieval_score": 0.9999
+    },
+    {
+      "event": "Amazon Q3 2025 earnings call and strategic commentary",
+      "hypothesis": {
+        "event": "Amazon Q3 2025 earnings call and strategic commentary",
+        "mechanism": "The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.",
+        "evidence_id": "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5",
+        "evidence_quote": "Joining us today to answer your questions is Andy Jassy, our CEO; and Brian Olsavsky, our CFO. As you listen to today's conference call, we encourage you to have our press release in front of you, which includes our financial results as well as metrics and commentary on the quarter.",
+        "claim_flags": [
+          "unsupported_financial_or_market_outcome"
+        ],
+        "original_mechanism": "Positive earnings results and CEO/CFO commentary on growth drivers likely drove investor optimism",
+        "relationship_class": "plausible_unverified_link",
+        "event_status": "documented_not_independently_verified",
+        "direction_alignment": "unknown_or_mixed"
+      },
+      "assessment": {
+        "anomaly_id": "2025-10-31",
+        "candidate_event_id": "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5",
+        "anomaly_start_at": "2025-10-31T13:30:00Z",
+        "anomaly_end_at": "2025-10-31T20:00:00Z",
+        "as_of_at": "2025-10-31T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5",
             "source_name": "Yahoo",
-            "source_uri": "https://finnhub.io/api/news?id=6e445e011fb74215a2b318f8e04c278a3b7a56333e4680bebf639127a33bb8c0",
-            "published_at": "2026-04-02T16:25:58Z",
-            "lineage_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+            "source_uri": "https://finnhub.io/api/news?id=81bfc05d8f43a5fd1057a90228c2c3a78e9ca0dee157047c3fce5ca3bde97d8d",
+            "published_at": "2025-10-31T11:41:42Z",
+            "lineage_id": "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5",
             "role": "secondary_analysis",
             "stance": "supports"
           }
@@ -74,8 +285,8 @@
         }
       },
       "result": {
-        "anomaly_id": "2026-04-02",
-        "candidate_event_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+        "anomaly_id": "2025-10-31",
+        "candidate_event_id": "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5",
         "policy": {
           "version": "causal-candidate-v1",
           "weights": {
@@ -107,9 +318,9 @@
         "criteria": {
           "temporal_fit": {
             "value": 1.0,
-            "rationale": "First supporting public evidence appeared at 2026-04-02T16:25:58+00:00; 0.0 hours before the anomaly window.",
+            "rationale": "First supporting public evidence appeared at 2025-10-31T11:41:42+00:00; 1.8 hours before the anomaly window.",
             "evidence_ids": [
-              "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80"
+              "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5"
             ],
             "method": "rule"
           },
@@ -141,7 +352,7 @@
             "value": 0.3333,
             "rationale": "Found 1 distinct supporting reporting lineage(s); target is 3.",
             "evidence_ids": [
-              "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80"
+              "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5"
             ],
             "method": "rule"
           },
@@ -182,14 +393,14 @@
         "caps_applied": [
           "insufficient_evidence_coverage"
         ],
-        "causal_cutoff_at": "2026-04-02T20:00:00Z",
+        "causal_cutoff_at": "2025-10-31T20:00:00Z",
         "evidence": [
           {
-            "evidence_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+            "evidence_id": "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5",
             "source_name": "Yahoo",
-            "source_uri": "https://finnhub.io/api/news?id=6e445e011fb74215a2b318f8e04c278a3b7a56333e4680bebf639127a33bb8c0",
-            "published_at": "2026-04-02T16:25:58Z",
-            "lineage_id": "e02ac17c4fb274150e505cab60bafb37fe61726f1a05b9a4f06487294314ce80",
+            "source_uri": "https://finnhub.io/api/news?id=81bfc05d8f43a5fd1057a90228c2c3a78e9ca0dee157047c3fce5ca3bde97d8d",
+            "published_at": "2025-10-31T11:41:42Z",
+            "lineage_id": "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5",
             "role": "secondary_analysis",
             "stance": "supports"
           }
@@ -200,94 +411,520 @@
         "Only representative source included; independent reporting and primary sources require separate verification.",
         "Daily anomaly onset approximated by session open; no intraday timing claim."
       ],
-      "ticker": "TSLA",
-      "anomaly_date": "2026-04-02",
-      "retrieval_score": 0.6989
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-31",
+      "retrieval_score": 0.9975
     },
     {
-      "event": "Tesla Q1 deliveries missed Wall Street estimates",
+      "event": "Q3 CY2025 earnings release with revenue and GAAP profit beats",
       "hypothesis": {
-        "event": "Tesla Q1 deliveries missed Wall Street estimates",
-        "mechanism": "Missed delivery estimates typically negatively impact investor sentiment and stock price.",
-        "evidence_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
-        "evidence_quote": "Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+        "event": "Q3 CY2025 earnings release with revenue and GAAP profit beats",
+        "mechanism": "The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.",
+        "evidence_id": "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580",
+        "evidence_quote": "Cloud computing and online retail behemoth Amazon (NASDAQ:AMZN) reported revenue ahead of Wall Streets expectations in Q3 CY2025, with sales up 13.4% year on year to $180.2 billion. The company expects next quarter's revenue to be around $209.5 billion, close to analysts' estimates. Its GAAP profit of $1.95 per share was 25.4% above analysts' consensus estimates.",
         "claim_flags": [
-          "needs_review:unmatched_product_or_numeric_token:Q1"
+          "unsupported_financial_or_market_outcome"
         ],
-        "original_mechanism": "Missed delivery estimates typically negatively impact investor sentiment and stock price.",
-        "relationship_class": "needs_review",
+        "original_mechanism": "Revenue and profit beats typically signal strong operational performance, which can drive positive market reaction.",
+        "relationship_class": "plausible_unverified_link",
+        "event_status": "reported_or_pending",
+        "direction_alignment": "unknown_or_mixed"
+      },
+      "assessment": {
+        "anomaly_id": "2025-10-31",
+        "candidate_event_id": "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580",
+        "anomaly_start_at": "2025-10-31T13:30:00Z",
+        "anomaly_end_at": "2025-10-31T20:00:00Z",
+        "as_of_at": "2025-10-31T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580",
+            "source_name": "Yahoo",
+            "source_uri": "https://finnhub.io/api/news?id=fbdf8c84480cc07b4fa29e435cbee0d3e87b9bdd8c6b1ab97f12a3897dde8ae0",
+            "published_at": "2025-10-31T05:30:50Z",
+            "lineage_id": "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ],
+        "relationship_directness": {
+          "value": 0.7,
+          "rationale": "The earnings report directly mentions AMZN and provides concrete financial metrics (revenue, profit) that are directionally consistent with the positive daily return. | Source excerpt: Cloud computing and online retail behemoth Amazon (NASDAQ:AMZN) reported revenue ahead of Wall Streets expectations in Q3 CY2025, with sales up 13.4% year on year to $180.2 billion.",
+          "evidence_ids": [
+            "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+          ],
+          "method": "model_judgment"
+        },
+        "economic_plausibility": {
+          "value": 0.8,
+          "rationale": "A 13.4% year-over-year revenue increase and a 25.4% profit beat above consensus are economically plausible drivers of a positive stock move, though the magnitude of the 9.58% return is not explicitly linked to the numbers in the source. | Source excerpt: Its GAAP profit of $1.95 per share was 25.4% above analysts’ consensus estimates.",
+          "evidence_ids": [
+            "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+          ],
+          "method": "model_judgment"
+        },
+        "materiality": {
+          "value": 0.9,
+          "rationale": "The reported figures ($180.2B revenue, $1.95 EPS) are material to AMZN's valuation and operations. | Source excerpt: Cloud computing and online retail behemoth Amazon (NASDAQ:AMZN) reported revenue ahead of Wall Streets expectations in Q3 CY2025, with sales up 13.4% year on year to $180.2 billion.",
+          "evidence_ids": [
+            "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+          ],
+          "method": "model_judgment"
+        },
+        "directional_consistency": {
+          "value": null,
+          "rationale": "Not assessed; no model/human judgement supplied.",
+          "evidence_ids": [],
+          "method": "model_judgment"
+        },
+        "novelty": {
+          "value": 0.6,
+          "rationale": "Q3 earnings are a recurring quarterly event; the specific beats reported are novel for this period but the event type is standard. | Source excerpt: Cloud computing and online retail behemoth Amazon (NASDAQ:AMZN) reported revenue ahead of Wall Streets expectations in Q3 CY2025, with sales up 13.4% year on year to $180.2 billion.",
+          "evidence_ids": [
+            "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+          ],
+          "method": "model_judgment"
+        },
+        "market_footprint_fit": {
+          "value": 0.9,
+          "rationale": "AMZN is a large-cap stock with high daily volume; a significant earnings beat can meaningfully impact price movement given its market footprint. | Source excerpt: Cloud computing and online retail behemoth Amazon (NASDAQ:AMZN) reported revenue ahead of Wall Streets expectations in Q3 CY2025, with sales up 13.4% year on year to $180.2 billion.",
+          "evidence_ids": [
+            "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+          ],
+          "method": "model_judgment"
+        }
+      },
+      "result": {
+        "anomaly_id": "2025-10-31",
+        "candidate_event_id": "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580",
+        "policy": {
+          "version": "causal-candidate-v1",
+          "weights": {
+            "temporal_fit": 0.18,
+            "relationship_directness": 0.14,
+            "economic_plausibility": 0.14,
+            "materiality": 0.12,
+            "directional_consistency": 0.1,
+            "source_independence": 0.08,
+            "primary_source_support": 0.08,
+            "novelty": 0.06,
+            "market_footprint_fit": 0.1
+          },
+          "contradiction_penalty": 0.25,
+          "temporal_grace_hours": 24.0,
+          "temporal_half_life_hours": 48.0,
+          "independent_source_target": 3,
+          "minimum_evidence_coverage": 0.7,
+          "core_criterion_floor": 0.25,
+          "insufficient_evidence_score_cap": 60.0,
+          "weak_core_score_cap": 40.0,
+          "plausible_threshold": 65.0,
+          "strong_threshold": 85.0
+        },
+        "eligible": true,
+        "score": 65.1,
+        "classification": "plausible",
+        "evidence_coverage": 0.9,
+        "criteria": {
+          "temporal_fit": {
+            "value": 1.0,
+            "rationale": "First supporting public evidence appeared at 2025-10-31T05:30:50+00:00; 8.0 hours before the anomaly window.",
+            "evidence_ids": [
+              "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+            ],
+            "method": "rule"
+          },
+          "relationship_directness": {
+            "value": 0.7,
+            "rationale": "The earnings report directly mentions AMZN and provides concrete financial metrics (revenue, profit) that are directionally consistent with the positive daily return. | Source excerpt: Cloud computing and online retail behemoth Amazon (NASDAQ:AMZN) reported revenue ahead of Wall Streets expectations in Q3 CY2025, with sales up 13.4% year on year to $180.2 billion.",
+            "evidence_ids": [
+              "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+            ],
+            "method": "model_judgment"
+          },
+          "economic_plausibility": {
+            "value": 0.8,
+            "rationale": "A 13.4% year-over-year revenue increase and a 25.4% profit beat above consensus are economically plausible drivers of a positive stock move, though the magnitude of the 9.58% return is not explicitly linked to the numbers in the source. | Source excerpt: Its GAAP profit of $1.95 per share was 25.4% above analysts’ consensus estimates.",
+            "evidence_ids": [
+              "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+            ],
+            "method": "model_judgment"
+          },
+          "materiality": {
+            "value": 0.9,
+            "rationale": "The reported figures ($180.2B revenue, $1.95 EPS) are material to AMZN's valuation and operations. | Source excerpt: Cloud computing and online retail behemoth Amazon (NASDAQ:AMZN) reported revenue ahead of Wall Streets expectations in Q3 CY2025, with sales up 13.4% year on year to $180.2 billion.",
+            "evidence_ids": [
+              "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+            ],
+            "method": "model_judgment"
+          },
+          "directional_consistency": {
+            "value": null,
+            "rationale": "Not assessed; no model/human judgement supplied.",
+            "evidence_ids": [],
+            "method": "model_judgment"
+          },
+          "source_independence": {
+            "value": 0.3333,
+            "rationale": "Found 1 distinct supporting reporting lineage(s); target is 3.",
+            "evidence_ids": [
+              "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+            ],
+            "method": "rule"
+          },
+          "primary_source_support": {
+            "value": 0.0,
+            "rationale": "No supporting primary source is available.",
+            "evidence_ids": [],
+            "method": "rule"
+          },
+          "novelty": {
+            "value": 0.6,
+            "rationale": "Q3 earnings are a recurring quarterly event; the specific beats reported are novel for this period but the event type is standard. | Source excerpt: Cloud computing and online retail behemoth Amazon (NASDAQ:AMZN) reported revenue ahead of Wall Streets expectations in Q3 CY2025, with sales up 13.4% year on year to $180.2 billion.",
+            "evidence_ids": [
+              "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+            ],
+            "method": "model_judgment"
+          },
+          "market_footprint_fit": {
+            "value": 0.9,
+            "rationale": "AMZN is a large-cap stock with high daily volume; a significant earnings beat can meaningfully impact price movement given its market footprint. | Source excerpt: Cloud computing and online retail behemoth Amazon (NASDAQ:AMZN) reported revenue ahead of Wall Streets expectations in Q3 CY2025, with sales up 13.4% year on year to $180.2 billion.",
+            "evidence_ids": [
+              "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+            ],
+            "method": "model_judgment"
+          }
+        },
+        "contradiction_strength": {
+          "value": 0.0,
+          "rationale": "Contradictory lineage quality is 0.00 versus 0.50 for supporting lineages.",
+          "evidence_ids": [],
+          "method": "rule"
+        },
+        "missing_criteria": [
+          "directional_consistency"
+        ],
+        "ignored_evidence_ids": [],
+        "caps_applied": [],
+        "causal_cutoff_at": "2025-10-31T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580",
+            "source_name": "Yahoo",
+            "source_uri": "https://finnhub.io/api/news?id=fbdf8c84480cc07b4fa29e435cbee0d3e87b9bdd8c6b1ab97f12a3897dde8ae0",
+            "published_at": "2025-10-31T05:30:50Z",
+            "lineage_id": "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ]
+      },
+      "limitations": [
+        "LLM criterion scores are uncalibrated judgements, not verified entailment or causal probabilities.",
+        "Only representative source included; independent reporting and primary sources require separate verification.",
+        "Daily anomaly onset approximated by session open; no intraday timing claim."
+      ],
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-31",
+      "retrieval_score": 0.9957
+    },
+    {
+      "event": "Amazon stock upgraded to Buy rating",
+      "hypothesis": {
+        "event": "Amazon stock upgraded to Buy rating",
+        "mechanism": "Analyst rating upgrade reinforcing positive sentiment around AWS growth and cloud dominance",
+        "evidence_id": "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913",
+        "evidence_quote": "Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+        "claim_flags": [],
+        "original_mechanism": null,
+        "relationship_class": "plausible_unverified_link",
         "event_status": "documented_not_independently_verified",
         "direction_alignment": "unknown_or_mixed"
       },
       "assessment": {
-        "anomaly_id": "2026-04-02",
-        "candidate_event_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
-        "anomaly_start_at": "2026-04-02T13:30:00Z",
-        "anomaly_end_at": "2026-04-02T20:00:00Z",
-        "as_of_at": "2026-04-02T20:00:00Z",
+        "anomaly_id": "2025-10-31",
+        "candidate_event_id": "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913",
+        "anomaly_start_at": "2025-10-31T13:30:00Z",
+        "anomaly_end_at": "2025-10-31T20:00:00Z",
+        "as_of_at": "2025-10-31T20:00:00Z",
         "evidence": [
           {
-            "evidence_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+            "evidence_id": "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913",
+            "source_name": "SeekingAlpha",
+            "source_uri": "https://finnhub.io/api/news?id=d08d6333558dc3be5b98f08ff8856ba55dc0f77098d3f1cafdf46e08111e7b90",
+            "published_at": "2025-10-31T14:22:09Z",
+            "lineage_id": "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ],
+        "relationship_directness": {
+          "value": 0.7,
+          "rationale": "The rating upgrade is directly about Amazon's stock and AWS performance, providing a clear informational catalyst published on the anomaly day. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+          "evidence_ids": [
+            "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+          ],
+          "method": "model_judgment"
+        },
+        "economic_plausibility": {
+          "value": 0.8,
+          "rationale": "An analyst upgrade to Buy rating is a standard market event that can reasonably influence investor sentiment and trading volume, consistent with the high volume_zscore of 7.68. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+          "evidence_ids": [
+            "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+          ],
+          "method": "model_judgment"
+        },
+        "materiality": {
+          "value": 0.9,
+          "rationale": "A rating upgrade is a material analyst action that directly pertains to the company's investment thesis and stock performance. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+          "evidence_ids": [
+            "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+          ],
+          "method": "model_judgment"
+        },
+        "directional_consistency": {
+          "value": 1.0,
+          "rationale": "A Buy rating is directionally consistent with a 9.58% positive return and high volume, suggesting the news aligns with the price move. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+          "evidence_ids": [
+            "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+          ],
+          "method": "model_judgment"
+        },
+        "novelty": {
+          "value": 0.6,
+          "rationale": "The upgrade represents a new analyst action on the day of the anomaly, providing fresh catalyst material rather than stale commentary. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+          "evidence_ids": [
+            "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+          ],
+          "method": "model_judgment"
+        },
+        "market_footprint_fit": {
+          "value": 0.85,
+          "rationale": "The high volume_zscore (7.68) and the stock's large market cap make a rating upgrade a plausible driver of the observed trading activity. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+          "evidence_ids": [
+            "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+          ],
+          "method": "model_judgment"
+        }
+      },
+      "result": {
+        "anomaly_id": "2025-10-31",
+        "candidate_event_id": "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913",
+        "policy": {
+          "version": "causal-candidate-v1",
+          "weights": {
+            "temporal_fit": 0.18,
+            "relationship_directness": 0.14,
+            "economic_plausibility": 0.14,
+            "materiality": 0.12,
+            "directional_consistency": 0.1,
+            "source_independence": 0.08,
+            "primary_source_support": 0.08,
+            "novelty": 0.06,
+            "market_footprint_fit": 0.1
+          },
+          "contradiction_penalty": 0.25,
+          "temporal_grace_hours": 24.0,
+          "temporal_half_life_hours": 48.0,
+          "independent_source_target": 3,
+          "minimum_evidence_coverage": 0.7,
+          "core_criterion_floor": 0.25,
+          "insufficient_evidence_score_cap": 60.0,
+          "weak_core_score_cap": 40.0,
+          "plausible_threshold": 65.0,
+          "strong_threshold": 85.0
+        },
+        "eligible": true,
+        "score": 74.6,
+        "classification": "plausible",
+        "evidence_coverage": 1.0,
+        "criteria": {
+          "temporal_fit": {
+            "value": 1.0,
+            "rationale": "First supporting public evidence appeared at 2025-10-31T14:22:09+00:00; 0.0 hours before the anomaly window.",
+            "evidence_ids": [
+              "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+            ],
+            "method": "rule"
+          },
+          "relationship_directness": {
+            "value": 0.7,
+            "rationale": "The rating upgrade is directly about Amazon's stock and AWS performance, providing a clear informational catalyst published on the anomaly day. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+            "evidence_ids": [
+              "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+            ],
+            "method": "model_judgment"
+          },
+          "economic_plausibility": {
+            "value": 0.8,
+            "rationale": "An analyst upgrade to Buy rating is a standard market event that can reasonably influence investor sentiment and trading volume, consistent with the high volume_zscore of 7.68. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+            "evidence_ids": [
+              "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+            ],
+            "method": "model_judgment"
+          },
+          "materiality": {
+            "value": 0.9,
+            "rationale": "A rating upgrade is a material analyst action that directly pertains to the company's investment thesis and stock performance. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+            "evidence_ids": [
+              "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+            ],
+            "method": "model_judgment"
+          },
+          "directional_consistency": {
+            "value": 1.0,
+            "rationale": "A Buy rating is directionally consistent with a 9.58% positive return and high volume, suggesting the news aligns with the price move. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+            "evidence_ids": [
+              "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+            ],
+            "method": "model_judgment"
+          },
+          "source_independence": {
+            "value": 0.3333,
+            "rationale": "Found 1 distinct supporting reporting lineage(s); target is 3.",
+            "evidence_ids": [
+              "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+            ],
+            "method": "rule"
+          },
+          "primary_source_support": {
+            "value": 0.0,
+            "rationale": "No supporting primary source is available.",
+            "evidence_ids": [],
+            "method": "rule"
+          },
+          "novelty": {
+            "value": 0.6,
+            "rationale": "The upgrade represents a new analyst action on the day of the anomaly, providing fresh catalyst material rather than stale commentary. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+            "evidence_ids": [
+              "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+            ],
+            "method": "model_judgment"
+          },
+          "market_footprint_fit": {
+            "value": 0.85,
+            "rationale": "The high volume_zscore (7.68) and the stock's large market cap make a rating upgrade a plausible driver of the observed trading activity. | Source excerpt: Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance",
+            "evidence_ids": [
+              "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+            ],
+            "method": "model_judgment"
+          }
+        },
+        "contradiction_strength": {
+          "value": 0.0,
+          "rationale": "Contradictory lineage quality is 0.00 versus 0.50 for supporting lineages.",
+          "evidence_ids": [],
+          "method": "rule"
+        },
+        "missing_criteria": [],
+        "ignored_evidence_ids": [],
+        "caps_applied": [],
+        "causal_cutoff_at": "2025-10-31T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913",
+            "source_name": "SeekingAlpha",
+            "source_uri": "https://finnhub.io/api/news?id=d08d6333558dc3be5b98f08ff8856ba55dc0f77098d3f1cafdf46e08111e7b90",
+            "published_at": "2025-10-31T14:22:09Z",
+            "lineage_id": "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913",
+            "role": "secondary_analysis",
+            "stance": "supports"
+          }
+        ]
+      },
+      "limitations": [
+        "LLM criterion scores are uncalibrated judgements, not verified entailment or causal probabilities.",
+        "Only representative source included; independent reporting and primary sources require separate verification.",
+        "Daily anomaly onset approximated by session open; no intraday timing claim."
+      ],
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-31",
+      "retrieval_score": 0.6983
+    },
+    {
+      "event": "Amazon Q3 earnings beat estimates and raised guidance, driving pre-market surge",
+      "hypothesis": {
+        "event": "Amazon Q3 earnings beat estimates and raised guidance, driving pre-market surge",
+        "mechanism": "The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.",
+        "evidence_id": "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443",
+        "evidence_quote": "Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
+        "claim_flags": [
+          "unsupported_financial_or_market_outcome"
+        ],
+        "original_mechanism": "Earnings beat and revenue growth, particularly in AWS, triggered positive market reaction",
+        "relationship_class": "plausible_unverified_link",
+        "event_status": "documented_not_independently_verified",
+        "direction_alignment": "unknown_or_mixed"
+      },
+      "assessment": {
+        "anomaly_id": "2025-10-31",
+        "candidate_event_id": "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443",
+        "anomaly_start_at": "2025-10-31T13:30:00Z",
+        "anomaly_end_at": "2025-10-31T20:00:00Z",
+        "as_of_at": "2025-10-31T20:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443",
             "source_name": "Yahoo",
-            "source_uri": "https://finnhub.io/api/news?id=45f8662aacbabe50e25ffc31bd5b73563b44d0bfa0c48003dc97876ecb472b12",
-            "published_at": "2026-04-02T17:21:34Z",
-            "lineage_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+            "source_uri": "https://finnhub.io/api/news?id=92ffb91edcb38893aa8540041d8225cbcc58c0eae00f87f8896ba0d0747097c1",
+            "published_at": "2025-10-31T13:07:20Z",
+            "lineage_id": "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443",
             "role": "secondary_analysis",
             "stance": "supports"
           }
         ],
         "relationship_directness": {
           "value": 0.9,
-          "rationale": "The summary directly links the delivery miss to the stock price drop. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "rationale": "The source directly links Amazon's pre-market gains to Q3 earnings outperformance and AWS growth, which is the named event. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
           "evidence_ids": [
-            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
           ],
           "method": "model_judgment"
         },
         "economic_plausibility": {
           "value": 0.95,
-          "rationale": "Missing delivery estimates is a well-understood negative catalyst for automotive manufacturers. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "rationale": "A Q3 earnings beat with AWS growth is a concrete, well-understood driver of stock movement in the technology sector. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
           "evidence_ids": [
-            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
           ],
           "method": "model_judgment"
         },
         "materiality": {
           "value": 1.0,
-          "rationale": "Q1 delivery figures are a primary metric for Tesla's production and demand health. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "rationale": "The earnings beat and AWS growth are material to Amazon's valuation and directly referenced in the source. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
           "evidence_ids": [
-            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
           ],
           "method": "model_judgment"
         },
         "directional_consistency": {
           "value": 1.0,
-          "rationale": "The news explicitly states the stock dropped, consistent with the negative event. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "rationale": "The source explicitly states Amazon shares gained over 13% pre-market following the earnings beat, matching the anomaly's positive return direction. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
           "evidence_ids": [
-            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
           ],
           "method": "model_judgment"
         },
         "novelty": {
           "value": 0.8,
-          "rationale": "Q1 delivery misses are a recurring but material event; this specific instance is fresh catalyst for the anomaly day. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "rationale": "Q3 earnings releases are routine, but the specific beat and AWS growth component represents the current market catalyst. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
           "evidence_ids": [
-            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
           ],
           "method": "model_judgment"
         },
         "market_footprint_fit": {
           "value": 1.0,
-          "rationale": "Tesla is a major constituent of major indices (^DJI, ^GSPC, ^IXIC) referenced in the broader market context. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+          "rationale": "Amazon is the named company in the anomaly, and the source provides a direct market-moving event for AMZN on the anomaly date. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
           "evidence_ids": [
-            "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+            "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
           ],
           "method": "model_judgment"
         }
       },
       "result": {
-        "anomaly_id": "2026-04-02",
-        "candidate_event_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+        "anomaly_id": "2025-10-31",
+        "candidate_event_id": "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443",
         "policy": {
           "version": "causal-candidate-v1",
           "weights": {
@@ -319,41 +956,41 @@
         "criteria": {
           "temporal_fit": {
             "value": 1.0,
-            "rationale": "First supporting public evidence appeared at 2026-04-02T17:21:34+00:00; 0.0 hours before the anomaly window.",
+            "rationale": "First supporting public evidence appeared at 2025-10-31T13:07:20+00:00; 0.4 hours before the anomaly window.",
             "evidence_ids": [
-              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+              "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
             ],
             "method": "rule"
           },
           "relationship_directness": {
             "value": 0.9,
-            "rationale": "The summary directly links the delivery miss to the stock price drop. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "rationale": "The source directly links Amazon's pre-market gains to Q3 earnings outperformance and AWS growth, which is the named event. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
             "evidence_ids": [
-              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+              "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
             ],
             "method": "model_judgment"
           },
           "economic_plausibility": {
             "value": 0.95,
-            "rationale": "Missing delivery estimates is a well-understood negative catalyst for automotive manufacturers. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "rationale": "A Q3 earnings beat with AWS growth is a concrete, well-understood driver of stock movement in the technology sector. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
             "evidence_ids": [
-              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+              "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
             ],
             "method": "model_judgment"
           },
           "materiality": {
             "value": 1.0,
-            "rationale": "Q1 delivery figures are a primary metric for Tesla's production and demand health. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "rationale": "The earnings beat and AWS growth are material to Amazon's valuation and directly referenced in the source. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
             "evidence_ids": [
-              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+              "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
             ],
             "method": "model_judgment"
           },
           "directional_consistency": {
             "value": 1.0,
-            "rationale": "The news explicitly states the stock dropped, consistent with the negative event. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "rationale": "The source explicitly states Amazon shares gained over 13% pre-market following the earnings beat, matching the anomaly's positive return direction. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
             "evidence_ids": [
-              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+              "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
             ],
             "method": "model_judgment"
           },
@@ -361,7 +998,7 @@
             "value": 0.3333,
             "rationale": "Found 1 distinct supporting reporting lineage(s); target is 3.",
             "evidence_ids": [
-              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+              "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
             ],
             "method": "rule"
           },
@@ -373,17 +1010,17 @@
           },
           "novelty": {
             "value": 0.8,
-            "rationale": "Q1 delivery misses are a recurring but material event; this specific instance is fresh catalyst for the anomaly day. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "rationale": "Q3 earnings releases are routine, but the specific beat and AWS growth component represents the current market catalyst. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
             "evidence_ids": [
-              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+              "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
             ],
             "method": "model_judgment"
           },
           "market_footprint_fit": {
             "value": 1.0,
-            "rationale": "Tesla is a major constituent of major indices (^DJI, ^GSPC, ^IXIC) referenced in the broader market context. | Source excerpt: Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.",
+            "rationale": "Amazon is the named company in the anomaly, and the source provides a direct market-moving event for AMZN on the anomaly date. | Source excerpt: Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.",
             "evidence_ids": [
-              "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0"
+              "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
             ],
             "method": "model_judgment"
           }
@@ -397,14 +1034,14 @@
         "missing_criteria": [],
         "ignored_evidence_ids": [],
         "caps_applied": [],
-        "causal_cutoff_at": "2026-04-02T20:00:00Z",
+        "causal_cutoff_at": "2025-10-31T20:00:00Z",
         "evidence": [
           {
-            "evidence_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+            "evidence_id": "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443",
             "source_name": "Yahoo",
-            "source_uri": "https://finnhub.io/api/news?id=45f8662aacbabe50e25ffc31bd5b73563b44d0bfa0c48003dc97876ecb472b12",
-            "published_at": "2026-04-02T17:21:34Z",
-            "lineage_id": "40b97b67e6c074e3cd51d745d3fcaa4be2d656f53ffd08b511915c541f0acdb0",
+            "source_uri": "https://finnhub.io/api/news?id=92ffb91edcb38893aa8540041d8225cbcc58c0eae00f87f8896ba0d0747097c1",
+            "published_at": "2025-10-31T13:07:20Z",
+            "lineage_id": "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443",
             "role": "secondary_analysis",
             "stance": "supports"
           }
@@ -415,92 +1052,95 @@
         "Only representative source included; independent reporting and primary sources require separate verification.",
         "Daily anomaly onset approximated by session open; no intraday timing claim."
       ],
-      "ticker": "TSLA",
-      "anomaly_date": "2026-04-02",
-      "retrieval_score": 0.4492
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-31",
+      "retrieval_score": 0.698
     },
     {
-      "event": "Tesla Q1 2026 delivery miss reported on 2026-04-02",
+      "event": "Amazon's new AI chips (Trainium2-based Project Rainier) went live.",
       "hypothesis": {
-        "event": "Tesla Q1 2026 delivery miss reported on 2026-04-02",
-        "mechanism": "Missed delivery consensus typically signals demand concerns and near-term execution risk, which can pressure the stock.",
-        "evidence_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
-        "evidence_quote": "Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street's consensus range of approximately 365,645 to 372,160 vehicles.",
-        "claim_flags": [],
-        "original_mechanism": null,
-        "relationship_class": "plausible_unverified_link",
+        "event": "Amazon's new AI chips (Trainium2-based Project Rainier) went live.",
+        "mechanism": "The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.",
+        "evidence_id": "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773",
+        "evidence_quote": "Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
+        "claim_flags": [
+          "unsupported_financial_or_market_outcome",
+          "needs_review:unmatched_product_or_numeric_token:Trainium2-based"
+        ],
+        "original_mechanism": "Introduction of custom AI infrastructure may support long-term revenue growth in Amazon's cloud and AI segments.",
+        "relationship_class": "needs_review",
         "event_status": "documented_not_independently_verified",
         "direction_alignment": "unknown_or_mixed"
       },
       "assessment": {
-        "anomaly_id": "2026-04-02",
-        "candidate_event_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
-        "anomaly_start_at": "2026-04-02T13:30:00Z",
-        "anomaly_end_at": "2026-04-02T20:00:00Z",
-        "as_of_at": "2026-04-02T20:00:00Z",
+        "anomaly_id": "2025-10-31",
+        "candidate_event_id": "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773",
+        "anomaly_start_at": "2025-10-31T13:30:00Z",
+        "anomaly_end_at": "2025-10-31T20:00:00Z",
+        "as_of_at": "2025-10-31T20:00:00Z",
         "evidence": [
           {
-            "evidence_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+            "evidence_id": "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773",
             "source_name": "Yahoo",
-            "source_uri": "https://finnhub.io/api/news?id=870a335a43ad1a08270c26ac9a29b75a79e153ea802f816e63a2c2a34dd1144f",
-            "published_at": "2026-04-02T14:24:19Z",
-            "lineage_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+            "source_uri": "https://finnhub.io/api/news?id=cd811a1f46339580737655a8642b1cc70f5840898c9694e18437369502e3c722",
+            "published_at": "2025-10-31T02:31:06Z",
+            "lineage_id": "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773",
             "role": "secondary_analysis",
             "stance": "supports"
           }
         ],
         "relationship_directness": {
-          "value": 0.8,
-          "rationale": "The source directly states the stock declined on the delivery miss, establishing a contemporaneous market reaction. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "value": 0.4,
+          "rationale": "The news describes a product launch but does not explicitly link the event to today's stock price movement. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
           "evidence_ids": [
-            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
           ],
           "method": "model_judgment"
         },
         "economic_plausibility": {
-          "value": 0.9,
-          "rationale": "A delivery miss relative to consensus is a well-understood fundamental trigger for near-term sentiment adjustment in the auto/ev sector. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "value": 0.5,
+          "rationale": "Custom AI chips could improve AWS profitability or competitiveness over time, but the summary does not quantify financial impact. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
           "evidence_ids": [
-            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
           ],
           "method": "model_judgment"
         },
         "materiality": {
-          "value": 0.95,
-          "rationale": "The miss represents roughly a 2-4% shortfall against consensus, a meaningful variance for a high-volume name like Tesla. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "value": 0.5,
+          "rationale": "The event is significant for Amazon's AI strategy, but no specific revenue or margin figures are provided in the summary. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
           "evidence_ids": [
-            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
           ],
           "method": "model_judgment"
         },
         "directional_consistency": {
-          "value": 1.0,
-          "rationale": "The event (delivery miss) and the anomaly (negative return) are directionally identical; the source explicitly links the miss to the price decline. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "value": 0.6,
+          "rationale": "Positive sentiment around AI infrastructure is directionally consistent with the stock's positive return, though no causal link is established. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
           "evidence_ids": [
-            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
           ],
           "method": "model_judgment"
         },
         "novelty": {
-          "value": 0.3,
-          "rationale": "Q1 delivery reports are a recurring quarterly event; this specific miss is a single-instance data point. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "value": 0.9,
+          "rationale": "The article reports a newly live supercomputer, representing a fresh catalyst published on the anomaly day. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
           "evidence_ids": [
-            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
           ],
           "method": "model_judgment"
         },
         "market_footprint_fit": {
-          "value": 0.9,
-          "rationale": "Tesla is a large-cap liquid stock; a ~3% early-trading move on earnings-delivery news is consistent with its typical market footprint. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+          "value": 0.5,
+          "rationale": "The event fits within Amazon's broader AI/cloud narrative but does not directly explain the magnitude of today's return. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
           "evidence_ids": [
-            "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+            "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
           ],
           "method": "model_judgment"
         }
       },
       "result": {
-        "anomaly_id": "2026-04-02",
-        "candidate_event_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+        "anomaly_id": "2025-10-31",
+        "candidate_event_id": "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773",
         "policy": {
           "version": "causal-candidate-v1",
           "weights": {
@@ -526,47 +1166,47 @@
           "strong_threshold": 85.0
         },
         "eligible": true,
-        "score": 76.7,
-        "classification": "plausible",
+        "score": 55.7,
+        "classification": "weak",
         "evidence_coverage": 1.0,
         "criteria": {
           "temporal_fit": {
             "value": 1.0,
-            "rationale": "First supporting public evidence appeared at 2026-04-02T14:24:19+00:00; 0.0 hours before the anomaly window.",
+            "rationale": "First supporting public evidence appeared at 2025-10-31T02:31:06+00:00; 11.0 hours before the anomaly window.",
             "evidence_ids": [
-              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+              "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
             ],
             "method": "rule"
           },
           "relationship_directness": {
-            "value": 0.8,
-            "rationale": "The source directly states the stock declined on the delivery miss, establishing a contemporaneous market reaction. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "value": 0.4,
+            "rationale": "The news describes a product launch but does not explicitly link the event to today's stock price movement. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
             "evidence_ids": [
-              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+              "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
             ],
             "method": "model_judgment"
           },
           "economic_plausibility": {
-            "value": 0.9,
-            "rationale": "A delivery miss relative to consensus is a well-understood fundamental trigger for near-term sentiment adjustment in the auto/ev sector. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "value": 0.5,
+            "rationale": "Custom AI chips could improve AWS profitability or competitiveness over time, but the summary does not quantify financial impact. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
             "evidence_ids": [
-              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+              "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
             ],
             "method": "model_judgment"
           },
           "materiality": {
-            "value": 0.95,
-            "rationale": "The miss represents roughly a 2-4% shortfall against consensus, a meaningful variance for a high-volume name like Tesla. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "value": 0.5,
+            "rationale": "The event is significant for Amazon's AI strategy, but no specific revenue or margin figures are provided in the summary. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
             "evidence_ids": [
-              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+              "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
             ],
             "method": "model_judgment"
           },
           "directional_consistency": {
-            "value": 1.0,
-            "rationale": "The event (delivery miss) and the anomaly (negative return) are directionally identical; the source explicitly links the miss to the price decline. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "value": 0.6,
+            "rationale": "Positive sentiment around AI infrastructure is directionally consistent with the stock's positive return, though no causal link is established. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
             "evidence_ids": [
-              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+              "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
             ],
             "method": "model_judgment"
           },
@@ -574,7 +1214,7 @@
             "value": 0.3333,
             "rationale": "Found 1 distinct supporting reporting lineage(s); target is 3.",
             "evidence_ids": [
-              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+              "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
             ],
             "method": "rule"
           },
@@ -585,18 +1225,18 @@
             "method": "rule"
           },
           "novelty": {
-            "value": 0.3,
-            "rationale": "Q1 delivery reports are a recurring quarterly event; this specific miss is a single-instance data point. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "value": 0.9,
+            "rationale": "The article reports a newly live supercomputer, representing a fresh catalyst published on the anomaly day. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
             "evidence_ids": [
-              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+              "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
             ],
             "method": "model_judgment"
           },
           "market_footprint_fit": {
-            "value": 0.9,
-            "rationale": "Tesla is a large-cap liquid stock; a ~3% early-trading move on earnings-delivery news is consistent with its typical market footprint. | Source excerpt: Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street’s consensus range of approximately 365,645 to 372,160 vehicles.",
+            "value": 0.5,
+            "rationale": "The event fits within Amazon's broader AI/cloud narrative but does not directly explain the magnitude of today's return. | Source excerpt: Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live.",
             "evidence_ids": [
-              "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4"
+              "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
             ],
             "method": "model_judgment"
           }
@@ -610,14 +1250,14 @@
         "missing_criteria": [],
         "ignored_evidence_ids": [],
         "caps_applied": [],
-        "causal_cutoff_at": "2026-04-02T20:00:00Z",
+        "causal_cutoff_at": "2025-10-31T20:00:00Z",
         "evidence": [
           {
-            "evidence_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+            "evidence_id": "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773",
             "source_name": "Yahoo",
-            "source_uri": "https://finnhub.io/api/news?id=870a335a43ad1a08270c26ac9a29b75a79e153ea802f816e63a2c2a34dd1144f",
-            "published_at": "2026-04-02T14:24:19Z",
-            "lineage_id": "5bb602deb78fa8f9ebf930746603d55f7e18fef8a277877b8a1bf342ba00e7a4",
+            "source_uri": "https://finnhub.io/api/news?id=cd811a1f46339580737655a8642b1cc70f5840898c9694e18437369502e3c722",
+            "published_at": "2025-10-31T02:31:06Z",
+            "lineage_id": "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773",
             "role": "secondary_analysis",
             "stance": "supports"
           }
@@ -628,9 +1268,9 @@
         "Only representative source included; independent reporting and primary sources require separate verification.",
         "Daily anomaly onset approximated by session open; no intraday timing claim."
       ],
-      "ticker": "TSLA",
-      "anomaly_date": "2026-04-02",
-      "retrieval_score": 0.4483
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-31",
+      "retrieval_score": 0.612
     }
   ]
 }

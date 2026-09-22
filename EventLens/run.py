@@ -34,14 +34,35 @@ def process_news(*, demo=True, db_path='data/news.sqlite', days=7,
         print('News ingestion incomplete; skipping investigation and graphs.', flush=True)
         return
     investigation_path = output / 'news_investigation.txt'
+    ranking_ready = False
     if investigate_news:
         from news.investigate import investigate
         print('Starting LLM news investigation (one call per selected news group)...', flush=True)
+        old_scoring_mtime = (Path(str(investigation_path) + '.scores.json').stat().st_mtime_ns
+                             if Path(str(investigation_path) + '.scores.json').exists() else None)
         investigate(selected, db_path=db_path, days=days,
                     output=str(investigation_path))
         if not investigation_path.is_file() or not investigation_path.read_text(encoding='utf-8').strip():
             raise RuntimeError('Investigation did not produce a nonempty output file')
         print(f'LLM investigation saved: {investigation_path}', flush=True)
+        # Rank only the sidecar produced by this investigation. Never reuse stale scores.
+        scoring_path = Path(str(investigation_path) + '.scores.json')
+        if (not scoring_path.is_file() or
+                scoring_path.stat().st_mtime_ns == old_scoring_mtime):
+            print(f'Final ranking skipped: scoring sidecar missing: {scoring_path}', flush=True)
+        else:
+            from news.final_ranking import build_ranking, render_markdown
+            try:
+                scoring = json.loads(scoring_path.read_text(encoding='utf-8'))
+                ranked = build_ranking(scoring)
+                ranking_json = output / 'final_ranking.json'
+                ranking_md = output / 'final_ranking.md'
+                ranking_json.write_text(json.dumps(ranked, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+                ranking_md.write_text(render_markdown(ranked), encoding='utf-8')
+                ranking_ready = True
+                print(f'Final ranking saved: {ranking_json}; {ranking_md}', flush=True)
+            except (ValueError, TypeError, KeyError, OSError) as exc:
+                print(f'Final ranking skipped ({type(exc).__name__}: {exc}); investigation retained.', flush=True)
     # Graphs are offline and read-only. Each date gets a distinct filename.
     appendices = []
     for day in dates:
@@ -58,13 +79,20 @@ def process_news(*, demo=True, db_path='data/news.sqlite', days=7,
                      + investigation_path.read_text(encoding='utf-8').strip())
     else:
         combined += '\n\nNews investigation: skipped (--no-investigation).\n'
+    if ranking_ready:
+        combined += ('\n\n---\n\n# Final hypothesis ranking (unverified; audit-first)\n\n'
+                     + ranking_md.read_text(encoding='utf-8').strip())
     combined += '\n\n---\n\n# Evidence appendices (descriptive, not causal)\n\n' + '\n\n---\n\n'.join(appendices)
     (output / 'report_with_evidence.md').write_text(combined + '\n', encoding='utf-8')
     if investigate_news:
         from news.clean_report import write_clean_report
-        clean = write_clean_report(investigation_path=investigation_path,
-                    original_report_path=report_path, validated=validated,
-                    output_path=output / 'report_clean.md')
+        clean = write_clean_report(
+            investigation_path=investigation_path,
+            original_report_path=report_path,
+            validated=validated,
+            output_path=output / "report_clean.md",
+            ranking_path=output / "final_ranking.json" if ranking_ready else None,
+        )
         print(f'Readable report saved: {clean}', flush=True)
     print(f'Completed {len(dates)} selected anomalies; outputs in {output}/', flush=True)
 

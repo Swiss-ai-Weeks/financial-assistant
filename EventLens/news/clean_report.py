@@ -5,6 +5,7 @@ ranked source records to group reviews by the original group identifier.
 """
 import re
 from pathlib import Path
+import json
 
 HEADER = re.compile(r'^## (\d{4}-\d{2}-\d{2}) \| return=([^|]+) \| volume z=(.+)$')
 GROUP = re.compile(r'^  Group (\d+)/(\d+) \[([0-9a-f]+)\] status=([^;]+); reason=(.*)$')
@@ -76,75 +77,280 @@ def _label(status, relationship):
             'llm_error': 'Model error'}.get(status, status.replace('_', ' '))
 
 
-def render_clean_report(investigation_text, original_report='', validated=False):
+def render_clean_report(
+    investigation_text,
+    original_report="",
+    validated=False,
+    ranking=None,
+):
     sections = _parse(investigation_text)
+
     if not sections:
-        raise ValueError('No investigation sections found; original files remain untouched')
-    status = 'VALIDATED' if validated else 'UNVALIDATED DRAFT — requires review'
-    out = [f'# Financial anomaly report — {status}', '',
-           '> News ranking is a retrieval score, NOT a probability of causation. '
-           'Model hypotheses are not proven explanations.', '']
+        raise ValueError("No investigation sections found")
+
+    status = (
+        "PIPELINE VALIDATED — CAUSALITY UNVERIFIED"
+        if validated
+        else "UNVALIDATED DRAFT — requires review"
+    )
+
+    out = [
+        f"# Financial anomaly report — {status}",
+        "",
+    ]
+
     if original_report.strip():
-        out += ['**Market analysis:** the original report remains in `report.txt` or `report_draft.txt`; this readable view focuses on the news findings.', '', '---', '']
-    out += ['# News investigation — readable view', '']
+        out += [
+            "**Market analysis:** See the original report.txt.",
+            "",
+        ]
+
+    # Index the unified ranking by ticker/date.
+    ranked_by_date = {}
+
+    if ranking:
+        for event in ranking.get("events", []):
+            ranked_by_date.setdefault(
+                event["anomaly_date"], []
+            ).append(event)
+
     for sec in sections:
-        out += [f"## {sec['date']} · Return {sec['return']} · Volume z-score {sec['z']}", '']
-        groups = sec['groups']
-        hypotheses = [g for g in groups.values() if g['status'] == 'supported_hypothesis']
-        rejected = sum(g['status'] == 'validation_rejected' for g in groups.values())
-        out += [f"**Review:** {len(groups)} groups reviewed · {len(hypotheses)} hypotheses identified "
-                f"(not proven) · {rejected} rejected.", '']
-        if hypotheses:
-            names = list(dict.fromkeys(g['event'] for g in hypotheses if g['event']))
-            out += ['**Model findings:** ' + ('; '.join(_safe(n) for n in names) if names else
-                    'See individual hypotheses below.') +
-                    '. These are potential contextual links, not established causes.', '']
-        else:
-            out += ['**Model findings:** No supported hypothesis was identified in the reviewed news. '
-                    'The cause of this price move remains unresolved.', '']
-        out += ['### News ranked by the existing retrieval score', '',
-                '| Rank | Score | News / source | Model assessment |',
-                '|---:|---:|---|---|']
-        for i, source in enumerate(sec['sources'], 1):
-            g = groups.get(source['id'])
-            label = _label(g['status'], g['relationship']) if g else 'Review not found — check raw audit'
-            out.append(f"| {i} | {source['score']} | [{_safe(source['title'])}]({source['url']}) "
-                       f"<br>Published: {_safe(source['time'])} · Articles in group: {source['size']} "
-                       f"| {_safe(label)} |")
-        out += ['', '### Detailed model interpretation (same ranking)', '']
-        for i, source in enumerate(sec['sources'], 1):
-            g = groups.get(source['id'])
-            out += [f"#### #{i} · {source['title']}", '',
-                    f"**Retrieval score:** {source['score']} · **Published:** {source['time']} · "
-                    f"**Group size:** {source['size']}", '',
-                    f"**Source:** [Open source record]({source['url']})", '']
-            if not g:
-                out += ['**Assessment:** Missing from investigation; see raw audit.', '']
-                continue
-            out += [f"**Assessment:** {_label(g['status'], g['relationship'])}", '']
-            if g['event']:
-                out += [f"**Event identified by model:** {g['event']}", '']
-            if g['mechanism']:
-                out += [f"**Model interpretation (unverified):** {g['mechanism']}", '']
-            out += [f"**Reason / validator outcome:** {g['reason']}", '']
-            if g['excerpt']:
-                out += [f"**Source excerpt (as recorded):** {g['excerpt']}", '']
-            if g['flags']:
-                out += [f"**Review flags:** `{g['flags']}`", '']
-        out += ['---', '']
-    out += ['## How to read this report', '',
-            '- **Rank / score:** order and score from the existing news retriever; not model confidence or causality.',
-            '- **Plausible hypothesis:** model found a contextual link, not proof that the event caused the move.',
-            '- **Needs review:** a claim-level check flagged an issue requiring human verification.',
-            '- **Rejected / context only:** no accepted explanation from that news group.',
-            '- **Source record:** the URL stored by the ingestion pipeline; it may be a Finnhub record rather than the publisher’s article URL.',
-            '- **Technical audit:** see `news_investigation.txt` and the original evidence graphs.', '']
-    return '\n'.join(out)
+        day = sec["date"]
+        events = ranked_by_date.get(day, [])
+
+        out += [
+            f"## {day} | Return {sec['return']} | "
+            f"Volume z-score {sec['z']}",
+            "",
+        ]
+
+        out += [
+            "### News retrieval overview",
+            "",
+            "| Rank | Retrieval score | News / source | Model assessment |",
+            "|---:|---:|---|---|",
+        ]
+
+        for i, source in enumerate(sec["sources"], 1):
+            group = sec["groups"].get(source["id"])
+
+            label = (
+                _label(group["status"], group["relationship"])
+                if group
+                else "Review not found — check raw audit"
+            )
+
+            out.append(
+                f"| {i} | {source['score']} | "
+                f"[{_safe(source['title'])}]({source['url']}) "
+                f"<br>Published: {_safe(source['time'])} "
+                f"· Articles in group: {source['size']} "
+                f"| {_safe(label)} |"
+            )
+
+        out.append("")
+
+        if not events:
+            out += [
+                "**Result:** No scored hypothesis available "
+                "for this anomaly.",
+                "",
+                "The cause remains unresolved.",
+                "",
+                "---",
+                "",
+            ]
+            continue
+
+        out += [
+            f"**Identified event groups:** {len(events)}",
+            "",
+        ]
+
+        # Lookup source records using the original evidence IDs.
+        sources = {
+            source["id"]: source
+            for source in sec["sources"]
+        }
+
+        groups = sec["groups"]
+
+        for index, event in enumerate(events, 1):
+            out += [
+                f"### Event {index}: {event['event']}",
+                "",
+                f"**Event score:** {event['causal_score']} / 100",
+                "",
+                f"**Status:** {event['status']}",
+                "",
+                f"**Classification:** {event['classification']}",
+                "",
+                f"**Evidence coverage:** {event['evidence_coverage']}",
+                "",
+                f"**Articles:** {event['article_count']}",
+                "",
+                "**Scoring method:** Score inherited from the "
+                "selected assessment; not an average or independent "
+                "multi-source confirmation.",
+                "",
+                "#### Supporting evidence and audit",
+                "",
+            ]
+
+            event_reasons = event.get("review_reasons") or []
+
+            if event_reasons:
+                out += [
+                    "**Event review reasons:** " + ", ".join(event_reasons),
+                    "",
+                ]
+
+            for assessment in event["assessments"]:
+                evidence_id = assessment["evidence_id"]
+
+                source = sources.get(evidence_id)
+                group = groups.get(evidence_id)
+
+                selected = assessment.get(
+                    "representative", False
+                )
+
+                out += [
+                    f"**{'Selected assessment' if selected else 'Additional assessment'}**",
+                    "",
+                ]
+
+                if source:
+                    out += [
+                        f"**Article:** [{source['title']}]"
+                        f"({source['url']})",
+                        "",
+                        f"**Published:** {source['time']}",
+                        "",
+                        f"**Retrieval score:** {source['score']}",
+                        "",
+                    ]
+                else:
+                    out += [
+                        f"**Evidence ID:** `{evidence_id}`",
+                        "",
+                        "**Source:** Not matched in investigation; "
+                        "check raw audit.",
+                        "",
+                    ]
+
+                out += [
+                    f"**Assessment score:** {assessment['score']}",
+                    "",
+                    f"**Assessment status:** {assessment['status']}",
+                    "",
+                ]
+
+                reasons = assessment.get("review_reasons") or []
+
+                if reasons:
+                    out += [
+                        "**Review reasons:** "
+                        + ", ".join(reasons),
+                        "",
+                    ]
+
+                flags = assessment.get("claim_flags") or []
+
+                if flags:
+                    out += [
+                        "**Claim flags:** "
+                        + ", ".join(flags),
+                        "",
+                    ]
+
+                if group:
+                    if group["mechanism"]:
+                        out += [
+                            "**Model interpretation (unverified):** "
+                            + group["mechanism"],
+                            "",
+                        ]
+
+                    if group["reason"]:
+                        out += [
+                            "**Validator outcome:** "
+                            + group["reason"],
+                            "",
+                        ]
+
+                    if group["excerpt"]:
+                        out += [
+                            "**Source excerpt:** "
+                            + group["excerpt"],
+                            "",
+                        ]
 
 
-def write_clean_report(*, investigation_path, original_report_path, validated, output_path):
-    investigation = Path(investigation_path).read_text(encoding='utf-8')
-    original = Path(original_report_path).read_text(encoding='utf-8')
-    result = render_clean_report(investigation, original, validated)
-    Path(output_path).write_text(result, encoding='utf-8')
+    out += [
+        "## Audit references",
+        "",
+        "- Original market report: `report.txt`",
+        "- Full news investigation: `news_investigation.txt`",
+        "- Scoring records: `news_investigation.txt.scores.json`",
+        "- Grouped event records: `final_ranking.json`",
+        "",
+    ]
+
+    out += [
+        "## Limitations",
+        "",
+        "- Event matching is narrow and heuristic; verify event identity manually.",
+        "- Representative score is not recomputed from pooled evidence.",
+        "- Article count is not independent-source count.",
+        "- LLM criterion scores are uncalibrated and not causal probabilities.",
+        "- Daily anomaly timing does not establish that news preceded the price move.",
+        "",
+    ]
+
+    return "\n".join(out)
+
+
+def write_clean_report(
+    *,
+    investigation_path,
+    original_report_path,
+    validated,
+    output_path,
+    ranking_path=None,
+):
+    investigation = Path(investigation_path).read_text(
+        encoding="utf-8"
+    )
+
+    original = Path(original_report_path).read_text(
+        encoding="utf-8"
+    )
+
+    ranking = None
+
+    if ranking_path is not None:
+        ranking_file = Path(ranking_path)
+
+        if not ranking_file.is_file():
+            raise FileNotFoundError(
+                f"Ranking file not found: {ranking_file}"
+            )
+
+        ranking = json.loads(
+            ranking_file.read_text(encoding="utf-8")
+        )
+
+    result = render_clean_report(
+        investigation,
+        original,
+        validated,
+        ranking=ranking,
+    )
+
+    Path(output_path).write_text(
+        result,
+        encoding="utf-8",
+    )
+
     return output_path

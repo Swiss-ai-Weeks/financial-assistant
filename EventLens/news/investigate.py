@@ -9,7 +9,6 @@ from datetime import date, datetime, time, timedelta, timezone
 from zoneinfo import ZoneInfo
 from pathlib import Path
 from urllib.parse import urlsplit
-
 from .selection import select_events
 
 MAX_EVIDENCE = 12
@@ -177,7 +176,7 @@ def _source_quote(quote, article):
     return candidates[0], 'quote_recovered_from_source'
 
 
-def _event_evidence_review(event, article, excerpt):
+def _event_evidence_review_old(event, article, excerpt):
     """Non-destructive screening: flag distinctive model tokens absent from source.
 
     This is NOT semantic entailment. Never discard a valid paraphrase based on
@@ -187,6 +186,44 @@ def _event_evidence_review(event, article, excerpt):
     tokens = re.findall(r"[A-Za-z][A-Za-z0-9-]*[0-9][A-Za-z0-9-]*", event)
     missing = sorted({token for token in tokens if token.casefold() not in source})
     return ['needs_review:unmatched_product_or_numeric_token:' + ','.join(missing)] if missing else []
+
+def _event_evidence_review(event, article, excerpt):
+    """Flag distinctive event tokens absent from the source."""
+    source = _normalize_evidence(
+        (article.get('title') or '') + ' ' +
+        (article.get('summary') or '')[:1000]
+    ).casefold()
+
+    quarter_aliases = {
+        'q1': r'\b(?:q1|first[\s-]+quarter|1st[\s-]+quarter)\b',
+        'q2': r'\b(?:q2|second[\s-]+quarter|2nd[\s-]+quarter)\b',
+        'q3': r'\b(?:q3|third[\s-]+quarter|3rd[\s-]+quarter)\b',
+        'q4': r'\b(?:q4|fourth[\s-]+quarter|4th[\s-]+quarter)\b',
+    }
+
+    tokens = re.findall(
+        r"[A-Za-z][A-Za-z0-9-]*[0-9][A-Za-z0-9-]*",
+        event
+    )
+
+    missing = []
+
+    for token in tokens:
+        normalized = token.casefold()
+
+        if normalized in quarter_aliases:
+            if re.search(quarter_aliases[normalized], source):
+                continue
+
+        if normalized not in source:
+            missing.append(token)
+
+    missing = sorted(set(missing))
+
+    return (
+        ['needs_review:unmatched_product_or_numeric_token:' + ','.join(missing)]
+        if missing else []
+    )
 
 
 def _mechanism_quality(mechanism, event):

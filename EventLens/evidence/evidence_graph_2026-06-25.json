@@ -1,0 +1,1190 @@
+{
+  "schema_version": "integrated_daily_evidence_graph_v1",
+  "ticker": "AMZN",
+  "anomaly_date": "2026-06-25",
+  "as_of": "2026-06-25T20:00:00+00:00",
+  "daily_anomaly": {
+    "date": "2026-06-25",
+    "close": 227.01,
+    "return_pct": -3.1,
+    "volume_zscore": 2.35,
+    "intraday_onset": null
+  },
+  "baseline_ranker_unchanged": true,
+  "baseline_ranks_recomputed_by_original_ranker": true,
+  "semantic_overlay_provided": false,
+  "stored_articles_in_window": 547,
+  "lexically_relevant_articles": 49,
+  "model_calls": 0,
+  "trained_tgn": false,
+  "graph_ranks_computed": 0,
+  "graph": {
+    "nodes": [
+      {
+        "id": "anomaly:AMZN:2026-06-25",
+        "type": "daily_anomaly",
+        "date": "2026-06-25",
+        "return_pct": -3.1,
+        "volume_zscore": 2.35,
+        "price_onset_at": null
+      },
+      {
+        "id": "company:AMZN",
+        "type": "target_company",
+        "ticker": "AMZN"
+      },
+      {
+        "id": "event_candidate:4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon (AMZN) BofA Sees Q2 Revenue Beat Despite Prime Day Timing Shift",
+        "candidate_validated": false,
+        "group_id": "4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572"
+      },
+      {
+        "id": "article:4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+        "type": "news_article",
+        "article_id": "4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+        "title": "Amazon (AMZN) BofA Sees Q2 Revenue Beat Despite Prime Day Timing Shift",
+        "published_at": "2026-06-24T13:48:30+00:00",
+        "ingested_at": "2026-09-22T14:31:03+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=0be4cd3d737473d2fe259ab9569f0bbdba0e58bac60c5fb7fb1b445b2f6013c6",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+        "type": "candidate_event_proxy",
+        "title_proxy": "S&P 500, Nasdaq And Dow End Holiday-Shortened Week Higher As Investors Cheer US-Iran Peace Deal — SPCX, AMZN, ONDS, NFLX, TTWO In Focus",
+        "candidate_validated": false,
+        "group_id": "5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875"
+      },
+      {
+        "id": "article:5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+        "type": "news_article",
+        "article_id": "5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+        "title": "S&P 500, Nasdaq And Dow End Holiday-Shortened Week Higher As Investors Cheer US-Iran Peace Deal — SPCX, AMZN, ONDS, NFLX, TTWO In Focus",
+        "published_at": "2026-06-18T22:07:48+00:00",
+        "ingested_at": "2026-09-22T14:30:56+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=17df92b589fa467a19ebc6a7d4c50da2d6940047cd2839fd00e5953dcdb8bfda",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Should Amazon’s US$10 Billion Missouri AI Bet and Trainium Chip Sales Shift AMZN’s Cloud Narrative?",
+        "candidate_validated": false,
+        "group_id": "e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb"
+      },
+      {
+        "id": "article:e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+        "type": "news_article",
+        "article_id": "e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+        "title": "Should Amazon’s US$10 Billion Missouri AI Bet and Trainium Chip Sales Shift AMZN’s Cloud Narrative?",
+        "published_at": "2026-06-18T20:17:25+00:00",
+        "ingested_at": "2026-09-22T14:30:56+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=512d8bb020cc2ebeb01e49270c269971d181abdbc3f71c43c09e272d3b61d42c",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon.com (AMZN) Gains 3% After Announcing $10 Billion Missouri Data Center Investment",
+        "candidate_validated": false,
+        "group_id": "6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4"
+      },
+      {
+        "id": "article:6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+        "type": "news_article",
+        "article_id": "6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+        "title": "Amazon.com (AMZN) Gains 3% After Announcing $10 Billion Missouri Data Center Investment",
+        "published_at": "2026-06-18T18:31:56+00:00",
+        "ingested_at": "2026-09-22T14:30:56+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=3a6712484dc2511396316217116bbccd89bf0be5cf28e142f0a9b1d425df1118",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+        "type": "candidate_event_proxy",
+        "title_proxy": "BMO Capital Reiterates Buy Rating on Amazon.com (AMZN) Stock",
+        "candidate_validated": false,
+        "group_id": "8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b"
+      },
+      {
+        "id": "article:8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+        "type": "news_article",
+        "article_id": "8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+        "title": "BMO Capital Reiterates Buy Rating on Amazon.com (AMZN) Stock",
+        "published_at": "2026-06-25T08:17:48+00:00",
+        "ingested_at": "2026-09-22T14:31:04+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=9e8da56911b23e27e0fee29d23138fc4ab19158c5964f291a3297437fe0ae5d5",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Why Amazon Is Sliding Right Before Its Biggest Sales Week Of The Year",
+        "candidate_validated": false,
+        "group_id": "b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d"
+      },
+      {
+        "id": "article:b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+        "type": "news_article",
+        "article_id": "b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+        "title": "Why Amazon Is Sliding Right Before Its Biggest Sales Week Of The Year",
+        "published_at": "2026-06-22T15:27:25+00:00",
+        "ingested_at": "2026-09-22T14:31:01+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=db40d1551d74a3008768e8a245c74e67beb98a7fd8912d5f01eb856c2911e431",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon Prime Day Set to Generate Record Online Spending as Retailers Compete for Shoppers (AMZN)",
+        "candidate_validated": false,
+        "group_id": "22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160"
+      },
+      {
+        "id": "article:22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "type": "news_article",
+        "article_id": "22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "title": "Amazon Prime Day Set to Generate Record Online Spending as Retailers Compete for Shoppers (AMZN)",
+        "published_at": "2026-06-22T12:55:01+00:00",
+        "ingested_at": "2026-09-22T14:31:01+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=d77dbe9bfba16c45836afaa1a2af5f20cd14dd2768f3255feefa5a3b376a2d2c",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "article:bc12eb6e9e775b9c3b186e8951362f9815fd17cf5af63a7271d9f9af66a40908",
+        "type": "news_article",
+        "article_id": "bc12eb6e9e775b9c3b186e8951362f9815fd17cf5af63a7271d9f9af66a40908",
+        "title": "Amazon Prime Day expected to drive record $26B in online spending",
+        "published_at": "2026-06-23T15:04:00+00:00",
+        "ingested_at": "2026-09-22T14:31:02+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=3e93b89af2937b8465b5e403bf76f33f5f1e16b2a7b085a56d0799589c8e7651",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon (AMZN) Stock Gets Fair Value Bump As Analysts Weigh AWS And AI Spending",
+        "candidate_validated": false,
+        "group_id": "3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994"
+      },
+      {
+        "id": "article:3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+        "type": "news_article",
+        "article_id": "3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+        "title": "Amazon (AMZN) Stock Gets Fair Value Bump As Analysts Weigh AWS And AI Spending",
+        "published_at": "2026-06-19T17:10:45+00:00",
+        "ingested_at": "2026-09-22T14:30:58+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=22172f8ab0c66871d5aa129ccbc0cfe905334599357adf34454f4d81bd50547d",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Amazon Pledges $48B to Scale AI Infrastructure in India: What's Ahead?",
+        "candidate_validated": false,
+        "group_id": "adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23"
+      },
+      {
+        "id": "article:adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+        "type": "news_article",
+        "article_id": "adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+        "title": "Amazon Pledges $48B to Scale AI Infrastructure in India: What's Ahead?",
+        "published_at": "2026-06-25T15:33:00+00:00",
+        "ingested_at": "2026-09-22T14:31:04+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=bb738b118ed435247ccf941d5fe9c345f84589b3c3a8fcd47ab032789e3b7668",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+        "type": "candidate_event_proxy",
+        "title_proxy": "What's Going On With Amazon Stock Thursday?",
+        "candidate_validated": false,
+        "group_id": "5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c"
+      },
+      {
+        "id": "article:5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+        "type": "news_article",
+        "article_id": "5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+        "title": "What's Going On With Amazon Stock Thursday?",
+        "published_at": "2026-06-25T13:46:00+00:00",
+        "ingested_at": "2026-09-22T14:31:04+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=35a0aa4e7878287ec66e778046bee60f0d0882836af79ba5d7edaca1cdb33139",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Wall Street Is Fixated on the Wrong Numbers: Why This Trillion-Dollar Cash Machine Is a No-Brainer Buy Right Now",
+        "candidate_validated": false,
+        "group_id": "5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16"
+      },
+      {
+        "id": "article:5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+        "type": "news_article",
+        "article_id": "5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+        "title": "Wall Street Is Fixated on the Wrong Numbers: Why This Trillion-Dollar Cash Machine Is a No-Brainer Buy Right Now",
+        "published_at": "2026-06-23T17:48:47+00:00",
+        "ingested_at": "2026-09-22T14:31:02+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=c59f59ac4e39f4bbdfb70317e0c59d8a616b1fbbfef563bee1b2a3b7056c56fc",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Is Amazon.com, Inc. (AMZN) the Best AI Chip Stock to Buy for the Long Term?",
+        "candidate_validated": false,
+        "group_id": "97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a"
+      },
+      {
+        "id": "article:97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "type": "news_article",
+        "article_id": "97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "title": "Is Amazon.com, Inc. (AMZN) the Best AI Chip Stock to Buy for the Long Term?",
+        "published_at": "2026-06-25T06:24:00+00:00",
+        "ingested_at": "2026-09-22T14:31:04+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=c2e69b7f8c77e02b032e140fadeebdb76afd335f13d0fa7098148b2847832718",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "article:64e6c873896a0a621c5920504247c52062e2ec26ee74db68c3bcf3515efdc74f",
+        "type": "news_article",
+        "article_id": "64e6c873896a0a621c5920504247c52062e2ec26ee74db68c3bcf3515efdc74f",
+        "title": "Amazon (AMZN): The Best High Quality Stock to Buy for the Long Term",
+        "published_at": "2026-06-22T09:23:00+00:00",
+        "ingested_at": "2026-09-22T14:31:01+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=af35bfbd521c545dc713e4166c48c8327b2bb48f40993305d38a6032f328948c",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "anomaly:AMZN:2026-06-25",
+        "target": "company:AMZN",
+        "type": "observed_for_company",
+        "provenance": "anomalies.json",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+        "causal": false
+      },
+      {
+        "source": "article:4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+        "target": "event_candidate:4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+        "type": "heuristically_grouped_with",
+        "provenance": "4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+        "causal": false
+      },
+      {
+        "source": "article:5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+        "target": "event_candidate:5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+        "type": "heuristically_grouped_with",
+        "provenance": "5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+        "causal": false
+      },
+      {
+        "source": "article:e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+        "target": "event_candidate:e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+        "type": "heuristically_grouped_with",
+        "provenance": "e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+        "causal": false
+      },
+      {
+        "source": "article:6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+        "target": "event_candidate:6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+        "type": "heuristically_grouped_with",
+        "provenance": "6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+        "causal": false
+      },
+      {
+        "source": "article:8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+        "target": "event_candidate:8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+        "type": "heuristically_grouped_with",
+        "provenance": "8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+        "causal": false
+      },
+      {
+        "source": "article:b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+        "target": "event_candidate:b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+        "type": "heuristically_grouped_with",
+        "provenance": "b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "causal": false
+      },
+      {
+        "source": "article:22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "target": "event_candidate:22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "type": "heuristically_grouped_with",
+        "provenance": "22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "article:bc12eb6e9e775b9c3b186e8951362f9815fd17cf5af63a7271d9f9af66a40908",
+        "target": "event_candidate:22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "type": "heuristically_grouped_with",
+        "provenance": "bc12eb6e9e775b9c3b186e8951362f9815fd17cf5af63a7271d9f9af66a40908",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:bc12eb6e9e775b9c3b186e8951362f9815fd17cf5af63a7271d9f9af66a40908",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "bc12eb6e9e775b9c3b186e8951362f9815fd17cf5af63a7271d9f9af66a40908",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+        "causal": false
+      },
+      {
+        "source": "article:3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+        "target": "event_candidate:3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+        "type": "heuristically_grouped_with",
+        "provenance": "3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+        "causal": false
+      },
+      {
+        "source": "article:adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+        "target": "event_candidate:adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+        "type": "heuristically_grouped_with",
+        "provenance": "adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+        "causal": false
+      },
+      {
+        "source": "article:5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+        "target": "event_candidate:5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+        "type": "heuristically_grouped_with",
+        "provenance": "5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+        "causal": false
+      },
+      {
+        "source": "article:5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+        "target": "event_candidate:5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+        "type": "heuristically_grouped_with",
+        "provenance": "5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "causal": false
+      },
+      {
+        "source": "article:97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "target": "event_candidate:97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "type": "heuristically_grouped_with",
+        "provenance": "97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "article:64e6c873896a0a621c5920504247c52062e2ec26ee74db68c3bcf3515efdc74f",
+        "target": "event_candidate:97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "type": "heuristically_grouped_with",
+        "provenance": "64e6c873896a0a621c5920504247c52062e2ec26ee74db68c3bcf3515efdc74f",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:64e6c873896a0a621c5920504247c52062e2ec26ee74db68c3bcf3515efdc74f",
+        "target": "anomaly:AMZN:2026-06-25",
+        "type": "daily_publication_context",
+        "provenance": "64e6c873896a0a621c5920504247c52062e2ec26ee74db68c3bcf3515efdc74f",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "baseline_position": 1,
+      "group_id": "4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+      "candidate_title_proxy": "Amazon (AMZN) BofA Sees Q2 Revenue Beat Despite Prime Day Timing Shift",
+      "candidate_event": "Amazon (AMZN) BofA Sees Q2 Revenue Beat Despite Prime Day Timing Shift",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.9025,
+      "article_ids": [
+        "4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "4d6ff604ca2abb5edc4c84c00c58e130d98c745dfb0abfa25bb4ea8e4248c572",
+          "title": "Amazon (AMZN) BofA Sees Q2 Revenue Beat Despite Prime Day Timing Shift",
+          "published_at": "2026-06-24T13:48:30+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.9025,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 2,
+      "group_id": "5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+      "candidate_title_proxy": "S&P 500, Nasdaq And Dow End Holiday-Shortened Week Higher As Investors Cheer US-Iran Peace Deal — SPCX, AMZN, ONDS, NFLX, TTWO In Focus",
+      "candidate_event": "S&P 500, Nasdaq And Dow End Holiday-Shortened Week Higher As Investors Cheer US-Iran Peace Deal — SPCX, AMZN, ONDS, NFLX, TTWO In Focus",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8016,
+      "article_ids": [
+        "5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "5d7139cf8ec015ceef625bd2fa4816a2f56fe95a1dc1f2c2d2c8f463d00ce875",
+          "title": "S&P 500, Nasdaq And Dow End Holiday-Shortened Week Higher As Investors Cheer US-Iran Peace Deal — SPCX, AMZN, ONDS, NFLX, TTWO In Focus",
+          "published_at": "2026-06-18T22:07:48+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8016,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 3,
+      "group_id": "e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+      "candidate_title_proxy": "Should Amazon’s US$10 Billion Missouri AI Bet and Trainium Chip Sales Shift AMZN’s Cloud Narrative?",
+      "candidate_event": "Should Amazon’s US$10 Billion Missouri AI Bet and Trainium Chip Sales Shift AMZN’s Cloud Narrative?",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8002,
+      "article_ids": [
+        "e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "e3fb9a58d4cb8b53a63211a76ad1e831616b9ef1e3cbc322754abf305ac704eb",
+          "title": "Should Amazon’s US$10 Billion Missouri AI Bet and Trainium Chip Sales Shift AMZN’s Cloud Narrative?",
+          "published_at": "2026-06-18T20:17:25+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8002,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 4,
+      "group_id": "6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+      "candidate_title_proxy": "Amazon.com (AMZN) Gains 3% After Announcing $10 Billion Missouri Data Center Investment",
+      "candidate_event": "Amazon.com (AMZN) Gains 3% After Announcing $10 Billion Missouri Data Center Investment",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8,
+      "article_ids": [
+        "6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "6b7b1390e917d94efcd212c5ae0b8eca24e9c16256b6e5c835ffb5528b4c18b4",
+          "title": "Amazon.com (AMZN) Gains 3% After Announcing $10 Billion Missouri Data Center Investment",
+          "published_at": "2026-06-18T18:31:56+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 5,
+      "group_id": "8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+      "candidate_title_proxy": "BMO Capital Reiterates Buy Rating on Amazon.com (AMZN) Stock",
+      "candidate_event": "BMO Capital Reiterates Buy Rating on Amazon.com (AMZN) Stock",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6065,
+      "article_ids": [
+        "8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "8d415faf9f62721cc7ef2a735e629cccf16285d81bb341e9a9cbef423744b61b",
+          "title": "BMO Capital Reiterates Buy Rating on Amazon.com (AMZN) Stock",
+          "published_at": "2026-06-25T08:17:48+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6065,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 6,
+      "group_id": "b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+      "candidate_title_proxy": "Why Amazon Is Sliding Right Before Its Biggest Sales Week Of The Year",
+      "candidate_event": "Why Amazon Is Sliding Right Before Its Biggest Sales Week Of The Year",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.568,
+      "article_ids": [
+        "b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "b7a0f3b2ef040c7a3806931ab961356e1f33a8e01d3b13a306a29bf76bcb714d",
+          "title": "Why Amazon Is Sliding Right Before Its Biggest Sales Week Of The Year",
+          "published_at": "2026-06-22T15:27:25+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.568,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 7,
+      "group_id": "22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+      "candidate_title_proxy": "Amazon Prime Day Set to Generate Record Online Spending as Retailers Compete for Shoppers (AMZN)",
+      "candidate_event": "Amazon Prime Day Set to Generate Record Online Spending as Retailers Compete for Shoppers (AMZN)",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5637,
+      "article_ids": [
+        "22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+        "bc12eb6e9e775b9c3b186e8951362f9815fd17cf5af63a7271d9f9af66a40908"
+      ],
+      "daily_classes": {
+        "prior_day": 2
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "22dd0300ed66f87154e845c6c77e4405370c150ba5625846194f9d72459da160",
+          "title": "Amazon Prime Day Set to Generate Record Online Spending as Retailers Compete for Shoppers (AMZN)",
+          "published_at": "2026-06-22T12:55:01+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5637,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        },
+        {
+          "article_id": "bc12eb6e9e775b9c3b186e8951362f9815fd17cf5af63a7271d9f9af66a40908",
+          "title": "Amazon Prime Day expected to drive record $26B in online spending",
+          "published_at": "2026-06-23T15:04:00+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.4231,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 8,
+      "group_id": "3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+      "candidate_title_proxy": "Amazon (AMZN) Stock Gets Fair Value Bump As Analysts Weigh AWS And AI Spending",
+      "candidate_event": "Amazon (AMZN) Stock Gets Fair Value Bump As Analysts Weigh AWS And AI Spending",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5133,
+      "article_ids": [
+        "3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "3a39c9d9416998d5eb0b64149f53f50e46ab5e7ed8eef2e39689a308bd35f994",
+          "title": "Amazon (AMZN) Stock Gets Fair Value Bump As Analysts Weigh AWS And AI Spending",
+          "published_at": "2026-06-19T17:10:45+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5133,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 9,
+      "group_id": "adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+      "candidate_title_proxy": "Amazon Pledges $48B to Scale AI Infrastructure in India: What's Ahead?",
+      "candidate_event": "Amazon Pledges $48B to Scale AI Infrastructure in India: What's Ahead?",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4487,
+      "article_ids": [
+        "adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "adfc283e3de2d2d03cebb80409197a834ede53d90a2f5ed688dcee5922840d23",
+          "title": "Amazon Pledges $48B to Scale AI Infrastructure in India: What's Ahead?",
+          "published_at": "2026-06-25T15:33:00+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.4487,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 10,
+      "group_id": "5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+      "candidate_title_proxy": "What's Going On With Amazon Stock Thursday?",
+      "candidate_event": "What's Going On With Amazon Stock Thursday?",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4481,
+      "article_ids": [
+        "5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "5fc25e8692021b887f6673c89152ad28c7f39a6f80a42ffb045ef0a678e2971c",
+          "title": "What's Going On With Amazon Stock Thursday?",
+          "published_at": "2026-06-25T13:46:00+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.4481,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 11,
+      "group_id": "5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+      "candidate_title_proxy": "Wall Street Is Fixated on the Wrong Numbers: Why This Trillion-Dollar Cash Machine Is a No-Brainer Buy Right Now",
+      "candidate_event": "Wall Street Is Fixated on the Wrong Numbers: Why This Trillion-Dollar Cash Machine Is a No-Brainer Buy Right Now",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4252,
+      "article_ids": [
+        "5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "5be15becca41799f1cb1a84dc9b3a3a1361d464746eaead0071192b2cf36df16",
+          "title": "Wall Street Is Fixated on the Wrong Numbers: Why This Trillion-Dollar Cash Machine Is a No-Brainer Buy Right Now",
+          "published_at": "2026-06-23T17:48:47+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.4252,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 12,
+      "group_id": "97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+      "candidate_title_proxy": "Is Amazon.com, Inc. (AMZN) the Best AI Chip Stock to Buy for the Long Term?",
+      "candidate_event": "Is Amazon.com, Inc. (AMZN) the Best AI Chip Stock to Buy for the Long Term?",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.356,
+      "article_ids": [
+        "97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+        "64e6c873896a0a621c5920504247c52062e2ec26ee74db68c3bcf3515efdc74f"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1,
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "97767f01dd4093657f5536f8d4cf5d56e8f700dab930955595dc9c13718b879a",
+          "title": "Is Amazon.com, Inc. (AMZN) the Best AI Chip Stock to Buy for the Long Term?",
+          "published_at": "2026-06-25T06:24:00+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.356,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        },
+        {
+          "article_id": "64e6c873896a0a621c5920504247c52062e2ec26ee74db68c3bcf3515efdc74f",
+          "title": "Amazon (AMZN): The Best High Quality Stock to Buy for the Long Term",
+          "published_at": "2026-06-22T09:23:00+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.311,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    }
+  ],
+  "article_reuse_across_groups": {},
+  "limitations": [
+    "Offline SQLite only: no internet or model calls.",
+    "Publication-day context cannot establish news preceding price movement.",
+    "Ingestion after historical cutoff may imply retrospective rather than real-time availability.",
+    "Text-matched source excerpts do not verify semantic entailment or source independence.",
+    "No causal ranking or new economic scores; archived judgments remain unverified."
+  ]
+}

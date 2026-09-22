@@ -1,0 +1,287 @@
+{
+  "schema_version": "final-ranking-audit-v1",
+  "method": "review status, then representative causal score, retrieval tie-break only",
+  "ranking_is_not_causal_proof": true,
+  "events": [
+    {
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-30",
+      "event_key": "individual:e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+      "event": "Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call Transcript",
+      "status": "scored_unverified",
+      "review_reasons": [],
+      "score_method": "selected_assessment_not_pooled",
+      "representative_evidence_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+      "article_ids": [
+        "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964"
+      ],
+      "article_count": 1,
+      "independent_source_count": null,
+      "causal_score": 61.1,
+      "classification": "weak",
+      "evidence_coverage": 1.0,
+      "retrieval_score": 0.9999,
+      "assessments": [
+        {
+          "evidence_id": "e4baa7e060b578982932ac80c4493d145bde7c376d895a5b0075acab46147964",
+          "score": 61.1,
+          "classification": "weak",
+          "status": "scored_unverified",
+          "review_reasons": [],
+          "missing_criteria": [],
+          "claim_flags": [],
+          "relationship_class": "plausible_unverified_link",
+          "evidence_coverage": 1.0,
+          "representative": true
+        }
+      ],
+      "limitations": [
+        "Event matching is narrow and heuristic; verify event identity manually.",
+        "Representative score is not recomputed from pooled evidence.",
+        "Article count is not independent-source count.",
+        "LLM criterion scores are uncalibrated and not causal probabilities.",
+        "Daily anomaly timing does not establish that news preceded the price move."
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-31",
+      "event_key": "individual:b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913",
+      "event": "Amazon stock upgraded to Buy rating",
+      "status": "scored_unverified",
+      "review_reasons": [],
+      "score_method": "selected_assessment_not_pooled",
+      "representative_evidence_id": "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913",
+      "article_ids": [
+        "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913"
+      ],
+      "article_count": 1,
+      "independent_source_count": null,
+      "causal_score": 74.6,
+      "classification": "plausible",
+      "evidence_coverage": 1.0,
+      "retrieval_score": 0.6983,
+      "assessments": [
+        {
+          "evidence_id": "b56aeddb042fb23cd2f9a7d1149f0235637ed0d3c217aadfed6d3841cc193913",
+          "score": 74.6,
+          "classification": "plausible",
+          "status": "scored_unverified",
+          "review_reasons": [],
+          "missing_criteria": [],
+          "claim_flags": [],
+          "relationship_class": "plausible_unverified_link",
+          "evidence_coverage": 1.0,
+          "representative": true
+        }
+      ],
+      "limitations": [
+        "Event matching is narrow and heuristic; verify event identity manually.",
+        "Representative score is not recomputed from pooled evidence.",
+        "Article count is not independent-source count.",
+        "LLM criterion scores are uncalibrated and not causal probabilities.",
+        "Daily anomaly timing does not establish that news preceded the price move."
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-31",
+      "event_key": "individual:56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443",
+      "event": "Amazon Q3 earnings beat estimates and raised guidance, driving pre-market surge",
+      "status": "review_required",
+      "review_reasons": [
+        "claim_flags_require_review"
+      ],
+      "score_method": "selected_assessment_not_pooled",
+      "representative_evidence_id": "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443",
+      "article_ids": [
+        "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443"
+      ],
+      "article_count": 1,
+      "independent_source_count": null,
+      "causal_score": 83.4,
+      "classification": "plausible",
+      "evidence_coverage": 1.0,
+      "retrieval_score": 0.698,
+      "assessments": [
+        {
+          "evidence_id": "56f182b9ee963746be9d68b7b3749b10646b214b05d9d4b902271be390305443",
+          "score": 83.4,
+          "classification": "plausible",
+          "status": "review_required",
+          "review_reasons": [
+            "claim_flags_require_review"
+          ],
+          "missing_criteria": [],
+          "claim_flags": [
+            "unsupported_financial_or_market_outcome"
+          ],
+          "relationship_class": "plausible_unverified_link",
+          "evidence_coverage": 1.0,
+          "representative": true
+        }
+      ],
+      "limitations": [
+        "Event matching is narrow and heuristic; verify event identity manually.",
+        "Representative score is not recomputed from pooled evidence.",
+        "Article count is not independent-source count.",
+        "LLM criterion scores are uncalibrated and not causal probabilities.",
+        "Daily anomaly timing does not establish that news preceded the price move."
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-31",
+      "event_key": "individual:dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580",
+      "event": "Q3 CY2025 earnings release with revenue and GAAP profit beats",
+      "status": "review_required",
+      "review_reasons": [
+        "claim_flags_require_review",
+        "incomplete_or_ineligible_assessment"
+      ],
+      "score_method": "selected_assessment_not_pooled",
+      "representative_evidence_id": "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580",
+      "article_ids": [
+        "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580"
+      ],
+      "article_count": 1,
+      "independent_source_count": null,
+      "causal_score": 65.1,
+      "classification": "plausible",
+      "evidence_coverage": 0.9,
+      "retrieval_score": 0.9957,
+      "assessments": [
+        {
+          "evidence_id": "dabda23b1b6e9c90bbba1862a2c49dc8041e846311d387aafc74e52ac5540580",
+          "score": 65.1,
+          "classification": "plausible",
+          "status": "review_required",
+          "review_reasons": [
+            "claim_flags_require_review",
+            "incomplete_or_ineligible_assessment"
+          ],
+          "missing_criteria": [
+            "directional_consistency"
+          ],
+          "claim_flags": [
+            "unsupported_financial_or_market_outcome"
+          ],
+          "relationship_class": "plausible_unverified_link",
+          "evidence_coverage": 0.9,
+          "representative": true
+        }
+      ],
+      "limitations": [
+        "Event matching is narrow and heuristic; verify event identity manually.",
+        "Representative score is not recomputed from pooled evidence.",
+        "Article count is not independent-source count.",
+        "LLM criterion scores are uncalibrated and not causal probabilities.",
+        "Daily anomaly timing does not establish that news preceded the price move."
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-31",
+      "event_key": "individual:86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773",
+      "event": "Amazon's new AI chips (Trainium2-based Project Rainier) went live.",
+      "status": "review_required",
+      "review_reasons": [
+        "claim_flags_require_review",
+        "relationship_requires_review"
+      ],
+      "score_method": "selected_assessment_not_pooled",
+      "representative_evidence_id": "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773",
+      "article_ids": [
+        "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773"
+      ],
+      "article_count": 1,
+      "independent_source_count": null,
+      "causal_score": 55.7,
+      "classification": "weak",
+      "evidence_coverage": 1.0,
+      "retrieval_score": 0.612,
+      "assessments": [
+        {
+          "evidence_id": "86c7db3366457daaebd74b1548c8211b9d2ef66bc74753d1bdd984f9bb5e3773",
+          "score": 55.7,
+          "classification": "weak",
+          "status": "review_required",
+          "review_reasons": [
+            "claim_flags_require_review",
+            "relationship_requires_review"
+          ],
+          "missing_criteria": [],
+          "claim_flags": [
+            "unsupported_financial_or_market_outcome",
+            "needs_review:unmatched_product_or_numeric_token:Trainium2-based"
+          ],
+          "relationship_class": "needs_review",
+          "evidence_coverage": 1.0,
+          "representative": true
+        }
+      ],
+      "limitations": [
+        "Event matching is narrow and heuristic; verify event identity manually.",
+        "Representative score is not recomputed from pooled evidence.",
+        "Article count is not independent-source count.",
+        "LLM criterion scores are uncalibrated and not causal probabilities.",
+        "Daily anomaly timing does not establish that news preceded the price move."
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "anomaly_date": "2025-10-31",
+      "event_key": "individual:16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5",
+      "event": "Amazon Q3 2025 earnings call and strategic commentary",
+      "status": "review_required",
+      "review_reasons": [
+        "claim_flags_require_review",
+        "incomplete_or_ineligible_assessment"
+      ],
+      "score_method": "selected_assessment_not_pooled",
+      "representative_evidence_id": "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5",
+      "article_ids": [
+        "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5"
+      ],
+      "article_count": 1,
+      "independent_source_count": null,
+      "causal_score": 20.7,
+      "classification": "insufficient_evidence",
+      "evidence_coverage": 0.34,
+      "retrieval_score": 0.9975,
+      "assessments": [
+        {
+          "evidence_id": "16ff634e1259dd8309d6eea5fc5304b963a3c322d8ca3b91b8655da33d259de5",
+          "score": 20.7,
+          "classification": "insufficient_evidence",
+          "status": "review_required",
+          "review_reasons": [
+            "claim_flags_require_review",
+            "incomplete_or_ineligible_assessment"
+          ],
+          "missing_criteria": [
+            "relationship_directness",
+            "economic_plausibility",
+            "materiality",
+            "directional_consistency",
+            "novelty",
+            "market_footprint_fit"
+          ],
+          "claim_flags": [
+            "unsupported_financial_or_market_outcome"
+          ],
+          "relationship_class": "plausible_unverified_link",
+          "evidence_coverage": 0.34,
+          "representative": true
+        }
+      ],
+      "limitations": [
+        "Event matching is narrow and heuristic; verify event identity manually.",
+        "Representative score is not recomputed from pooled evidence.",
+        "Article count is not independent-source count.",
+        "LLM criterion scores are uncalibrated and not causal probabilities.",
+        "Daily anomaly timing does not establish that news preceded the price move."
+      ]
+    }
+  ]
+}

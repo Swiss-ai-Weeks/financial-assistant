@@ -1,589 +1,313 @@
-# Financial anomaly report — UNVALIDATED DRAFT — requires review
+# Financial anomaly report — PIPELINE VALIDATED — CAUSALITY UNVERIFIED
 
-> News ranking is a retrieval score, NOT a probability of causation. Model hypotheses are not proven explanations.
+**Market analysis:** See the original report.txt.
 
-**Market analysis:** the original report remains in `report.txt` or `report_draft.txt`; this readable view focuses on the news findings.
+## 2025-10-30 | Return -3.23% | Volume z-score 6.76
 
----
+### News retrieval overview
 
-# News investigation — readable view
-
-## 2026-03-20 · Return -3.24% · Volume z-score 3.16
-
-**Review:** 12 groups reviewed · 0 hypotheses identified (not proven) · 1 rejected.
-
-**Model findings:** No supported hypothesis was identified in the reviewed news. The cause of this price move remains unresolved.
-
-### News ranked by the existing retrieval score
-
-| Rank | Score | News / source | Model assessment |
+| Rank | Retrieval score | News / source | Model assessment |
 |---:|---:|---|---|
-| 1 | 0.8871 | [As Tesla Gears Up to Launch Terafab, Is TSLA Stock a Buy?](https://finnhub.io/api/news?id=00a49c00a380cc91865452e7bbc342aabc4305411a7d6030d0ce84de623ad6eb) <br>Published: 2026-03-18T17:02:44+00:00 · Articles in group: 1 | Context only — no supported link |
-| 2 | 0.8666 | [How Will Tesla Sales, TSLA Stock Be Impacted By Crude Oil Prices Due To Iran War? Gary Black Says Lays Down The Math](https://finnhub.io/api/news?id=d8f681cde59c2d8a6d9b4a7a669caeabcd638e86043ecfabcfd1c8a7d3267d2e) <br>Published: 2026-03-17T13:30:59+00:00 · Articles in group: 2 | Context only — no supported link |
-| 3 | 0.8660 | [Tesla (TSLA) Growth in China Signals Strong Global Demand, EV Sales Surge 91%](https://finnhub.io/api/news?id=ae5e20a21ae410f1844b15090186a160f28a137ce2c67643e7946bbe2d66a8de) <br>Published: 2026-03-17T12:42:20+00:00 · Articles in group: 1 | Context only — no supported link |
-| 4 | 0.8590 | [How The Tesla (TSLA) Investment Story Is Shifting Around Autonomy Energy And 2026 Risks](https://finnhub.io/api/news?id=fd2e886d193c916319c4c7e1f0ac887471883e2c2469553ce86ab29908e98638) <br>Published: 2026-03-17T03:16:17+00:00 · Articles in group: 1 | Context only — no supported link |
-| 5 | 0.6978 | [TSMC Stock (TSM) Wilts as Iranian Attacks Batter Helium Supply and Threaten Chip Production](https://finnhub.io/api/news?id=c4f3e4dbd121118793140d418689a2a319db0b559a65b4004ce3e60ac641d920) <br>Published: 2026-03-20T12:36:11+00:00 · Articles in group: 1 | Context only — no supported link |
-| 6 | 0.6956 | [Tesla AI6 Chip Push With Samsung Meets Rising Autonomy Safety Scrutiny](https://finnhub.io/api/news?id=872c376b877f6ce0e6029872da2b8990259160c8f80e9caeac467da90f6de6bd) <br>Published: 2026-03-20T05:05:40+00:00 · Articles in group: 1 | Context only — no supported link |
-| 7 | 0.6090 | [Tesla FSD Poised To Win European Approval. But TSLA Stock Is Close To A Round Trip.](https://finnhub.io/api/news?id=8bc4f1954c09dc26356a39ee50c21517ea346f74846a84053b512d98dd3822d8) <br>Published: 2026-03-20T16:37:48+00:00 · Articles in group: 1 | Context only — no supported link |
-| 8 | 0.6088 | [Tesla Faces a New FSD Probe: What Does That Mean for the TSLA Stock Bull Case?](https://finnhub.io/api/news?id=1bc972a98f907120fab53fd48765220646092ba9a6b62b6349a448eaae509ed8) <br>Published: 2026-03-20T15:49:33+00:00 · Articles in group: 1 | Context only — no supported link |
-| 9 | 0.5970 | [Assessing Tesla (TSLA) Valuation After Terafab AI Chip Launch And Surging China Deliveries](https://finnhub.io/api/news?id=8aaf131ff3eb6d463031cd013114f47d79ec730d3619c6bbd51f76ff6a23ea1f) <br>Published: 2026-03-16T11:08:50+00:00 · Articles in group: 1 | Rejected by validator |
-| 10 | 0.5839 | [The Investment Case for Tesla After $4.3B Team-Up With LG Energy](https://finnhub.io/api/news?id=4d05258a563cda31a9c8f2d7a0be0b1aa8a81ed0d45c66f963b6daf1506d953b) <br>Published: 2026-03-18T12:43:00+00:00 · Articles in group: 1 | Context only — no supported link |
-| 11 | 0.5822 | [TSYY: Aggressive Strategy Should Continue To Erode Capital (Rating Downgrade)](https://finnhub.io/api/news?id=36a156c1ec2259f66929f27a8a71ef28c620da383905b4c831806482e8cb24ff) <br>Published: 2026-03-18T10:32:34+00:00 · Articles in group: 1 | Context only — no supported link |
-| 12 | 0.4500 | [Truckers love Tesla's electric semi-truck. Here's why.](https://finnhub.io/api/news?id=ca492e86c1176a49b92aa59bece9d3ac1e025c7df137a270880ac795a77406c0) <br>Published: 2026-03-20T19:58:40+00:00 · Articles in group: 1 | Context only — no supported link |
+| 1 | 0.9999 | [Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call Transcript](https://finnhub.io/api/news?id=92b8bff672cafadcaa7b0ec8aa913a56199c23b55af5088f553a0c6a556f8bff) <br>Published: 2025-10-30T19:36:25+00:00 · Articles in group: 1 | Plausible hypothesis — not proven |
+| 2 | 0.8946 | [Amazon Earnings: What To Look For From AMZN](https://finnhub.io/api/news?id=9cae8542ba33c66c1bd296520a9fce8e17645f44eed8d16efc1f9bd0cb09acc8) <br>Published: 2025-10-29T03:06:39+00:00 · Articles in group: 1 | Context only — no supported link |
+| 3 | 0.8898 | [Buy the Mag 7 Laggards as Earnings Approach?: AMZN, AAPL](https://finnhub.io/api/news?id=1f67727ea90fbabf249cdf404a1a370d5cd83d05461ad2bcd962bb2d258cff35) <br>Published: 2025-10-28T20:45:00+00:00 · Articles in group: 1 | Context only — no supported link |
+| 4 | 0.8674 | [Here’s the No. 1 Thing AMZN Stock Fans Should Watch When Amazon Reports Q3 Earnings](https://finnhub.io/api/news?id=35ba118b89659c16cf830fdfb3c72eeb0408aef0a94287d464ec8d67987b09bc) <br>Published: 2025-10-27T14:35:09+00:00 · Articles in group: 2 | Context only — no supported link |
+| 5 | 0.8000 | [Amazon (AMZN) Earnings Expected to Grow: What to Know Ahead of Next Week's Release](https://finnhub.io/api/news?id=291d0a580714c3b5bb83eb1f572e697754e416d8d55fc1bb5919b96e6506171b) <br>Published: 2025-10-23T14:00:39+00:00 · Articles in group: 1 | Context only — no supported link |
+| 6 | 0.6996 | [Amazon: AWS Roars And Stock Soars, But I'm Pausing Accumulation (Downgrade)](https://finnhub.io/api/news?id=cb0e46cd05654bafa19ff4701f3ca2a98b4fa8eaae1cd64c4167aaab3e6bffea) <br>Published: 2025-10-30T18:30:05+00:00 · Articles in group: 1 | Context only — no supported link |
+| 7 | 0.6987 | [Amazon earnings: Why this strategist is 'a little nervous'](https://finnhub.io/api/news?id=d31a5411a7d5cc1a67398d5764f2a317de2277525e6bdf2f001d0f87f60a1b35) <br>Published: 2025-10-30T15:42:47+00:00 · Articles in group: 1 | Context only — no supported link |
+| 8 | 0.6980 | [US-China trade truce, Alphabet earnings, Fed rate cut: 3 Things](https://finnhub.io/api/news?id=5c85c0e19470f691a034c16401911c61dc88d2544128cf5d1846a6cc11ac2f53) <br>Published: 2025-10-30T13:08:49+00:00 · Articles in group: 2 | Rejected by validator |
+| 9 | 0.6975 | [Amazon earnings: 2 reasons AWS could grow 20% in 2026](https://finnhub.io/api/news?id=17f77760de70d39877aaf9d7298867be9a7a2bb3bb13e813554013e5c1b55b09) <br>Published: 2025-10-30T11:30:48+00:00 · Articles in group: 1 | Context only — no supported link |
+| 10 | 0.6094 | [Apple & Amazon earnings, Fed, mortgage rates: What to Watch](https://finnhub.io/api/news?id=45cc111297162d113226c7f71109ce6d894df76adefb0289f34a17cc77b422c7) <br>Published: 2025-10-29T23:00:00+00:00 · Articles in group: 1 | Context only — no supported link |
+| 11 | 0.6012 | [KeyBanc Resumes Coverage of Amazon (AMZN) with Overweight Rating, $300 PT on Retail, Cloud Outlook](https://finnhub.io/api/news?id=f56774f3a0baaea895e25b7e4e76c98f22d22c3671c813e002e336e67a1a2a8f) <br>Published: 2025-10-29T15:24:55+00:00 · Articles in group: 1 | Context only — no supported link |
+| 12 | 0.5374 | [Amazon: Surging Share Price Following Massive Beat](https://finnhub.io/api/news?id=955f4d3ab61e49c60885b9ed5c5b879ec3a7ab476573cf1aeb428fd649b4176e) <br>Published: 2025-10-30T19:35:29+00:00 · Articles in group: 1 | Context only — no supported link |
 
-### Detailed model interpretation (same ranking)
+**Identified event groups:** 1
 
-#### #1 · As Tesla Gears Up to Launch Terafab, Is TSLA Stock a Buy?
+### Event 1: Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call Transcript
 
-**Retrieval score:** 0.8871 · **Published:** 2026-03-18T17:02:44+00:00 · **Group size:** 1
+**Event score:** 61.1 / 100
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=00a49c00a380cc91865452e7bbc342aabc4305411a7d6030d0ce84de623ad6eb)
+**Status:** scored_unverified
 
-**Assessment:** Context only — no supported link
+**Classification:** weak
 
-**Event identified by model:** Tesla announced the launch of its Terafab project, costing an estimated $20-25 billion.
+**Evidence coverage:** 1.0
 
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
+**Articles:** 1
 
-**Reason / validator outcome:** The article reports Tesla's announced Terafab project but does not describe any stock reaction, market bridge, or price movement on 2026-03-20. The event is documented but lacks a supported market link to the anomaly.
+**Scoring method:** Score inherited from the selected assessment; not an average or independent multi-source confirmation.
 
-**Source excerpt (as recorded):** 'Tesla has announced the launch of its Terafab project, costing an estimated $20-25 billion.'
+#### Supporting evidence and audit
 
-#### #2 · How Will Tesla Sales, TSLA Stock Be Impacted By Crude Oil Prices Due To Iran War? Gary Black Says Lays Down The Math
+**Selected assessment**
 
-**Retrieval score:** 0.8666 · **Published:** 2026-03-17T13:30:59+00:00 · **Group size:** 2
+**Article:** [Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call Transcript](https://finnhub.io/api/news?id=92b8bff672cafadcaa7b0ec8aa913a56199c23b55af5088f553a0c6a556f8bff)
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=d8f681cde59c2d8a6d9b4a7a669caeabcd638e86043ecfabcfd1c8a7d3267d2e)
+**Published:** 2025-10-30T19:36:25+00:00
 
-**Assessment:** Context only — no supported link
+**Retrieval score:** 0.9999
 
-**Reason / validator outcome:** The anomaly is a -3.24% return on 2026-03-20 with high volume. The only supplied news is about crude oil price impacts on Tesla sales from 2026-03-17 and 2026-03-15, both dated before the anomaly day. No news published on or about 2026-03-20 is provided, and the cited articles discuss general oil-pr
+**Assessment score:** 61.1
 
-#### #3 · Tesla (TSLA) Growth in China Signals Strong Global Demand, EV Sales Surge 91%
+**Assessment status:** scored_unverified
 
-**Retrieval score:** 0.8660 · **Published:** 2026-03-17T12:42:20+00:00 · **Group size:** 1
+**Model interpretation (unverified):** Earnings call transcript provides material company-specific financial and operational context for the trading day.
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=ae5e20a21ae410f1844b15090186a160f28a137ce2c67643e7946bbe2d66a8de)
+**Validator outcome:** A documented company event (Q3 2025 earnings call transcript) published on the anomaly day provides a plausible contextual pathway. The earnings call transcript is a material company-specific event that can serve as contextual information, even though no explicit stock-reaction bridge is described i
 
-**Assessment:** Context only — no supported link
+**Source excerpt:** 'Amazon.com, Inc. (AMZN) Q3 2025 Earnings Call October 30, 2025 5:00 PM EDT'
 
-**Event identified by model:** Tesla (TSLA) Growth in China Signals Strong Global Demand, EV Sales Surge 91%
+## 2025-10-31 | Return 9.58% | Volume z-score 7.68
 
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
+### News retrieval overview
 
-**Reason / validator outcome:** The cited news article is dated 2026-03-17, three days prior to the anomaly date of 2026-03-20. It reports a 91% increase in Chinese EV sales in February, but does not mention any event occurring on 2026-03-20, nor does it establish a company-specific or sector-supported bridge to explain the -3.24%
-
-**Source excerpt (as recorded):** 'Tesla Inc. (NASDAQ:TSLA) reported a solid 91% increase in Chinese electric vehicle sales in February.'
-
-#### #4 · How The Tesla (TSLA) Investment Story Is Shifting Around Autonomy Energy And 2026 Risks
-
-**Retrieval score:** 0.8590 · **Published:** 2026-03-17T03:16:17+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=fd2e886d193c916319c4c7e1f0ac887471883e2c2469553ce86ab29908e98638)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Tesla investment story shift commentary
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The article discusses Tesla's investment story shift and fair value price target update, but does not contain a company-specific event or market bridge explaining the 2026-03-20 anomaly. It is a general commentary published on 2026-03-17, two days prior, with no documented catalyst tied to the anoma
-
-**Source excerpt (as recorded):** "Tesla's updated fair value price target of US$421.61 is effectively unchanged from the prior US$421.73, signaling only a very small shift in the underlying model."
-
-#### #5 · TSMC Stock (TSM) Wilts as Iranian Attacks Batter Helium Supply and Threaten Chip Production
-
-**Retrieval score:** 0.6978 · **Published:** 2026-03-20T12:36:11+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=c4f3e4dbd121118793140d418689a2a319db0b559a65b4004ce3e60ac641d920)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Helium supply disruption risk due to Iran war potentially affecting semiconductor and EV production
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The news article discusses helium supply risks due to Iran war affecting semiconductor production, with TSLA mentioned as a company that could be affected. However, there is no explicit description of a stock reaction or a direct market link to TSLA's price movement. The article only provides a plau
-
-**Source excerpt (as recorded):** 'Major semiconductor stock TSMC (TSM) was lower today on fears that production will soon be hit by a lack of helium because of the Iran war. AI stock Nvidia (NVDA) and EV maker Tesla (TSLA) could also soon be in the firing line because of the rapid hike in helium prices.'
-
-#### #6 · Tesla AI6 Chip Push With Samsung Meets Rising Autonomy Safety Scrutiny
-
-**Retrieval score:** 0.6956 · **Published:** 2026-03-20T05:05:40+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=872c376b877f6ce0e6029872da2b8990259160c8f80e9caeac467da90f6de6bd)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Tesla AI6 chip development and FSD safety probe
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The article reports Tesla's development of the AI6 chip and regulatory scrutiny, but does not describe any stock reaction, price move, or market bridge linking these events to the anomaly. No company-specific financial effect is stated.
-
-**Source excerpt (as recorded):** 'Tesla is developing a next generation AI6 chip for its autonomous driving and robotics platforms, targeting rollout around 2027 to 2028. The AI6 chip is set to be manufactured in partnership with Samsung at a leading edge semiconductor facility.'
-
-#### #7 · Tesla FSD Poised To Win European Approval. But TSLA Stock Is Close To A Round Trip.
-
-**Retrieval score:** 0.6090 · **Published:** 2026-03-20T16:37:48+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=8bc4f1954c09dc26356a39ee50c21517ea346f74846a84053b512d98dd3822d8)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Tesla FSD regulatory approval likelihood reported by Dutch regulators
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The article reports Tesla FSD approval likelihood from Dutch regulators and a stock round-trip observation, but does not describe a specific company event, contract, or market reaction mechanism linking to the anomaly. No evidence supports a directional pathway from the reported regulatory sentiment
-
-**Source excerpt (as recorded):** 'Tesla said Dutch regulators will likely approve Full Self-Driving (FSD) by April 10.'
-
-#### #8 · Tesla Faces a New FSD Probe: What Does That Mean for the TSLA Stock Bull Case?
-
-**Retrieval score:** 0.6088 · **Published:** 2026-03-20T15:49:33+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=1bc972a98f907120fab53fd48765220646092ba9a6b62b6349a448eaae509ed8)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Tesla FSD system under NHTSA probe
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** A single headline about an NHTSA probe into Tesla FSD is documented, but there is no explicit description of the stock reaction or a supported market bridge to explain the -3.24% return. The event is a regulatory development, not a confirmed market catalyst.
-
-**Source excerpt (as recorded):** "The NHTSA will probe the EV giant's FSD system."
-
-#### #9 · Assessing Tesla (TSLA) Valuation After Terafab AI Chip Launch And Surging China Deliveries
-
-**Retrieval score:** 0.5970 · **Published:** 2026-03-16T11:08:50+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=8aaf131ff3eb6d463031cd013114f47d79ec730d3619c6bbd51f76ff6a23ea1f)
-
-**Assessment:** Rejected by validator
-
-**Reason / validator outcome:** hypothesis_1:price_commentary_not_event
-
-#### #10 · The Investment Case for Tesla After $4.3B Team-Up With LG Energy
-
-**Retrieval score:** 0.5839 · **Published:** 2026-03-18T12:43:00+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=4d05258a563cda31a9c8f2d7a0be0b1aa8a81ed0d45c66f963b6daf1506d953b)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** $4.3B LG Energy team-up for Megapack battery supply
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The cited article discusses a $4.3B LG Energy deal and EV weakness, but it was published on 2026-03-18, two days before the anomaly date of 2026-03-20. No explicit market bridge to the specific price move on 2026-03-20 is provided, and the article's stale status relative to the anomaly day prevents 
-
-**Source excerpt (as recorded):** "TSLA's $4.3B LG Energy deal boosts domestic battery supply for Megapack, but EV weakness and rising spending cloud the stock's appeal."
-
-#### #11 · TSYY: Aggressive Strategy Should Continue To Erode Capital (Rating Downgrade)
-
-**Retrieval score:** 0.5822 · **Published:** 2026-03-18T10:32:34+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=36a156c1ec2259f66929f27a8a71ef28c620da383905b4c831806482e8cb24ff)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** TSLA news context only
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The only article mentioning TSLA is about a yield-boost ETF (TSYY) and its rating downgrade; it contains no company-specific operational, financial, or strategic events for Tesla Inc. No Tesla-inc relevant event is documented in the supplied news.
-
-**Source excerpt (as recorded):** 'TSYY downgraded to sell: GraniteShares YieldBOOST TSLA ETFâ\x80\x99s 99% yield hides NAV erosion, volatile payouts, and risky 2x TSLA options.'
-
-#### #12 · Truckers love Tesla's electric semi-truck. Here's why.
-
-**Retrieval score:** 0.4500 · **Published:** 2026-03-20T19:58:40+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=ca492e86c1176a49b92aa59bece9d3ac1e025c7df137a270880ac795a77406c0)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Tesla electric semi-truck pilot program
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** News about Tesla's electric semi-truck pilot program is documented but lacks a defensible company/sector pathway or explicit market bridge to explain the -3.24% return. No financial effect or stock reaction is described in the source.
-
-**Source excerpt (as recorded):** 'Tesla (TSLA) is launching its electric semi-truck. The vehicle is currently undergoing trucker pilot test.'
-
----
-
-## 2026-04-02 · Return -5.42% · Volume z-score 2.57
-
-**Review:** 12 groups reviewed · 3 hypotheses identified (not proven) · 1 rejected.
-
-**Model findings:** Q1 deliveries miss estimates; Tesla Q1 deliveries missed Wall Street estimates; Tesla Q1 2026 delivery miss reported on 2026-04-02. These are potential contextual links, not established causes.
-
-### News ranked by the existing retrieval score
-
-| Rank | Score | News / source | Model assessment |
+| Rank | Retrieval score | News / source | Model assessment |
 |---:|---:|---|---|
-| 1 | 0.6989 | [Tesla's First-Quarter Deliveries Miss Views as Wedbush Flags Tough Demand Backdrop](https://finnhub.io/api/news?id=6e445e011fb74215a2b318f8e04c278a3b7a56333e4680bebf639127a33bb8c0) <br>Published: 2026-04-02T16:25:58+00:00 · Articles in group: 1 | Hypothesis identified — needs review |
-| 2 | 0.6964 | [Tesla's China-Made EV Sales Leap Nearly 9% In March](https://finnhub.io/api/news?id=2f6dc94415f183848e42fa4d1b948a542dd8b4db276820dfa6b5a16b88b6fe66) <br>Published: 2026-04-02T07:54:09+00:00 · Articles in group: 1 | Rejected by validator |
-| 3 | 0.5924 | [Why Tesla (TSLA) Stock Is Up Today](https://finnhub.io/api/news?id=7d791aa1cba39e74cd76ac3d4b4aa6c6c7753ad67110d2eebed0e1095f56b78e) <br>Published: 2026-04-01T03:33:19+00:00 · Articles in group: 1 | Context only — no supported link |
-| 4 | 0.5879 | [Gary Black Says TSLA Has Underperformed Nasdaq For 5 Years Because It Has Never Lived Up To Unsupervised FSD Hype: 'TSLA Still Has Only 9 Robotaxis'](https://finnhub.io/api/news?id=d7139896f3620025d30c8eb39496f659d6e3fedc0eba36548aaaf413f0ad8b32) <br>Published: 2026-03-31T21:30:51+00:00 · Articles in group: 2 | Context only — no supported link |
-| 5 | 0.5653 | [Assessing Tesla (TSLA) Valuation As Shares Weaken And AI Narratives Diverge](https://finnhub.io/api/news?id=a1a1b6a2258ade517e30533b6e2e55f144f03e7a2382b90f852a5f3f75c4b4f9) <br>Published: 2026-03-30T15:07:59+00:00 · Articles in group: 1 | Context only — no supported link |
-| 6 | 0.5184 | [Tesla (TSLA) Rises Higher Than Market: Key Facts](https://finnhub.io/api/news?id=1ead55117f31c6dbd55b22881ae534898ff4c8a97e24aa1cb25ea930100fdcab) <br>Published: 2026-04-01T21:45:04+00:00 · Articles in group: 1 | Context only — no supported link |
-| 7 | 0.5168 | [GLJ Maintains Sell Rating on Tesla (TSLA)](https://finnhub.io/api/news?id=efe7149e1fe20c9edb55b9ff11d0749c8d8f40743618c0596c6c5d0420f3f8cb) <br>Published: 2026-04-01T19:30:03+00:00 · Articles in group: 2 | Context only — no supported link |
-| 8 | 0.5095 | [The Tesla Robotaxi Story Is A Myth: Why I'm Maintaining My Strong Sell Into Q1 Earnings](https://finnhub.io/api/news?id=d1d7ffc2aa44d2da6add2d952e358009043eb0d4c22a8f3c6c7f7c57f543229e) <br>Published: 2026-03-27T08:45:00+00:00 · Articles in group: 1 | Context only — no supported link |
-| 9 | 0.4492 | [Blue Owl limits fund withdrawals, mortgage rates rise for fifth week](https://finnhub.io/api/news?id=45f8662aacbabe50e25ffc31bd5b73563b44d0bfa0c48003dc97876ecb472b12) <br>Published: 2026-04-02T17:21:34+00:00 · Articles in group: 1 | Hypothesis identified — needs review |
-| 10 | 0.4485 | [Tesla's Q1 Delivery Numbers 'Underwhelming,' But Not Surprising Given Current Global EV Backdrop, Wedbush Says](https://finnhub.io/api/news?id=f4a312d146a3ab4cd6e24b31d3d134ed805941c101fdf1c6def39471122be179) <br>Published: 2026-04-02T14:53:16+00:00 · Articles in group: 1 | Context only — no supported link |
-| 11 | 0.4485 | [Tesla Stock Hasn’t Looked This Cheap in a While](https://finnhub.io/api/news?id=df74a5d898835a25ed98e6480d08547f65c27c0436f4e06dc11e14866e32cca5) <br>Published: 2026-04-02T14:48:25+00:00 · Articles in group: 1 | Context only — no supported link |
-| 12 | 0.4483 | [Tesla Slides 3% on Delivery Shortfall: Why the $20 Billion Robotaxi Bet Makes This Miss Hard to Judge](https://finnhub.io/api/news?id=870a335a43ad1a08270c26ac9a29b75a79e153ea802f816e63a2c2a34dd1144f) <br>Published: 2026-04-02T14:24:19+00:00 · Articles in group: 1 | Plausible hypothesis — not proven |
+| 1 | 0.9975 | [Amazon (AMZN) Q3 2025 Earnings Call Transcript](https://finnhub.io/api/news?id=81bfc05d8f43a5fd1057a90228c2c3a78e9ca0dee157047c3fce5ca3bde97d8d) <br>Published: 2025-10-31T11:41:42+00:00 · Articles in group: 5 | Plausible hypothesis — not proven |
+| 2 | 0.9957 | [AMZN Q3 Deep Dive: AI Investments and Retail Innovations Drive Revenue Growth, Margin Pressured by Special Charges](https://finnhub.io/api/news?id=fbdf8c84480cc07b4fa29e435cbee0d3e87b9bdd8c6b1ab97f12a3897dde8ae0) <br>Published: 2025-10-31T05:30:50+00:00 · Articles in group: 1 | Plausible hypothesis — not proven |
+| 3 | 0.8767 | [Amazon Earnings: What To Look For From AMZN](https://finnhub.io/api/news?id=9cae8542ba33c66c1bd296520a9fce8e17645f44eed8d16efc1f9bd0cb09acc8) <br>Published: 2025-10-29T03:06:39+00:00 · Articles in group: 1 | Context only — no supported link |
+| 4 | 0.8720 | [Buy the Mag 7 Laggards as Earnings Approach?: AMZN, AAPL](https://finnhub.io/api/news?id=1f67727ea90fbabf249cdf404a1a370d5cd83d05461ad2bcd962bb2d258cff35) <br>Published: 2025-10-28T20:45:00+00:00 · Articles in group: 1 | Context only — no supported link |
+| 5 | 0.8495 | [Here’s the No. 1 Thing AMZN Stock Fans Should Watch When Amazon Reports Q3 Earnings](https://finnhub.io/api/news?id=35ba118b89659c16cf830fdfb3c72eeb0408aef0a94287d464ec8d67987b09bc) <br>Published: 2025-10-27T14:35:09+00:00 · Articles in group: 2 | Context only — no supported link |
+| 6 | 0.6991 | [Amazon Web Services Poised for Faster Growth as Capacity Builds, Backlog Increases, Morgan Stanley Says](https://finnhub.io/api/news?id=55a760665e00a774101f53dae0e000016235ae3584a4a708014a2d214e66cd8b) <br>Published: 2025-10-31T16:57:36+00:00 · Articles in group: 1 | Context only — no supported link |
+| 7 | 0.6983 | [Amazon: The Boat Is Re-Accelerating (Rating Upgrade)](https://finnhub.io/api/news?id=d08d6333558dc3be5b98f08ff8856ba55dc0f77098d3f1cafdf46e08111e7b90) <br>Published: 2025-10-31T14:22:09+00:00 · Articles in group: 1 | Plausible hypothesis — not proven |
+| 8 | 0.6980 | [Amazon surges, Apple earnings, Chevron & Exxon: 3 Things](https://finnhub.io/api/news?id=92ffb91edcb38893aa8540041d8225cbcc58c0eae00f87f8896ba0d0747097c1) <br>Published: 2025-10-31T13:07:20+00:00 · Articles in group: 1 | Plausible hypothesis — not proven |
+| 9 | 0.6125 | [Marjorie Taylor Greene Buys Netflix Stock After Downbeat Q3 Earnings, Expands Big Tech Bet](https://finnhub.io/api/news?id=063c820313a949ea21751e77782a47c48e55ba509e60c9e581d818e6e9414f11) <br>Published: 2025-10-31T03:08:12+00:00 · Articles in group: 1 | Context only — no supported link |
+| 10 | 0.6120 | [Amazon's New AI Chips Could Unlock Billions In Revenue, Analysts Say](https://finnhub.io/api/news?id=cd811a1f46339580737655a8642b1cc70f5840898c9694e18437369502e3c722) <br>Published: 2025-10-31T02:31:06+00:00 · Articles in group: 1 | Hypothesis identified — needs review |
+| 11 | 0.6020 | [US-China trade truce, Alphabet earnings, Fed rate cut: 3 Things](https://finnhub.io/api/news?id=5c85c0e19470f691a034c16401911c61dc88d2544128cf5d1846a6cc11ac2f53) <br>Published: 2025-10-30T13:08:49+00:00 · Articles in group: 2 | Rejected by validator |
+| 12 | 0.5915 | [Apple & Amazon earnings, Fed, mortgage rates: What to Watch](https://finnhub.io/api/news?id=45cc111297162d113226c7f71109ce6d894df76adefb0289f34a17cc77b422c7) <br>Published: 2025-10-29T23:00:00+00:00 · Articles in group: 1 | Context only — no supported link |
 
-### Detailed model interpretation (same ranking)
+**Identified event groups:** 5
 
-#### #1 · Tesla's First-Quarter Deliveries Miss Views as Wedbush Flags Tough Demand Backdrop
+### Event 1: Amazon stock upgraded to Buy rating
 
-**Retrieval score:** 0.6989 · **Published:** 2026-04-02T16:25:58+00:00 · **Group size:** 1
+**Event score:** 74.6 / 100
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=6e445e011fb74215a2b318f8e04c278a3b7a56333e4680bebf639127a33bb8c0)
+**Status:** scored_unverified
 
-**Assessment:** Hypothesis identified — needs review
+**Classification:** plausible
 
-**Event identified by model:** Q1 deliveries miss estimates
+**Evidence coverage:** 1.0
+
+**Articles:** 1
+
+**Scoring method:** Score inherited from the selected assessment; not an average or independent multi-source confirmation.
+
+#### Supporting evidence and audit
+
+**Selected assessment**
+
+**Article:** [Amazon: The Boat Is Re-Accelerating (Rating Upgrade)](https://finnhub.io/api/news?id=d08d6333558dc3be5b98f08ff8856ba55dc0f77098d3f1cafdf46e08111e7b90)
+
+**Published:** 2025-10-31T14:22:09+00:00
+
+**Retrieval score:** 0.6983
+
+**Assessment score:** 74.6
+
+**Assessment status:** scored_unverified
+
+**Model interpretation (unverified):** Analyst rating upgrade reinforcing positive sentiment around AWS growth and cloud dominance
+
+**Validator outcome:** A rating upgrade published on 2025-10-31 provides a documented company event with a plausible, directionally compatible contextual pathway for the observed price move.
+
+**Source excerpt:** "Amazon stock upgraded to 'Buy' as AWS growth surges, reinforcing its cloud dominance"
+
+### Event 2: Amazon Q3 earnings beat estimates and raised guidance, driving pre-market surge
+
+**Event score:** 83.4 / 100
+
+**Status:** review_required
+
+**Classification:** plausible
+
+**Evidence coverage:** 1.0
+
+**Articles:** 1
+
+**Scoring method:** Score inherited from the selected assessment; not an average or independent multi-source confirmation.
+
+#### Supporting evidence and audit
+
+**Event review reasons:** claim_flags_require_review
+
+**Selected assessment**
+
+**Article:** [Amazon surges, Apple earnings, Chevron & Exxon: 3 Things](https://finnhub.io/api/news?id=92ffb91edcb38893aa8540041d8225cbcc58c0eae00f87f8896ba0d0747097c1)
+
+**Published:** 2025-10-31T13:07:20+00:00
+
+**Retrieval score:** 0.6980
+
+**Assessment score:** 83.4
+
+**Assessment status:** review_required
+
+**Review reasons:** claim_flags_require_review
+
+**Claim flags:** unsupported_financial_or_market_outcome
 
 **Model interpretation (unverified):** The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.
 
-**Reason / validator outcome:** A documented company-specific event (Q1 deliveries miss) published on the anomaly day provides a plausible, directionally compatible contextual pathway. The event is substantiated by the source, and the negative delivery data aligns with the observed -5.42% return.
+**Validator outcome:** Amazon reported Q3 earnings beating estimates, driving a 13% pre-market surge on 2025-10-31. The anomaly's 9.58% return and volume spike align with this documented earnings catalyst.
 
-**Source excerpt (as recorded):** " first-quarter deliveries missed Wall Street's estimates as Wedbush Securities flagged"
+**Source excerpt:** 'Amazon (AMZN) shares are seeing gains of over 13% this morning after outpacing third quarter earnings and revenue estimates, bolstered by growth in its AWS (Amazon Web Services) cloud business.'
 
-**Review flags:** `unsupported_financial_or_market_outcome,needs_review:unmatched_product_or_numeric_token:Q1,quote_recovered_from_source`
+### Event 3: Q3 CY2025 earnings release with revenue and GAAP profit beats
 
-#### #2 · Tesla's China-Made EV Sales Leap Nearly 9% In March
+**Event score:** 65.1 / 100
 
-**Retrieval score:** 0.6964 · **Published:** 2026-04-02T07:54:09+00:00 · **Group size:** 1
+**Status:** review_required
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=2f6dc94415f183848e42fa4d1b948a542dd8b4db276820dfa6b5a16b88b6fe66)
+**Classification:** plausible
 
-**Assessment:** Rejected by validator
+**Evidence coverage:** 0.9
 
-**Reason / validator outcome:** hypothesis_1:counter_direction_without_market_evidence
+**Articles:** 1
 
-#### #3 · Why Tesla (TSLA) Stock Is Up Today
+**Scoring method:** Score inherited from the selected assessment; not an average or independent multi-source confirmation.
 
-**Retrieval score:** 0.5924 · **Published:** 2026-04-01T03:33:19+00:00 · **Group size:** 1
+#### Supporting evidence and audit
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=7d791aa1cba39e74cd76ac3d4b4aa6c6c7753ad67110d2eebed0e1095f56b78e)
+**Event review reasons:** claim_flags_require_review, incomplete_or_ineligible_assessment
 
-**Assessment:** Context only — no supported link
+**Selected assessment**
 
-**Event identified by model:** Tesla CEO Elon Musk announced a 'big' investment in Japan to expand service infrastructure and Supercharger network
+**Article:** [AMZN Q3 Deep Dive: AI Investments and Retail Innovations Drive Revenue Growth, Margin Pressured by Special Charges](https://finnhub.io/api/news?id=fbdf8c84480cc07b4fa29e435cbee0d3e87b9bdd8c6b1ab97f12a3897dde8ae0)
 
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
+**Published:** 2025-10-31T05:30:50+00:00
 
-**Reason / validator outcome:** The cited article is dated 2026-04-01 and reports a 4.2% afternoon jump in TSLA stock following a Musk announcement about Japan investment. The daily anomaly for 2026-04-02 shows a -5.42% return with high volume. The source article is from the prior day and discusses a positive move, not the observe
+**Retrieval score:** 0.9957
 
-**Source excerpt (as recorded):** "Shares of electric vehicle pioneer Tesla (NASDAQ:TSLA) jumped 4.2% in the afternoon session after CEO Elon Musk announced a 'big' investment in Japan to expand the company's service infrastructure and Supercharger network."
+**Assessment score:** 65.1
 
-#### #4 · Gary Black Says TSLA Has Underperformed Nasdaq For 5 Years Because It Has Never Lived Up To Unsupervised FSD Hype: 'TSLA Still Has Only 9 Robotaxis'
+**Assessment status:** review_required
 
-**Retrieval score:** 0.5879 · **Published:** 2026-03-31T21:30:51+00:00 · **Group size:** 2
+**Review reasons:** claim_flags_require_review, incomplete_or_ineligible_assessment
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=d7139896f3620025d30c8eb39496f659d6e3fedc0eba36548aaaf413f0ad8b32)
+**Claim flags:** unsupported_financial_or_market_outcome
 
-**Assessment:** Context only — no supported link
+**Model interpretation (unverified):** The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.
 
-**Event identified by model:** Gary Black criticism of Tesla FSD hype
+**Validator outcome:** Q3 earnings report with revenue beat and profit beat provides documented company event with plausible economic pathway consistent with positive return.
 
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
+**Source excerpt:** "Cloud computing and online retail behemoth Amazon (NASDAQ:AMZN) reported revenue ahead of Wall Streets expectations in Q3 CY2025, with sales up 13.4% year on year to $180.2 billion. The company expects next quarter's revenue to be around $209.5 billion, close to analysts' estimates. Its GAAP profit of $1.95 per share was 25.4% above analysts' consensus estimates."
 
-**Reason / validator outcome:** The anomaly day (2026-04-02) has no cited news. The only available articles are from 2026-03-31 and 2026-03-30, discussing Gary Black's criticism of Tesla's FSD hype. These are stale commentaries with no event published on the anomaly day, and no company/sector bridge to explain the -5.42% return.
+### Event 4: Amazon's new AI chips (Trainium2-based Project Rainier) went live.
 
-**Source excerpt (as recorded):** 'Investor Gary Black of The Future Fund LLC has criticized Tesla Inc. for underperforming the Nasdaq 100 index for the last five years, which he thinks happened due to the brand not living up to the Full Self-Driving (FSD) promises.'
+**Event score:** 55.7 / 100
 
-#### #5 · Assessing Tesla (TSLA) Valuation As Shares Weaken And AI Narratives Diverge
+**Status:** review_required
 
-**Retrieval score:** 0.5653 · **Published:** 2026-03-30T15:07:59+00:00 · **Group size:** 1
+**Classification:** weak
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=a1a1b6a2258ade517e30533b6e2e55f144f03e7a2382b90f852a5f3f75c4b4f9)
+**Evidence coverage:** 1.0
 
-**Assessment:** Context only — no supported link
+**Articles:** 1
 
-**Event identified by model:** Tesla valuation assessment and share price weakness discussed in a March 30 article
+**Scoring method:** Score inherited from the selected assessment; not an average or independent multi-source confirmation.
 
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
+#### Supporting evidence and audit
 
-**Reason / validator outcome:** The only article in the group is a valuation assessment published on 2026-03-30, two days before the anomaly date. It discusses recent price weakness and general Tesla performance but contains no company-specific event announced on or before 2026-04-02 that could explain the -5.42% return. No eviden
+**Event review reasons:** claim_flags_require_review, relationship_requires_review
 
-**Source excerpt (as recorded):** "Tesla's recent performance in context Tesla (TSLA) has been under pressure recently, with the share price showing a 2.8% decline over the past day and weaker returns over the past week, month, and past 3 months."
+**Selected assessment**
 
-#### #6 · Tesla (TSLA) Rises Higher Than Market: Key Facts
+**Article:** [Amazon's New AI Chips Could Unlock Billions In Revenue, Analysts Say](https://finnhub.io/api/news?id=cd811a1f46339580737655a8642b1cc70f5840898c9694e18437369502e3c722)
 
-**Retrieval score:** 0.5184 · **Published:** 2026-04-01T21:45:04+00:00 · **Group size:** 1
+**Published:** 2025-10-31T02:31:06+00:00
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=1ead55117f31c6dbd55b22881ae534898ff4c8a97e24aa1cb25ea930100fdcab)
+**Retrieval score:** 0.6120
 
-**Assessment:** Context only — no supported link
+**Assessment score:** 55.7
 
-**Event identified by model:** Tesla (TSLA) closed the most recent trading day at $381.26, moving +2.56% from the previous trading session.
+**Assessment status:** review_required
 
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
+**Review reasons:** claim_flags_require_review, relationship_requires_review
 
-**Reason / validator outcome:** The only available news article is about Tesla's prior day performance on 2026-04-01, which is stale relative to the anomaly date 2026-04-02. No event on or about 2026-04-02 is substantiated in the supplied data.
+**Claim flags:** unsupported_financial_or_market_outcome, needs_review:unmatched_product_or_numeric_token:Trainium2-based
 
-**Source excerpt (as recorded):** 'Tesla (TSLA) closed the most recent trading day at $381.26, moving +2.56% from the previous trading session.'
+**Model interpretation (unverified):** The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.
 
-#### #7 · GLJ Maintains Sell Rating on Tesla (TSLA)
+**Validator outcome:** A documented company event (new AI chips launch) with a plausible, directionally compatible contextual pathway to the anomaly's positive return.
 
-**Retrieval score:** 0.5168 · **Published:** 2026-04-01T19:30:03+00:00 · **Group size:** 2
+**Source excerpt:** "Amazon.com Inc.'s (NASDAQ:AMZN) massive artificial intelligence push took a major step forward as its Project Rainier supercomputer, powered by nearly 500,000 Trainium2 chips, officially went live."
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=efe7149e1fe20c9edb55b9ff11d0749c8d8f40743618c0596c6c5d0420f3f8cb)
+### Event 5: Amazon Q3 2025 earnings call and strategic commentary
 
-**Assessment:** Context only — no supported link
+**Event score:** 20.7 / 100
 
-**Event identified by model:** GLJ maintains Sell rating on Tesla with $24.86 price target
+**Status:** review_required
 
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
+**Classification:** insufficient_evidence
 
-**Reason / validator outcome:** GLJ maintains Sell rating on Tesla with a $24.86 price target, but the article is dated 2026-04-01 and does not describe any stock reaction or market event on 2026-04-02. No evidence links this to the anomaly's -5.42% return.
+**Evidence coverage:** 0.34
 
-**Source excerpt (as recorded):** 'Tesla, Inc. (NASDAQ:TSLA) is one of the 10 Best Car Stocks to Buy in 2026. On March 30, GLJ Research reiterated its Sell rating on Tesla, Inc. (NASDAQ:TSLA) with a price target of $24.86 on the stock.'
+**Articles:** 1
 
-#### #8 · The Tesla Robotaxi Story Is A Myth: Why I'm Maintaining My Strong Sell Into Q1 Earnings
+**Scoring method:** Score inherited from the selected assessment; not an average or independent multi-source confirmation.
 
-**Retrieval score:** 0.5095 · **Published:** 2026-03-27T08:45:00+00:00 · **Group size:** 1
+#### Supporting evidence and audit
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=d1d7ffc2aa44d2da6add2d952e358009043eb0d4c22a8f3c6c7f7c57f543229e)
+**Event review reasons:** claim_flags_require_review, incomplete_or_ineligible_assessment
 
-**Assessment:** Context only — no supported link
+**Selected assessment**
 
-**Event identified by model:** Bearish commentary on Tesla's autonomous mobility prospects
+**Article:** [Amazon (AMZN) Q3 2025 Earnings Call Transcript](https://finnhub.io/api/news?id=81bfc05d8f43a5fd1057a90228c2c3a78e9ca0dee157047c3fce5ca3bde97d8d)
 
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
+**Published:** 2025-10-31T11:41:42+00:00
 
-**Reason / validator outcome:** The article is a bearish opinion piece dated 2026-03-27, published 6 days before the anomaly date. It discusses Tesla's autonomous mobility challenges but does not report any new company event, contract, or financial development on the anomaly day. No evidence supports a documented company event lin
+**Retrieval score:** 0.9975
 
-**Source excerpt (as recorded):** 'Tesla remains fundamentally unproven in autonomous mobility, lagging competitors in safety, transparency, and operational scale.'
+**Assessment score:** 20.7
 
-#### #9 · Blue Owl limits fund withdrawals, mortgage rates rise for fifth week
+**Assessment status:** review_required
 
-**Retrieval score:** 0.4492 · **Published:** 2026-04-02T17:21:34+00:00 · **Group size:** 1
+**Review reasons:** claim_flags_require_review, incomplete_or_ineligible_assessment
 
-**Source:** [Open source record](https://finnhub.io/api/news?id=45f8662aacbabe50e25ffc31bd5b73563b44d0bfa0c48003dc97876ecb472b12)
+**Claim flags:** unsupported_financial_or_market_outcome
 
-**Assessment:** Hypothesis identified — needs review
+**Model interpretation (unverified):** The documented event may be relevant to market expectations, but the supplied excerpt does not establish a price reaction or financial outcome.
 
-**Event identified by model:** Tesla Q1 deliveries missed Wall Street estimates
+**Validator outcome:** The anomaly date (2025-10-31) aligns with multiple Q3 2025 earnings-related articles published on that day. The earnings call transcript and highlights provide documented company events with plausible pathways to explain the 9.58% return.
 
-**Model interpretation (unverified):** Missed delivery estimates typically negatively impact investor sentiment and stock price.
+**Source excerpt:** "Joining us today to answer your questions is Andy Jassy, our CEO; and Brian Olsavsky, our CFO. As you listen to today's conference call, we encourage you to have our press release in front of you, which includes our financial results as well as metrics and commentary on the quarter."
 
-**Reason / validator outcome:** The news summary explicitly states Tesla stock dropped due to Q1 deliveries missing estimates, providing a documented event with a plausible market pathway.
+## 2026-06-25 | Return -3.1% | Volume z-score 2.35
 
-**Source excerpt (as recorded):** 'Tesla (TSLA) stock drops after its first quarter deliveries miss Wall Street estimates.'
+### News retrieval overview
 
-**Review flags:** `needs_review:unmatched_product_or_numeric_token:Q1`
-
-#### #10 · Tesla's Q1 Delivery Numbers 'Underwhelming,' But Not Surprising Given Current Global EV Backdrop, Wedbush Says
-
-**Retrieval score:** 0.4485 · **Published:** 2026-04-02T14:53:16+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=f4a312d146a3ab4cd6e24b31d3d134ed805941c101fdf1c6def39471122be179)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Tesla Q1 delivery numbers reported as underwhelming by Wedbush
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The only article in the group reports underwhelming Q1 delivery numbers for Tesla on 2026-04-02, but provides no mechanism, price-reaction data, or sector bridge to explain the -5.42% return. It is a documented information event with no supported market link.
-
-**Source excerpt (as recorded):** ' Q1 delivery numbers were quite "underwhelming," but this was not a surprise given the'
-
-**Review flags:** `quote_recovered_from_source`
-
-#### #11 · Tesla Stock Hasn’t Looked This Cheap in a While
-
-**Retrieval score:** 0.4485 · **Published:** 2026-04-02T14:48:25+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=df74a5d898835a25ed98e6480d08547f65c27c0436f4e06dc11e14866e32cca5)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Tesla stock decline discussed as a potential buying opportunity
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The article discusses Tesla's stock price decline and mentions it as a potential buying opportunity, but does not report any company-specific event, announcement, or catalyst for the April 2, 2026 decline. It is a general market commentary on valuation and sector sentiment.
-
-**Source excerpt (as recorded):** "Tesla Stock Hasn't Looked This Cheap in a While"
-
-#### #12 · Tesla Slides 3% on Delivery Shortfall: Why the $20 Billion Robotaxi Bet Makes This Miss Hard to Judge
-
-**Retrieval score:** 0.4483 · **Published:** 2026-04-02T14:24:19+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=870a335a43ad1a08270c26ac9a29b75a79e153ea802f816e63a2c2a34dd1144f)
-
-**Assessment:** Plausible hypothesis — not proven
-
-**Event identified by model:** Tesla Q1 2026 delivery miss reported on 2026-04-02
-
-**Model interpretation (unverified):** Missed delivery consensus typically signals demand concerns and near-term execution risk, which can pressure the stock.
-
-**Reason / validator outcome:** A documented delivery shortfall event on the anomaly day with a plausible market pathway consistent with the negative return.
-
-**Source excerpt (as recorded):** "Tesla (NASDAQ:TSLA) stock is down roughly 3% in early trading on Thursday after the company reported Q1 2026 deliveries of 358,023 vehicles, missing Wall Street's consensus range of approximately 365,645 to 372,160 vehicles."
-
----
-
-## 2026-08-21 · Return 5.14% · Volume z-score 2.59
-
-**Review:** 8 groups reviewed · 0 hypotheses identified (not proven) · 0 rejected.
-
-**Model findings:** No supported hypothesis was identified in the reviewed news. The cause of this price move remains unresolved.
-
-### News ranked by the existing retrieval score
-
-| Rank | Score | News / source | Model assessment |
+| Rank | Retrieval score | News / source | Model assessment |
 |---:|---:|---|---|
-| 1 | 0.9990 | [Tesla (TSLA) Up 8% Since Last Earnings Report: Can It Continue?](https://finnhub.io/api/news?id=2d2ac295e022d38e561b93b4bb44fc879284bfc2f30d56e2024a8d52034119f8) <br>Published: 2026-08-21T16:30:13+00:00 · Articles in group: 1 | Context only — no supported link |
-| 2 | 0.5359 | [Tesla: Tailwinds Outweigh The Noise](https://finnhub.io/api/news?id=8ee1a070c21c5c44789c1aede9626377ea04d1cfa52c593f563ac80515ad9b8f) <br>Published: 2026-08-21T14:38:51+00:00 · Articles in group: 1 | Context only — no supported link |
-| 3 | 0.4726 | [Tesla’s Steering-Wheel-Free Cybercab Could Hit Austin Streets This Month as Elon Musk Ramps Up Robotaxi Push: TSLA Stock Down 1.38% (UPDATED)](https://finnhub.io/api/news?id=f58a4f8212c75bea49b4d9b1df68d7a249dc4c1baa2a85d9ac103fd4d648c4a3) <br>Published: 2026-08-18T08:05:46+00:00 · Articles in group: 1 | Context only — no supported link |
-| 4 | 0.4712 | [Former Tesla President Says Roadster Demo Could Be a ‘Not-So-Hidden Attempt’ to Knit TSLA and SPCX Together: ‘Probably Sooner Rather Than Later’](https://finnhub.io/api/news?id=fc8afb85637c9421a1e70780bba31bf72b2f9bdad1700e48dcb8b751a27757e4) <br>Published: 2026-08-18T06:19:01+00:00 · Articles in group: 1 | Context only — no supported link |
-| 5 | 0.4500 | [Tesla: The Numbers Do Not Justify The Valuation](https://finnhub.io/api/news?id=7341f01bc010ec119643d3c0b97960a3ceb616d3b0c83b565b6296d69911d7d3) <br>Published: 2026-08-21T19:52:06+00:00 · Articles in group: 1 | Context only — no supported link |
-| 6 | 0.4100 | [Elon Musk’s Tesla Compensation Was 2.5 Million Times the Median Worker’s Pay in 2025, 41 Times the EV Giant's 2025 Net Income: TSLA Stock Up 1.59% (UPDATED)](https://finnhub.io/api/news?id=694865d4cff7fb8c40d40f3798271292ef36858cc3bac6f7cf3d2dd438ad58b5) <br>Published: 2026-08-14T09:15:53+00:00 · Articles in group: 1 | Context only — no supported link |
-| 7 | 0.3345 | [Tesla: No One Is Paying Attention](https://finnhub.io/api/news?id=e52d1c52a67473b926a5dc82fbab6706912661f1cdaf7a07b1f376ccb286c62d) <br>Published: 2026-08-19T13:31:00+00:00 · Articles in group: 1 | Context only — no supported link |
-| 8 | 0.3138 | [GLJ Research Reiterates Sell on Tesla, Maintains $24.86 Price Target](https://finnhub.io/api/news?id=7b39a71794329b7e439708fa19629429ff9e93f2f449aa6a5535957c766e0ebb) <br>Published: 2026-08-18T09:45:05+00:00 · Articles in group: 1 | Insufficient evidence |
+| 1 | 0.9025 | [Amazon (AMZN) BofA Sees Q2 Revenue Beat Despite Prime Day Timing Shift](https://finnhub.io/api/news?id=0be4cd3d737473d2fe259ab9569f0bbdba0e58bac60c5fb7fb1b445b2f6013c6) <br>Published: 2026-06-24T13:48:30+00:00 · Articles in group: 1 | Context only — no supported link |
+| 2 | 0.8016 | [S&P 500, Nasdaq And Dow End Holiday-Shortened Week Higher As Investors Cheer US-Iran Peace Deal — SPCX, AMZN, ONDS, NFLX, TTWO In Focus](https://finnhub.io/api/news?id=17df92b589fa467a19ebc6a7d4c50da2d6940047cd2839fd00e5953dcdb8bfda) <br>Published: 2026-06-18T22:07:48+00:00 · Articles in group: 1 | Context only — no supported link |
+| 3 | 0.8002 | [Should Amazon’s US$10 Billion Missouri AI Bet and Trainium Chip Sales Shift AMZN’s Cloud Narrative?](https://finnhub.io/api/news?id=512d8bb020cc2ebeb01e49270c269971d181abdbc3f71c43c09e272d3b61d42c) <br>Published: 2026-06-18T20:17:25+00:00 · Articles in group: 1 | Rejected by validator |
+| 4 | 0.8000 | [Amazon.com (AMZN) Gains 3% After Announcing $10 Billion Missouri Data Center Investment](https://finnhub.io/api/news?id=3a6712484dc2511396316217116bbccd89bf0be5cf28e142f0a9b1d425df1118) <br>Published: 2026-06-18T18:31:56+00:00 · Articles in group: 1 | Context only — no supported link |
+| 5 | 0.6065 | [BMO Capital Reiterates Buy Rating on Amazon.com (AMZN) Stock](https://finnhub.io/api/news?id=9e8da56911b23e27e0fee29d23138fc4ab19158c5964f291a3297437fe0ae5d5) <br>Published: 2026-06-25T08:17:48+00:00 · Articles in group: 1 | Context only — no supported link |
+| 6 | 0.5680 | [Why Amazon Is Sliding Right Before Its Biggest Sales Week Of The Year](https://finnhub.io/api/news?id=db40d1551d74a3008768e8a245c74e67beb98a7fd8912d5f01eb856c2911e431) <br>Published: 2026-06-22T15:27:25+00:00 · Articles in group: 1 | Context only — no supported link |
+| 7 | 0.5637 | [Amazon Prime Day Set to Generate Record Online Spending as Retailers Compete for Shoppers (AMZN)](https://finnhub.io/api/news?id=d77dbe9bfba16c45836afaa1a2af5f20cd14dd2768f3255feefa5a3b376a2d2c) <br>Published: 2026-06-22T12:55:01+00:00 · Articles in group: 2 | Context only — no supported link |
+| 8 | 0.5133 | [Amazon (AMZN) Stock Gets Fair Value Bump As Analysts Weigh AWS And AI Spending](https://finnhub.io/api/news?id=22172f8ab0c66871d5aa129ccbc0cfe905334599357adf34454f4d81bd50547d) <br>Published: 2026-06-19T17:10:45+00:00 · Articles in group: 1 | Context only — no supported link |
+| 9 | 0.4487 | [Amazon Pledges $48B to Scale AI Infrastructure in India: What's Ahead?](https://finnhub.io/api/news?id=bb738b118ed435247ccf941d5fe9c345f84589b3c3a8fcd47ab032789e3b7668) <br>Published: 2026-06-25T15:33:00+00:00 · Articles in group: 1 | Rejected by validator |
+| 10 | 0.4481 | [What's Going On With Amazon Stock Thursday?](https://finnhub.io/api/news?id=35a0aa4e7878287ec66e778046bee60f0d0882836af79ba5d7edaca1cdb33139) <br>Published: 2026-06-25T13:46:00+00:00 · Articles in group: 1 | Rejected by validator |
+| 11 | 0.4252 | [Wall Street Is Fixated on the Wrong Numbers: Why This Trillion-Dollar Cash Machine Is a No-Brainer Buy Right Now](https://finnhub.io/api/news?id=c59f59ac4e39f4bbdfb70317e0c59d8a616b1fbbfef563bee1b2a3b7056c56fc) <br>Published: 2026-06-23T17:48:47+00:00 · Articles in group: 1 | Context only — no supported link |
+| 12 | 0.3560 | [Is Amazon.com, Inc. (AMZN) the Best AI Chip Stock to Buy for the Long Term?](https://finnhub.io/api/news?id=c2e69b7f8c77e02b032e140fadeebdb76afd335f13d0fa7098148b2847832718) <br>Published: 2026-06-25T06:24:00+00:00 · Articles in group: 2 | Rejected by validator |
 
-### Detailed model interpretation (same ranking)
+**Result:** No scored hypothesis available for this anomaly.
 
-#### #1 · Tesla (TSLA) Up 8% Since Last Earnings Report: Can It Continue?
-
-**Retrieval score:** 0.9990 · **Published:** 2026-08-21T16:30:13+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=2d2ac295e022d38e561b93b4bb44fc879284bfc2f30d56e2024a8d52034119f8)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Tesla earnings analysis and stock performance discussion
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** News article discusses Tesla's recent performance and earnings estimates but does not report a specific company event on the anomaly day that explains the 5.14% return. The article is a post-earnings analysis published on the same day, but contains no new contract, guidance, or operational update th
-
-**Source excerpt (as recorded):** "Tesla (TSLA) reported earnings 30 days ago. What's next for the stock? We take a look at earnings estimates for some clues."
-
-#### #2 · Tesla: Tailwinds Outweigh The Noise
-
-**Retrieval score:** 0.5359 · **Published:** 2026-08-21T14:38:51+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=8ee1a070c21c5c44789c1aede9626377ea04d1cfa52c593f563ac80515ad9b8f)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Tesla reported a 26% YoY revenue surge despite a 23% YTD stock decline, with the EV business remaining a leading one, but competition remains fierce.
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The article reports Tesla's financial performance (26% YoY revenue surge) and stock decline (23% YTD) but does not describe any specific event, catalyst, or market reaction occurring on 2026-08-21. No company-specific catalyst or bridge to the daily anomaly is provided.
-
-**Source excerpt (as recorded):** 'Tesla delivered a 26% YoY revenue surge despite a 23% YTD stock decline, with the EV business remaining a leading one, but competition remains fierce.'
-
-#### #3 · Tesla’s Steering-Wheel-Free Cybercab Could Hit Austin Streets This Month as Elon Musk Ramps Up Robotaxi Push: TSLA Stock Down 1.38% (UPDATED)
-
-**Retrieval score:** 0.4726 · **Published:** 2026-08-18T08:05:46+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=f58a4f8212c75bea49b4d9b1df68d7a249dc4c1baa2a85d9ac103fd4d648c4a3)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Cybercab robotaxi rollout possibility in Austin
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The cited article reports a Cybercab rollout possibility in Austin but is dated 2026-08-18, prior to the anomaly date 2026-08-21. No company-specific event on the anomaly day is substantiated. The news is stale relative to the anomaly window and does not establish a supported market link to the 5.14
-
-**Source excerpt (as recorded):** 'Tesla could begin rolling out its Cybercab robotaxi in Austin this month, as the company ramps up testing and prepares to challenge Waymo.'
-
-#### #4 · Former Tesla President Says Roadster Demo Could Be a ‘Not-So-Hidden Attempt’ to Knit TSLA and SPCX Together: ‘Probably Sooner Rather Than Later’
-
-**Retrieval score:** 0.4712 · **Published:** 2026-08-18T06:19:01+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=fc8afb85637c9421a1e70780bba31bf72b2f9bdad1700e48dcb8b751a27757e4)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Former Tesla President Jon McNeill suggests Tesla Roadster demo may signal deeper convergence with SpaceX
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The only available article is from 2026-08-18, published 3 days before the anomaly date. It mentions a former Tesla president's comment about a Roadster demo potentially signaling convergence with SpaceX, but provides no information about the anomaly day (2026-08-21) and no company-specific market b
-
-**Source excerpt (as recorded):** "Former Tesla President Jon McNeill says Tesla's upcoming Roadster demo may signal deeper convergence with SpaceX."
-
-#### #5 · Tesla: The Numbers Do Not Justify The Valuation
-
-**Retrieval score:** 0.4500 · **Published:** 2026-08-21T19:52:06+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=7341f01bc010ec119643d3c0b97960a3ceb616d3b0c83b565b6296d69911d7d3)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Tesla valuation critique published on 2026-08-21 citing record deliveries but margin and free cash flow collapse
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The article is a valuation critique citing record deliveries but margin and free cash flow collapse. It does not describe a new company event, contract, or market reaction that explains the 5.14% return. No evidence supports a documented event or a supported market link.
-
-**Source excerpt (as recorded):** 'Tesla, Inc. rated Sell: record deliveries but margins & free cash flow collapse amid rising capex, China competition & FSD risks'
-
-#### #6 · Elon Musk’s Tesla Compensation Was 2.5 Million Times the Median Worker’s Pay in 2025, 41 Times the EV Giant's 2025 Net Income: TSLA Stock Up 1.59% (UPDATED)
-
-**Retrieval score:** 0.4100 · **Published:** 2026-08-14T09:15:53+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=694865d4cff7fb8c40d40f3798271292ef36858cc3bac6f7cf3d2dd438ad58b5)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Elon Musk's Tesla compensation was 2.5 million times the median worker's pay in 2025, 41 times the EV giant's 2025 net income
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** The only available news item is a compensation article from 2026-08-14, which is a week prior to the anomaly date. It does not explain the 2026-08-21 price move and provides no company-specific catalyst for that date.
-
-**Source excerpt (as recorded):** "Elon Musk's 2025 pay package was valued at $158B & was 14x higher than combined total of other S&P 500 CEOs."
-
-#### #7 · Tesla: No One Is Paying Attention
-
-**Retrieval score:** 0.3345 · **Published:** 2026-08-19T13:31:00+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=e52d1c52a67473b926a5dc82fbab6706912661f1cdaf7a07b1f376ccb286c62d)
-
-**Assessment:** Context only — no supported link
-
-**Event identified by model:** Tesla stock discussed in context of YTD decline and macro sentiment
-
-**Model interpretation (unverified):** No defensible link to the observed stock anomaly is established.
-
-**Reason / validator outcome:** News from 2026-08-19 discusses Tesla's YTD decline and macro/sentiment factors, but does not mention any specific company event, contract, or catalyst occurring on or directly linked to the anomaly date 2026-08-21. No evidence-supported bridge to the stock's 5.14% return is present.
-
-**Source excerpt (as recorded):** 'Tesla remains a Buy following a 25% YTD decline, as recent weakness is driven by macro factors and sentiment, not a broken thesis.'
-
-#### #8 · GLJ Research Reiterates Sell on Tesla, Maintains $24.86 Price Target
-
-**Retrieval score:** 0.3138 · **Published:** 2026-08-18T09:45:05+00:00 · **Group size:** 1
-
-**Source:** [Open source record](https://finnhub.io/api/news?id=7b39a71794329b7e439708fa19629429ff9e93f2f449aa6a5535957c766e0ebb)
-
-**Assessment:** Insufficient evidence
-
-**Reason / validator outcome:** The only provided news item is a GLJ Research sell rating from 2026-08-18, which is stale relative to the anomaly date 2026-08-21 and contains no company-specific catalyst or market bridge for the 5.14% return. No other articles or events are supplied to explain the anomaly.
+The cause remains unresolved.
 
 ---
 
-## How to read this report
+## Audit references
 
-- **Rank / score:** order and score from the existing news retriever; not model confidence or causality.
-- **Plausible hypothesis:** model found a contextual link, not proof that the event caused the move.
-- **Needs review:** a claim-level check flagged an issue requiring human verification.
-- **Rejected / context only:** no accepted explanation from that news group.
-- **Source record:** the URL stored by the ingestion pipeline; it may be a Finnhub record rather than the publisher’s article URL.
-- **Technical audit:** see `news_investigation.txt` and the original evidence graphs.
+- Original market report: `report.txt`
+- Full news investigation: `news_investigation.txt`
+- Scoring records: `news_investigation.txt.scores.json`
+- Grouped event records: `final_ranking.json`
+
+## Limitations
+
+- Event matching is narrow and heuristic; verify event identity manually.
+- Representative score is not recomputed from pooled evidence.
+- Article count is not independent-source count.
+- LLM criterion scores are uncalibrated and not causal probabilities.
+- Daily anomaly timing does not establish that news preceded the price move.

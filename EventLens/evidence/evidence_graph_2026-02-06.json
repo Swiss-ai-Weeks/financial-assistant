@@ -1,0 +1,1233 @@
+{
+  "schema_version": "integrated_daily_evidence_graph_v1",
+  "ticker": "NVDA",
+  "anomaly_date": "2026-02-06",
+  "as_of": "2026-02-06T21:00:00+00:00",
+  "daily_anomaly": {
+    "date": "2026-02-06",
+    "close": 184.98,
+    "return_pct": 7.87,
+    "volume_zscore": 2.03,
+    "intraday_onset": null
+  },
+  "baseline_ranker_unchanged": true,
+  "baseline_ranks_recomputed_by_original_ranker": true,
+  "semantic_overlay_provided": false,
+  "stored_articles_in_window": 814,
+  "lexically_relevant_articles": 76,
+  "model_calls": 0,
+  "trained_tgn": false,
+  "graph_ranks_computed": 0,
+  "graph": {
+    "nodes": [
+      {
+        "id": "anomaly:NVDA:2026-02-06",
+        "type": "daily_anomaly",
+        "date": "2026-02-06",
+        "return_pct": 7.87,
+        "volume_zscore": 2.03,
+        "price_onset_at": null
+      },
+      {
+        "id": "company:NVDA",
+        "type": "target_company",
+        "ticker": "NVDA"
+      },
+      {
+        "id": "event_candidate:7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Did NVIDIA's (NVDA) Paused OpenAI Megadeal Just Reframe Its AI Infrastructure Investment Narrative?",
+        "candidate_validated": false,
+        "group_id": "7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42"
+      },
+      {
+        "id": "article:7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "type": "news_article",
+        "article_id": "7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "title": "Did NVIDIA's (NVDA) Paused OpenAI Megadeal Just Reframe Its AI Infrastructure Investment Narrative?",
+        "published_at": "2026-02-03T12:08:02+00:00",
+        "ingested_at": "2026-09-20T16:29:51+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=cae67072c3487233b0f421595c6b288b81b2443531f0dfccee5ae4953e3e508e",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "article:c321bf742c5ae512513fa4224c47deb263b24c10fdd7012440f1745fa641d756",
+        "type": "news_article",
+        "article_id": "c321bf742c5ae512513fa4224c47deb263b24c10fdd7012440f1745fa641d756",
+        "title": "Nvidia’s $100 Billion OpenAI Investment Plan Reportedly Hits Snag Amid Internal Concerns",
+        "published_at": "2026-02-02T13:59:57+00:00",
+        "ingested_at": "2026-09-20T16:29:50+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=0b5111d71b46676d371a295510d129f366572e8a7113488ddca833d95d04860a",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "article:a92eb1bd84731b835f0ec72628c0de889127cd313f186442970e36cb1d10c094",
+        "type": "news_article",
+        "article_id": "a92eb1bd84731b835f0ec72628c0de889127cd313f186442970e36cb1d10c094",
+        "title": "Nvidia's $100 Billion OpenAI Investment Plan Reportedly Hits Snag Amid Internal Concerns",
+        "published_at": "2026-02-02T13:01:11+00:00",
+        "ingested_at": "2026-09-20T16:29:50+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=4c1ee0b760086bf17d07105e699e4892ab8043efaed689c5a705f784132a17d8",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "article:2bcc6d30af6b3ff3bf0904ccf7fb5d2d584fc2d235d12c17c89e0d25fbf720b3",
+        "type": "news_article",
+        "article_id": "2bcc6d30af6b3ff3bf0904ccf7fb5d2d584fc2d235d12c17c89e0d25fbf720b3",
+        "title": "Nvidia Poised To Make Record Investment In OpenAI's Current Funding Round",
+        "published_at": "2026-02-02T01:31:07+00:00",
+        "ingested_at": "2026-09-20T16:29:50+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=18b89cdc6e3c71d6c61c26209879a591825a9d5a7ababbc9e39457e85ed06000",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Claude 5 Will Probably Launch In Q1: Here's What GOOGL, NVDA, AMZN Investors Should Know",
+        "candidate_validated": false,
+        "group_id": "933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce"
+      },
+      {
+        "id": "article:933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+        "type": "news_article",
+        "article_id": "933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+        "title": "Claude 5 Will Probably Launch In Q1: Here's What GOOGL, NVDA, AMZN Investors Should Know",
+        "published_at": "2026-02-02T15:16:33+00:00",
+        "ingested_at": "2026-09-20T16:29:50+00:00",
+        "source_name": "Benzinga",
+        "source_url": "https://finnhub.io/api/news?id=a5af28c3432fe68637a715faed988c60176de5ced4bca45834730752501c7072",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Jim Cramer Shares Key Insights About NVIDIA Corporation (NVDA)’s China Sales",
+        "candidate_validated": false,
+        "group_id": "676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197"
+      },
+      {
+        "id": "article:676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+        "type": "news_article",
+        "article_id": "676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+        "title": "Jim Cramer Shares Key Insights About NVIDIA Corporation (NVDA)’s China Sales",
+        "published_at": "2026-01-30T13:23:24+00:00",
+        "ingested_at": "2026-09-20T16:29:47+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=fe2a3ceebdc5d618a8a55cf65969650d4f8f3d947e7b5e9422c823de3c9680a1",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Nvidia CEO Huang says AI buildout to take 7-8 years, demand \"sky high\"",
+        "candidate_validated": false,
+        "group_id": "ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a"
+      },
+      {
+        "id": "article:ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+        "type": "news_article",
+        "article_id": "ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+        "title": "Nvidia CEO Huang says AI buildout to take 7-8 years, demand \"sky high\"",
+        "published_at": "2026-02-06T18:19:13+00:00",
+        "ingested_at": "2026-09-20T16:51:39+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=02b1754f44cf0d6b70f660126e2de1abed3fbcef2b9b80af79a7a0c8ee658807",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Nvidia Reportedly Nears Record $20 Billion OpenAI Investment As Jensen Huang And Sam Altman Deny Reports Of Strained Partnership",
+        "candidate_validated": false,
+        "group_id": "dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd"
+      },
+      {
+        "id": "article:dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+        "type": "news_article",
+        "article_id": "dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+        "title": "Nvidia Reportedly Nears Record $20 Billion OpenAI Investment As Jensen Huang And Sam Altman Deny Reports Of Strained Partnership",
+        "published_at": "2026-02-06T00:31:24+00:00",
+        "ingested_at": "2026-09-20T16:51:39+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=3ecd5332b5f28075aefd5936755082ead49fdaf8e73765fec352edbd35864a9f",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Is It Worth Investing in Nvidia (NVDA) Based on Wall Street's Bullish Views?",
+        "candidate_validated": false,
+        "group_id": "9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273"
+      },
+      {
+        "id": "article:9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+        "type": "news_article",
+        "article_id": "9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+        "title": "Is It Worth Investing in Nvidia (NVDA) Based on Wall Street's Bullish Views?",
+        "published_at": "2026-02-06T14:30:03+00:00",
+        "ingested_at": "2026-09-20T16:51:39+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=b261d9440e5f9a72dfa3688b2b28f5d6190e0111181dd52886085e43dc8a4c92",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Trump Approved Nvidia's H200 China Chip Sales — But State Department Review Is Holding Things Up: Report",
+        "candidate_validated": false,
+        "group_id": "52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00"
+      },
+      {
+        "id": "article:52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+        "type": "news_article",
+        "article_id": "52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+        "title": "Trump Approved Nvidia's H200 China Chip Sales — But State Department Review Is Holding Things Up: Report",
+        "published_at": "2026-02-05T21:31:16+00:00",
+        "ingested_at": "2026-09-20T16:29:54+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=bcb1916a3e5e1947b5c43a3cc6ef258e68cdd01ac0e73a287123f7a7cdf8178c",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Nvidia Partner Hon Hai’s Sales Soar in Sign of Strong AI Demand",
+        "candidate_validated": false,
+        "group_id": "1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4"
+      },
+      {
+        "id": "article:1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+        "type": "news_article",
+        "article_id": "1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+        "title": "Nvidia Partner Hon Hai’s Sales Soar in Sign of Strong AI Demand",
+        "published_at": "2026-02-05T07:39:22+00:00",
+        "ingested_at": "2026-09-20T16:29:54+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=93ab7ef16fbefcaaee3b869e4a1819ad86c765ebe98c98ed0d108234c825a260",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+        "type": "candidate_event_proxy",
+        "title_proxy": "NVIDIA Corporation (NVDA): A Bull Case Theory",
+        "candidate_validated": false,
+        "group_id": "d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2"
+      },
+      {
+        "id": "article:d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+        "type": "news_article",
+        "article_id": "d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+        "title": "NVIDIA Corporation (NVDA): A Bull Case Theory",
+        "published_at": "2026-02-05T03:12:46+00:00",
+        "ingested_at": "2026-09-20T16:29:54+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=7bbc128cf3b5c1212c5f3b5bf1f25411a05647014e2d45062c4ee2ab76a003b4",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Why this analyst likes AMD over Nvidia: The rate of change is faster",
+        "candidate_validated": false,
+        "group_id": "efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05"
+      },
+      {
+        "id": "article:efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+        "type": "news_article",
+        "article_id": "efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+        "title": "Why this analyst likes AMD over Nvidia: The rate of change is faster",
+        "published_at": "2026-02-06T12:00:50+00:00",
+        "ingested_at": "2026-09-20T16:51:39+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=082f60e9afd049853ea539eb22204e91bda4da0c5c3daf897cce9ed8ad8437b4",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+        "type": "candidate_event_proxy",
+        "title_proxy": "Equity Markets Rise Intraday as Nvidia Drives Tech Rally; Amazon Slumps",
+        "candidate_validated": false,
+        "group_id": "164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9"
+      },
+      {
+        "id": "article:164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+        "type": "news_article",
+        "article_id": "164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+        "title": "Equity Markets Rise Intraday as Nvidia Drives Tech Rally; Amazon Slumps",
+        "published_at": "2026-02-06T19:04:45+00:00",
+        "ingested_at": "2026-09-20T16:51:39+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=3348a48c1bad7dbb49f676f6304b3c05e2a174c376c778d7c086328e9cf5fafa",
+        "daily_classification": "same_day_onset_unknown",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      },
+      {
+        "id": "event_candidate:b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+        "type": "candidate_event_proxy",
+        "title_proxy": "NVIDIA vs. Palantir: One AI Stock is a Clear Buy Right Now",
+        "candidate_validated": false,
+        "group_id": "b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8"
+      },
+      {
+        "id": "article:b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+        "type": "news_article",
+        "article_id": "b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+        "title": "NVIDIA vs. Palantir: One AI Stock is a Clear Buy Right Now",
+        "published_at": "2026-02-04T20:05:00+00:00",
+        "ingested_at": "2026-09-20T16:29:52+00:00",
+        "source_name": "Yahoo",
+        "source_url": "https://finnhub.io/api/news?id=0705c2bd0ab6b4644d8f18ea33cfdb6e7c7867f64e77a48f34b38e70cb49f9f5",
+        "daily_classification": "prior_day",
+        "reporting_lineage_verified": false,
+        "independent_confirmation_verified": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "anomaly:NVDA:2026-02-06",
+        "target": "company:NVDA",
+        "type": "observed_for_company",
+        "provenance": "anomalies.json",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "causal": false
+      },
+      {
+        "source": "article:7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "target": "event_candidate:7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "type": "heuristically_grouped_with",
+        "provenance": "7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "article:c321bf742c5ae512513fa4224c47deb263b24c10fdd7012440f1745fa641d756",
+        "target": "event_candidate:7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "type": "heuristically_grouped_with",
+        "provenance": "c321bf742c5ae512513fa4224c47deb263b24c10fdd7012440f1745fa641d756",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:c321bf742c5ae512513fa4224c47deb263b24c10fdd7012440f1745fa641d756",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "c321bf742c5ae512513fa4224c47deb263b24c10fdd7012440f1745fa641d756",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "article:a92eb1bd84731b835f0ec72628c0de889127cd313f186442970e36cb1d10c094",
+        "target": "event_candidate:7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "type": "heuristically_grouped_with",
+        "provenance": "a92eb1bd84731b835f0ec72628c0de889127cd313f186442970e36cb1d10c094",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:a92eb1bd84731b835f0ec72628c0de889127cd313f186442970e36cb1d10c094",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "a92eb1bd84731b835f0ec72628c0de889127cd313f186442970e36cb1d10c094",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "article:2bcc6d30af6b3ff3bf0904ccf7fb5d2d584fc2d235d12c17c89e0d25fbf720b3",
+        "target": "event_candidate:7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "type": "heuristically_grouped_with",
+        "provenance": "2bcc6d30af6b3ff3bf0904ccf7fb5d2d584fc2d235d12c17c89e0d25fbf720b3",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:2bcc6d30af6b3ff3bf0904ccf7fb5d2d584fc2d235d12c17c89e0d25fbf720b3",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "2bcc6d30af6b3ff3bf0904ccf7fb5d2d584fc2d235d12c17c89e0d25fbf720b3",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+        "causal": false
+      },
+      {
+        "source": "article:933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+        "target": "event_candidate:933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+        "type": "heuristically_grouped_with",
+        "provenance": "933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+        "causal": false
+      },
+      {
+        "source": "article:676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+        "target": "event_candidate:676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+        "type": "heuristically_grouped_with",
+        "provenance": "676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+        "causal": false
+      },
+      {
+        "source": "article:ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+        "target": "event_candidate:ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+        "type": "heuristically_grouped_with",
+        "provenance": "ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+        "causal": false
+      },
+      {
+        "source": "article:dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+        "target": "event_candidate:dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+        "type": "heuristically_grouped_with",
+        "provenance": "dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+        "causal": false
+      },
+      {
+        "source": "article:9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+        "target": "event_candidate:9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+        "type": "heuristically_grouped_with",
+        "provenance": "9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+        "causal": false
+      },
+      {
+        "source": "article:52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+        "target": "event_candidate:52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+        "type": "heuristically_grouped_with",
+        "provenance": "52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+        "causal": false
+      },
+      {
+        "source": "article:1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+        "target": "event_candidate:1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+        "type": "heuristically_grouped_with",
+        "provenance": "1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+        "causal": false
+      },
+      {
+        "source": "article:d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+        "target": "event_candidate:d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+        "type": "heuristically_grouped_with",
+        "provenance": "d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+        "causal": false
+      },
+      {
+        "source": "article:efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+        "target": "event_candidate:efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+        "type": "heuristically_grouped_with",
+        "provenance": "efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+        "causal": false
+      },
+      {
+        "source": "article:164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+        "target": "event_candidate:164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+        "type": "heuristically_grouped_with",
+        "provenance": "164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+        "classification": "same_day_onset_unknown",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      },
+      {
+        "source": "event_candidate:b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "retrieved_for_daily_anomaly",
+        "provenance": "b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+        "causal": false
+      },
+      {
+        "source": "article:b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+        "target": "event_candidate:b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+        "type": "heuristically_grouped_with",
+        "provenance": "b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+        "semantic_entailment_verified": false,
+        "causal": false
+      },
+      {
+        "source": "article:b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+        "target": "anomaly:NVDA:2026-02-06",
+        "type": "daily_publication_context",
+        "provenance": "b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+        "classification": "prior_day",
+        "relative_to_price_onset": "unknown",
+        "causal": false
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "baseline_position": 1,
+      "group_id": "7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+      "candidate_title_proxy": "Did NVIDIA's (NVDA) Paused OpenAI Megadeal Just Reframe Its AI Infrastructure Investment Narrative?",
+      "candidate_event": "Did NVIDIA's (NVDA) Paused OpenAI Megadeal Just Reframe Its AI Infrastructure Investment Narrative?",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8648,
+      "article_ids": [
+        "7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+        "c321bf742c5ae512513fa4224c47deb263b24c10fdd7012440f1745fa641d756",
+        "a92eb1bd84731b835f0ec72628c0de889127cd313f186442970e36cb1d10c094",
+        "2bcc6d30af6b3ff3bf0904ccf7fb5d2d584fc2d235d12c17c89e0d25fbf720b3"
+      ],
+      "daily_classes": {
+        "prior_day": 4
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "7ecd03db1e393e32f96fbfa94c374758965d2a262cbbd4e5c422ecf67c07cc42",
+          "title": "Did NVIDIA's (NVDA) Paused OpenAI Megadeal Just Reframe Its AI Infrastructure Investment Narrative?",
+          "published_at": "2026-02-03T12:08:02+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8648,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        },
+        {
+          "article_id": "c321bf742c5ae512513fa4224c47deb263b24c10fdd7012440f1745fa641d756",
+          "title": "Nvidia’s $100 Billion OpenAI Investment Plan Reportedly Hits Snag Amid Internal Concerns",
+          "published_at": "2026-02-02T13:59:57+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5484,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        },
+        {
+          "article_id": "a92eb1bd84731b835f0ec72628c0de889127cd313f186442970e36cb1d10c094",
+          "title": "Nvidia's $100 Billion OpenAI Investment Plan Reportedly Hits Snag Amid Internal Concerns",
+          "published_at": "2026-02-02T13:01:11+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5476,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        },
+        {
+          "article_id": "2bcc6d30af6b3ff3bf0904ccf7fb5d2d584fc2d235d12c17c89e0d25fbf720b3",
+          "title": "Nvidia Poised To Make Record Investment In OpenAI's Current Funding Round",
+          "published_at": "2026-02-02T01:31:07+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5391,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 2,
+      "group_id": "933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+      "candidate_title_proxy": "Claude 5 Will Probably Launch In Q1: Here's What GOOGL, NVDA, AMZN Investors Should Know",
+      "candidate_event": "Claude 5 Will Probably Launch In Q1: Here's What GOOGL, NVDA, AMZN Investors Should Know",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8493,
+      "article_ids": [
+        "933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "933ba2ab814bbf7a85a912dedda7ca112cc7e3abbe8a0dae067acf7c4c4974ce",
+          "title": "Claude 5 Will Probably Launch In Q1: Here's What GOOGL, NVDA, AMZN Investors Should Know",
+          "published_at": "2026-02-02T15:16:33+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8493,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 3,
+      "group_id": "676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+      "candidate_title_proxy": "Jim Cramer Shares Key Insights About NVIDIA Corporation (NVDA)’s China Sales",
+      "candidate_event": "Jim Cramer Shares Key Insights About NVIDIA Corporation (NVDA)’s China Sales",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.8,
+      "article_ids": [
+        "676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "676782e78b9aa01f789db3cc0d8468143166682c45139360622d15cda04db197",
+          "title": "Jim Cramer Shares Key Insights About NVIDIA Corporation (NVDA)’s China Sales",
+          "published_at": "2026-01-30T13:23:24+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.8,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 4,
+      "group_id": "ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+      "candidate_title_proxy": "Nvidia CEO Huang says AI buildout to take 7-8 years, demand \"sky high\"",
+      "candidate_event": "Nvidia CEO Huang says AI buildout to take 7-8 years, demand \"sky high\"",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6992,
+      "article_ids": [
+        "ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "ebac802dceb3d450cffad9d4b5f54ca82606f950ba9214b66841eb4c022bcf0a",
+          "title": "Nvidia CEO Huang says AI buildout to take 7-8 years, demand \"sky high\"",
+          "published_at": "2026-02-06T18:19:13+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6992,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 5,
+      "group_id": "dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+      "candidate_title_proxy": "Nvidia Reportedly Nears Record $20 Billion OpenAI Investment As Jensen Huang And Sam Altman Deny Reports Of Strained Partnership",
+      "candidate_event": "Nvidia Reportedly Nears Record $20 Billion OpenAI Investment As Jensen Huang And Sam Altman Deny Reports Of Strained Partnership",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6098,
+      "article_ids": [
+        "dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "dfd1744497697203c96e6b1c3ad23dc3400300933d35eba60bdc9ae2091d81cd",
+          "title": "Nvidia Reportedly Nears Record $20 Billion OpenAI Investment As Jensen Huang And Sam Altman Deny Reports Of Strained Partnership",
+          "published_at": "2026-02-06T00:31:24+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.6098,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 6,
+      "group_id": "9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+      "candidate_title_proxy": "Is It Worth Investing in Nvidia (NVDA) Based on Wall Street's Bullish Views?",
+      "candidate_event": "Is It Worth Investing in Nvidia (NVDA) Based on Wall Street's Bullish Views?",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6081,
+      "article_ids": [
+        "9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "9699fceb9407b8fc24c8b4be122ab2e6b9dbad42e84fb2d08e0feb9be3fe3273",
+          "title": "Is It Worth Investing in Nvidia (NVDA) Based on Wall Street's Bullish Views?",
+          "published_at": "2026-02-06T14:30:03+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.6081,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 7,
+      "group_id": "52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+      "candidate_title_proxy": "Trump Approved Nvidia's H200 China Chip Sales — But State Department Review Is Holding Things Up: Report",
+      "candidate_event": "Trump Approved Nvidia's H200 China Chip Sales — But State Department Review Is Holding Things Up: Report",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.6075,
+      "article_ids": [
+        "52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "52e7d92f9ba0155d4fc30d1ce69ad594bd8dc87d6a3d8cc77163738746407e00",
+          "title": "Trump Approved Nvidia's H200 China Chip Sales — But State Department Review Is Holding Things Up: Report",
+          "published_at": "2026-02-05T21:31:16+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.6075,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 8,
+      "group_id": "1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+      "candidate_title_proxy": "Nvidia Partner Hon Hai’s Sales Soar in Sign of Strong AI Demand",
+      "candidate_event": "Nvidia Partner Hon Hai’s Sales Soar in Sign of Strong AI Demand",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5972,
+      "article_ids": [
+        "1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "1e83ab077c852b95d0488f5d9a219824d52e802ea036a7140b6464b018a44cd4",
+          "title": "Nvidia Partner Hon Hai’s Sales Soar in Sign of Strong AI Demand",
+          "published_at": "2026-02-05T07:39:22+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5972,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 9,
+      "group_id": "d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+      "candidate_title_proxy": "NVIDIA Corporation (NVDA): A Bull Case Theory",
+      "candidate_event": "NVIDIA Corporation (NVDA): A Bull Case Theory",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5914,
+      "article_ids": [
+        "d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "d658072638fa35f0c0437d55fe4c97414c514c2b8e9beb8f9e26bc73d7237be2",
+          "title": "NVIDIA Corporation (NVDA): A Bull Case Theory",
+          "published_at": "2026-02-05T03:12:46+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.5914,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 10,
+      "group_id": "efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+      "candidate_title_proxy": "Why this analyst likes AMD over Nvidia: The rate of change is faster",
+      "candidate_event": "Why this analyst likes AMD over Nvidia: The rate of change is faster",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.5348,
+      "article_ids": [
+        "efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "efe949fdee9fce5a45065ed517ef73e3dbfd132252b693edb327b4e7f5b59e05",
+          "title": "Why this analyst likes AMD over Nvidia: The rate of change is faster",
+          "published_at": "2026-02-06T12:00:50+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.5348,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 11,
+      "group_id": "164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+      "candidate_title_proxy": "Equity Markets Rise Intraday as Nvidia Drives Tech Rally; Amazon Slumps",
+      "candidate_event": "Equity Markets Rise Intraday as Nvidia Drives Tech Rally; Amazon Slumps",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4494,
+      "article_ids": [
+        "164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9"
+      ],
+      "daily_classes": {
+        "same_day_onset_unknown": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "164dad1837fd704cd5f411b84a84ff30fdf29903bce87ffdc33fad540da0d7b9",
+          "title": "Equity Markets Rise Intraday as Nvidia Drives Tech Rally; Amazon Slumps",
+          "published_at": "2026-02-06T19:04:45+00:00",
+          "classification": "same_day_onset_unknown",
+          "baseline_article_score": 0.4494,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    },
+    {
+      "baseline_position": 12,
+      "group_id": "b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+      "candidate_title_proxy": "NVIDIA vs. Palantir: One AI Stock is a Clear Buy Right Now",
+      "candidate_event": "NVIDIA vs. Palantir: One AI Stock is a Clear Buy Right Now",
+      "candidate_event_absent": false,
+      "baseline_retrieval_score": 0.4261,
+      "article_ids": [
+        "b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8"
+      ],
+      "daily_classes": {
+        "prior_day": 1
+      },
+      "archived_semantic_status": null,
+      "archived_semantic_axes": null,
+      "valid_quote_matches": [],
+      "invalid_quote_matches": [],
+      "quote_match_is_not_entailment": true,
+      "score_ready": false,
+      "graph_assisted_score": null,
+      "new_rank": null,
+      "blockers": [
+        "intraday_price_onset_unknown",
+        "source_lineage_not_verified",
+        "economic_mechanism_and_criteria_not_independently_validated"
+      ],
+      "articles": [
+        {
+          "article_id": "b21d28244f3bc42b7892a8c7a6841a3661ee9c7fb9629400a72a4fac755790d8",
+          "title": "NVIDIA vs. Palantir: One AI Stock is a Clear Buy Right Now",
+          "published_at": "2026-02-04T20:05:00+00:00",
+          "classification": "prior_day",
+          "baseline_article_score": 0.4261,
+          "model_annotation": {
+            "status": "not_assessed",
+            "model_judgment": null,
+            "valid_citations": [],
+            "invalid_citations": []
+          }
+        }
+      ],
+      "reused_articles_across_groups": []
+    }
+  ],
+  "article_reuse_across_groups": {},
+  "limitations": [
+    "Offline SQLite only: no internet or model calls.",
+    "Publication-day context cannot establish news preceding price movement.",
+    "Ingestion after historical cutoff may imply retrospective rather than real-time availability.",
+    "Text-matched source excerpts do not verify semantic entailment or source independence.",
+    "No causal ranking or new economic scores; archived judgments remain unverified."
+  ]
+}
