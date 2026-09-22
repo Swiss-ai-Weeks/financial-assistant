@@ -194,7 +194,7 @@ def generate_hypotheses(
             f"{financial_context}"
         )
 
-    unique_texts: list[str] = []
+    unique: list[tuple[str, tuple[str, ...]]] = []
 
     # One corrective retry. A fast model with thinking off
     # sometimes commits to a single explanation; told exactly
@@ -210,7 +210,7 @@ def generate_hypotheses(
                 else (
                     f"{request}\n\n"
                     "YOUR PREVIOUS ANSWER WAS REJECTED: it "
-                    f"contained {len(unique_texts)} distinct "
+                    f"contained {len(unique)} distinct "
                     "hypothesis. Return at least 2 and at most "
                     "4 hypotheses that are different KINDS of "
                     "explanation, not rewordings of one."
@@ -225,8 +225,9 @@ def generate_hypotheses(
         )
 
         # Remove exact duplicate hypothesis texts while
-        # preserving model order.
-        unique_texts = []
+        # preserving model order. Each text keeps its own
+        # candidate's assumptions.
+        unique = []
         seen: set[str] = set()
 
         for candidate in parsed.hypotheses:
@@ -241,20 +242,20 @@ def generate_hypotheses(
                 continue
 
             seen.add(key)
-            unique_texts.append(text)
+            unique.append((text, candidate.assumptions))
 
         # More than asked for is not an error: the model
         # orders them, so the first four are kept.
-        unique_texts = unique_texts[:4]
+        unique = unique[:4]
 
-        if len(unique_texts) >= 2:
+        if len(unique) >= 2:
             break
 
-    if len(unique_texts) < 2:
+    if len(unique) < 2:
         raise ValueError(
             "Hypothesis generation must produce "
             "between 2 and 4 distinct hypotheses; "
-            f"received {len(unique_texts)}."
+            f"received {len(unique)}."
         )
 
     created_at = datetime.now(
@@ -283,7 +284,7 @@ def generate_hypotheses(
 
     hypotheses: list[Hypothesis] = []
 
-    for text in unique_texts:
+    for text, assumptions in unique:
         digest = sha1(
             (
                 f"{anomaly.anomaly_id}|"
@@ -295,7 +296,7 @@ def generate_hypotheses(
             Hypothesis(
                 hypothesis_id=f"H-{digest}",
                 text=text,
-                assumptions=candidate.assumptions,
+                assumptions=assumptions,
                 model_run_id=run.run_id,
             )
         )

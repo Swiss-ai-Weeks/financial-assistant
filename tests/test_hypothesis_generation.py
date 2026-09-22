@@ -133,6 +133,23 @@ def test_generates_distinct_hypotheses():
     )
 
 
+def test_each_hypothesis_keeps_its_own_assumptions():
+    _, hypotheses = generate_hypotheses(
+        ANOMALY,
+        (),
+        GoodProvider(),
+    )
+
+    assert [
+        hypothesis.assumptions
+        for hypothesis in hypotheses
+    ] == [
+        ("Market participants changed their valuation of AAA.",),
+        ("Market participants changed their valuation of BBB.",),
+        ("Market participants changed their valuation.",),
+    ]
+
+
 def test_duplicate_hypotheses_are_rejected_after_deduplication():
     with pytest.raises(
         ValueError,
