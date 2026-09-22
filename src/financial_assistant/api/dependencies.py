@@ -193,6 +193,10 @@ def get_news_repository() -> NewsRepository:
         ArchiveNewsSource(get_news_archive()),
         YahooNewsSource(),
         *get_news_providers(),
+        # Keyless and slow (see its docstring): last, so it
+        # adds what the others missed rather than carrying
+        # the feed.
+        GdeltDownloader(),
     ]
 
     if (search := get_search_provider()) is not None:

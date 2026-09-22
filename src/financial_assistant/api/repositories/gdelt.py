@@ -197,7 +197,17 @@ class GdeltClient:
 
 
 class GdeltDownloader:
+    """
+    Fills the archive (`make news`) and is also a live source
+    of the desk. Live, it is refreshed rarely: the client
+    allows one request every 5.5 seconds process-wide, and
+    GDELT's index trails the present by days, so asking often
+    would queue the other tickers for nothing new.
+    """
+
     name = "gdelt"
+    local = False
+    min_refresh_minutes = 360
 
     def __init__(self, client: GdeltClient | None = None):
         self._client = client or GdeltClient()
