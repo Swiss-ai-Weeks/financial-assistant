@@ -22,7 +22,7 @@ from financial_assistant.llm.provider import StructuredLLM, complete_structured
 from .models import Direction, Edge, EventType, Extraction, Materiality, Node, NodeKind
 from .resolution import Resolver
 
-PROMPT_VERSION = "news-graph-extraction-v1"
+PROMPT_VERSION = "news-graph-extraction-v2"
 
 MAX_SUMMARY_CHARS = 700
 
@@ -34,6 +34,12 @@ use outside knowledge of what happened later.
 Return JSON only, with exactly these fields:
 
 {
+  "about_company": true if the item is about the company named
+      (its business, results, deals, products, people, or a
+      development that concerns it directly), false if the
+      company is merely mentioned in passing, listed among
+      others, or not the subject at all (a wire feed often tags
+      a story to the wrong ticker).
   "event_type": one of
       "earnings"            reported results, beats, misses
       "guidance"            outlook raised, cut, withdrawn
@@ -114,6 +120,12 @@ def to_graph(item: NewsItem, extraction: Extraction, resolver: Resolver) -> tupl
     """
 
     security = resolver.security_id(item.ticker)
+
+    if not extraction.about_company:
+        # Read and remembered, so it is not read again, but it
+        # says nothing about this security.
+        return [], []
+
     features = {
         "event_type": extraction.event_type.value,
         "direction": extraction.direction.value,

@@ -70,6 +70,10 @@ class Extraction(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
+    # Providers tag a story to a ticker it merely mentions (or
+    # not even that). False: the item is about someone else,
+    # and it contributes no edges for this security.
+    about_company: bool = True
     event_type: EventType
     event: str | None = Field(default=None, max_length=90)
     entities: tuple[ExtractedEntity, ...] = Field(default=(), max_length=8)

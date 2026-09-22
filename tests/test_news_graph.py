@@ -166,3 +166,11 @@ def test_the_wire_reads_the_graph_as_of_the_desk_date(tmp_path):
     clock.set(date(2026, 5, 6))
     assert [r["label"] for r in wire.feed(["ORCL"], days=400)] == ["Oracle OpenAI contract"]
     assert all(e["t"] <= "2026-05-06T23:59:59.999999+00:00" for e in wire.graph("ORCL", days=400)["edges"])
+
+
+def test_an_article_about_someone_else_adds_no_edges():
+    extraction = Extraction(about_company=False, event_type=EventType.PRODUCT, event="Incyte trial results")
+
+    nodes, edges = to_graph(item("n9", "CRM", "Incyte reports trial results"), extraction, Resolver(BOOK))
+
+    assert nodes == [] and edges == []
