@@ -1,0 +1,35 @@
+specification {
+  element person {
+    style { shape person }
+  }
+  element system
+  element application
+  element component
+  element service
+  element repository
+  element datastore {
+    style { shape storage }
+  }
+  element external
+
+  relationship http {
+    title 'HTTP'
+    line solid
+  }
+  relationship calls {
+    title 'calls'
+    line solid
+  }
+  relationship reads {
+    title 'reads'
+    line dashed
+  }
+  relationship writes {
+    title 'writes'
+    line dashed
+  }
+  relationship inference {
+    title 'model inference'
+    line solid
+  }
+}

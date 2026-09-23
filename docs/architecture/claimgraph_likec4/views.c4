@@ -1,0 +1,82 @@
+views {
+  view index {
+    title 'Pythia / ClaimGraph — System landscape'
+    include analyst,
+      browser_extension,
+      pythia.frontend,
+      pythia.backend,
+      pythia.domain,
+      pythia.state,
+      llm_server,
+      searxng,
+      yahoo,
+      sec,
+      news_providers
+  }
+
+  view backend_modules of pythia {
+    title 'Pythia — Implemented code architecture'
+    include frontend,
+      backend.controllers,
+      backend.services,
+      backend.repositories,
+      backend.composition,
+      domain,
+      state,
+      llm_server,
+      searxng,
+      yahoo,
+      sec,
+      news_providers
+  }
+
+  view investigation_components of pythia {
+    title 'ClaimGraph investigation — Components'
+    include frontend.investigation_ui,
+      backend.controllers,
+      backend.services.investigation_service,
+      backend.services.anomaly_service,
+      backend.services.news_service,
+      backend.repositories.investigation_repo,
+      backend.repositories.news_repo,
+      backend.repositories.market_repo,
+      backend.repositories.doc_cache,
+      domain.retrieval,
+      domain.research,
+      domain.fundamentals,
+      domain.llm,
+      domain.claimgraph,
+      state.investigation_state,
+      state.news_cache,
+      llm_server,
+      searxng,
+      sec,
+      news_providers
+  }
+
+  dynamic view investigation_pipeline {
+    title 'ClaimGraph investigation — Actual runtime pipeline'
+
+    analyst -> pythia.frontend.investigation_ui 'starts / opens investigation'
+    pythia.frontend.investigation_ui -> pythia.backend.controllers 'POST /api/investigations'
+    pythia.backend.controllers -> pythia.backend.services.investigation_service 'start()'
+    pythia.backend.services.investigation_service -> pythia.backend.services.anomaly_service 'resolve anomaly + event'
+    pythia.backend.services.investigation_service -> pythia.backend.services.news_service 'news around anomaly, cutoff applied'
+    pythia.backend.services.investigation_service -> pythia.backend.repositories.doc_cache 'fetch readable source documents'
+    pythia.backend.services.investigation_service -> pythia.domain.retrieval 'optionally widen with research/search'
+    pythia.backend.services.investigation_service -> pythia.domain.fundamentals 'load SEC evidence as of cutoff'
+    pythia.backend.services.investigation_service -> pythia.domain.llm 'extract source-grounded claims'
+    pythia.domain.llm -> llm_server 'claim extraction'
+    pythia.backend.services.investigation_service -> pythia.domain.llm 'generate competing hypotheses'
+    pythia.domain.llm -> llm_server 'hypothesis generation'
+    pythia.backend.services.investigation_service -> pythia.domain.llm 'audit hypotheses / assumptions / missing evidence'
+    pythia.domain.llm -> llm_server 'hypothesis audit'
+    pythia.backend.services.investigation_service -> pythia.domain.llm 'assess evidence-to-hypothesis relations'
+    pythia.domain.llm -> llm_server 'relation assessment'
+    pythia.backend.services.investigation_service -> pythia.domain.claimgraph 'build typed graph deterministically'
+    pythia.domain.claimgraph -> pythia.backend.repositories.investigation_repo 'persist investigation graph'
+    pythia.frontend.investigation_ui -> pythia.backend.controllers 'poll GET /api/investigations/{id}'
+    pythia.backend.controllers -> pythia.frontend.investigation_ui 'graph + stages + provenance'
+    pythia.frontend.investigation_ui -> analyst 'interactive graph, inspector, review and report'
+  }
+}

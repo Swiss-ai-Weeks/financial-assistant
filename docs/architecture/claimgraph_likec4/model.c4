@@ -1,0 +1,140 @@
+model {
+  analyst = person 'Portfolio analyst / reviewer'
+  browser_extension = application 'Chrome extension' {
+    description 'Adds Analyse unusual activity from a web page.'
+  }
+
+  pythia = system 'Pythia / Financial Assistant' {
+    frontend = application 'React + Vite frontend' {
+      description 'frontend/src — portfolio, anomaly, news, Wire and ClaimGraph workspaces.'
+
+      investigation_ui = component 'Investigation workspace' {
+        description 'InvestigationWorkspace, ClaimGraph, NodeInspector, ReviewPanel, ReportPanel, CopilotPanel.'
+      }
+      market_ui = component 'Market / portfolio / anomaly views'
+      wire_ui = component 'Wire views'
+    }
+
+    backend = application 'FastAPI backend' {
+      description 'src/financial_assistant/api — HTTP entry point and composition root.'
+
+      controllers = component 'Controllers' {
+        description 'HTTP-only routers: system, portfolio, market, anomaly, news, wire, investigation, copilot, stories.'
+      }
+
+      services = component 'Application services' {
+        anomaly_service = service 'AnomalyService'
+        investigation_service = service 'InvestigationService'
+        news_service = service 'NewsService'
+        portfolio_service = service 'PortfolioService'
+        postmortem_service = service 'PostMortemService'
+        microscope_service = service 'MicroscopeService'
+        discovery_service = service 'DiscoveryService'
+        wire_service = service 'WireService'
+        copilot_service = service 'CopilotService'
+      }
+
+      repositories = component 'Repositories / I/O adapters' {
+        market_repo = repository 'MarketDataRepository'
+        news_repo = repository 'NewsRepository'
+        portfolio_repo = repository 'PortfolioRepository'
+        instrument_repo = repository 'InstrumentRepository'
+        investigation_repo = repository 'InvestigationRepository'
+        triage_repo = repository 'TriageRepository'
+        doc_cache = repository 'CachedDocumentFetcher'
+      }
+
+      composition = component 'dependencies.py composition root' {
+        description 'Builds and caches repositories, services, model registry and optional integrations.'
+      }
+    }
+
+    domain = application 'Domain / analysis engine' {
+      anomaly = component 'anomaly_detection' {
+        description 'Cointegration, historical and signal anomaly detectors.'
+      }
+      analytics = component 'analytics' {
+        description 'Abnormal returns and historical analogues.'
+      }
+      retrieval = component 'retrieval' {
+        description 'Research-plan execution, SearXNG adapter, document fetchers, point-in-time filtering.'
+      }
+      research = component 'research' {
+        description 'Deterministic research planning.'
+      }
+      fundamentals = component 'fundamentals' {
+        description 'SEC Company Facts and point-in-time calculations.'
+      }
+      llm = component 'llm pipeline' {
+        description 'Claim extraction, hypothesis generation, hypothesis audit, relation assessment and causal triage.'
+      }
+      claimgraph = component 'claimgraph' {
+        description 'Typed investigation state converted deterministically into the frontend/backend graph contract.'
+      }
+      copilot = component 'copilot'
+      portfolio = component 'portfolio'
+      simulation = component 'simulation'
+      news_graph = component 'news_graph'
+      tgn = component 'tgn' {
+        description 'Optional temporal graph network over the news graph.'
+      }
+    }
+
+    state = application 'Local persisted state / caches' {
+      investigation_state = datastore 'Investigation JSON state'
+      portfolio_state = datastore 'Portfolio JSON state'
+      market_cache = datastore 'Market price cache'
+      news_cache = datastore 'News + document caches'
+      news_graph_db = datastore 'news_graph.sqlite'
+      triage_state = datastore 'Discovery triage cache'
+      analogue_cache = datastore 'Analogue cache'
+    }
+  }
+
+  llm_server = external 'OpenAI-compatible LLM endpoint' {
+    description 'vLLM / NVIDIA Nemotron by default; registry can expose additional models such as Apertus.'
+  }
+  searxng = external 'SearXNG' {
+    description 'Optional search provider used to widen research.'
+  }
+  yahoo = external 'Yahoo Finance / Yahoo News'
+  sec = external 'SEC Company Facts'
+  news_providers = external 'News providers' {
+    description 'Finnhub, EODHD, Marketaux, GNews, NewsAPI, Alpha Vantage, GDELT and archive sources when configured.'
+  }
+
+  analyst .http pythia.frontend 'uses desk'
+  browser_extension .http pythia.backend.controllers 'starts analysis'
+  pythia.frontend .http pythia.backend.controllers '/api requests'
+
+  pythia.backend.controllers .calls pythia.backend.services 'dispatches use cases'
+  pythia.backend.composition .calls pythia.backend.services 'constructs / injects'
+  pythia.backend.composition .calls pythia.backend.repositories 'constructs / injects'
+
+  pythia.backend.services.anomaly_service .calls pythia.domain.anomaly 'detects anomalies'
+  pythia.backend.services.discovery_service .calls pythia.domain.analytics 'scores / finds analogues'
+  pythia.backend.services.investigation_service .calls pythia.domain.retrieval 'reads and widens evidence'
+  pythia.backend.services.investigation_service .calls pythia.domain.fundamentals 'loads point-in-time fundamentals'
+  pythia.backend.services.investigation_service .calls pythia.domain.llm 'extracts / generates / audits / assesses'
+  pythia.backend.services.investigation_service .calls pythia.domain.claimgraph 'builds ClaimGraph'
+  pythia.backend.services.copilot_service .calls pythia.domain.copilot 'advisory graph commentary'
+  pythia.backend.services.wire_service .calls pythia.domain.news_graph 'reads news graph'
+
+  pythia.domain.llm .inference llm_server 'OpenAI-compatible requests'
+  pythia.domain.copilot .inference llm_server 'OpenAI-compatible requests'
+  pythia.backend.services.discovery_service .inference llm_server 'causal triage'
+
+  pythia.domain.retrieval .http searxng 'searches when configured'
+  pythia.backend.repositories.market_repo .http yahoo 'downloads OHLCV'
+  pythia.backend.repositories.news_repo .http yahoo 'recent news'
+  pythia.backend.repositories.news_repo .http news_providers 'news retrieval'
+  pythia.domain.fundamentals .http sec 'Company Facts'
+
+  pythia.backend.repositories.investigation_repo .writes pythia.state.investigation_state 'persists runs and graphs'
+  pythia.backend.repositories.portfolio_repo .writes pythia.state.portfolio_state 'persists book'
+  pythia.backend.repositories.market_repo .writes pythia.state.market_cache 'caches prices'
+  pythia.backend.repositories.news_repo .writes pythia.state.news_cache 'caches news'
+  pythia.backend.repositories.doc_cache .writes pythia.state.news_cache 'caches fetched documents'
+  pythia.backend.repositories.triage_repo .writes pythia.state.triage_state 'caches model triage'
+  pythia.backend.services.wire_service .reads pythia.state.news_graph_db 'reads temporal graph'
+}
