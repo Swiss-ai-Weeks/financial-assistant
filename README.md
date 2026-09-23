@@ -28,7 +28,7 @@ The diagrams below are generated from the LikeC4 model in `docs/architecture` an
 This is the top-level view of Pythia / ClaimGraph: the analyst-facing interfaces, backend and domain layers, persisted state, model runtime, search, market data, filings and news providers.
 
 <p align="center">
-  <img src="docs/architecture/assets/index.png" alt="Pythia / ClaimGraph system landscape" width="100%" />
+  <img src="docs/architecture/claimgraph_likec4/index.png" alt="Pythia / ClaimGraph system landscape" width="100%" />
 </p>
 
 ### Investigation pipeline
@@ -36,7 +36,7 @@ This is the top-level view of Pythia / ClaimGraph: the analyst-facing interfaces
 This follows one ClaimGraph investigation end to end: from the UI request through anomaly resolution, point-in-time evidence retrieval, SEC fundamentals and the LLM claim / hypothesis stages, into the deterministic graph build and interactive inspection.
 
 <p align="center">
-  <img src="docs/architecture/assets/investigation_pipeline.png" alt="ClaimGraph investigation runtime pipeline" width="100%" />
+  <img src="docs/architecture/claimgraph_likec4/investigation_pipeline.png" alt="ClaimGraph investigation runtime pipeline" width="100%" />
 </p>
 
 ### Investigation components
@@ -44,7 +44,7 @@ This follows one ClaimGraph investigation end to end: from the UI request throug
 This view isolates the components that participate in an investigation, making the boundary between the React UI, FastAPI services and repositories, domain modules, state, model runtime and external evidence sources explicit.
 
 <p align="center">
-  <img src="docs/architecture/assets/investigation_components.png" alt="ClaimGraph investigation components" width="100%" />
+  <img src="docs/architecture/claimgraph_likec4/investigation_components.png" alt="ClaimGraph investigation components" width="100%" />
 </p>
 
 ### Backend modules
@@ -52,7 +52,7 @@ This view isolates the components that participate in an investigation, making t
 This is the code-oriented view of the implemented backend architecture, showing the controller → service → repository layering alongside the domain packages and external dependencies they use.
 
 <p align="center">
-  <img src="docs/architecture/assets/backend_modules.png" alt="Pythia implemented backend architecture" width="100%" />
+  <img src="docs/architecture/claimgraph_likec4/backend_modules.png" alt="Pythia implemented backend architecture" width="100%" />
 </p>
 
 ## Quick start
